@@ -2,9 +2,6 @@ package domain;
 
 import java.time.LocalDate;
 
-/**
- * Created by Ihar_Niakhlebau on 17-Aug-15.
- */
 public class SubscriberTariff {
 
     private int id;

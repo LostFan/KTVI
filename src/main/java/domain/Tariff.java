@@ -2,9 +2,6 @@ package domain;
 
 import java.util.List;
 
-/**
- * Created by Ihar_Niakhlebau on 17-Aug-15.
- */
 public class Tariff {
 
     private String name;

@@ -1,11 +1,7 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.List;
 
-/**
- * Created by Ihar_Niakhlebau on 17-Aug-15.
- */
 public class TariffPrice {
 
     private int id;

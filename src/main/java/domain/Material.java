@@ -1,8 +1,5 @@
 package domain;
 
-/**
- * Created by Ihar_Niakhlebau on 17-Aug-15.
- */
 public class Material {
 
     private String name;
