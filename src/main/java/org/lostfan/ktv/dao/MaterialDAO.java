@@ -1,8 +1,8 @@
-package dao;
+package org.lostfan.ktv.dao;
 
 import java.util.List;
 
-import domain.Material;
+import org.lostfan.ktv.domain.Material;
 
 
 public interface MaterialDAO {

@@ -1,9 +1,9 @@
-package dao;
+package org.lostfan.ktv.dao;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import domain.Subscriber;
+import org.lostfan.ktv.domain.Subscriber;
 
 public interface SubscriberDAO {
 

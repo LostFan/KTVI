@@ -1,9 +1,9 @@
-package dao;
+package org.lostfan.ktv.dao;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import domain.Tariff;
+import org.lostfan.ktv.domain.Tariff;
 
 public interface TariffDAO {
 

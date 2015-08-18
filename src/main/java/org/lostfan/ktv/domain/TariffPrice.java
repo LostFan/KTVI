@@ -1,16 +1,24 @@
-package domain;
+package org.lostfan.ktv.domain;
 
 import java.time.LocalDate;
 
-public class ServicePrice {
+public class TariffPrice {
 
     private int id;
 
-    private Service service;
+    private Tariff tariff;
 
     private int price;
 
     private LocalDate date;
+
+    public Tariff getTariff() {
+        return tariff;
+    }
+
+    public void setTariff(Tariff tariff) {
+        this.tariff = tariff;
+    }
 
     public int getId() {
         return id;
@@ -18,14 +26,6 @@ public class ServicePrice {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Service getService() {
-        return service;
-    }
-
-    public void setService(Service service) {
-        this.service = service;
     }
 
     public int getPrice() {

@@ -1,4 +1,4 @@
-package domain;
+package org.lostfan.ktv.domain;
 
 public class Material {
 

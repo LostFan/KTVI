@@ -1,12 +1,23 @@
-package domain;
+package org.lostfan.ktv.domain;
 
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-
+@Entity
+@Table(name = "SUBSCRIBER")
 public class Subscriber {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ID")
     private String id;
 
+    @Column(name = "NAME", nullable = false)
     private String name;
 
     private int balance;
