@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Tariff {
 
+    int id;
+
     private String name;
 
     private String channels;
@@ -32,5 +34,13 @@ public class Tariff {
 
     public void setTariffPrices(List<TariffPrice> tariffPrices) {
         this.tariffPrices = tariffPrices;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

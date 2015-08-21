@@ -2,6 +2,8 @@ package org.lostfan.ktv.domain;
 
 public class Material {
 
+    int id;
+
     private String name;
 
     private int price;

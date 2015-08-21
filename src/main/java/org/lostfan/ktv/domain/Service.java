@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Service {
 
+    int id;
+
     private String name;
 
     private boolean additionalService;
@@ -32,5 +34,13 @@ public class Service {
 
     public void setServicePrices(List<ServicePrice> servicePrices) {
         this.servicePrices = servicePrices;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

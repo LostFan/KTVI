@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS "payment";
 DROP TABLE IF EXISTS "material_consumption";
 DROP TABLE IF EXISTS "rendered_service";
 DROP TABLE IF EXISTS "subscriber_tariff";
