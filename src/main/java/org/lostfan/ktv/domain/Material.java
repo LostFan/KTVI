@@ -6,6 +6,8 @@ public class Material {
 
     private int price;
 
+    private String unit;
+
     public String getName() {
         return name;
     }
@@ -20,5 +22,13 @@ public class Material {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

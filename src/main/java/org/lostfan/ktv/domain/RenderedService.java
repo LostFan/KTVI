@@ -3,7 +3,7 @@ package org.lostfan.ktv.domain;
 import java.time.LocalDate;
 import java.util.List;
 
-public class SubscriberService {
+public class RenderedService {
 
     private int id;
 
@@ -11,7 +11,7 @@ public class SubscriberService {
 
     private Service service;
 
-    private List<Material> materials;
+    private List<MaterialConsumption> materials;
 
     private LocalDate date;
 
@@ -39,11 +39,11 @@ public class SubscriberService {
         this.service = service;
     }
 
-    public List<Material> getMaterials() {
+    public List<MaterialConsumption> getMaterials() {
         return materials;
     }
 
-    public void setMaterials(List<Material> materials) {
+    public void setMaterials(List<MaterialConsumption> materials) {
         this.materials = materials;
     }
 

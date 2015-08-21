@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS "material_consumption";
+DROP TABLE IF EXISTS "rendered_service";
+DROP TABLE IF EXISTS "subscriber_tariff";
+DROP TABLE IF EXISTS "subscriber_session";
+DROP TABLE IF EXISTS "subscriber";
+DROP TABLE IF EXISTS "tariff_price";
+DROP TABLE IF EXISTS "tariff";
+DROP TABLE IF EXISTS "service_price";
+DROP TABLE IF EXISTS "service";
+DROP TABLE IF EXISTS "material";

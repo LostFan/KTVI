@@ -16,7 +16,7 @@ public class Subscriber {
 
     private List<SubscriberTariff> subscriberTariffs;
 
-    private List<SubscriberService> subscriberServices;
+    private List<RenderedService> renderedServices;
 
     public String getId() {
         return id;
@@ -66,11 +66,11 @@ public class Subscriber {
         this.subscriberTariffs = subscriberTariffs;
     }
 
-    public List<SubscriberService> getSubscriberServices() {
-        return subscriberServices;
+    public List<RenderedService> getRenderedServices() {
+        return renderedServices;
     }
 
-    public void setSubscriberServices(List<SubscriberService> subscriberServices) {
-        this.subscriberServices = subscriberServices;
+    public void setRenderedServices(List<RenderedService> renderedServices) {
+        this.renderedServices = renderedServices;
     }
 }
