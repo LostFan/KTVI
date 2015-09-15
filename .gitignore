@@ -1,2 +1,5 @@
 /.idea/
 KTV.iml
+
+# Maven target directory
+target/
