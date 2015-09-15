@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Tariff {
 
-    int id;
+    private int id;
 
     private String name;
 

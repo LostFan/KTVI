@@ -7,11 +7,9 @@ public class RenderedService {
 
     private int id;
 
-    private Subscriber subscriber;
+    private int subscriberId;
 
     private Service service;
-
-    private List<MaterialConsumption> materials;
 
     private LocalDate date;
 
@@ -23,12 +21,12 @@ public class RenderedService {
         this.id = id;
     }
 
-    public Subscriber getSubscriber() {
-        return subscriber;
+    public int getSubscriberId() {
+        return subscriberId;
     }
 
-    public void setSubscriber(Subscriber subscriber) {
-        this.subscriber = subscriber;
+    public void setSubscriberId(int subscriberId) {
+        this.subscriberId = subscriberId;
     }
 
     public Service getService() {
@@ -37,14 +35,6 @@ public class RenderedService {
 
     public void setService(Service service) {
         this.service = service;
-    }
-
-    public List<MaterialConsumption> getMaterials() {
-        return materials;
-    }
-
-    public void setMaterials(List<MaterialConsumption> materials) {
-        this.materials = materials;
     }
 
     public LocalDate getDate() {

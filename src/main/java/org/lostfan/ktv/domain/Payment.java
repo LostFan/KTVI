@@ -4,15 +4,15 @@ import java.time.LocalDate;
 
 public class Payment {
 
-    int id;
+    private int id;
 
     private String name;
 
-    Service servicePayment;
+    private Service servicePayment;
 
-    Subscriber subscriber;
+    private int subscriberId;
 
-    int price;
+    private int price;
 
     private LocalDate date;
 
@@ -32,12 +32,12 @@ public class Payment {
         this.servicePayment = servicePayment;
     }
 
-    public Subscriber getSubscriber() {
-        return subscriber;
+    public int getSubscriberId() {
+        return subscriberId;
     }
 
-    public void setSubscriber(Subscriber subscriber) {
-        this.subscriber = subscriber;
+    public void setSubscriberId(int subscriberId) {
+        this.subscriberId = subscriberId;
     }
 
     public int getPrice() {

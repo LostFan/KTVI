@@ -6,7 +6,7 @@ public class SubscriberTariff {
 
     private int id;
 
-    private Subscriber subscriber;
+    private int subscriberId;
 
     private Tariff tariff;
 
@@ -22,12 +22,12 @@ public class SubscriberTariff {
         this.id = id;
     }
 
-    public Subscriber getSubscriber() {
-        return subscriber;
+    public int getSubscriberId() {
+        return subscriberId;
     }
 
-    public void setSubscriber(Subscriber subscriber) {
-        this.subscriber = subscriber;
+    public void setSubscriberId(int subscriberId) {
+        this.subscriberId = subscriberId;
     }
 
     public Tariff getTariff() {

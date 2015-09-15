@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Service {
 
-    int id;
+    private int id;
 
     private String name;
 

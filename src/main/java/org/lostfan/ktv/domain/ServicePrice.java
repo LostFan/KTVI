@@ -6,7 +6,7 @@ public class ServicePrice {
 
     private int id;
 
-    private Service service;
+    private int serviceId;
 
     private int price;
 
@@ -20,12 +20,12 @@ public class ServicePrice {
         this.id = id;
     }
 
-    public Service getService() {
-        return service;
+    public int getServiceId() {
+        return serviceId;
     }
 
-    public void setService(Service service) {
-        this.service = service;
+    public void setServiceId(int serviceId) {
+        this.serviceId = serviceId;
     }
 
     public int getPrice() {

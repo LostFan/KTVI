@@ -11,9 +11,11 @@ public interface RenderedServiceDAO {
 
     public List<RenderedService> getRenderedServicesByDate(LocalDate date);
 
+    public List<RenderedService> getRenderedServicesBySubscriberId(int subscriberId);
+
     public void save(RenderedService renderedService);
 
     public void update(RenderedService renderedService);
 
-    public void delete(RenderedService renderedService);
+    public void delete(int id);
 }

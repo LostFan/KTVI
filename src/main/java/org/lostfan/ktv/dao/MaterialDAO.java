@@ -9,11 +9,11 @@ public interface MaterialDAO {
 
     public List<Material> getAllMaterials();
 
-    public Material getMaterial(String name);
+    public Material getMaterial(int id);
 
     public void save(Material material);
 
     public void update(Material material);
 
-    public void delete(Material material);
+    public void delete(int id);
 }

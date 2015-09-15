@@ -12,11 +12,11 @@ public interface PaymentDAO {
 
     public List<Payment> getPaymentsByDate(LocalDate date);
 
-    public List<Payment> getPaymentsBySubscriber(Subscriber subscriber);
+    public List<Payment> getPaymentsBySubscriber(int subscriberId);
 
     public void save(Payment tariff);
 
     public void update(Payment tariff);
 
-    public void delete(Payment tariff);
+    public void delete(int id);
 }

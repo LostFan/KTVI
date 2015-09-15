@@ -4,25 +4,19 @@ import java.util.List;
 
 public class Subscriber {
 
-    private String id;
+    private int id;
 
     private String name;
 
     private int balance;
 
-    private List<SubscriberSession> subscriberSessions;
-
     private boolean connected;
 
-    private List<SubscriberTariff> subscriberTariffs;
-
-    private List<RenderedService> renderedServices;
-
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -42,14 +36,6 @@ public class Subscriber {
         this.balance = balance;
     }
 
-    public List<SubscriberSession> getSubscriberSessions() {
-        return subscriberSessions;
-    }
-
-    public void setSubscriberSessions(List<SubscriberSession> subscriberSessions) {
-        this.subscriberSessions = subscriberSessions;
-    }
-
     public boolean isConnected() {
         return connected;
     }
@@ -58,19 +44,4 @@ public class Subscriber {
         this.connected = connected;
     }
 
-    public List<SubscriberTariff> getSubscriberTariffs() {
-        return subscriberTariffs;
-    }
-
-    public void setSubscriberTariffs(List<SubscriberTariff> subscriberTariffs) {
-        this.subscriberTariffs = subscriberTariffs;
-    }
-
-    public List<RenderedService> getRenderedServices() {
-        return renderedServices;
-    }
-
-    public void setRenderedServices(List<RenderedService> renderedServices) {
-        this.renderedServices = renderedServices;
-    }
 }

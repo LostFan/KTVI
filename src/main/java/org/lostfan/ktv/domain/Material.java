@@ -2,7 +2,7 @@ package org.lostfan.ktv.domain;
 
 public class Material {
 
-    int id;
+    private int id;
 
     private String name;
 

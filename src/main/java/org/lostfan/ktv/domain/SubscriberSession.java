@@ -6,6 +6,8 @@ public class SubscriberSession {
 
     private int id;
 
+    private int subscriberId;
+
     private LocalDate connectionDate;
 
     private LocalDate disconnectionDate;
@@ -32,5 +34,13 @@ public class SubscriberSession {
 
     public void setDisconnectionDate(LocalDate disconnectionDate) {
         this.disconnectionDate = disconnectionDate;
+    }
+
+    public int getSubscriberId() {
+        return subscriberId;
+    }
+
+    public void setSubscriberId(int subscriberId) {
+        this.subscriberId = subscriberId;
     }
 }
