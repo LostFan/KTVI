@@ -1,5 +1,7 @@
 package org.lostfan.ktv.domain;
 
+import java.time.LocalDate;
+
 public class Payment {
 
     int id;
@@ -11,6 +13,8 @@ public class Payment {
     Subscriber subscriber;
 
     int price;
+
+    private LocalDate date;
 
     public String getName() {
         return name;
@@ -50,5 +54,13 @@ public class Payment {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

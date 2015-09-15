@@ -11,9 +11,9 @@ public interface MaterialDAO {
 
     public Material getMaterial(String name);
 
-    public void save(Material tariff);
+    public void save(Material material);
 
-    public void update(Material tariff);
+    public void update(Material material);
 
-    public void delete(Material tariff);
+    public void delete(Material material);
 }
