@@ -3,14 +3,36 @@ package org.lostfan.ktv.dao.impl.hsqldb;
 import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.ServicePrice;
+import org.lostfan.ktv.utils.ConnectionManager;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HsqldbServiceDAO implements ServiceDAO {
 
     public List<Service> getAllServices() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        List<Service> services = new ArrayList<>();
+        try {
+            Statement statement = ConnectionManager.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM \"service\"");
+            while (rs.next()) {
+                Service service = new Service();
+                service.setId(rs.getInt("id"));
+                service.setName(rs.getString("name"));
+                service.setAdditionalService(rs.getBoolean("additional"));
+
+                services.add(service);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return services;
     }
 
     public Service getService(int id) {
