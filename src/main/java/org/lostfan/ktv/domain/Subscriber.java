@@ -6,6 +6,8 @@ public class Subscriber {
 
     private int id;
 
+    private int account;
+
     private String name;
 
     private int balance;
@@ -44,4 +46,11 @@ public class Subscriber {
         this.connected = connected;
     }
 
+    public int getAccount() {
+        return account;
+    }
+
+    public void setAccount(int account) {
+        this.account = account;
+    }
 }

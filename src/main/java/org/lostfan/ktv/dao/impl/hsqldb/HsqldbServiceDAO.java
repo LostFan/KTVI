@@ -69,7 +69,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
                     "INSERT INTO \"service\" (\"name\", \"additional\") VALUES(?, ?)");
             preparedStatement.setString(1, service.getName());
             preparedStatement.setBoolean(2, service.isAdditionalService());
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -84,7 +84,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
                 preparedStatement.setString(1, service.getName());
                 preparedStatement.setBoolean(2, service.isAdditionalService());
                 preparedStatement.setInt(3, service.getId());
-                preparedStatement.execute();
+                preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -100,7 +100,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "DELETE FROM  \"service\" where \"id\" = ?");
                 preparedStatement.setInt(1, serviceId);
-                preparedStatement.execute();
+                preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
                 ex.printStackTrace();

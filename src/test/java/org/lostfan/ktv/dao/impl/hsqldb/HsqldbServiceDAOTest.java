@@ -68,19 +68,38 @@ public class HsqldbServiceDAOTest {
     }
 
     @Test
-    public void createNewServiceTest() throws SQLException {
+    public void createNewServiceCorrectServiceCountTest() throws SQLException {
         insertStubData();
         Service service = new Service();
         service.setName("Service 4 name");
         service.setAdditionalService(true);
         serviceDao.save(service);
         assertEquals(serviceDao.getAllServices().size(), 4);
+    }
+
+    @Test
+    public void createNewServiceShouldMatchInsertedValuesTest() throws SQLException {
+        insertStubData();
+        Service service = new Service();
+        service.setName("Service 4 name");
+        service.setAdditionalService(true);
+        serviceDao.save(service);
         assertEquals(serviceDao.getAllServices().get(3).getName(), "Service 4 name");
+        assertEquals(serviceDao.getAllServices().get(3).isAdditionalService(), true);
+    }
+
+    @Test
+    public void createNewServiceShouldHaveIncrementedIdTest() throws SQLException {
+        insertStubData();
+        Service service = new Service();
+        service.setName("Service 4 name");
+        service.setAdditionalService(true);
+        serviceDao.save(service);
         assertEquals(serviceDao.getAllServices().get(3).getId(), 4);
     }
 
     @Test
-    public void updateExistingServiceByIdTest() throws SQLException {
+    public void updateExistingServiceByIdShouldMatchUpdatedValuesTest() throws SQLException {
         insertStubData();
         Service service = serviceDao.getService(1);
         service.setName("Service 1 name new");
@@ -89,10 +108,36 @@ public class HsqldbServiceDAOTest {
     }
 
     @Test
-    public void deleteServiceByIdTest() throws SQLException {
+    public void updateExistingServiceByIdShouldMatchNotUpdatedValuesTest() throws SQLException {
+        insertStubData();
+        Service service = serviceDao.getService(1);
+        service.setAdditionalService(false);
+        service.setName("Service 1 name new");
+        serviceDao.update(service);
+        assertEquals(serviceDao.getAllServices(), 3);
+    }
+
+    @Test
+    public void updateExistingServiceByIdCorrectServiceCountTest() throws SQLException {
+        insertStubData();
+        Service service = serviceDao.getService(1);
+        service.setAdditionalService(false);
+        serviceDao.update(service);
+        assertEquals(serviceDao.getService(1).getName(), "Service 1 name");
+    }
+
+    @Test
+    public void deleteServiceByIdCorrectServiceCountTest() throws SQLException {
         insertStubData();
         serviceDao.delete(1);
         assertEquals(serviceDao.getAllServices().size(), 2);
+    }
+
+    @Test
+    public void deleteServiceByIdShouldDeleteCorrectDataTest() throws SQLException {
+        insertStubData();
+        serviceDao.delete(1);
+        assertEquals(serviceDao.getService(1), null);
     }
 
     private void insertStubData() throws SQLException {

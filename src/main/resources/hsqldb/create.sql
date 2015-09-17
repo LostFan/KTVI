@@ -35,6 +35,7 @@ CREATE TABLE "tariff_price" (
 
 CREATE TABLE "subscriber" (
   "id" INTEGER IDENTITY PRIMARY KEY,
+  "account" INTEGER NOT NULL,
   "name" VARCHAR(64) NOT NULL,
   "balance" INTEGER DEFAULT 0 NOT NULL,
   "connected" BOOLEAN DEFAULT FALSE
