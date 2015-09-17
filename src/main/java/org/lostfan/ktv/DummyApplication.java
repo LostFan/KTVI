@@ -1,16 +1,20 @@
 package org.lostfan.ktv;
 
-
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.dao.impl.hsqldb.HsqldbDaoFactory;
 import org.lostfan.ktv.domain.Service;
+import org.lostfan.ktv.utils.ConnectionManager;
+import org.lostfan.ktv.utils.HsqldbConnectionManager;
 
 import java.util.List;
 
 public class DummyApplication {
 
     public static void main(String[] args) {
+
+        // Register HSQLDB Connection
+        ConnectionManager.setManager(new HsqldbConnectionManager());
 
         // Register DAO implementation
         // Should be at the application start

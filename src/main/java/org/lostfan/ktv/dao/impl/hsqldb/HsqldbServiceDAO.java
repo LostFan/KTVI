@@ -5,6 +5,7 @@ import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.ServicePrice;
 import org.lostfan.ktv.utils.ConnectionManager;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,10 +15,14 @@ import java.util.List;
 
 public class HsqldbServiceDAO implements ServiceDAO {
 
+    private Connection getConnection() {
+        return ConnectionManager.getManager().getConnection();
+    }
+
     public List<Service> getAllServices() {
         List<Service> services = new ArrayList<>();
         try {
-            Statement statement = ConnectionManager.getConnection().createStatement();
+            Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"service\"");
             while (rs.next()) {
                 Service service = new Service();
