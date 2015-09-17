@@ -6,6 +6,7 @@ import org.lostfan.ktv.domain.ServicePrice;
 import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -41,19 +42,72 @@ public class HsqldbServiceDAO implements ServiceDAO {
     }
 
     public Service getService(int id) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        Service service = null;
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"service\" where \"id\" = ?");
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                service = new Service();
+                service.setId(rs.getInt("id"));
+                service.setName(rs.getString("name"));
+                service.setAdditionalService(rs.getBoolean("additional"));
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return service;
     }
 
     public void save(Service service) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "INSERT INTO \"service\" (\"name\", \"additional\") VALUES(?, ?)");
+            preparedStatement.setString(1, service.getName());
+            preparedStatement.setBoolean(2, service.isAdditionalService());
+            preparedStatement.execute();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void update(Service service) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        if(getService(service.getId()) != null) {
+            try {
+                PreparedStatement preparedStatement = getConnection().prepareStatement(
+                        "UPDATE \"service\" set \"name\" = ?, \"additional\" = ? where \"id\" = ?");
+                preparedStatement.setString(1, service.getName());
+                preparedStatement.setBoolean(2, service.isAdditionalService());
+                preparedStatement.setInt(3, service.getId());
+                preparedStatement.execute();
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            throw new UnsupportedOperationException("Update nonexistent element");
+        }
     }
 
-    public void delete(Service service) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public void delete(int serviceId) {
+        if(getService(serviceId) != null) {
+            try {
+                PreparedStatement preparedStatement = getConnection().prepareStatement(
+                        "DELETE FROM  \"service\" where \"id\" = ?");
+                preparedStatement.setInt(1, serviceId);
+                preparedStatement.execute();
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            throw new UnsupportedOperationException("Delete nonexistent element");
+        }
     }
 
     public int getCostByDay(Service service, LocalDate date) {

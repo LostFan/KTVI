@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.ServiceDAO;
+import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.utils.ConnectionManager;
 import org.lostfan.ktv.utils.TestHsqldbConnectionManager;
 
@@ -35,7 +36,6 @@ public class HsqldbServiceDAOTest {
             queryBuild.append(line);
             line = reader.readLine();
         }
-
         executeQuery(queryBuild.toString());
     }
 
@@ -58,13 +58,48 @@ public class HsqldbServiceDAOTest {
     @Test
     public void getAllServicesReturnsAllExistingServicesTest() throws SQLException {
         insertStubData();
-        assertEquals(serviceDao.getAllServices().get(0).getId(), 123);
+        assertEquals(serviceDao.getAllServices().get(0).getId(), 1);
+    }
+
+    @Test
+    public void getExistingServiceByIdTest() throws SQLException {
+        insertStubData();
+        assertEquals(serviceDao.getService(1).getId(), 1);
+    }
+
+    @Test
+    public void createNewServiceTest() throws SQLException {
+        insertStubData();
+        Service service = new Service();
+        service.setName("Service 4 name");
+        service.setAdditionalService(true);
+        serviceDao.save(service);
+        assertEquals(serviceDao.getAllServices().size(), 4);
+        assertEquals(serviceDao.getAllServices().get(3).getName(), "Service 4 name");
+        assertEquals(serviceDao.getAllServices().get(3).getId(), 4);
+    }
+
+    @Test
+    public void updateExistingServiceByIdTest() throws SQLException {
+        insertStubData();
+        Service service = serviceDao.getService(1);
+        service.setName("Service 1 name new");
+        serviceDao.update(service);
+        assertEquals(serviceDao.getService(1).getName(), "Service 1 name new");
+    }
+
+    @Test
+    public void deleteServiceByIdTest() throws SQLException {
+        insertStubData();
+        serviceDao.delete(1);
+        assertEquals(serviceDao.getAllServices().size(), 2);
     }
 
     private void insertStubData() throws SQLException {
-        executeQuery("INSERT INTO \"service\" (\"id\", \"name\", \"additional\") VALUES(123, 'Service 1 name', false);");
-        executeQuery("INSERT INTO \"service\" (\"id\", \"name\", \"additional\") VALUES(789, 'Service 2 name', true);");
-        executeQuery("INSERT INTO \"service\" (\"id\", \"name\", \"additional\") VALUES(5678, 'Service 3 name', false);");
+        executeQuery("INSERT INTO \"service\" (\"id\", \"name\", \"additional\") VALUES(1, 'Service 1 name', false);");
+        executeQuery("INSERT INTO \"service\" (\"id\", \"name\", \"additional\") VALUES(2, 'Service 2 name', true);");
+        executeQuery("INSERT INTO \"service\" (\"id\", \"name\", \"additional\") VALUES(3, 'Service 3 name', false);");
+
     }
 
     private static void executeQuery(String query) throws SQLException {
