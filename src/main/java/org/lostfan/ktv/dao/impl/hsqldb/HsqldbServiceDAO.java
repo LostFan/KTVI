@@ -5,11 +5,7 @@ import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.ServicePrice;
 import org.lostfan.ktv.utils.ConnectionManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,11 +106,49 @@ public class HsqldbServiceDAO implements ServiceDAO {
         }
     }
 
-    public int getCostByDay(Service service, LocalDate date) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public int getPriceByDay(int serviceId, LocalDate date) {
+        if(getService(serviceId) != null) {
+            int price = 0;
+            try {
+                PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"service_price\" where \"service_id\" = ? AND \"date\" <= ?" +
+                        " ORDER BY \"date\" DESC");
+                preparedStatement.setInt(1, serviceId);
+                preparedStatement.setDate(2, Date.valueOf(date));
+                ResultSet rs = preparedStatement.executeQuery();
+                while (rs.next()) {
+                    price =  rs.getInt("price");
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            if(price == 0) {
+                throw new UnsupportedOperationException("Tariff not exist for this day");
+            }
+            return price;
+        } else {
+            throw new UnsupportedOperationException("Tariff not exist");
+        }
     }
 
     public List<ServicePrice> getServicePricesByServiceId(int serviceId) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        List<ServicePrice> servicePrices = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"service_price\" where \"service_id\" = ?");
+            preparedStatement.setInt(1, serviceId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                ServicePrice servicePrice = new ServicePrice();
+//                servicePrice.setId(rs.getInt("id"));
+                servicePrice.setServiceId(rs.getInt("service_id"));
+                servicePrice.setPrice(rs.getInt("price"));
+                servicePrice.setDate(rs.getDate("date").toLocalDate());
+                servicePrices.add(servicePrice);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return servicePrices;
     }
 }

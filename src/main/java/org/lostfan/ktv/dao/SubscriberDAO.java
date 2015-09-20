@@ -18,7 +18,7 @@ public interface SubscriberDAO {
 
     public void update(Subscriber subscriber);
 
-    public void delete(Subscriber subscriber);
+    public void delete(int subscriberId);
 
     public int getBalanceByDay(int subscriberId, LocalDate date);
 

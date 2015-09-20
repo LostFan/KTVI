@@ -18,7 +18,7 @@ public interface ServiceDAO {
 
     public void delete(int serviceId);
 
-    public int getCostByDay(Service service, LocalDate date);
+    public int getPriceByDay(int serviceId, LocalDate date);
 
     public  List<ServicePrice> getServicePricesByServiceId(int serviceId);
 }
