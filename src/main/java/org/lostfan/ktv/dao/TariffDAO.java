@@ -17,5 +17,5 @@ public interface TariffDAO {
 
     public void delete(Tariff tariff);
 
-    public int getCostByDay(Tariff tariff, LocalDate date);
+    public int getPriceByDate(Tariff tariff, LocalDate date);
 }

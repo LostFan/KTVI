@@ -20,9 +20,11 @@ public interface SubscriberDAO {
 
     public void delete(int subscriberId);
 
-    public int getBalanceByDay(int subscriberId, LocalDate date);
+    public int getBalanceByDate(int subscriberId, LocalDate date);
 
-    public int getTariffByDay(int subscriberId, LocalDate date);
+    public Integer getTariffIdByDate(int subscriberId, LocalDate date);
+
+    public Integer getSessionIdByDate(int subscriberId, LocalDate date);
 
     public List<SubscriberSession> getSubscriberSessions(int subscriberId);
 

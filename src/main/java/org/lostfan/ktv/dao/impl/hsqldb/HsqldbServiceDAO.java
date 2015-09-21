@@ -106,7 +106,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
         }
     }
 
-    public int getPriceByDay(int serviceId, LocalDate date) {
+    public int getPriceByDate(int serviceId, LocalDate date) {
         if(getService(serviceId) != null) {
             int price = 0;
             try {

@@ -143,16 +143,16 @@ public class HsqldbServiceDAOTest {
     }
 
     @Test
-    public void getServicePriceByIdAndDateShouldGetCorrectDataTest() throws SQLException {
+    public void getServicePriceByIdShouldGetCorrectDataTest() throws SQLException {
         insertStubDataServices();
         insertStubDataServicePrices();
-        assertEquals(serviceDao.getPriceByDay(1, LocalDate.of(2015, 3, 1)), 40000);
-        assertEquals(serviceDao.getPriceByDay(1, LocalDate.of(2015, 4, 2)), 50000);
-        assertEquals(serviceDao.getPriceByDay(1, LocalDate.of(2015, 6, 1)), 50000);
+        assertEquals(serviceDao.getPriceByDate(1, LocalDate.of(2015, 3, 1)), 40000);
+        assertEquals(serviceDao.getPriceByDate(1, LocalDate.of(2015, 4, 2)), 50000);
+        assertEquals(serviceDao.getPriceByDate(1, LocalDate.of(2015, 6, 1)), 50000);
     }
 
     @Test
-    public void getAllServicePriceByIdAndDateShouldReturnsCorrectServiceCountTest() throws SQLException {
+    public void getAllServicePriceByIdShouldReturnsCorrectServiceCountTest() throws SQLException {
         insertStubDataServices();
         insertStubDataServicePrices();
         assertEquals(serviceDao.getServicePricesByServiceId(1).size(), 2);

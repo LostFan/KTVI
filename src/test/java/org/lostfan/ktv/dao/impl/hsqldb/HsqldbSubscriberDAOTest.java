@@ -19,10 +19,9 @@ import java.sql.Statement;
 import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-/**
- * Created by 1 on 20.09.2015.
- */
 public class HsqldbSubscriberDAOTest {
 
     private static SubscriberDAO subscriberDao;
@@ -48,7 +47,9 @@ public class HsqldbSubscriberDAOTest {
 
     @Before
     public void clearTable() throws SQLException {
+        executeQuery("DELETE FROM \"subscriber_session\"");
         executeQuery("DELETE FROM \"subscriber_tariff\"");
+        executeQuery("DELETE FROM \"material\"");
         executeQuery("DELETE FROM \"tariff\"");
         executeQuery("DELETE FROM \"subscriber\"");
     }
@@ -77,6 +78,16 @@ public class HsqldbSubscriberDAOTest {
     }
 
     @Test
+    public void createNewSubscriberAndShouldHaveIncrementedIdTest() throws SQLException {
+        insertStubDataSubscribers();
+        Subscriber subscriber = new Subscriber();
+        subscriber.setName("Jayme");
+        subscriber.setAccount(700500);
+        subscriberDao.save(subscriber);
+        assertEquals(subscriberDao.getAllSubscribers().get(3).getId(), 4);
+    }
+
+    @Test
     public void createNewSubscriberCorrectSubscriberCountTest() throws SQLException {
         insertStubDataSubscribers();
         Subscriber subscriber = new Subscriber();
@@ -95,16 +106,6 @@ public class HsqldbSubscriberDAOTest {
         subscriberDao.save(subscriber);
         assertEquals(subscriberDao.getAllSubscribers().get(3).getName(), "Sansa");
         assertEquals(subscriberDao.getAllSubscribers().get(3).getAccount(), 700989);
-    }
-
-    @Test
-    public void createNewSubscriberShouldHaveIncrementedIdTest() throws SQLException {
-        insertStubDataSubscribers();
-        Subscriber subscriber = new Subscriber();
-        subscriber.setName("Jayme");
-        subscriber.setAccount(700500);
-        subscriberDao.save(subscriber);
-        assertEquals(subscriberDao.getAllSubscribers().get(3).getId(), 4);
     }
 
     @Test
@@ -153,9 +154,68 @@ public class HsqldbSubscriberDAOTest {
     public void getSubscriberTariffByIdAndDateShouldGetCorrectDataTest() throws SQLException {
         insertStubDataSubscribers();
         insertStubDataTariffs();
-        assertEquals(subscriberDao.getTariffByDay(1, LocalDate.of(2015, 3, 1)), 40000);
-        assertEquals(subscriberDao.getTariffByDay(1, LocalDate.of(2015, 4, 2)), 50000);
-        assertEquals(subscriberDao.getTariffByDay(1, LocalDate.of(2015, 6, 1)), 50000);
+        assertEquals(subscriberDao.getTariffIdByDate(1, LocalDate.of(2015, 4, 2)).intValue(), 1);
+        assertEquals(subscriberDao.getTariffIdByDate(1, LocalDate.of(2015, 7, 27)).intValue(), 1);
+        assertEquals(subscriberDao.getTariffIdByDate(1, LocalDate.of(2015, 9, 3)).intValue(), 2);
+    }
+
+    @Test
+    public void getSubscriberTariffByIdAndDateShouldGetNullCorrectDataTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataTariffs();
+        assertEquals(subscriberDao.getTariffIdByDate(1, LocalDate.of(2015, 3, 1)), null);
+        assertEquals(subscriberDao.getTariffIdByDate(1, LocalDate.of(2015, 7, 28)), null);
+        assertEquals(subscriberDao.getTariffIdByDate(1, LocalDate.of(2015, 8, 1)), null);
+    }
+
+    @Test
+    public void getSubscriberSessionByIdAndDateShouldGetCorrectDataTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataSessions();
+        assertEquals(subscriberDao.getSessionIdByDate(1, LocalDate.of(2015, 4, 2)).intValue(), 1);
+        assertEquals(subscriberDao.getSessionIdByDate(1, LocalDate.of(2015, 7, 27)).intValue(), 1);
+        assertEquals(subscriberDao.getSessionIdByDate(1, LocalDate.of(2015, 9, 3)).intValue(), 2);
+    }
+
+    @Test
+    public void getSubscriberSessionByIdAndDateShouldGetNullCorrectDataTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataSessions();
+        assertEquals(subscriberDao.getSessionIdByDate(1, LocalDate.of(2015, 3, 1)), null);
+        assertEquals(subscriberDao.getSessionIdByDate(1, LocalDate.of(2015, 7, 28)), null);
+        assertEquals(subscriberDao.getSessionIdByDate(1, LocalDate.of(2015, 8, 1)), null);
+    }
+
+    @Test
+    public void getAllSubscriberSessionsByIdShouldReturnsCorrectServiceCountTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataSessions();
+        assertEquals(subscriberDao.getSubscriberSessions(1).size(), 2);
+        assertEquals(subscriberDao.getSubscriberSessions(2).size(), 0);
+    }
+
+    @Test
+    public void getAllSubscriberSessionsByIdShouldReturnsCorrectDataTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataSessions();
+        assertNotNull(subscriberDao.getSubscriberSessions(1).get(0).getDisconnectionDate());
+        assertNull(subscriberDao.getSubscriberSessions(1).get(1).getDisconnectionDate());
+    }
+
+    @Test
+    public void getAllSubscriberTariffsByIdShouldReturnsCorrectServiceCountTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataTariffs();
+        assertEquals(subscriberDao.getSubscriberTariffs(1).size(), 2);
+        assertEquals(subscriberDao.getSubscriberTariffs(2).size(), 0);
+    }
+
+    @Test
+    public void getAllSubscriberTariffsByIdShouldReturnsCorrectDataTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataTariffs();
+        assertNotNull(subscriberDao.getSubscriberTariffs(1).get(0).getDisconnectTariff());
+        assertNull(subscriberDao.getSubscriberTariffs(1).get(1).getDisconnectTariff());
     }
 
     private void insertStubDataSubscribers() throws SQLException {
@@ -165,12 +225,16 @@ public class HsqldbSubscriberDAOTest {
     }
 
     private void insertStubDataTariffs() throws SQLException {
-
         executeQuery("INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\") VALUES(1, 'Uno', 40);");
         executeQuery("INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\") VALUES(2, 'Dos', 30);");
         executeQuery("INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\") VALUES(3, 'Tres', 60);");
         executeQuery("INSERT INTO \"subscriber_tariff\" (\"id\", \"subscriber_id\", \"connection_date\", \"disconnection_date\", \"tariff_id\") VALUES(1, 1, '2015-04-02', '2015-07-28', 1);");
-        executeQuery("INSERT INTO \"subscriber_tariff\" (\"id\", \"subscriber_id\", \"connection_date\", \"tariff_id\") VALUES(1, 1, '2015-09-02', 2);");
+        executeQuery("INSERT INTO \"subscriber_tariff\" (\"id\", \"subscriber_id\", \"connection_date\", \"tariff_id\") VALUES(2, 1, '2015-09-02', 2);");
+    }
+
+    private void insertStubDataSessions() throws SQLException {
+        executeQuery("INSERT INTO \"subscriber_session\" (\"id\", \"subscriber_id\", \"connection_date\", \"disconnection_date\") VALUES(1, 1, '2015-04-02', '2015-07-28');");
+        executeQuery("INSERT INTO \"subscriber_session\" (\"id\", \"subscriber_id\", \"connection_date\") VALUES(2, 1, '2015-09-02');");
     }
 
     private static void executeQuery(String query) throws SQLException {

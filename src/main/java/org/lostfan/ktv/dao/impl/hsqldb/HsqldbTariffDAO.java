@@ -28,7 +28,7 @@ public class HsqldbTariffDAO implements TariffDAO {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public int getCostByDay(Tariff tariff, LocalDate date) {
+    public int getPriceByDate(Tariff tariff, LocalDate date) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 }
