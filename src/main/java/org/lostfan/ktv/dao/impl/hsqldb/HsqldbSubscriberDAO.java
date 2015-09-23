@@ -1,6 +1,7 @@
 package org.lostfan.ktv.dao.impl.hsqldb;
 
 import org.lostfan.ktv.dao.SubscriberDAO;
+import org.lostfan.ktv.dao.TariffDAO;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
@@ -317,7 +318,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         if(getSubscriberTariff(subscriberTariff.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"subscriber_tariff\" set \"subscriber_id\" = ?, \"connection_date\" = ?, \"disconnection_date\" = ?, \"tariff_id\"  where \"id\" = ?");
+                        "UPDATE \"subscriber_tariff\" set \"subscriber_id\" = ?, \"connection_date\" = ?, \"disconnection_date\" = ?, \"tariff_id\" = ?  where \"id\" = ?");
                 preparedStatement.setInt(1, subscriberTariff.getSubscriberId());
                 preparedStatement.setDate(2, Date.valueOf(subscriberTariff.getConnectTariff()));
                 if (subscriberTariff.getDisconnectTariff() != null) {

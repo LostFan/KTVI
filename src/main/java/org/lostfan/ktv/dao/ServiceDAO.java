@@ -8,17 +8,17 @@ import org.lostfan.ktv.domain.ServicePrice;
 
 public interface ServiceDAO {
 
-    public List<Service> getAllServices();
+    List<Service> getAllServices();
 
-    public Service getService(int id);
+    Service getService(int id);
 
-    public void save(Service service);
+    void save(Service service);
 
-    public void update(Service service);
+    void update(Service service);
 
-    public void delete(int serviceId);
+    void delete(int serviceId);
 
-    public int getPriceByDate(int serviceId, LocalDate date);
+    int getPriceByDate(int serviceId, LocalDate date);
 
-    public  List<ServicePrice> getServicePricesByServiceId(int serviceId);
+     List<ServicePrice> getServicePricesByServiceId(int serviceId);
 }

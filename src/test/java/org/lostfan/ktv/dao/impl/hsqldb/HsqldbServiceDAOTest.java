@@ -30,17 +30,11 @@ public class HsqldbServiceDAOTest {
         executeSqlFile("/hsqldb/create.sql");
     }
 
-    @AfterClass
-    public static void cleanUp() throws IOException, SQLException {
-        executeSqlFile("/hsqldb/drop.sql");
-        ConnectionManager.setManager(null);
-        DAOFactory.setDefaultDAOFactory(null);
-    }
-
     @Before
     public void clearTable() throws SQLException {
         executeQuery("DELETE FROM \"service_price\"");
         executeQuery("DELETE FROM \"service\"");
+        executeQuery("ALTER TABLE \"service\" ALTER COLUMN \"id\" RESTART WITH 1");
     }
 
     @Test

@@ -8,7 +8,7 @@ public class SubscriberTariff {
 
     private int subscriberId;
 
-    private int tariffId;
+    private Integer tariffId;
 
     private LocalDate connectTariff;
 
@@ -30,11 +30,11 @@ public class SubscriberTariff {
         this.subscriberId = subscriberId;
     }
 
-    public int getTariffId() {
+    public Integer getTariffId() {
         return tariffId;
     }
 
-    public void setTariffId(int tariffId) {
+    public void setTariffId(Integer tariffId) {
         this.tariffId = tariffId;
     }
 

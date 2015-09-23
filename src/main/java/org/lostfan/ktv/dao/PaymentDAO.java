@@ -8,15 +8,15 @@ import org.lostfan.ktv.domain.Subscriber;
 
 public interface PaymentDAO {
 
-    public List<Payment> getAllPayments();
+    List<Payment> getAllPayments();
 
-    public List<Payment> getPaymentsByDate(LocalDate date);
+    List<Payment> getPaymentsByDate(LocalDate date);
 
-    public List<Payment> getPaymentsBySubscriber(int subscriberId);
+    List<Payment> getPaymentsBySubscriber(int subscriberId);
 
-    public void save(Payment tariff);
+    void save(Payment tariff);
 
-    public void update(Payment tariff);
+    void update(Payment tariff);
 
-    public void delete(int id);
+    void delete(int id);
 }

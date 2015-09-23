@@ -1,12 +1,13 @@
 package org.lostfan.ktv.dao.impl.hsqldb;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Subscriber;
+import org.lostfan.ktv.domain.SubscriberSession;
+import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.utils.ConnectionManager;
 import org.lostfan.ktv.utils.TestHsqldbConnectionManager;
 
@@ -30,20 +31,15 @@ public class HsqldbSubscriberDAOTest {
         executeSqlFile("/hsqldb/create.sql");
     }
 
-    @AfterClass
-    public static void cleanUp() throws IOException, SQLException {
-        executeSqlFile("/hsqldb/drop.sql");
-        ConnectionManager.setManager(null);
-        DAOFactory.setDefaultDAOFactory(null);
-    }
-
     @Before
     public void clearTable() throws SQLException {
         executeQuery("DELETE FROM \"subscriber_session\"");
         executeQuery("DELETE FROM \"subscriber_tariff\"");
-        executeQuery("DELETE FROM \"material\"");
         executeQuery("DELETE FROM \"tariff\"");
         executeQuery("DELETE FROM \"subscriber\"");
+        executeQuery("ALTER TABLE \"subscriber\" ALTER COLUMN \"id\" RESTART WITH 1");
+        executeQuery("ALTER TABLE \"subscriber_session\" ALTER COLUMN \"id\" RESTART WITH 1");
+        executeQuery("ALTER TABLE \"subscriber_tariff\" ALTER COLUMN \"id\" RESTART WITH 1");
     }
 
     @Test
@@ -200,6 +196,143 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataTariffs();
         assertEquals(subscriberDao.getSubscriberTariffs(1).size(), 2);
         assertEquals(subscriberDao.getSubscriberTariffs(2).size(), 0);
+    }
+
+    @Test
+    public void createNewSubscriberSessionShouldHaveIncrementedIdTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataSessions();
+
+        SubscriberSession subscriberSession = new SubscriberSession();
+        subscriberSession.setSubscriberId(1);
+        subscriberSession.setConnectionDate(LocalDate.of(2015, 11, 12));
+        subscriberDao.saveSubscriberSession(subscriberSession);
+        assertEquals(subscriberDao.getSubscriberSessions(1).get(2).getId(), 3);
+    }
+
+    @Test
+    public void createNewSubscriberSessionCorrectSubscriberSessionCountTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataSessions();
+
+        SubscriberSession subscriberSession = new SubscriberSession();
+        subscriberSession.setSubscriberId(1);
+        subscriberSession.setConnectionDate(LocalDate.of(2015, 11, 12));
+        subscriberDao.saveSubscriberSession(subscriberSession);
+        assertEquals(subscriberDao.getSubscriberSessions(1).size(), 3);
+    }
+
+    @Test
+    public void createNewSubscriberSessionShouldMatchInsertedValuesTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataSessions();
+
+        SubscriberSession subscriberSession = new SubscriberSession();
+        subscriberSession.setSubscriberId(1);
+        subscriberSession.setConnectionDate(LocalDate.of(2015, 11, 12));
+        subscriberDao.saveSubscriberSession(subscriberSession);
+        assertEquals(subscriberDao.getSubscriberSessions(1).get(2).getConnectionDate(), LocalDate.of(2015, 11, 12));
+        assertEquals(subscriberDao.getSubscriberSessions(1).get(2).getDisconnectionDate(), null);
+    }
+
+    @Test
+    public void updateExistingSubscriberSessionShouldMatchUpdatedValuesTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataSessions();
+        SubscriberSession subscriberSession = subscriberDao.getSubscriberSession(1);
+        subscriberSession.setConnectionDate(LocalDate.of(2015, 1, 1));
+        subscriberDao.updateSubscriberSession(subscriberSession);
+        assertEquals(subscriberDao.getSubscriberSession(1).getConnectionDate(), LocalDate.of(2015, 1, 1));
+    }
+
+    @Test
+    public void updateExistingSubscriberSessionCorrectSubscriberCountTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataSessions();
+        SubscriberSession subscriberSession = subscriberDao.getSubscriberSession(1);
+        subscriberSession.setConnectionDate(LocalDate.of(2015, 1, 1));
+        subscriberDao.updateSubscriberSession(subscriberSession);
+        assertEquals(subscriberDao.getSubscriberSessions(1).size(), 2);
+    }
+
+    @Test
+    public void updateExistingSubscriberSessionShouldMatchNotUpdatedValuesTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataSessions();
+        SubscriberSession subscriberSession = subscriberDao.getSubscriberSession(1);
+        subscriberSession.setConnectionDate(LocalDate.of(2015, 1, 1));
+        subscriberDao.updateSubscriberSession(subscriberSession);
+        assertEquals(subscriberDao.getSubscriberSession(1).getDisconnectionDate(), LocalDate.of(2015,7,28));
+    }
+
+    @Test
+    public void createNewSubscriberTariffShouldHaveIncrementedIdTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataTariffs();
+
+        SubscriberTariff subscriberTariff = new SubscriberTariff();
+        subscriberTariff.setSubscriberId(1);
+        subscriberTariff.setTariffId(1);
+        subscriberTariff.setConnectTariff(LocalDate.of(2015, 11, 12));
+        subscriberDao.saveSubscriberTariff(subscriberTariff);
+        assertEquals(subscriberDao.getSubscriberTariffs(1).get(2).getId(), 3);
+    }
+
+    @Test
+    public void createNewSubscriberTariffCorrectSubscriberTariffCountTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataTariffs();
+
+        SubscriberTariff subscriberTariff = new SubscriberTariff();
+        subscriberTariff.setSubscriberId(1);
+        subscriberTariff.setConnectTariff(LocalDate.of(2015, 11, 12));
+        subscriberTariff.setTariffId(1);
+        subscriberDao.saveSubscriberTariff(subscriberTariff);
+        assertEquals(subscriberDao.getSubscriberTariffs(1).size(), 3);
+    }
+
+    @Test
+    public void createNewSubscriberTariffShouldMatchInsertedValuesTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataTariffs();
+
+        SubscriberTariff subscriberTariff = new SubscriberTariff();
+        subscriberTariff.setSubscriberId(1);
+        subscriberTariff.setConnectTariff(LocalDate.of(2015, 11, 12));
+        subscriberTariff.setTariffId(1);
+        subscriberDao.saveSubscriberTariff(subscriberTariff);
+        assertEquals(subscriberDao.getSubscriberTariffs(1).get(2).getConnectTariff(), LocalDate.of(2015, 11, 12));
+        assertEquals(subscriberDao.getSubscriberTariffs(1).get(2).getDisconnectTariff(), null);
+    }
+
+    @Test
+    public void updateExistingSubscriberTariffShouldMatchUpdatedValuesTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataTariffs();
+        SubscriberTariff subscriberTariff = subscriberDao.getSubscriberTariff(1);
+        subscriberTariff.setConnectTariff(LocalDate.of(2015, 1, 1));
+        subscriberDao.updateSubscriberTariff(subscriberTariff);
+        assertEquals(subscriberDao.getSubscriberTariff(1).getConnectTariff(), LocalDate.of(2015, 1, 1));
+    }
+
+    @Test
+    public void updateExistingSubscriberTariffCorrectSubscriberCountTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataTariffs();
+        SubscriberTariff subscriberTariff = subscriberDao.getSubscriberTariff(1);
+        subscriberTariff.setConnectTariff(LocalDate.of(2015, 1, 1));
+        subscriberDao.updateSubscriberTariff(subscriberTariff);
+        assertEquals(subscriberDao.getSubscriberTariffs(1).size(), 2);
+    }
+
+    @Test
+    public void updateExistingSubscriberTariffShouldMatchNotUpdatedValuesTest() throws SQLException {
+        insertStubDataSubscribers();
+        insertStubDataTariffs();
+        SubscriberTariff subscriberTariff = subscriberDao.getSubscriberTariff(1);
+        subscriberTariff.setConnectTariff(LocalDate.of(2015, 1, 1));
+        subscriberDao.updateSubscriberTariff(subscriberTariff);
+        assertEquals(subscriberDao.getSubscriberTariff(1).getDisconnectTariff(), LocalDate.of(2015,7,28));
     }
 
     @Test

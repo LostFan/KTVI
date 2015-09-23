@@ -7,13 +7,13 @@ import org.lostfan.ktv.domain.Material;
 
 public interface MaterialDAO {
 
-    public List<Material> getAllMaterials();
+    List<Material> getAllMaterials();
 
-    public Material getMaterial(int id);
+    Material getMaterial(int id);
 
-    public void save(Material material);
+    void save(Material material);
 
-    public void update(Material material);
+    void update(Material material);
 
-    public void delete(int id);
+    void delete(int id);
 }

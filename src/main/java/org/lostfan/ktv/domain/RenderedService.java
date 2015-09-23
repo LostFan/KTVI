@@ -9,7 +9,7 @@ public class RenderedService {
 
     private int subscriberId;
 
-    private Service service;
+    private int serviceId;
 
     private LocalDate date;
 
@@ -29,12 +29,12 @@ public class RenderedService {
         this.subscriberId = subscriberId;
     }
 
-    public Service getService() {
-        return service;
+    public int getServiceId() {
+        return serviceId;
     }
 
-    public void setService(Service service) {
-        this.service = service;
+    public void setServiceId(int serviceId) {
+        this.serviceId = serviceId;
     }
 
     public LocalDate getDate() {

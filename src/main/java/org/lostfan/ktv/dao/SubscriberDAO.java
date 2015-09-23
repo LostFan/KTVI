@@ -10,35 +10,35 @@ import org.lostfan.ktv.domain.SubscriberTariff;
 
 public interface SubscriberDAO {
 
-    public List<Subscriber> getAllSubscribers();
+    List<Subscriber> getAllSubscribers();
 
-    public Subscriber getSubscriber(int id);
+    Subscriber getSubscriber(int id);
 
-    public void save(Subscriber subscriber);
+    void save(Subscriber subscriber);
 
-    public void update(Subscriber subscriber);
+    void update(Subscriber subscriber);
 
-    public void delete(int subscriberId);
+    void delete(int subscriberId);
 
-    public int getBalanceByDate(int subscriberId, LocalDate date);
+    int getBalanceByDate(int subscriberId, LocalDate date);
 
-    public Integer getTariffIdByDate(int subscriberId, LocalDate date);
+    Integer getTariffIdByDate(int subscriberId, LocalDate date);
 
-    public Integer getSessionIdByDate(int subscriberId, LocalDate date);
+    Integer getSessionIdByDate(int subscriberId, LocalDate date);
 
-    public List<SubscriberSession> getSubscriberSessions(int subscriberId);
+    List<SubscriberSession> getSubscriberSessions(int subscriberId);
 
-    public List<SubscriberTariff> getSubscriberTariffs(int subscriberId);
+    List<SubscriberTariff> getSubscriberTariffs(int subscriberId);
 
-    public SubscriberSession getSubscriberSession(int subscriberSessionId);
+    SubscriberSession getSubscriberSession(int subscriberSessionId);
 
-    public void saveSubscriberSession(SubscriberSession subscriberSession);
+    void saveSubscriberSession(SubscriberSession subscriberSession);
 
-    public void updateSubscriberSession(SubscriberSession subscriberSession);
+    void updateSubscriberSession(SubscriberSession subscriberSession);
 
-    public SubscriberTariff getSubscriberTariff(int subscriberTariffId);
+    SubscriberTariff getSubscriberTariff(int subscriberTariffId);
 
-    public void saveSubscriberTariff(SubscriberTariff subscriberTariff);
+    void saveSubscriberTariff(SubscriberTariff subscriberTariff);
 
-    public void updateSubscriberTariff(SubscriberTariff subscriberTariff);
+    void updateSubscriberTariff(SubscriberTariff subscriberTariff);
 }

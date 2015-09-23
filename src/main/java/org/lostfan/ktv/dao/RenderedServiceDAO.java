@@ -7,15 +7,17 @@ import org.lostfan.ktv.domain.RenderedService;
 
 public interface RenderedServiceDAO {
 
-    public List<RenderedService> getAllRenderedServices();
+    List<RenderedService> getAllRenderedServices();
 
-    public List<RenderedService> getRenderedServicesByDate(LocalDate date);
+    RenderedService getRenderedService(int id);
 
-    public List<RenderedService> getRenderedServicesBySubscriberId(int subscriberId);
+    List<RenderedService> getRenderedServicesByDate(LocalDate date);
 
-    public void save(RenderedService renderedService);
+    List<RenderedService> getRenderedServicesBySubscriberId(int subscriberId);
 
-    public void update(RenderedService renderedService);
+    void save(RenderedService renderedService);
 
-    public void delete(int id);
+    void update(RenderedService renderedService);
+
+    void delete(int id);
 }

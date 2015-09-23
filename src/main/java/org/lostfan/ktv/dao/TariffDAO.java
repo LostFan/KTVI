@@ -7,15 +7,15 @@ import org.lostfan.ktv.domain.Tariff;
 
 public interface TariffDAO {
 
-    public List<Tariff> getAllTariffs();
+    List<Tariff> getAllTariffs();
 
-    public Tariff getTariff(String name);
+    Tariff getTariff(String name);
 
-    public void save(Tariff tariff);
+    void save(Tariff tariff);
 
-    public void update(Tariff tariff);
+    void update(Tariff tariff);
 
-    public void delete(Tariff tariff);
+    void delete(Tariff tariff);
 
-    public int getPriceByDate(Tariff tariff, LocalDate date);
+    int getPriceByDate(Tariff tariff, LocalDate date);
 }
