@@ -64,15 +64,19 @@ INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VAL
 INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(9, 5, 5, '2015-07-01');
 INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(10, 5, 6, '2015-07-23');
 
-INSERT INTO "payment" ("id", "subscriber_id", "service_id", "date", "price") VALUES(1, 1, 2, '2015-06-01', 60000);
-INSERT INTO "payment" ("id", "subscriber_id", "service_id", "date", "price") VALUES(2, 1, 4, '2015-07-15', 0);
-INSERT INTO "payment" ("id", "subscriber_id", "service_id", "date", "price") VALUES(3, 1, 3, '2015-08-01', 20000);
-INSERT INTO "payment" ("id", "subscriber_id", "service_id", "date", "price") VALUES(4, 2, 2, '2015-02-01', 40000);
-INSERT INTO "payment" ("id", "subscriber_id", "service_id", "date", "price") VALUES(5, 3, 2, '2015-03-01', 40000);
-INSERT INTO "payment" ("id", "subscriber_id", "service_id", "date", "price") VALUES(6, 3, 4, '2015-06-01', 0);
-INSERT INTO "payment" ("id", "subscriber_id", "service_id", "date", "price") VALUES(7, 4, 2, '2015-03-01', 40000);
-INSERT INTO "payment" ("id", "subscriber_id", "service_id", "date", "price") VALUES(8, 5, 2, '2015-03-01', 40000);
-INSERT INTO "payment" ("id", "subscriber_id", "service_id", "date", "price") VALUES(9, 5, 5, '2015-07-01', 30000);
-INSERT INTO "payment" ("id", "subscriber_id", "service_id", "date", "price") VALUES(10, 5, 6, '2015-07-23', 25000);
+INSERT INTO "payment_type" ("id", "name") VALUES(1, 'Почта');
+INSERT INTO "payment_type" ("id", "name") VALUES(2, 'Инфокиоск');
+INSERT INTO "payment_type" ("id", "name") VALUES(3, 'Банк');
+
+INSERT INTO "payment" ("id", "subscriber_id", "service_id", "payment_type_id", "date", "price") VALUES(1, 1, 2, 1, '2015-06-01', 60000);
+INSERT INTO "payment" ("id", "subscriber_id", "service_id", "payment_type_id", "date", "price") VALUES(2, 1, 4, 2, '2015-07-15', 0);
+INSERT INTO "payment" ("id", "subscriber_id", "service_id", "payment_type_id", "date", "price") VALUES(3, 1, 3, 3, '2015-08-01', 20000);
+INSERT INTO "payment" ("id", "subscriber_id", "service_id", "payment_type_id", "date", "price") VALUES(4, 2, 2, 1, '2015-02-01', 40000);
+INSERT INTO "payment" ("id", "subscriber_id", "service_id", "payment_type_id", "date", "price") VALUES(5, 3, 2, 1, '2015-03-01', 40000);
+INSERT INTO "payment" ("id", "subscriber_id", "service_id", "payment_type_id", "date", "price") VALUES(6, 3, 4, 1, '2015-06-01', 0);
+INSERT INTO "payment" ("id", "subscriber_id", "service_id", "payment_type_id", "date", "price") VALUES(7, 4, 2, 2, '2015-03-01', 40000);
+INSERT INTO "payment" ("id", "subscriber_id", "service_id", "payment_type_id", "date", "price") VALUES(8, 5, 2, 3, '2015-03-01', 40000);
+INSERT INTO "payment" ("id", "subscriber_id", "service_id", "payment_type_id", "date", "price") VALUES(9, 5, 5, 2, '2015-07-01', 30000);
+INSERT INTO "payment" ("id", "subscriber_id", "service_id", "payment_type_id", "date", "price") VALUES(10, 5, 6, 1, '2015-07-23', 25000);
 
 INSERT INTO "material_consumption" ("id", "material_id", "rendered_service_id", "amount") VALUES(1, 1, 1, 2);

@@ -6,9 +6,9 @@ public class Payment {
 
     private int id;
 
-    private String name;
+    private Integer paymentTypeId;
 
-    private Service servicePayment;
+    private Integer servicePaymentId;
 
     private int subscriberId;
 
@@ -16,20 +16,20 @@ public class Payment {
 
     private LocalDate date;
 
-    public String getName() {
-        return name;
+    public Integer getPaymentTypeId() {
+        return paymentTypeId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPaymentTypeId(Integer paymentTypeId) {
+        this.paymentTypeId = paymentTypeId;
     }
 
-    public Service getServicePayment() {
-        return servicePayment;
+    public Integer getServicePaymentId() {
+        return servicePaymentId;
     }
 
-    public void setServicePayment(Service servicePayment) {
-        this.servicePayment = servicePayment;
+    public void setServicePaymentId(Integer servicePaymentId) {
+        this.servicePaymentId = servicePaymentId;
     }
 
     public int getSubscriberId() {
