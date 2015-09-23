@@ -10,8 +10,6 @@ public class Tariff {
 
     private String channels;
 
-    private List<TariffPrice> tariffPrices;
-
     public String getName() {
         return name;
     }
@@ -26,14 +24,6 @@ public class Tariff {
 
     public void setChannels(String channels) {
         this.channels = channels;
-    }
-
-    public List<TariffPrice> getTariffPrices() {
-        return tariffPrices;
-    }
-
-    public void setTariffPrices(List<TariffPrice> tariffPrices) {
-        this.tariffPrices = tariffPrices;
     }
 
     public int getId() {

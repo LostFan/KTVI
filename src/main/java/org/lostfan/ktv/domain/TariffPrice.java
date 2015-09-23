@@ -4,28 +4,18 @@ import java.time.LocalDate;
 
 public class TariffPrice {
 
-    private int id;
-
-    private Tariff tariff;
+    private int tariffId;
 
     private int price;
 
     private LocalDate date;
 
-    public Tariff getTariff() {
-        return tariff;
+    public int getTariffId() {
+        return tariffId;
     }
 
-    public void setTariff(Tariff tariff) {
-        this.tariff = tariff;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setTariffId(int tariffId) {
+        this.tariffId = tariffId;
     }
 
     public int getPrice() {
