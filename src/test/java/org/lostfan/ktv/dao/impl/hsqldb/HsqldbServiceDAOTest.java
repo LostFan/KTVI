@@ -1,7 +1,9 @@
 package org.lostfan.ktv.dao.impl.hsqldb;
 
 import static org.junit.Assert.*;
+import static org.lostfan.ktv.utils.DatabaseUtils.*;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,9 +14,7 @@ import org.lostfan.ktv.utils.ConnectionManager;
 import org.lostfan.ktv.utils.TestHsqldbConnectionManager;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 
 public class HsqldbServiceDAOTest {
@@ -26,18 +26,15 @@ public class HsqldbServiceDAOTest {
         ConnectionManager.setManager(new TestHsqldbConnectionManager());
         DAOFactory.setDefaultDAOFactory(new HsqldbDaoFactory());
         serviceDao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
+        executeSqlFile("/hsqldb/drop.sql");
+        executeSqlFile("/hsqldb/create.sql");
+    }
 
-        InputStream is = HsqldbServiceDAOTest.class.getResourceAsStream("/hsqldb/create.sql");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-
-        StringBuilder queryBuild = new StringBuilder();
-
-        String line = reader.readLine();
-        while (line != null) {
-            queryBuild.append(line);
-            line = reader.readLine();
-        }
-        executeQuery(queryBuild.toString());
+    @AfterClass
+    public static void cleanUp() throws IOException, SQLException {
+        executeSqlFile("/hsqldb/drop.sql");
+        ConnectionManager.setManager(null);
+        DAOFactory.setDefaultDAOFactory(null);
     }
 
     @Before
@@ -169,11 +166,5 @@ public class HsqldbServiceDAOTest {
         executeQuery("INSERT INTO \"service_price\" (\"service_id\", \"date\", \"price\") VALUES(1, '2015-01-01', 40000);");
         executeQuery("INSERT INTO \"service_price\" (\"service_id\", \"date\", \"price\") VALUES(1, '2015-04-02', 50000);");
         executeQuery("INSERT INTO \"service_price\" (\"service_id\", \"date\", \"price\") VALUES(2, '2015-03-02', 10000);");
-    }
-
-
-    private static void executeQuery(String query) throws SQLException {
-        Statement stmt = ConnectionManager.getManager().getConnection().createStatement();
-        stmt.execute(query);
     }
 }

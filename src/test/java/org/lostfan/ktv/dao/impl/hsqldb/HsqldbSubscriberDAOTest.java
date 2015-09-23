@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao.impl.hsqldb;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,18 +10,12 @@ import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.utils.ConnectionManager;
 import org.lostfan.ktv.utils.TestHsqldbConnectionManager;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
+import static org.lostfan.ktv.utils.DatabaseUtils.*;
 
 public class HsqldbSubscriberDAOTest {
 
@@ -31,18 +26,15 @@ public class HsqldbSubscriberDAOTest {
         ConnectionManager.setManager(new TestHsqldbConnectionManager());
         DAOFactory.setDefaultDAOFactory(new HsqldbDaoFactory());
         subscriberDao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
+        executeSqlFile("/hsqldb/drop.sql");
+        executeSqlFile("/hsqldb/create.sql");
+    }
 
-        InputStream is = HsqldbSubscriberDAOTest.class.getResourceAsStream("/hsqldb/create.sql");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-
-        StringBuilder queryBuild = new StringBuilder();
-
-        String line = reader.readLine();
-        while (line != null) {
-            queryBuild.append(line);
-            line = reader.readLine();
-        }
-        executeQuery(queryBuild.toString());
+    @AfterClass
+    public static void cleanUp() throws IOException, SQLException {
+        executeSqlFile("/hsqldb/drop.sql");
+        ConnectionManager.setManager(null);
+        DAOFactory.setDefaultDAOFactory(null);
     }
 
     @Before
@@ -235,10 +227,5 @@ public class HsqldbSubscriberDAOTest {
     private void insertStubDataSessions() throws SQLException {
         executeQuery("INSERT INTO \"subscriber_session\" (\"id\", \"subscriber_id\", \"connection_date\", \"disconnection_date\") VALUES(1, 1, '2015-04-02', '2015-07-28');");
         executeQuery("INSERT INTO \"subscriber_session\" (\"id\", \"subscriber_id\", \"connection_date\") VALUES(2, 1, '2015-09-02');");
-    }
-
-    private static void executeQuery(String query) throws SQLException {
-        Statement stmt = ConnectionManager.getManager().getConnection().createStatement();
-        stmt.execute(query);
     }
 }
