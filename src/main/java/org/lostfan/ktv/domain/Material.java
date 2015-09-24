@@ -33,4 +33,12 @@ public class Material {
     public void setUnit(String unit) {
         this.unit = unit;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
