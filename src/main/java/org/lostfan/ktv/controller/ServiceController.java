@@ -1,7 +1,9 @@
 package org.lostfan.ktv.controller;
 
+import org.lostfan.ktv.dao.ServiceDAO;
+import org.lostfan.ktv.dao.impl.hsqldb.HsqldbServiceDAO;
 import org.lostfan.ktv.model.ServiceModel;
-import org.lostfan.ktv.view.ServiceView;
+import org.lostfan.ktv.view.TableViewBase;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,9 +11,10 @@ import java.awt.event.ActionListener;
 public class ServiceController {
 
     private ServiceModel model;
-    private ServiceView view;
+    private TableViewBase view;
+    private ServiceDAO serviceDAO = new HsqldbServiceDAO();
 
-    public ServiceController(ServiceModel model, ServiceView view) {
+    public ServiceController(ServiceModel model, TableViewBase view) {
         this.model = model;
         this.view = view;
 
@@ -43,7 +46,8 @@ public class ServiceController {
             if (selectedIndex == -1) {
                 System.out.println("No selection");
             } else {
-                System.out.println("Service name:" + model.getServiceList().get(selectedIndex).getName());
+
+                System.out.println("Service name:" + model.getList().get(selectedIndex).getName());
             }
         }
     }
@@ -56,7 +60,7 @@ public class ServiceController {
             if (selectedIndex == -1) {
                 System.out.println("No selection");
             } else {
-                System.out.println("Service name:" + model.getServiceList().get(selectedIndex).getName());
+                System.out.println("Service name:" + model.getList().get(selectedIndex).getName());
             }
         }
     }

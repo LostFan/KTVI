@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class ServiceModel {
+public class ServiceModel implements TableModelBase {
 
     private class ServiceTableModel implements TableModel {
 
@@ -23,12 +23,11 @@ public class ServiceModel {
             this.columnValues.add(Service::getId);
             this.columnValues.add(Service::getName);
             this.columnValues.add(Service::isAdditionalService);
-
         }
 
         @Override
         public int getRowCount() {
-            return getServiceList().size();
+            return getList().size();
         }
 
         @Override
@@ -53,7 +52,7 @@ public class ServiceModel {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            return columnValues.get(columnIndex).apply(getServiceList().get(rowIndex));
+            return columnValues.get(columnIndex).apply(getList().get(rowIndex));
         }
 
         @Override
@@ -79,7 +78,7 @@ public class ServiceModel {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
     }
 
-    public List<Service> getServiceList() {
+    public List<Service> getList() {
         if (this.services == null) {
             this.services = this.dao.getAllServices();
         }
@@ -87,7 +86,11 @@ public class ServiceModel {
         return this.services;
     }
 
-    public TableModel getServiceTableModel() {
+    public TableModel getTableModel() {
         return new ServiceTableModel();
+    }
+
+    public String getTableName() {
+        return "Услуги";
     }
 }

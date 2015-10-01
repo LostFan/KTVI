@@ -1,16 +1,19 @@
 package org.lostfan.ktv.view;
 
-import org.lostfan.ktv.model.ServiceModel;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 
-public class ServiceView {
+import org.lostfan.ktv.model.TableModelBase;
 
-    public static final int WIDTH = 800;
-    public static final int HEIGHT = 500;
+/**
+ * Created by Ihar_Niakhlebau on 30-Sep-15.
+ */
+public class TableViewBase {
+
+    public static final int WIDTH = 1000;
+    public static final int HEIGHT = 700;
 
     private JFrame frame;
     private JTable table;
@@ -19,11 +22,11 @@ public class ServiceView {
     private JButton changeButton;
     private JButton deleteButton;
 
-    public ServiceView(ServiceModel model) {
-        this.frame = new JFrame("Services");
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public TableViewBase(TableModelBase model) {
+        this.frame = new JFrame(model.getTableName());
+        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        this.table = new JTable(model.getServiceTableModel());
+        this.table = new JTable(model.getTableModel());
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         this.table.setFillsViewportHeight(true);
 
@@ -38,6 +41,7 @@ public class ServiceView {
 
     private void buildLayout() {
         frame.setSize(new Dimension(WIDTH, HEIGHT));
+        frame.setLocationRelativeTo(null);
 
         frame.setLayout(new BorderLayout(10, 10));
         frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
@@ -47,7 +51,7 @@ public class ServiceView {
         renderer.setHorizontalAlignment(SwingConstants.LEFT);
         this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
 
-        this.frame.add(new JScrollPane(this.table), BorderLayout.LINE_START);
+        this.frame.add(new JScrollPane(this.table), BorderLayout.CENTER);
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         frame.add(rightPanel, BorderLayout.LINE_END);
