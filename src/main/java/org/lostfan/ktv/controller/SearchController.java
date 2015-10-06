@@ -3,9 +3,7 @@ package org.lostfan.ktv.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import org.lostfan.ktv.model.TableModelBase;
-import org.lostfan.ktv.view.CatalogsView;
-import org.lostfan.ktv.view.MainView;
+import org.lostfan.ktv.model.ModelBase;
 import org.lostfan.ktv.view.SearchViewBase;
 
 /**
@@ -14,7 +12,7 @@ import org.lostfan.ktv.view.SearchViewBase;
 public class SearchController {
 
     private SearchViewBase view;
-    private TableModelBase tableModelBase;
+    private ModelBase modelBase;
 
     public SearchController(SearchViewBase view) {
         this.view = view;

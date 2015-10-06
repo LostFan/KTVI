@@ -27,7 +27,7 @@ public class CatalogsController {
         public void actionPerformed(ActionEvent e) {
             ServiceModel model = new ServiceModel();
             TableViewBase view = new TableViewBase(model);
-            ServiceController controller = new ServiceController(model, view);
+            EntityController controller = new EntityController(model, view);
         }
     }
 
@@ -36,7 +36,7 @@ public class CatalogsController {
         public void actionPerformed(ActionEvent e) {
             SubscriberModel model = new SubscriberModel();
             TableViewBase view = new TableViewBase(model);
-            SubscriberController controller = new SubscriberController(model, view);
+            EntityController controller = new EntityController(model, view);
         }
     }
 }

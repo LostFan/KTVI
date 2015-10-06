@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import org.lostfan.ktv.model.TableModelBase;
+import org.lostfan.ktv.model.ModelBase;
 
 /**
  * Created by Ihar_Niakhlebau on 30-Sep-15.
@@ -22,7 +22,7 @@ public class TableViewBase {
     private JButton changeButton;
     private JButton deleteButton;
 
-    public TableViewBase(TableModelBase model) {
+    public TableViewBase(ModelBase model) {
         this.frame = new JFrame(model.getTableName());
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 

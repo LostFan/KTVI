@@ -9,9 +9,8 @@ import javax.swing.table.TableModel;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Subscriber;
-import org.lostfan.ktv.domain.Subscriber;
 
-public class SubscriberModel implements TableModelBase {
+public class SubscriberModel implements ModelBase {
 
     private class SubscriberTableModel implements TableModel {
 
@@ -91,6 +90,16 @@ public class SubscriberModel implements TableModelBase {
 
     public TableModel getTableModel() {
         return new SubscriberTableModel();
+    }
+
+    @Override
+    public List<String> getFields() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 
     public String getTableName() {

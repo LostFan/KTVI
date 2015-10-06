@@ -6,12 +6,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.*;
 
-import org.lostfan.ktv.model.SearchModel;
-import org.lostfan.ktv.model.TableModelBase;
+import org.lostfan.ktv.model.ModelBase;
 
 /**
  * Created by Ihar_Niakhlebau on 30-Sep-15.
@@ -23,6 +21,11 @@ public class SearchViewBase extends JFrame {
     private JFrame frame;
     private JScrollPane scrollPane;
     private List<JTextField> textFields;
+
+    public List<JTextField> getTextFields() {
+        return textFields;
+    }
+
     private List<JComboBox> comboBoxes;
     private JButton addButton;
     private JButton findButton;
@@ -30,7 +33,7 @@ public class SearchViewBase extends JFrame {
     private List<JButton> removeButtons;
     private List<String> comboBoxFields;
 
-    public SearchViewBase(SearchModel model) {
+    public SearchViewBase(ModelBase model) {
         this.frame = new JFrame(model.getName());
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.textFields = new ArrayList<JTextField>();

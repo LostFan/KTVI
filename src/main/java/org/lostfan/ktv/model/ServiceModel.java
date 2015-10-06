@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class ServiceModel implements TableModelBase {
+public class ServiceModel implements ModelBase {
+
+    private List<String> fields;
 
     private class ServiceTableModel implements TableModel {
 
@@ -76,6 +78,9 @@ public class ServiceModel implements TableModelBase {
 
     public ServiceModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
+        fields = new ArrayList<>();
+        fields.add("Наименование");
+        fields.add("Дополнительная услуга");
     }
 
     public List<Service> getList() {
@@ -92,5 +97,13 @@ public class ServiceModel implements TableModelBase {
 
     public String getTableName() {
         return "Услуги";
+    }
+
+    public List<String> getFields() {
+        return fields;
+    }
+
+    public String getName() {
+        return "Поиск: услуги";
     }
 }

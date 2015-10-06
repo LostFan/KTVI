@@ -1,20 +1,21 @@
 package org.lostfan.ktv.controller;
 
+import org.lostfan.ktv.dao.ServiceDAO;
+import org.lostfan.ktv.dao.impl.hsqldb.HsqldbServiceDAO;
+import org.lostfan.ktv.model.ModelBase;
+import org.lostfan.ktv.view.SearchViewBase;
+import org.lostfan.ktv.view.TableViewBase;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import org.lostfan.ktv.dao.SubscriberDAO;
-import org.lostfan.ktv.dao.impl.hsqldb.HsqldbSubscriberDAO;
-import org.lostfan.ktv.model.SubscriberModel;
-import org.lostfan.ktv.view.TableViewBase;
+public class EntityController {
 
-public class SubscriberController {
-
-    private SubscriberModel model;
+    private ModelBase model;
     private TableViewBase view;
-    private SubscriberDAO subscriberDAO = new HsqldbSubscriberDAO();
+    private ServiceDAO serviceDAO = new HsqldbServiceDAO();
 
-    public SubscriberController(SubscriberModel model, TableViewBase view) {
+    public EntityController(ModelBase model, TableViewBase view) {
         this.model = model;
         this.view = view;
 
@@ -27,7 +28,13 @@ public class SubscriberController {
     private class FindActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Find action");
+            SearchViewBase view = new SearchViewBase(model);
+            view.addFindActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    view.getTextFields();
+                }
+            });
         }
     }
 
@@ -47,7 +54,7 @@ public class SubscriberController {
                 System.out.println("No selection");
             } else {
 
-                System.out.println("Service name:" + model.getList().get(selectedIndex).getName());
+                System.out.println("Service name:" + model.getList().get(selectedIndex));
             }
         }
     }
@@ -60,7 +67,7 @@ public class SubscriberController {
             if (selectedIndex == -1) {
                 System.out.println("No selection");
             } else {
-                System.out.println("Service name:" + model.getList().get(selectedIndex).getName());
+                System.out.println("Service name:" + model.getList().get(selectedIndex));
             }
         }
     }
