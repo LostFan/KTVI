@@ -1,22 +1,20 @@
 package org.lostfan.ktv.controller;
 
-import org.lostfan.ktv.dao.ServiceDAO;
-import org.lostfan.ktv.dao.impl.hsqldb.HsqldbServiceDAO;
-import org.lostfan.ktv.model.SearchServiceModel;
-import org.lostfan.ktv.model.ServiceModel;
-import org.lostfan.ktv.view.SearchViewBase;
-import org.lostfan.ktv.view.TableViewBase;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ServiceController {
+import org.lostfan.ktv.dao.SubscriberDAO;
+import org.lostfan.ktv.dao.impl.hsqldb.HsqldbSubscriberDAO;
+import org.lostfan.ktv.model.SubscriberModel;
+import org.lostfan.ktv.view.TableViewBase;
 
-    private ServiceModel model;
+public class SubscriberController {
+
+    private SubscriberModel model;
     private TableViewBase view;
-    private ServiceDAO serviceDAO = new HsqldbServiceDAO();
+    private SubscriberDAO subscriberDAO = new HsqldbSubscriberDAO();
 
-    public ServiceController(ServiceModel model, TableViewBase view) {
+    public SubscriberController(SubscriberModel model, TableViewBase view) {
         this.model = model;
         this.view = view;
 
@@ -29,9 +27,7 @@ public class ServiceController {
     private class FindActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SearchServiceModel model = new SearchServiceModel();
-            SearchViewBase view = new SearchViewBase(model);
-            SearchController controller = new SearchController(view);
+            System.out.println("Find action");
         }
     }
 

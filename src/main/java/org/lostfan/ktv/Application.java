@@ -23,7 +23,6 @@ public class Application {
         ConnectionManager.setManager(new HsqldbConnectionManager());
         DAOFactory.setDefaultDAOFactory(new HsqldbDaoFactory());
 
-        ServiceModel model = new ServiceModel();
         MainView view = new MainView();
         MainController controller = new MainController(view);
     }

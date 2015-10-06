@@ -12,10 +12,22 @@ import org.lostfan.ktv.domain.Service;
 
 public class SearchServiceModel implements SearchModel {
 
+    private List<String> fields;
+
     private ServiceDAO dao;
 
     public SearchServiceModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
+        fields = new ArrayList<>();
+        fields.add("Наименование");
+        fields.add("Дополнительная услуга");
     }
 
+    public List<String> getFields() {
+        return fields;
+    }
+
+    public String getName() {
+        return "Поиск: сервисы";
+    }
 }

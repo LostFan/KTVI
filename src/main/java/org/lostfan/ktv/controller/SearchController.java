@@ -33,8 +33,7 @@ public class SearchController {
 
     private class AddActionListener implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
-            view.addFilterField();
+        public void actionPerformed(ActionEvent e) {;
         }
     }
 

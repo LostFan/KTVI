@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import org.lostfan.ktv.model.ServiceModel;
+import org.lostfan.ktv.view.CatalogsView;
 import org.lostfan.ktv.view.MainView;
 import org.lostfan.ktv.view.TableViewBase;
 
@@ -24,9 +25,8 @@ public class MainController {
     private class DocumentActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            ServiceModel model = new ServiceModel();
-            TableViewBase view = new TableViewBase(model);
-            ServiceController controller = new ServiceController(model, view);
+            CatalogsView view = new CatalogsView();
+            CatalogsController controller = new CatalogsController(view);
         }
     }
 
