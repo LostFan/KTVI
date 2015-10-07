@@ -2,7 +2,8 @@ package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.dao.impl.hsqldb.HsqldbServiceDAO;
-import org.lostfan.ktv.model.ModelBase;
+import org.lostfan.ktv.model.FieldSearchCriterion;
+import org.lostfan.ktv.model.Model;
 import org.lostfan.ktv.view.SearchViewBase;
 import org.lostfan.ktv.view.TableViewBase;
 
@@ -14,11 +15,11 @@ import java.util.stream.Collectors;
 
 public class EntityController {
 
-    private ModelBase model;
+    private Model model;
     private TableViewBase view;
     private ServiceDAO serviceDAO = new HsqldbServiceDAO();
 
-    public EntityController(ModelBase model, TableViewBase view) {
+    public EntityController(Model model, TableViewBase view) {
         this.model = model;
         this.view = view;
 
@@ -44,12 +45,8 @@ public class EntityController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            List<String> values = searchViewBase.getTextFields().stream().map(JTextField::getText).collect(Collectors.toList());
-            List<String> fields = searchViewBase.getComboBoxess().stream().map(JComboBox::getSelectedItem).map(Object::toString).collect(Collectors.toList());
-            for (Object s1 : fields) {
-                System.out.println("qwe " + s1);
-            }
-
+            List<FieldSearchCriterion> criteria = this.searchViewBase.getSearchCriteria();
+            model.setSearchCriteria(criteria);
         }
     }
 

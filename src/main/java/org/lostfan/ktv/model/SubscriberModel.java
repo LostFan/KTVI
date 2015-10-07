@@ -12,7 +12,7 @@ import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Subscriber;
 
-public class SubscriberModel implements ModelBase<Subscriber> {
+public class SubscriberModel extends BaseModel<Subscriber> {
 
     private class SubscriberTableModel implements TableModel {
 
@@ -62,41 +62,6 @@ public class SubscriberModel implements ModelBase<Subscriber> {
         }
     }
 
-    private class SubscriberComboBoxModel implements ComboBoxModel {
-
-        public Object currentValue;
-
-        @Override
-        public void setSelectedItem(Object anItem) {
-            currentValue = anItem;
-        }
-
-        @Override
-        public Object getSelectedItem() {
-            return currentValue;
-        }
-
-        @Override
-        public int getSize() {
-            return columnNames.length;
-        }
-
-        @Override
-        public Object getElementAt(int index) {
-            return columnNames[index];
-        }
-
-        @Override
-        public void addListDataListener(ListDataListener l) {
-
-        }
-
-        @Override
-        public void removeListDataListener(ListDataListener l) {
-
-        }
-    }
-
     private SubscriberDAO dao;
     private List<Subscriber> services;
 
@@ -114,6 +79,11 @@ public class SubscriberModel implements ModelBase<Subscriber> {
         this.columnValues.add(Subscriber::getBalance);
     }
 
+    @Override
+    public List<EntityField<Subscriber, ?>> getFields() {
+        return null;
+    }
+
     public List<Subscriber> getList() {
         if (this.services == null) {
             this.services = this.dao.getAllSubscribers();
@@ -126,12 +96,9 @@ public class SubscriberModel implements ModelBase<Subscriber> {
         return new SubscriberTableModel();
     }
 
-    public ComboBoxModel<String> getFields() {
-        return new SubscriberComboBoxModel();
-    }
-
     @Override
     public String getEntityName() {
         return "Абоненты";
     }
+
 }

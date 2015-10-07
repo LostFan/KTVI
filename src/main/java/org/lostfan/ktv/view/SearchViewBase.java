@@ -1,53 +1,141 @@
 package org.lostfan.ktv.view;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import javax.swing.*;
 
-import org.lostfan.ktv.model.ModelBase;
+import org.lostfan.ktv.model.*;
 
-/**
- * Created by Ihar_Niakhlebau on 30-Sep-15.
- */
-public class SearchViewBase extends JFrame {
+public class SearchViewBase {
+
+    private static Map<EntityField.Types, String[]> typeCriteria;
+
+    static {
+        typeCriteria = new HashMap<>(EntityField.Types.values().length);
+        typeCriteria.put(EntityField.Types.String, new String[] {"Равно", "Содержит", "Не содержит"});
+        typeCriteria.put(EntityField.Types.Integer, new String[] {"Равно", "Больше чем", "Меньше чем"});
+        typeCriteria.put(EntityField.Types.Boolean, new String[] {"Да", "Нет"});
+        typeCriteria.put(EntityField.Types.Date, new String[] {"Равно", "Раньше чем", "Позже чем"});
+    }
+
+    private class CriterionComponents {
+
+        private JComboBox<String> fieldComboBox;
+        private JComboBox<String> criterionComboBox;
+        private JTextField valueTextField;
+        private JButton removeButton;
+
+        public CriterionComponents() {
+
+            this.fieldComboBox = new JComboBox<String>(model.getFieldComboBoxModel());
+
+            this.fieldComboBox.addActionListener(e -> {
+                criterionComboBox = new JComboBox<String>(
+                        new CriteriaComboBoxModel(SearchCriteria.getCritera(getSelectedFieldType())));
+                SearchViewBase.this.rebuildCriteriaPanel();
+            });
+
+            this.criterionComboBox = new JComboBox<String>();
+            this.valueTextField = new JTextField(20);
+            this.removeButton = new JButton();
+            URL url = SearchViewBase.class.getClassLoader().getResource("images/remove.png");
+            if(url != null) {
+                ImageIcon icon = new ImageIcon(url);
+                Image image = icon.getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
+                icon = new ImageIcon(image);
+                this.removeButton.setIcon(icon);
+            }
+
+            this.removeButton.addActionListener(e -> {
+                SearchViewBase.this.criteria.remove(CriterionComponents.this);
+                SearchViewBase.this.rebuildCriteriaPanel();
+            });
+        }
+
+        public EntityField.Types getSelectedFieldType() {
+            if (fieldComboBox.getSelectedItem() == null) {
+                return null;
+            }
+            return ((FieldsComboBoxModel) fieldComboBox.getModel()).getSelectedField().getType();
+        }
+
+        public EntityField getSelectedField() {
+            return ((FieldsComboBoxModel) fieldComboBox.getModel()).getSelectedField();
+        }
+
+        public SearchCriteria getSelectedCriterion() {
+            return ((CriteriaComboBoxModel) criterionComboBox.getModel()).getSelectedCriterion();
+        }
+
+        public Object getValue() {
+            switch (getSelectedFieldType()) {
+                case String:
+                    return this.valueTextField.getText();
+                case Integer:
+                    return Integer.parseInt(this.valueTextField.getText());
+                case Boolean:
+                    return getSelectedCriterion() == SearchCriteria.Boolean.True;
+                case Date:
+                    return this.valueTextField.getText();
+            }
+            return null;
+        }
+
+        public void addComponentsTo(JPanel rootPanel, int criteriaNumber) {
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            c.insets = new Insets(0,10,10,10);
+            panel.add(this.fieldComboBox, c);
+            if (this.fieldComboBox.getSelectedItem() != null) {
+                panel.add(this.criterionComboBox, c);
+            }
+            if (getSelectedFieldType() != null && getSelectedFieldType() != EntityField.Types.Boolean) {
+                panel.add(this.valueTextField, c);
+            }
+
+            panel.add(this.removeButton, c);
+
+            c.gridy = criteriaNumber;
+            c.anchor = GridBagConstraints.NORTH;
+
+            rootPanel.add(panel, c);
+        }
+    }
 
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 700;
     private JFrame frame;
-    private JScrollPane scrollPane;
-    private List<JTextField> textFields;
-    private List<JComboBox> comboBoxes;
+    private JPanel criteriaPanel;
+    private List<CriterionComponents> criteria;
     private JButton addButton;
     private JButton findButton;
     private JButton cancelButton;
-    private List<JButton> removeButtons;
-    private ModelBase modelBase;
+    private Model model;
 
-    public List<JTextField> getTextFields() {
-        return textFields;
-    }
-
-    public List<JComboBox> getComboBoxess() {
-        return comboBoxes;
-    }
-
-    public SearchViewBase(ModelBase model) {
-        this.modelBase = model;
+    public SearchViewBase(Model model) {
+        this.model = model;
         this.frame = new JFrame("Поиск: " + model.getEntityName());
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.textFields = new ArrayList<>();
-        this.comboBoxes = new ArrayList<>();
-        this.removeButtons = new ArrayList<>();
+        this.criteria = new ArrayList<>();
+
         this.addButton = new JButton("Добавить условие");
+        this.addButton.setFocusable(false);
+        this.addButton.addActionListener(e -> {
+            criteria.add(new CriterionComponents());
+            rebuildCriteriaPanel();
+        });
+
         this.findButton = new JButton("Найти");
+
         this.cancelButton = new JButton("Отмена");
-
-
+        this.cancelButton.addActionListener(e -> {
+            frame.setVisible(false);
+        });
 
         buildLayout();
         frame.setLocationRelativeTo(null);
@@ -60,81 +148,53 @@ public class SearchViewBase extends JFrame {
 
         frame.setLayout(new BorderLayout(10, 10));
         frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        JPanel labPanel = new JPanel();
-        this.scrollPane = new JScrollPane(labPanel);
-        labPanel.setLayout(new GridBagLayout());
+
         frame.setLayout(new BorderLayout());
-        addButton.setFocusable(false);
-        frame.add(this.scrollPane, BorderLayout.CENTER);
+
+
+        this.criteriaPanel = new JPanel(new GridBagLayout());
+        JScrollPane scrollPane = new JScrollPane(this.criteriaPanel);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
         JPanel butPanel = new JPanel();
         butPanel.add(findButton);
         butPanel.add(cancelButton);
         butPanel.add(addButton);
         frame.add(butPanel, BorderLayout.SOUTH);
 
-        this.addButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JTextField field = new JTextField(20);
-                JComboBox comboBox = new JComboBox(modelBase.getFields());
-                System.out.println(comboBox.toString());
+        rebuildCriteriaPanel();
+    }
 
-                JButton button =  new JButton();
-                URL url = SearchViewBase.class.getClassLoader().getResource("images/remove.png");
-                if(url != null) {
-                    ImageIcon icon = new ImageIcon(url);
-                    Image image = icon.getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
-                    icon = new ImageIcon(image);
-                    button.setIcon(icon);
-                }
+    private void rebuildCriteriaPanel() {
 
+        this.criteriaPanel.removeAll();
 
-                textFields.add(field);
-                comboBoxes.add(comboBox);
-                removeButtons.add(button);
+        for (int i = 0; i < this.criteria.size(); i++) {
+            this.criteria.get(i).addComponentsTo(this.criteriaPanel, i + 1);
+        }
 
-                JPanel jPanel = new JPanel();
-                jPanel.setLayout(new GridBagLayout());
-                GridBagConstraints c = new GridBagConstraints();
-
-                c.insets = new Insets(0,10,10,10);
-                jPanel.add(comboBox, c);
-                jPanel.add(field, c);
-                jPanel.add(button, c);
-
-                c.gridy = textFields.size();
-                c.anchor = GridBagConstraints.NORTH;
-
-                labPanel.add(jPanel, c);
-                labPanel.revalidate();
-                button.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        textFields.remove(field);
-                        comboBoxes.remove(comboBox);
-                        removeButtons.remove(button);
-                        labPanel.remove(jPanel);
-                        labPanel.repaint();
-                        labPanel.revalidate();
-                    }
-                });
-            }
-        });
+        this.frame.revalidate();
+        this.frame.repaint();
     }
 
     public void addFindActionListener(ActionListener listener) {
         this.findButton.addActionListener(listener);
     }
 
-    public void addCancelActionListener(ActionListener listener) {
-        this.cancelButton.addActionListener(listener);
-    }
+    public List<FieldSearchCriterion> getSearchCriteria() {
+        List<FieldSearchCriterion> fieldCriteria = new ArrayList<>(this.criteria.size());
+        for (CriterionComponents criterionComponents : this.criteria) {
+            EntityField selectedField = criterionComponents.getSelectedField();
+            SearchCriteria selectedCriterion = criterionComponents.getSelectedCriterion();
+            if (selectedField == null || selectedCriterion == null) {
+                continue;
+            }
+            FieldSearchCriterion fieldSearchCriterion =
+                    new FieldSearchCriterion(selectedField, selectedCriterion, criterionComponents.getValue());
+            fieldCriteria.add(fieldSearchCriterion);
+        }
 
-    public void addAddActionListener(ActionListener listener) {
-        this.addButton.addActionListener(listener);
-    }
-
-    public void closeForm() {
-        this.frame.dispatchEvent(new WindowEvent(this.frame, WindowEvent.WINDOW_CLOSING));
+        return fieldCriteria;
     }
 
 }
