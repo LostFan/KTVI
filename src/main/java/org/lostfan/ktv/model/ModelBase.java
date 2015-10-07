@@ -8,13 +8,11 @@ public interface ModelBase<T> {
 
     List<T> getList();
 
-    public TableModel getTableModel();
+    TableModel getTableModel();
 
-    String getTableName();
+    String getEntityName();
 
     ComboBoxModel<String> getFields();
-
-    String getName();
 
 //    List<T> getSearchList(List<String> fields, List<String> values);
 

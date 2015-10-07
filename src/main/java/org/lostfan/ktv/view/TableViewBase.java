@@ -23,7 +23,7 @@ public class TableViewBase {
     private JButton deleteButton;
 
     public TableViewBase(ModelBase model) {
-        this.frame = new JFrame(model.getTableName());
+        this.frame = new JFrame(model.getEntityName());
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         this.table = new JTable(model.getTableModel());

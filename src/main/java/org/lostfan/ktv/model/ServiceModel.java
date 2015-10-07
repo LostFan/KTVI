@@ -15,22 +15,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class ServiceModel implements ModelBase {
-
-    private List<String> fields;
+public class ServiceModel implements ModelBase<Service> {
 
     private class ServiceTableModel implements TableModel {
-
-        public String[] columnNames;
-        public List<Function<Service, Object>> columnValues;
-
-        public ServiceTableModel() {
-            this.columnNames = new String[] {"ID", "Name", "Additional"};
-            this.columnValues = new ArrayList<>(3);
-            this.columnValues.add(Service::getId);
-            this.columnValues.add(Service::getName);
-            this.columnValues.add(Service::isAdditionalService);
-        }
 
         @Override
         public int getRowCount() {
@@ -78,14 +65,71 @@ public class ServiceModel implements ModelBase {
         }
     }
 
+    private class ServiceComboBoxModel implements ComboBoxModel<String> {
+
+        public Object currentValue;
+        public int currentIndex = 0;
+
+        @Override
+        public void setSelectedItem(Object anItem) {
+            currentValue = anItem;
+        }
+
+        @Override
+        public Object getSelectedItem() {
+
+            System.out.println(getList().size());
+            Function<Service, Integer> f = Service::getId;
+            System.out.println("currentIndex " + currentIndex);
+            Predicate<Service> d = service -> columnValues.get(currentIndex).apply(service).toString().equals("1");
+            Stream<Service> s = services.stream().filter(d);
+            List newlist = Arrays.asList(s.toArray());
+            System.out.println(newlist.size());
+            return currentValue == null ? columnNames[0] : currentValue;
+
+        }
+
+        @Override
+        public int getSize() {
+            return columnNames.length;
+        }
+
+        @Override
+        public String getElementAt(int index) {
+
+            return columnNames[index];
+        }
+
+        @Override
+        public void addListDataListener(ListDataListener l) {
+
+        }
+
+        @Override
+        public void removeListDataListener(ListDataListener l) {
+
+        }
+    }
+
+    private List<String> fields;
+
     private ServiceDAO dao;
     private List<Service> services;
+
+    public String[] columnNames;
+    public List<Function<Service, Object>> columnValues;
 
     public ServiceModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
         fields = new ArrayList<>();
         fields.add("Наименование");
         fields.add("Дополнительная услуга");
+
+        this.columnNames = new String[] {"ID", "Name", "Additional"};
+        this.columnValues = new ArrayList<>(3);
+        this.columnValues.add(Service::getId);
+        this.columnValues.add(Service::getName);
+        this.columnValues.add(Service::isAdditionalService);
     }
 
     public List<Service> getList() {
@@ -94,14 +138,14 @@ public class ServiceModel implements ModelBase {
         }
 
         return this.services;
-
     }
 
     public TableModel getTableModel() {
         return new ServiceTableModel();
     }
 
-    public String getTableName() {
+    @Override
+    public String getEntityName() {
         return "Услуги";
     }
 
@@ -116,69 +160,6 @@ public class ServiceModel implements ModelBase {
             servicePredicate = (service -> service.getId() == x);
         }
     }
-
-    private class ServiceComboBoxModel implements ComboBoxModel {
-
-        public String[] columnNames;
-        public List<Function<Service, Object>> columnValues;
-        public Object currentValue;
-        public int currentIndex = 0;
-
-        public ServiceComboBoxModel() {
-            this.columnNames = new String[] {"ID", "Name", "Additional"};
-            this.columnValues = new ArrayList<>(3);
-            this.columnValues.add(Service::getId);
-            this.columnValues.add(Service::getName);
-            this.columnValues.add(Service::isAdditionalService);
-        }
-
-            @Override
-            public void setSelectedItem(Object anItem) {
-                currentValue = anItem;
-            }
-
-            @Override
-            public Object getSelectedItem() {
-
-                System.out.println(getList().size());
-                Function<Service, Integer> f = Service::getId;
-                System.out.println("currentIndex " + currentIndex);
-                Predicate<Service> d = service -> columnValues.get(currentIndex).apply(service).toString().equals("1");
-                Stream<Service> s = services.stream().filter(d);
-                List newlist = Arrays.asList(s.toArray());
-                System.out.println(newlist.size());
-                return currentValue == null ? columnNames[0] : currentValue;
-
-            }
-
-            @Override
-            public int getSize() {
-                return columnNames.length;
-            }
-
-            @Override
-            public Object getElementAt(int index) {
-
-                return columnNames[index];
-            }
-
-            @Override
-            public void addListDataListener(ListDataListener l) {
-
-            }
-
-            @Override
-            public void removeListDataListener(ListDataListener l) {
-
-            }
-
-
-    }
-
-    public String getName() {
-        return "Поиск: услуги";
-    }
-
 
     public List getSearchList(List<String> fields, List values) {
 //        List<String> columnNames = new ArrayList<String>();

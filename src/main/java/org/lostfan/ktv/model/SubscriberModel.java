@@ -12,22 +12,9 @@ import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Subscriber;
 
-public class SubscriberModel implements ModelBase {
+public class SubscriberModel implements ModelBase<Subscriber> {
 
     private class SubscriberTableModel implements TableModel {
-
-        public String[] columnNames;
-        public List<Function<Subscriber, Object>> columnValues;
-
-        public SubscriberTableModel() {
-            this.columnNames = new String[] {"ID",  "Account",  "Name" , "Balance"};
-            this.columnValues = new ArrayList<>(4);
-            this.columnValues.add(Subscriber::getId);
-            this.columnValues.add(Subscriber::getAccount);
-            this.columnValues.add(Subscriber::getName);
-            this.columnValues.add(Subscriber::getBalance);
-
-        }
 
         @Override
         public int getRowCount() {
@@ -75,43 +62,9 @@ public class SubscriberModel implements ModelBase {
         }
     }
 
-    private SubscriberDAO dao;
-    private List<Subscriber> services;
-
-    public SubscriberModel() {
-        this.dao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
-    }
-
-    public List<Subscriber> getList() {
-        if (this.services == null) {
-            this.services = this.dao.getAllSubscribers();
-        }
-
-        return this.services;
-    }
-
-    public TableModel getTableModel() {
-        return new SubscriberTableModel();
-    }
-
-    public ComboBoxModel<String> getFields() {
-        return new SubscriberComboBoxModel();
-    }
-
     private class SubscriberComboBoxModel implements ComboBoxModel {
 
-        public String[] columnNames;
-        public List<Function<Subscriber, Object>> columnValues;
         public Object currentValue;
-
-        public SubscriberComboBoxModel() {
-            this.columnNames = new String[] {"ID",  "Account",  "Name" , "Balance"};
-            this.columnValues = new ArrayList<>(4);
-            this.columnValues.add(Subscriber::getId);
-            this.columnValues.add(Subscriber::getAccount);
-            this.columnValues.add(Subscriber::getName);
-            this.columnValues.add(Subscriber::getBalance);
-        }
 
         @Override
         public void setSelectedItem(Object anItem) {
@@ -142,16 +95,43 @@ public class SubscriberModel implements ModelBase {
         public void removeListDataListener(ListDataListener l) {
 
         }
+    }
 
+    private SubscriberDAO dao;
+    private List<Subscriber> services;
 
+    public String[] columnNames;
+    public List<Function<Subscriber, Object>> columnValues;
+
+    public SubscriberModel() {
+        this.dao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
+
+        this.columnNames = new String[] {"ID",  "Account",  "Name" , "Balance"};
+        this.columnValues = new ArrayList<>(4);
+        this.columnValues.add(Subscriber::getId);
+        this.columnValues.add(Subscriber::getAccount);
+        this.columnValues.add(Subscriber::getName);
+        this.columnValues.add(Subscriber::getBalance);
+    }
+
+    public List<Subscriber> getList() {
+        if (this.services == null) {
+            this.services = this.dao.getAllSubscribers();
+        }
+
+        return this.services;
+    }
+
+    public TableModel getTableModel() {
+        return new SubscriberTableModel();
+    }
+
+    public ComboBoxModel<String> getFields() {
+        return new SubscriberComboBoxModel();
     }
 
     @Override
-    public String getName() {
-        return null;
-    }
-
-    public String getTableName() {
+    public String getEntityName() {
         return "Абоненты";
     }
 }

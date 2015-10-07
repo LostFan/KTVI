@@ -38,11 +38,11 @@ public class SearchViewBase extends JFrame {
 
     public SearchViewBase(ModelBase model) {
         this.modelBase = model;
-        this.frame = new JFrame(model.getName());
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.textFields = new ArrayList<JTextField>();
-        this.comboBoxes = new ArrayList<JComboBox>();
-        this.removeButtons = new ArrayList<JButton>();
+        this.frame = new JFrame("Поиск: " + model.getEntityName());
+        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.textFields = new ArrayList<>();
+        this.comboBoxes = new ArrayList<>();
+        this.removeButtons = new ArrayList<>();
         this.addButton = new JButton("Добавить условие");
         this.findButton = new JButton("Найти");
         this.cancelButton = new JButton("Отмена");
