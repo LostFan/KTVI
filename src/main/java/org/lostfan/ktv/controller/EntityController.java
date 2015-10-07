@@ -6,8 +6,11 @@ import org.lostfan.ktv.model.ModelBase;
 import org.lostfan.ktv.view.SearchViewBase;
 import org.lostfan.ktv.view.TableViewBase;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EntityController {
 
@@ -28,13 +31,25 @@ public class EntityController {
     private class FindActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SearchViewBase view = new SearchViewBase(model);
-            view.addFindActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    view.getTextFields();
-                }
-            });
+            SearchViewBase searchViewBase = new SearchViewBase(model);
+            searchViewBase.addFindActionListener(new SearchFindActionListener(searchViewBase));
+        }
+    }
+
+    private class SearchFindActionListener implements ActionListener {
+        SearchViewBase searchViewBase;
+        public SearchFindActionListener(SearchViewBase searchViewBase) {
+            this.searchViewBase = searchViewBase;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            List<String> values = searchViewBase.getTextFields().stream().map(JTextField::getText).collect(Collectors.toList());
+            List<String> fields = searchViewBase.getComboBoxess().stream().map(JComboBox::getSelectedItem).map(Object::toString).collect(Collectors.toList());
+            for (Object s1 : fields) {
+                System.out.println("qwe " + s1);
+            }
+
         }
     }
 

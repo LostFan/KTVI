@@ -21,25 +21,28 @@ public class SearchViewBase extends JFrame {
     private JFrame frame;
     private JScrollPane scrollPane;
     private List<JTextField> textFields;
-
-    public List<JTextField> getTextFields() {
-        return textFields;
-    }
-
     private List<JComboBox> comboBoxes;
     private JButton addButton;
     private JButton findButton;
     private JButton cancelButton;
     private List<JButton> removeButtons;
-    private List<String> comboBoxFields;
+    private ModelBase modelBase;
+
+    public List<JTextField> getTextFields() {
+        return textFields;
+    }
+
+    public List<JComboBox> getComboBoxess() {
+        return comboBoxes;
+    }
 
     public SearchViewBase(ModelBase model) {
+        this.modelBase = model;
         this.frame = new JFrame(model.getName());
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.textFields = new ArrayList<JTextField>();
         this.comboBoxes = new ArrayList<JComboBox>();
         this.removeButtons = new ArrayList<JButton>();
-        this.comboBoxFields = model.getFields();
         this.addButton = new JButton("Добавить условие");
         this.findButton = new JButton("Найти");
         this.cancelButton = new JButton("Отмена");
@@ -64,13 +67,17 @@ public class SearchViewBase extends JFrame {
         addButton.setFocusable(false);
         frame.add(this.scrollPane, BorderLayout.CENTER);
         JPanel butPanel = new JPanel();
+        butPanel.add(findButton);
+        butPanel.add(cancelButton);
         butPanel.add(addButton);
         frame.add(butPanel, BorderLayout.SOUTH);
 
         this.addButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JTextField field = new JTextField(20);
-                JComboBox comboBox = new JComboBox(comboBoxFields.toArray());
+                JComboBox comboBox = new JComboBox(modelBase.getFields());
+                System.out.println(comboBox.toString());
+
                 JButton button =  new JButton();
                 URL url = SearchViewBase.class.getClassLoader().getResource("images/remove.png");
                 if(url != null) {

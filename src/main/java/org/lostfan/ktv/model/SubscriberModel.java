@@ -3,6 +3,8 @@ package org.lostfan.ktv.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import javax.swing.*;
+import javax.swing.event.ListDataListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
@@ -92,9 +94,56 @@ public class SubscriberModel implements ModelBase {
         return new SubscriberTableModel();
     }
 
-    @Override
-    public List<String> getFields() {
-        return null;
+    public ComboBoxModel<String> getFields() {
+        return new SubscriberComboBoxModel();
+    }
+
+    private class SubscriberComboBoxModel implements ComboBoxModel {
+
+        public String[] columnNames;
+        public List<Function<Subscriber, Object>> columnValues;
+        public Object currentValue;
+
+        public SubscriberComboBoxModel() {
+            this.columnNames = new String[] {"ID",  "Account",  "Name" , "Balance"};
+            this.columnValues = new ArrayList<>(4);
+            this.columnValues.add(Subscriber::getId);
+            this.columnValues.add(Subscriber::getAccount);
+            this.columnValues.add(Subscriber::getName);
+            this.columnValues.add(Subscriber::getBalance);
+        }
+
+        @Override
+        public void setSelectedItem(Object anItem) {
+            currentValue = anItem;
+        }
+
+        @Override
+        public Object getSelectedItem() {
+            return currentValue;
+        }
+
+        @Override
+        public int getSize() {
+            return columnNames.length;
+        }
+
+        @Override
+        public Object getElementAt(int index) {
+            return columnNames[index];
+        }
+
+        @Override
+        public void addListDataListener(ListDataListener l) {
+
+        }
+
+        @Override
+        public void removeListDataListener(ListDataListener l) {
+
+        }
+
+
     }
 
     @Override
