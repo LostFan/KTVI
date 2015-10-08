@@ -15,6 +15,7 @@ import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilCalendarModel;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.model.*;
+import org.lostfan.ktv.utils.ResourceBundles;
 
 public class EntitySearchView {
     
@@ -145,20 +146,21 @@ public class EntitySearchView {
 
     public EntitySearchView(Model model) {
         this.model = model;
-        this.frame = new JFrame("Поиск: " + model.getEntityName());
+        this.frame = new JFrame(getString("buttons.search") + ": " +
+                ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.criteria = new ArrayList<>();
 
-        this.addButton = new JButton("Добавить условие");
+        this.addButton = new JButton(getString("buttons.addCriterion"));
         this.addButton.setFocusable(false);
         this.addButton.addActionListener(e -> {
             criteria.add(new CriterionComponents());
             rebuildCriteriaPanel();
         });
 
-        this.findButton = new JButton("Найти");
+        this.findButton = new JButton(getString("buttons.find"));
 
-        this.cancelButton = new JButton("Отмена");
+        this.cancelButton = new JButton(getString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {
             frame.setVisible(false);
         });
@@ -223,4 +225,7 @@ public class EntitySearchView {
         return fieldCriteria;
     }
 
+    private String getString(String key) {
+        return ResourceBundles.getGuiBundle().getString(key);
+    }
 }

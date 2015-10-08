@@ -1,5 +1,7 @@
 package org.lostfan.ktv.model;
 
+import org.lostfan.ktv.utils.ResourceBundles;
+
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
 import java.util.List;
@@ -14,9 +16,11 @@ public class CriteriaComboBoxModel implements ComboBoxModel<String> {
     private List<SearchCriteria> criteria;
 
     public CriteriaComboBoxModel(List<SearchCriteria> criteria) {
-        this.criteriaMap = criteria.stream().collect(Collectors.toMap(SearchCriteria::getTitle, Function.identity()));
+        this.criteriaMap = criteria.stream().collect(Collectors.toMap(
+                criterion -> ResourceBundles.getGuiBundle().getString(criterion.getTitle()),
+                Function.identity()));
         this.criteria = criteria;
-        this.currentValue = criteria.get(0).getTitle();
+        this.currentValue = getElementAt(0);
     }
 
     public SearchCriteria getSelectedCriterion() {
@@ -43,7 +47,7 @@ public class CriteriaComboBoxModel implements ComboBoxModel<String> {
 
     @Override
     public String getElementAt(int index) {
-        return criteria.get(index).getTitle();
+        return ResourceBundles.getGuiBundle().getString(criteria.get(index).getTitle());
     }
 
     @Override

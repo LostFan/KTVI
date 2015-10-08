@@ -12,21 +12,21 @@ public class EntityField<E, T> {
         Date;
     }
 
-    private String title;
+    private String titleKey;
     private Types type;
     private Function<E, T> getter;
     private BiConsumer<E, T> setter;
 
 
-    public EntityField(String title, Types type, Function<E, T> getter, BiConsumer<E, T> setter) {
-        this.title = title;
+    public EntityField(String titleKey, Types type, Function<E, T> getter, BiConsumer<E, T> setter) {
+        this.titleKey = titleKey;
         this.type = type;
         this.getter = getter;
         this.setter = setter;
     }
 
-    public String getTitle() {
-        return title;
+    public String getTitleKey() {
+        return titleKey;
     }
 
     public Types getType() {

@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.model.BaseModel;
+import org.lostfan.ktv.utils.ResourceBundles;
 
 public class EntityTableView {
 
@@ -20,17 +21,17 @@ public class EntityTableView {
     private JButton deleteButton;
 
     public EntityTableView(BaseModel model) {
-        this.frame = new JFrame(model.getEntityName());
+        this.frame = new JFrame(ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         this.table = new JTable(model.getTableModel());
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         this.table.setFillsViewportHeight(true);
 
-        this.findButton = new JButton("Find");
-        this.addButton = new JButton("Add");
-        this.changeButton = new JButton("Change Selected");
-        this.deleteButton = new JButton("Delete");
+        this.findButton = new JButton(getString("buttons.find"));
+        this.addButton = new JButton(getString("buttons.add"));
+        this.changeButton = new JButton(getString("buttons.changeSelected"));
+        this.deleteButton = new JButton(getString("buttons.delete"));
 
         buildLayout();
         frame.setVisible(true);
@@ -85,5 +86,9 @@ public class EntityTableView {
 
     public void addDeleteActionListener(ActionListener listener) {
         this.deleteButton.addActionListener(listener);
+    }
+
+    private String getString(String key) {
+        return ResourceBundles.getGuiBundle().getString(key);
     }
 }

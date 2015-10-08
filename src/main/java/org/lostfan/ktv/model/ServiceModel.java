@@ -21,9 +21,9 @@ public class ServiceModel extends BaseModel<Service> {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("ID", EntityField.Types.Integer, Service::getId, Service::setId));
-        this.fields.add(new EntityField<>("Name", EntityField.Types.String, Service::getName, Service::setName));
-        this.fields.add(new EntityField<>("Additional", EntityField.Types.Boolean, Service::isAdditionalService, Service::setAdditionalService));
+        this.fields.add(new EntityField<>("service.id", EntityField.Types.Integer, Service::getId, Service::setId));
+        this.fields.add(new EntityField<>("service.name", EntityField.Types.String, Service::getName, Service::setName));
+        this.fields.add(new EntityField<>("service.additional", EntityField.Types.Boolean, Service::isAdditionalService, Service::setAdditionalService));
     }
 
     @Override
@@ -44,8 +44,8 @@ public class ServiceModel extends BaseModel<Service> {
     }
 
     @Override
-    public String getEntityName() {
-        return "Услуги";
+    public String getEntityNameKey() {
+        return "services";
     }
 
     @Override

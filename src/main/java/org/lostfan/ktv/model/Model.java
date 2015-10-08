@@ -9,7 +9,7 @@ public interface Model<T> {
 
     TableModel getTableModel();
 
-    String getEntityName();
+    String getEntityNameKey();
 
     List<EntityField<T, ?>> getFields();
 

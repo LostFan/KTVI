@@ -15,9 +15,9 @@ public class SearchCriteria {
 
         private static void init() { }
 
-        public static final String Equals = new String(EntityField.Types.String, "Равно");
-        public static final String Contains = new String(EntityField.Types.String, "Содержит");
-        public static final String NotContains = new String(EntityField.Types.String, "Не содержит");
+        public static final String Equals = new String(EntityField.Types.String, "criteria.string.equals");
+        public static final String Contains = new String(EntityField.Types.String, "criteria.string.contains");
+        public static final String NotContains = new String(EntityField.Types.String, "criteria.string.notcontains");
 
         private String(EntityField.Types type, java.lang.String title) {
             super(type, title);
@@ -32,9 +32,9 @@ public class SearchCriteria {
 
         private static void init() { }
 
-        public static final Integer Equals = new Integer(EntityField.Types.Integer, "Равно");
-        public static final Integer GreaterThan = new Integer(EntityField.Types.Integer, "Больше чем");
-        public static final Integer LessThan = new Integer(EntityField.Types.Integer, "Меньше чем");
+        public static final Integer Equals = new Integer(EntityField.Types.Integer, "criteria.integer.equals");
+        public static final Integer GreaterThan = new Integer(EntityField.Types.Integer, "criteria.integer.greater");
+        public static final Integer LessThan = new Integer(EntityField.Types.Integer, "criteria.integer.less");
 
         private Integer(EntityField.Types type, java.lang.String title) {
             super(type, title);
@@ -49,8 +49,8 @@ public class SearchCriteria {
 
         private static void init() { }
 
-        public static final Boolean True = new Boolean(EntityField.Types.Boolean, "Да");
-        public static final Boolean False = new Boolean(EntityField.Types.Boolean, "Нет");
+        public static final Boolean True = new Boolean(EntityField.Types.Boolean, "criteria.boolean.true");
+        public static final Boolean False = new Boolean(EntityField.Types.Boolean, "criteria.boolean.false");
 
         private Boolean(EntityField.Types type, java.lang.String title) {
             super(type, title);
@@ -65,9 +65,9 @@ public class SearchCriteria {
 
         private static void init() { }
 
-        public static final Date Equals = new Date(EntityField.Types.Date, "Равно");
-        public static final Date EarlierThan = new Date(EntityField.Types.Date, "Раньше чем");
-        public static final Date LaterThan = new Date(EntityField.Types.Date, "Позже чем");
+        public static final Date Equals = new Date(EntityField.Types.Date, "criteria.date.equals");
+        public static final Date EarlierThan = new Date(EntityField.Types.Date, "criteria.date.earlier");
+        public static final Date LaterThan = new Date(EntityField.Types.Date, "criteria.date.later");
 
         private Date(EntityField.Types type, java.lang.String title) {
             super(type, title);
