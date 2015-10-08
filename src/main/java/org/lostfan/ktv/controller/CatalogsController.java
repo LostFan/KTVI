@@ -45,7 +45,7 @@ public class CatalogsController {
         @Override
         public void actionPerformed(ActionEvent e) {
             PaymentModel model = new PaymentModel();
-            TableViewBase view = new TableViewBase(model);
+            EntityTableView view = new EntityTableView(model);
             EntityController controller = new EntityController(model, view);
         }
     }
