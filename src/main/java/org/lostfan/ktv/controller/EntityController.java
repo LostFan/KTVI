@@ -6,6 +6,7 @@ import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.Model;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
+import org.lostfan.ktv.view.EntityView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,7 +52,7 @@ public class EntityController {
     private class AddActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Add action");
+            EntityView entityView = new EntityView(model);
         }
     }
 
@@ -63,8 +64,7 @@ public class EntityController {
             if (selectedIndex == -1) {
                 System.out.println("No selection");
             } else {
-
-                System.out.println("Service name:" + model.getList().get(selectedIndex));
+                EntityView entityView = new EntityView(model, model.getList().get(selectedIndex));
             }
         }
     }

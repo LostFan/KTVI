@@ -54,6 +54,11 @@ public class ServiceModel extends BaseModel<Service> {
     }
 
     @Override
+    public String getEntityName() {
+        return "service";
+    }
+
+    @Override
     public void setSearchCriteria(List<FieldSearchCriterion<Service>> criteria) {
         super.setSearchCriteria(criteria);
 

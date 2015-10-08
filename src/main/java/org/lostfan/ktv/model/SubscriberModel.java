@@ -29,6 +29,11 @@ public class SubscriberModel extends BaseModel<Subscriber> {
     }
 
     @Override
+    public String getEntityName() {
+        return "subscriber";
+    }
+
+    @Override
     public List<EntityField<Subscriber, ?>> getFields() {
         return this.fields;
     }

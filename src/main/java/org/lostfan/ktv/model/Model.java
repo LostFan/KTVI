@@ -11,6 +11,8 @@ public interface Model<T> {
 
     String getEntityNameKey();
 
+    String getEntityName();
+
     List<EntityField<T, ?>> getFields();
 
     FieldsComboBoxModel<T> getFieldComboBoxModel();

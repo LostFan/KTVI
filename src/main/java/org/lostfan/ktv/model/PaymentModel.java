@@ -30,6 +30,11 @@ public class PaymentModel extends BaseModel<Payment> {
     }
 
     @Override
+    public String getEntityName() {
+        return "payment";
+    }
+
+    @Override
     public List<EntityField<Payment, ?>> getFields() {
         return this.fields;
     }
