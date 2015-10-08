@@ -21,11 +21,11 @@ public class SubscriberModel extends BaseModel<Subscriber> {
         this.dao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("ID", EntityField.Types.Integer, Subscriber::getId, Subscriber::setId));
-        this.fields.add(new EntityField<>("Account", EntityField.Types.Integer, Subscriber::getAccount, Subscriber::setAccount));
-        this.fields.add(new EntityField<>("Name", EntityField.Types.String, Subscriber::getName, Subscriber::setName));
-        this.fields.add(new EntityField<>("Balance", EntityField.Types.Integer, Subscriber::getBalance, Subscriber::setBalance));
-        this.fields.add(new EntityField<>("Connected", EntityField.Types.Boolean, Subscriber::isConnected, Subscriber::setConnected));
+        this.fields.add(new EntityField<>("subscriber.id", EntityField.Types.Integer, Subscriber::getId, Subscriber::setId));
+        this.fields.add(new EntityField<>("subscriber.account", EntityField.Types.Integer, Subscriber::getAccount, Subscriber::setAccount));
+        this.fields.add(new EntityField<>("subscriber.name", EntityField.Types.String, Subscriber::getName, Subscriber::setName));
+        this.fields.add(new EntityField<>("subscriber.balance", EntityField.Types.Integer, Subscriber::getBalance, Subscriber::setBalance));
+        this.fields.add(new EntityField<>("subscriber.connected", EntityField.Types.Boolean, Subscriber::isConnected, Subscriber::setConnected));
     }
 
     @Override
@@ -46,8 +46,8 @@ public class SubscriberModel extends BaseModel<Subscriber> {
     }
 
     @Override
-    public String getEntityName() {
-        return "Абоненты";
+    public String getEntityNameKey() {
+        return "subscribers";
     }
 
     @Override

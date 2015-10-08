@@ -1,6 +1,8 @@
 package org.lostfan.ktv.model;
 
 
+import org.lostfan.ktv.utils.ResourceBundles;
+
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
 import java.util.List;
@@ -17,7 +19,9 @@ public class FieldsComboBoxModel<E> implements ComboBoxModel<String> {
 
     public FieldsComboBoxModel(List<EntityField<E, ?>> fields) {
         this.fields = fields;
-        this.titleFieldMap = this.fields.stream().collect(Collectors.toMap(EntityField::getTitle, Function.identity()));
+        this.titleFieldMap = this.fields.stream().collect(Collectors.toMap(
+                field-> ResourceBundles.getEntityBundle().getString(field.getTitleKey()),
+                Function.identity()));
         this.currentValue = null;
     }
 
@@ -45,7 +49,7 @@ public class FieldsComboBoxModel<E> implements ComboBoxModel<String> {
 
     @Override
     public String getElementAt(int index) {
-        return fields.get(index).getTitle();
+        return  ResourceBundles.getEntityBundle().getString(fields.get(index).getTitleKey());
     }
 
     @Override

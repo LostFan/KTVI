@@ -1,5 +1,7 @@
 package org.lostfan.ktv.model;
 
+import org.lostfan.ktv.utils.ResourceBundles;
+
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
@@ -23,7 +25,8 @@ public class EntityTableModel<T> implements TableModel {
 
     @Override
     public String getColumnName(int columnIndex) {
-        return this.model.getFields().get(columnIndex).getTitle();
+        return ResourceBundles.getEntityBundle().getString(
+                this.model.getFields().get(columnIndex).getTitleKey());
     }
 
     @Override
