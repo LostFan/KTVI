@@ -2,10 +2,8 @@ package org.lostfan.ktv.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import javax.swing.*;
-import javax.swing.event.ListDataListener;
-import javax.swing.event.TableModelListener;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.table.TableModel;
 
 import org.lostfan.ktv.dao.DAOFactory;
@@ -14,91 +12,56 @@ import org.lostfan.ktv.domain.Subscriber;
 
 public class SubscriberModel extends BaseModel<Subscriber> {
 
-    private class SubscriberTableModel implements TableModel {
-
-        @Override
-        public int getRowCount() {
-            return getList().size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return columnNames.length;
-        }
-
-        @Override
-        public String getColumnName(int columnIndex) {
-            return columnNames[columnIndex];
-        }
-
-        @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            return getValueAt(0, columnIndex).getClass();
-        }
-
-        @Override
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return false;
-        }
-
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            return columnValues.get(columnIndex).apply(getList().get(rowIndex));
-        }
-
-        @Override
-        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-
-        }
-
-        @Override
-        public void addTableModelListener(TableModelListener l) {
-
-        }
-
-        @Override
-        public void removeTableModelListener(TableModelListener l) {
-
-        }
-    }
+    private List<EntityField<Subscriber, ?>> fields;
 
     private SubscriberDAO dao;
-    private List<Subscriber> services;
-
-    public String[] columnNames;
-    public List<Function<Subscriber, Object>> columnValues;
+    private List<Subscriber> subscribers;
 
     public SubscriberModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
 
-        this.columnNames = new String[] {"ID",  "Account",  "Name" , "Balance"};
-        this.columnValues = new ArrayList<>(4);
-        this.columnValues.add(Subscriber::getId);
-        this.columnValues.add(Subscriber::getAccount);
-        this.columnValues.add(Subscriber::getName);
-        this.columnValues.add(Subscriber::getBalance);
+        this.fields = new ArrayList<>();
+        this.fields.add(new EntityField<>("ID", EntityField.Types.Integer, Subscriber::getId, Subscriber::setId));
+        this.fields.add(new EntityField<>("Account", EntityField.Types.Integer, Subscriber::getAccount, Subscriber::setAccount));
+        this.fields.add(new EntityField<>("Name", EntityField.Types.String, Subscriber::getName, Subscriber::setName));
+        this.fields.add(new EntityField<>("Balance", EntityField.Types.Integer, Subscriber::getBalance, Subscriber::setBalance));
+        this.fields.add(new EntityField<>("Connected", EntityField.Types.Boolean, Subscriber::isConnected, Subscriber::setConnected));
     }
 
     @Override
     public List<EntityField<Subscriber, ?>> getFields() {
-        return null;
+        return this.fields;
     }
 
     public List<Subscriber> getList() {
-        if (this.services == null) {
-            this.services = this.dao.getAllSubscribers();
+        if (this.subscribers == null) {
+            this.subscribers = this.dao.getAllSubscribers();
         }
 
-        return this.services;
+        return this.subscribers;
     }
 
     public TableModel getTableModel() {
-        return new SubscriberTableModel();
+        return new EntityTableModel<>(this);
     }
 
     @Override
     public String getEntityName() {
         return "Абоненты";
+    }
+
+    @Override
+    public void setSearchCriteria(List<FieldSearchCriterion<Subscriber>> criteria) {
+        super.setSearchCriteria(criteria);
+
+        this.subscribers = this.dao.getAllSubscribers();
+        Stream<Subscriber> stream = this.subscribers.stream();
+        for (FieldSearchCriterion<Subscriber> fieldSearchCriterion : criteria) {
+            stream = stream.filter(fieldSearchCriterion.buildPredicate());
+        }
+
+        this.subscribers = stream.collect(Collectors.toList());
+        this.notifyObservers(null);
     }
 
 }

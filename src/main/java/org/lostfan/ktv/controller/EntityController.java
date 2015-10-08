@@ -4,22 +4,20 @@ import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.dao.impl.hsqldb.HsqldbServiceDAO;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.Model;
-import org.lostfan.ktv.view.SearchViewBase;
-import org.lostfan.ktv.view.TableViewBase;
+import org.lostfan.ktv.view.EntitySearchView;
+import org.lostfan.ktv.view.EntityTableView;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EntityController {
 
     private Model model;
-    private TableViewBase view;
+    private EntityTableView view;
     private ServiceDAO serviceDAO = new HsqldbServiceDAO();
 
-    public EntityController(Model model, TableViewBase view) {
+    public EntityController(Model model, EntityTableView view) {
         this.model = model;
         this.view = view;
 
@@ -32,20 +30,20 @@ public class EntityController {
     private class FindActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SearchViewBase searchViewBase = new SearchViewBase(model);
-            searchViewBase.addFindActionListener(new SearchFindActionListener(searchViewBase));
+            EntitySearchView entitySearchView = new EntitySearchView(model);
+            entitySearchView.addFindActionListener(new SearchFindActionListener(entitySearchView));
         }
     }
 
     private class SearchFindActionListener implements ActionListener {
-        SearchViewBase searchViewBase;
-        public SearchFindActionListener(SearchViewBase searchViewBase) {
-            this.searchViewBase = searchViewBase;
+        EntitySearchView entitySearchView;
+        public SearchFindActionListener(EntitySearchView entitySearchView) {
+            this.entitySearchView = entitySearchView;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            List<FieldSearchCriterion> criteria = this.searchViewBase.getSearchCriteria();
+            List<FieldSearchCriterion> criteria = this.entitySearchView.getSearchCriteria();
             model.setSearchCriteria(criteria);
         }
     }

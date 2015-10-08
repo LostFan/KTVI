@@ -9,17 +9,7 @@ import javax.swing.*;
 
 import org.lostfan.ktv.model.*;
 
-public class SearchViewBase {
-
-    private static Map<EntityField.Types, String[]> typeCriteria;
-
-    static {
-        typeCriteria = new HashMap<>(EntityField.Types.values().length);
-        typeCriteria.put(EntityField.Types.String, new String[] {"Равно", "Содержит", "Не содержит"});
-        typeCriteria.put(EntityField.Types.Integer, new String[] {"Равно", "Больше чем", "Меньше чем"});
-        typeCriteria.put(EntityField.Types.Boolean, new String[] {"Да", "Нет"});
-        typeCriteria.put(EntityField.Types.Date, new String[] {"Равно", "Раньше чем", "Позже чем"});
-    }
+public class EntitySearchView {
 
     private class CriterionComponents {
 
@@ -33,15 +23,15 @@ public class SearchViewBase {
             this.fieldComboBox = new JComboBox<String>(model.getFieldComboBoxModel());
 
             this.fieldComboBox.addActionListener(e -> {
-                criterionComboBox = new JComboBox<String>(
+                criterionComboBox = new JComboBox<>(
                         new CriteriaComboBoxModel(SearchCriteria.getCritera(getSelectedFieldType())));
-                SearchViewBase.this.rebuildCriteriaPanel();
+                EntitySearchView.this.rebuildCriteriaPanel();
             });
 
-            this.criterionComboBox = new JComboBox<String>();
+            this.criterionComboBox = new JComboBox<>();
             this.valueTextField = new JTextField(20);
             this.removeButton = new JButton();
-            URL url = SearchViewBase.class.getClassLoader().getResource("images/remove.png");
+            URL url = EntitySearchView.class.getClassLoader().getResource("images/remove.png");
             if(url != null) {
                 ImageIcon icon = new ImageIcon(url);
                 Image image = icon.getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
@@ -50,8 +40,8 @@ public class SearchViewBase {
             }
 
             this.removeButton.addActionListener(e -> {
-                SearchViewBase.this.criteria.remove(CriterionComponents.this);
-                SearchViewBase.this.rebuildCriteriaPanel();
+                EntitySearchView.this.criteria.remove(CriterionComponents.this);
+                EntitySearchView.this.rebuildCriteriaPanel();
             });
         }
 
@@ -117,7 +107,7 @@ public class SearchViewBase {
     private JButton cancelButton;
     private Model model;
 
-    public SearchViewBase(Model model) {
+    public EntitySearchView(Model model) {
         this.model = model;
         this.frame = new JFrame("Поиск: " + model.getEntityName());
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
