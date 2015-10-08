@@ -1,7 +1,6 @@
 package org.lostfan.ktv.model;
 
 import java.util.List;
-import java.util.Observable;
 import javax.swing.table.TableModel;
 
 public interface Model<T> {

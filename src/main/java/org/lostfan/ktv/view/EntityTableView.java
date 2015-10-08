@@ -6,12 +6,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.model.BaseModel;
-import org.lostfan.ktv.model.Model;
 
-/**
- * Created by Ihar_Niakhlebau on 30-Sep-15.
- */
-public class TableViewBase {
+public class EntityTableView {
 
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 700;
@@ -23,7 +19,7 @@ public class TableViewBase {
     private JButton changeButton;
     private JButton deleteButton;
 
-    public TableViewBase(BaseModel model) {
+    public EntityTableView(BaseModel model) {
         this.frame = new JFrame(model.getEntityName());
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 

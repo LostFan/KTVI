@@ -7,7 +7,7 @@ import org.lostfan.ktv.model.PaymentModel;
 import org.lostfan.ktv.model.ServiceModel;
 import org.lostfan.ktv.model.SubscriberModel;
 import org.lostfan.ktv.view.CatalogsView;
-import org.lostfan.ktv.view.TableViewBase;
+import org.lostfan.ktv.view.EntityTableView;
 
 /**
  * Created by Ihar_Niakhlebau on 30-Sep-15.
@@ -28,7 +28,7 @@ public class CatalogsController {
         @Override
         public void actionPerformed(ActionEvent e) {
             ServiceModel model = new ServiceModel();
-            TableViewBase view = new TableViewBase(model);
+            EntityTableView view = new EntityTableView(model);
             EntityController controller = new EntityController(model, view);
         }
     }
@@ -37,7 +37,7 @@ public class CatalogsController {
         @Override
         public void actionPerformed(ActionEvent e) {
             SubscriberModel model = new SubscriberModel();
-            TableViewBase view = new TableViewBase(model);
+            EntityTableView view = new EntityTableView(model);
             EntityController controller = new EntityController(model, view);
         }
     }

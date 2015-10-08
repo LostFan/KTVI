@@ -1,7 +1,6 @@
 package org.lostfan.ktv.model;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.function.Predicate;
 
 public class FieldSearchCriterion<E> {
@@ -49,7 +48,7 @@ public class FieldSearchCriterion<E> {
             return e -> ((String) this.entityField.get(e)).equalsIgnoreCase((String) value);
         } else if (cr == SearchCriteria.String.Contains) {
             return e -> ((String) this.entityField.get(e)).contains((String) value);
-        } else if (cr == SearchCriteria.String.Contains) {
+        } else if (cr == SearchCriteria.String.NotContains) {
             return e -> !((String) this.entityField.get(e)).contains((String) value);
         }
 
@@ -70,7 +69,7 @@ public class FieldSearchCriterion<E> {
     }
 
     private Predicate<E> buildBooleanPredicate() {
-        return e -> this.value != null && ((Boolean)value) == ((Boolean) this.entityField.get(e));
+        return e -> this.value != null && value == this.entityField.get(e);
     }
 
     private Predicate<E> buildDatePredicate() {
