@@ -105,14 +105,6 @@ public class ServiceModel extends BaseModel<Service> {
         return new FieldsComboBoxModel<>(fields);
     }
 
-    private class MyIdPredicate {
-        Predicate<Service> servicePredicate;
-
-        public MyIdPredicate(int x) {
-            servicePredicate = (service -> service.getId() == x);
-        }
-    }
-
     @Override
     public void setSearchCriteria(List<FieldSearchCriterion<Service>> criteria) {
         super.setSearchCriteria(criteria);

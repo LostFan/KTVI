@@ -1,5 +1,6 @@
 package org.lostfan.ktv.model;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -73,6 +74,15 @@ public class FieldSearchCriterion<E> {
     }
 
     private Predicate<E> buildDatePredicate() {
+        SearchCriteria.Date cr = (SearchCriteria.Date)this.criterion;
+        if (cr == SearchCriteria.Date.Equals) {
+            return e -> ((LocalDate) this.entityField.get(e)).isEqual((LocalDate) value);
+        } else if (cr == SearchCriteria.Date.EarlierThan) {
+            return e -> ((LocalDate) this.entityField.get(e)).isBefore((LocalDate) value);
+        } else if (cr == SearchCriteria.Date.LaterThan) {
+            return e -> ((LocalDate) this.entityField.get(e)).isAfter((LocalDate) value);
+        }
+
         return e -> true;
     }
 }

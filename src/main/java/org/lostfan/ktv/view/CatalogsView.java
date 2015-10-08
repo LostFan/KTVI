@@ -12,6 +12,7 @@ public class CatalogsView {
     private JFrame frame;
     private JButton serviceButton;
     private JButton subscriberButton;
+    private JButton paymentButton;
 
     public CatalogsView() {
         this.frame = new JFrame("Справочники");
@@ -19,6 +20,7 @@ public class CatalogsView {
 
         this.serviceButton = new JButton("Услуги");
         this.subscriberButton = new JButton("Абоненты");
+        this.paymentButton = new JButton("Оплаты");
 
         buildLayout();
         frame.setVisible(true);
@@ -43,6 +45,7 @@ public class CatalogsView {
 
         rightPanelInner.add(this.serviceButton);
         rightPanelInner.add(this.subscriberButton);
+        rightPanelInner.add(this.paymentButton);
     }
 
     public void addServiceActionListener(ActionListener listener) {
@@ -51,6 +54,10 @@ public class CatalogsView {
 
     public void addSubscriberActionListener(ActionListener listener) {
         this.subscriberButton.addActionListener(listener);
+    }
+
+    public void addPaymentActionListener(ActionListener listener) {
+        this.paymentButton.addActionListener(listener);
     }
 
 }

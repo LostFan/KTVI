@@ -3,10 +3,17 @@ package org.lostfan.ktv.view;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
 
+import net.sourceforge.jdatepicker.JDatePicker;
+import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
+import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import net.sourceforge.jdatepicker.impl.UtilCalendarModel;
+import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.model.*;
 
 public class SearchViewBase {
@@ -21,11 +28,34 @@ public class SearchViewBase {
         typeCriteria.put(EntityField.Types.Date, new String[] {"Равно", "Раньше чем", "Позже чем"});
     }
 
+    public class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
+
+        private String datePattern = "dd-MM-yyyy";
+        private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+        @Override
+        public Object stringToValue(String text) throws ParseException {
+            return dateFormatter.parseObject(text);
+        }
+
+        @Override
+        public String valueToString(Object value) throws ParseException {
+            if (value != null) {
+                Calendar cal = (Calendar) value;
+                return dateFormatter.format(cal.getTime());
+            }
+
+            return "";
+        }
+
+    }
+
     private class CriterionComponents {
 
         private JComboBox<String> fieldComboBox;
         private JComboBox<String> criterionComboBox;
         private JTextField valueTextField;
+        private JDatePickerImpl datePicker;
         private JButton removeButton;
 
         public CriterionComponents() {
@@ -33,6 +63,7 @@ public class SearchViewBase {
             this.fieldComboBox = new JComboBox<String>(model.getFieldComboBoxModel());
 
             this.fieldComboBox.addActionListener(e -> {
+
                 criterionComboBox = new JComboBox<String>(
                         new CriteriaComboBoxModel(SearchCriteria.getCritera(getSelectedFieldType())));
                 SearchViewBase.this.rebuildCriteriaPanel();
@@ -40,6 +71,7 @@ public class SearchViewBase {
 
             this.criterionComboBox = new JComboBox<String>();
             this.valueTextField = new JTextField(20);
+            this.datePicker = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
             this.removeButton = new JButton();
             URL url = SearchViewBase.class.getClassLoader().getResource("images/remove.png");
             if(url != null) {
@@ -79,7 +111,8 @@ public class SearchViewBase {
                 case Boolean:
                     return getSelectedCriterion() == SearchCriteria.Boolean.True;
                 case Date:
-                    return this.valueTextField.getText();
+                    java.sql.Date selectedDate = new java.sql.Date(((Date) datePicker.getModel().getValue()).getTime());
+                    return selectedDate.toLocalDate();
             }
             return null;
         }
@@ -94,9 +127,13 @@ public class SearchViewBase {
             if (this.fieldComboBox.getSelectedItem() != null) {
                 panel.add(this.criterionComboBox, c);
             }
-            if (getSelectedFieldType() != null && getSelectedFieldType() != EntityField.Types.Boolean) {
+            if (getSelectedFieldType() != null && getSelectedFieldType() != EntityField.Types.Boolean && getSelectedFieldType() != EntityField.Types.Date) {
                 panel.add(this.valueTextField, c);
             }
+            if (getSelectedFieldType() != null && getSelectedFieldType() == EntityField.Types.Date) {
+                panel.add(this.datePicker, c);
+            }
+
 
             panel.add(this.removeButton, c);
 
