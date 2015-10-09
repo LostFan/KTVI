@@ -7,9 +7,9 @@ import javax.swing.table.TableModel;
 
 public class EntityTableModel<T> implements TableModel {
 
-    private BaseModel<T> model;
+    private BaseEntityModel<T> model;
 
-    public EntityTableModel(BaseModel<T> model) {
+    public EntityTableModel(BaseEntityModel<T> model) {
         this.model = model;
     }
 
@@ -23,11 +23,11 @@ public class EntityTableModel<T> implements TableModel {
         return this.model.getFields().size();
     }
 
-    @Override
-    public String getColumnName(int columnIndex) {
-        return ResourceBundles.getEntityBundle().getString(
-                this.model.getFields().get(columnIndex).getTitleKey());
-    }
+@Override
+public String getColumnName(int columnIndex) {
+    return ResourceBundles.getEntityBundle().getString(
+            this.model.getFields().get(columnIndex).getTitleKey());
+}
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {

@@ -5,11 +5,11 @@ import org.lostfan.ktv.utils.Observable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseModel<T> extends Observable implements Model<T> {
+public abstract class BaseEntityModel<T> extends Observable implements EntityModel<T> {
 
     private List<FieldSearchCriterion<T>> searchCriteria;
 
-    public BaseModel() {
+    public BaseEntityModel() {
         this.searchCriteria = new ArrayList<>();
     }
 

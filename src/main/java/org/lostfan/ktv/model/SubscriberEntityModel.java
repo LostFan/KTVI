@@ -10,14 +10,14 @@ import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Subscriber;
 
-public class SubscriberModel extends BaseModel<Subscriber> {
+public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
     private List<EntityField<Subscriber, ?>> fields;
 
     private SubscriberDAO dao;
     private List<Subscriber> subscribers;
 
-    public SubscriberModel() {
+    public SubscriberEntityModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
 
         this.fields = new ArrayList<>();

@@ -3,7 +3,7 @@ package org.lostfan.ktv.controller;
 import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.dao.impl.hsqldb.HsqldbServiceDAO;
 import org.lostfan.ktv.model.FieldSearchCriterion;
-import org.lostfan.ktv.model.Model;
+import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
@@ -14,11 +14,11 @@ import java.util.List;
 
 public class EntityController {
 
-    private Model model;
+    private EntityModel model;
     private EntityTableView view;
     private ServiceDAO serviceDAO = new HsqldbServiceDAO();
 
-    public EntityController(Model model, EntityTableView view) {
+    public EntityController(EntityModel model, EntityTableView view) {
         this.model = model;
         this.view = view;
 
@@ -26,6 +26,10 @@ public class EntityController {
         this.view.addAddActionListener(new AddActionListener());
         this.view.addChangeActionListener(new ChangeActionListener());
         this.view.addDeleteActionListener(new DeleteActionListener());
+    }
+
+    public void setModel(EntityModel model) {
+        this.model = model;
     }
 
     private class FindActionListener implements ActionListener {

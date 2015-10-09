@@ -1,6 +1,5 @@
 package org.lostfan.ktv.model;
 
-
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.*;

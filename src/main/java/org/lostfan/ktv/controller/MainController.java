@@ -1,9 +1,9 @@
 package org.lostfan.ktv.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import org.lostfan.ktv.view.CatalogsView;
+import org.lostfan.ktv.model.BaseEntityModel;
+import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.model.MainModel;
+import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.MainView;
 
 /**
@@ -12,26 +12,32 @@ import org.lostfan.ktv.view.MainView;
 public class MainController {
 
     private MainView view;
+    private MainModel model;
 
-    public MainController(MainView view) {
+    private EntityController entityController;
+    private EntityModel activeEntityModel;
+    private EntityTableView tableView;
+
+    public MainController(MainModel model, MainView view) {
+        this.model = model;
         this.view = view;
 
-        this.view.addDocumentActionListener(new DocumentActionListener());
-        this.view.addReportActionListener(new ReportActionListener());
-    }
+        this.view.setEntityModelListener(newModel -> {
+            if (activeEntityModel ==  newModel) {
+                return;
+            }
 
-    private class DocumentActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            CatalogsView view = new CatalogsView();
-            CatalogsController controller = new CatalogsController(view);
-        }
-    }
-
-    private class ReportActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("Report action");
-        }
+            if (entityController == null) {
+                activeEntityModel = newModel;
+                tableView = new EntityTableView((BaseEntityModel)newModel);
+                entityController = new EntityController(newModel, tableView);
+                model.setContentPanel(tableView.getContentPanel());
+            } else {
+                activeEntityModel = newModel;
+                tableView.setModel((BaseEntityModel)newModel);
+                entityController.setModel(newModel);
+                model.setContentPanel(tableView.getContentPanel());
+            }
+        });
     }
 }

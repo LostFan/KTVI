@@ -5,24 +5,33 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import org.lostfan.ktv.model.BaseModel;
+import org.lostfan.ktv.model.BaseEntityModel;
+import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 public class EntityTableView {
 
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 700;
+    private class ModelObserver implements Observer {
+        @Override
+        public void update(Object args) {
+            EntityTableView.this.revalidate();
+        }
+    }
 
-    private JFrame frame;
+    private JPanel contentPanel;
     private JTable table;
+    private JScrollPane tableScrollPane;
     private JButton findButton;
     private JButton addButton;
     private JButton changeButton;
     private JButton deleteButton;
 
-    public EntityTableView(BaseModel model) {
-        this.frame = new JFrame(ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
-        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    private ModelObserver modelObserver;
+
+    private BaseEntityModel model;
+
+    public EntityTableView(BaseEntityModel model) {
+        this.model = model;
 
         this.table = new JTable(model.getTableModel());
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -34,30 +43,25 @@ public class EntityTableView {
         this.deleteButton = new JButton(getString("buttons.delete"));
 
         buildLayout();
-        frame.setVisible(true);
 
-        model.addObserver(args -> {
-            frame.revalidate();
-            frame.repaint();
-        });
+        this.modelObserver = new ModelObserver();
+
+        model.addObserver(this.modelObserver);
     }
 
     private void buildLayout() {
-        frame.setSize(new Dimension(WIDTH, HEIGHT));
-        frame.setLocationRelativeTo(null);
-
-        frame.setLayout(new BorderLayout(10, 10));
-        frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        this.contentPanel = new JPanel(new BorderLayout(10, 10));
 
         // ID column values should be aligned to the left;
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.LEFT);
         this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
+        this.tableScrollPane = new JScrollPane(this.table);
 
-        this.frame.add(new JScrollPane(this.table), BorderLayout.CENTER);
+        this.contentPanel.add(tableScrollPane, BorderLayout.CENTER);
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        frame.add(rightPanel, BorderLayout.LINE_END);
+        this.contentPanel.add(rightPanel, BorderLayout.LINE_END);
 
         JPanel rightPanelInner = new JPanel(new GridLayout(4, 1, 0, 10));
         rightPanel.add(rightPanelInner);
@@ -70,6 +74,26 @@ public class EntityTableView {
 
     public int getSelectedIndex() {
         return this.table.getSelectedRow();
+    }
+
+    public JPanel getContentPanel() {
+        return this.contentPanel;
+    }
+
+    public void setModel(BaseEntityModel model) {
+        this.model.removeObserver(modelObserver);
+        this.model = model;
+        model.addObserver(this.modelObserver);
+
+        this.table = new JTable(model.getTableModel());
+        this.tableScrollPane.setViewportView(this.table);
+
+        revalidate();
+    }
+
+    private void revalidate() {
+        this.contentPanel.invalidate();
+        this.contentPanel.repaint();
     }
 
     public void addFindActionListener(ActionListener listener) {

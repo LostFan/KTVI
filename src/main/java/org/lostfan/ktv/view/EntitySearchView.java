@@ -3,23 +3,18 @@ package org.lostfan.ktv.view;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
 
-import net.sourceforge.jdatepicker.JDatePicker;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilCalendarModel;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.utils.DateLabelFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 public class EntitySearchView {
-    
 
     private class CriterionComponents {
 
@@ -114,17 +109,18 @@ public class EntitySearchView {
         }
     }
 
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 700;
+    public static final int WIDTH = 750;
+    public static final int HEIGHT = 500;
+
     private JFrame frame;
     private JPanel criteriaPanel;
     private List<CriterionComponents> criteria;
     private JButton addButton;
     private JButton findButton;
     private JButton cancelButton;
-    private Model model;
+    private EntityModel model;
 
-    public EntitySearchView(Model model) {
+    public EntitySearchView(EntityModel model) {
         this.model = model;
         this.frame = new JFrame(getString("buttons.search") + ": " +
                 ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));

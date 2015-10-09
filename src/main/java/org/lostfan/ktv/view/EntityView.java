@@ -2,16 +2,13 @@ package org.lostfan.ktv.view;
 
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.SqlDateModel;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.utils.DateLabelFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -92,9 +89,9 @@ public class EntityView {
     List<NameAndValueFields> nameAndValueFieldses;
     private JButton addButton;
     private JButton cancelButton;
-    private Model model;
+    private EntityModel model;
 
-    public EntityView(Model model) {
+    public EntityView(EntityModel model) {
         nameAndValueFieldses = new ArrayList<>();
         this.model = model;
         this.frame = new JFrame(ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
@@ -109,7 +106,7 @@ public class EntityView {
         frame.setVisible(true);
     }
 
-    public EntityView(Model model, Object entity) {
+    public EntityView(EntityModel model, Object entity) {
 
         this(model);
 
@@ -141,10 +138,6 @@ public class EntityView {
 
         frame.setLayout(new BorderLayout(10, 10));
         frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-
-        // ID column values should be aligned to the left;
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.LEFT);
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         frame.add(panel, BorderLayout.LINE_START);

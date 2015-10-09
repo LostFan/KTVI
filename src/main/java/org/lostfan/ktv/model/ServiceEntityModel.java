@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ServiceModel extends BaseModel<Service> {
+public class ServiceEntityModel extends BaseEntityModel<Service> {
 
     private List<EntityField<Service, ?>> fields;
 
     private ServiceDAO dao;
     private List<Service> services;
 
-    public ServiceModel() {
+    public ServiceEntityModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
         this.fields = new ArrayList<>();

@@ -4,21 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.PaymentDAO;
 import org.lostfan.ktv.domain.Payment;
 
-public class PaymentModel extends BaseModel<Payment> {
+public class PaymentEntityModel extends BaseEntityModel<Payment> {
 
     private List<EntityField<Payment, ?>> fields;
 
     private PaymentDAO dao;
     private List<Payment> payments;
 
-    public PaymentModel() {
+    public PaymentEntityModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getPaymentDAO();
         fields = new ArrayList<>();
 
