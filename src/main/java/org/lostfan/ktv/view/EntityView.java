@@ -9,6 +9,7 @@ import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +46,7 @@ public class EntityView {
                 case String:
                     return this.valueTextField.getText();
                 case Integer:
-                    return Integer.parseInt(this.valueTextField.getText());
+                    return !this.valueTextField.getText().isEmpty() ? Integer.parseInt(this.valueTextField.getText()): null;
                 case Boolean:
                     return this.checkBox.isSelected();
                 case Date:
@@ -86,7 +87,7 @@ public class EntityView {
     public static final int HEIGHT = 700;
 
     private JFrame frame;
-    List<NameAndValueFields> nameAndValueFieldses;
+    private List<NameAndValueFields> nameAndValueFieldses;
     private JButton addButton;
     private JButton cancelButton;
     private EntityModel model;
@@ -114,8 +115,15 @@ public class EntityView {
 
         for (NameAndValueFields nameAndValueFields : nameAndValueFieldses) {
             Object o = nameAndValueFields.getEntityField().get(entity);
-            if (nameAndValueFields.getSelectedFieldType() != EntityField.Types.Boolean && nameAndValueFields.getSelectedFieldType() != EntityField.Types.Date) {
+            if (nameAndValueFields.getSelectedFieldType() == EntityField.Types.String ) {
                 nameAndValueFields.valueTextField.setText(o.toString());
+            }
+            if (nameAndValueFields.getSelectedFieldType() == EntityField.Types.Integer) {
+                if(o != null) {
+                    nameAndValueFields.valueTextField.setText(o.toString());
+                } else {
+                    nameAndValueFields.valueTextField.setText("0");
+                }
             }
             if (nameAndValueFields.getSelectedFieldType() == EntityField.Types.Date) {
                 LocalDate localDate = (LocalDate) o;
@@ -153,6 +161,27 @@ public class EntityView {
         butPanel.add(cancelButton);
         frame.add(butPanel, BorderLayout.SOUTH);
 
+    }
+
+    public List<FieldValue> getValues() {
+        List<FieldValue> fieldValues = new ArrayList<>();
+        for (NameAndValueFields nameAndValueFields : this.nameAndValueFieldses) {
+            String fieldName = nameAndValueFields.getEntityField().getTitleKey();
+            FieldValue fieldValue =
+                    new FieldValue(fieldName,  nameAndValueFields.getValue());
+            fieldValues.add(fieldValue);
+        }
+
+        return fieldValues;
+    }
+
+    public void addAddActionListener(ActionListener listener) {
+        this.addButton.addActionListener(listener);
+        System.out.println(123);
+    }
+
+    public void addCancelActionListener(ActionListener listener) {
+        this.addButton.addActionListener(listener);
     }
 
     private String getString(String key) {

@@ -4,6 +4,7 @@ import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.dao.impl.hsqldb.HsqldbServiceDAO;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.model.FieldValue;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
@@ -57,6 +58,10 @@ public class EntityController {
         @Override
         public void actionPerformed(ActionEvent e) {
             EntityView entityView = new EntityView(model);
+            entityView.addAddActionListener(e1 -> {
+                List<FieldValue> fieldValues = entityView.getValues();
+                model.saveOrEditEntity(fieldValues);
+            });
         }
     }
 
@@ -69,6 +74,11 @@ public class EntityController {
                 System.out.println("No selection");
             } else {
                 EntityView entityView = new EntityView(model, model.getList().get(selectedIndex));
+                entityView.addAddActionListener(e1 -> {
+                    List<FieldValue> fieldValues = entityView.getValues();
+                    model.saveOrEditEntity(fieldValues);
+                });
+
             }
         }
     }

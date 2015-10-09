@@ -4,21 +4,21 @@ import java.util.List;
 
 public class Subscriber {
 
-    private int id;
+    private Integer id;
 
-    private int account;
+    private Integer account;
 
     private String name;
 
-    private int balance;
+    private Integer balance;
 
     private boolean connected;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -30,11 +30,11 @@ public class Subscriber {
         this.name = name;
     }
 
-    public int getBalance() {
+    public Integer getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(Integer balance) {
         this.balance = balance;
     }
 
@@ -46,11 +46,11 @@ public class Subscriber {
         this.connected = connected;
     }
 
-    public int getAccount() {
+    public Integer getAccount() {
         return account;
     }
 
-    public void setAccount(int account) {
+    public void setAccount(Integer account) {
         this.account = account;
     }
 }

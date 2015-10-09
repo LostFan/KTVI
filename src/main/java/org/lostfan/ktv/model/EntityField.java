@@ -1,15 +1,28 @@
 package org.lostfan.ktv.model;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class EntityField<E, T> {
 
     public enum Types {
-        String,
-        Integer,
-        Boolean,
-        Date;
+        String(java.lang.String.class),
+        Integer(java.lang.Integer.class),
+        Boolean(java.lang.Boolean.class),
+        Date(LocalDate.class);
+
+        private Class clazz;
+
+        Types(Class clazz ) {
+            this.clazz = clazz;
+        }
+
+        public Class getClazz() {
+            return this.clazz;
+        }
+
     }
 
     private String titleKey;

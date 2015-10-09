@@ -23,15 +23,15 @@ public class EntityTableModel<T> implements TableModel {
         return this.model.getFields().size();
     }
 
-@Override
-public String getColumnName(int columnIndex) {
+    @Override
+    public String getColumnName(int columnIndex) {
     return ResourceBundles.getEntityBundle().getString(
             this.model.getFields().get(columnIndex).getTitleKey());
 }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return getValueAt(0, columnIndex).getClass();
+        return this.model.getFields().get(columnIndex).getType().getClazz();
     }
 
     @Override
@@ -41,7 +41,11 @@ public String getColumnName(int columnIndex) {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return this.model.getFields().get(columnIndex).get(this.model.getList().get(rowIndex));
+        Object value = this.model.getFields().get(columnIndex).get(this.model.getList().get(rowIndex));
+        if(getColumnClass(columnIndex) == Integer.class && value ==null) {
+            return 0;
+        }
+        return value;
     }
 
     @Override

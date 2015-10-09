@@ -51,13 +51,13 @@ public class HsqldbServiceDAOTest {
     @Test
     public void getAllServicesReturnsAllExistingServicesTest() throws SQLException {
         insertStubDataServices();
-        assertEquals(serviceDao.getAllServices().get(0).getId(), 1);
+        assertEquals(serviceDao.getAllServices().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingServiceByIdTest() throws SQLException {
         insertStubDataServices();
-        assertEquals(serviceDao.getService(1).getId(), 1);
+        assertEquals(serviceDao.getService(1).getId().intValue(), 1);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class HsqldbServiceDAOTest {
         service.setName("Service 4 name");
         service.setAdditionalService(true);
         serviceDao.save(service);
-        assertEquals(serviceDao.getAllServices().get(3).getId(), 4);
+        assertEquals(serviceDao.getAllServices().get(3).getId().intValue(), 4);
     }
 
     @Test

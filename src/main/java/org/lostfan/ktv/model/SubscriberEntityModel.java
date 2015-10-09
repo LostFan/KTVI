@@ -2,6 +2,8 @@ package org.lostfan.ktv.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.table.TableModel;
@@ -68,5 +70,26 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.subscribers = stream.collect(Collectors.toList());
         this.notifyObservers(null);
     }
+    @Override
+    public void saveOrEditEntity(List<FieldValue<Subscriber>> fieldValues) {
+        Map<String, FieldValue> collect =  fieldValues.stream().collect(Collectors.toMap(
+                criterion -> criterion.getFieldName(),
+                Function.identity()));
+        Subscriber subscriber = new Subscriber();
+        subscriber.setAccount((Integer) collect.get("subscriber.account").getValue());
+        subscriber.setName((String) collect.get("subscriber.name").getValue());
+        if(collect.get("subscriber.id") != null) {
+            Integer subscriberId = (Integer) collect.get("subscriber.id").getValue();
+            System.out.println(subscriberId);
 
+            if (this.dao.getSubscriber(subscriberId) != null) {
+                subscriber.setId((Integer) collect.get("subscriber.id").getValue());
+                this.dao.update(subscriber);
+            } else {
+                this.dao.save(subscriber);
+            }
+        }
+        this.subscribers = this.dao.getAllSubscribers();
+        this.notifyObservers(null);
+    }
 }

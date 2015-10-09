@@ -56,13 +56,13 @@ public class HsqldbSubscriberDAOTest {
     @Test
     public void getAllSubscribersReturnsAllExistingSubscribersTest() throws SQLException {
         insertStubDataSubscribers();
-        assertEquals(subscriberDao.getAllSubscribers().get(0).getId(), 1);
+        assertEquals(subscriberDao.getAllSubscribers().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingSubscriberByIdTest() throws SQLException {
         insertStubDataSubscribers();
-        assertEquals(subscriberDao.getSubscriber(1).getId(), 1);
+        assertEquals(subscriberDao.getSubscriber(1).getId().intValue(), 1);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class HsqldbSubscriberDAOTest {
         subscriber.setName("Jayme");
         subscriber.setAccount(700500);
         subscriberDao.save(subscriber);
-        assertEquals(subscriberDao.getAllSubscribers().get(3).getId(), 4);
+        assertEquals(subscriberDao.getAllSubscribers().get(3).getId().intValue(), 4);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class HsqldbSubscriberDAOTest {
         subscriber.setAccount(700989);
         subscriberDao.save(subscriber);
         assertEquals(subscriberDao.getAllSubscribers().get(3).getName(), "Sansa");
-        assertEquals(subscriberDao.getAllSubscribers().get(3).getAccount(), 700989);
+        assertEquals(subscriberDao.getAllSubscribers().get(3).getAccount().intValue(), 700989);
     }
 
     @Test

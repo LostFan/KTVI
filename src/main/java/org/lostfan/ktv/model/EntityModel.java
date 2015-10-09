@@ -20,4 +20,6 @@ public interface EntityModel<T> {
     List<FieldSearchCriterion<T>> getSearchCriteria();
 
     void setSearchCriteria(List<FieldSearchCriterion<T>> criteria);
+
+    void saveOrEditEntity(List<FieldValue<T>> fieldValues);
 }
