@@ -2,10 +2,14 @@ package org.lostfan.ktv.view;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.model.BaseEntityModel;
+import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 
@@ -35,6 +39,7 @@ public class EntityTableView {
 
         this.table = new JTable(model.getTableModel());
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        this.table.setAutoCreateRowSorter(true);
         this.table.setFillsViewportHeight(true);
 
         this.findButton = new JButton(getString("buttons.find"));
@@ -106,6 +111,10 @@ public class EntityTableView {
 
     public void addChangeActionListener(ActionListener listener) {
         this.changeButton.addActionListener(listener);
+    }
+
+    public void addDoubleClickListener(MouseListener listener) {
+        this.table.addMouseListener(listener);
     }
 
     public void addDeleteActionListener(ActionListener listener) {

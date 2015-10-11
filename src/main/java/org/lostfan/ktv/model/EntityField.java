@@ -1,5 +1,8 @@
 package org.lostfan.ktv.model;
 
+import org.lostfan.ktv.domain.Service;
+import org.lostfan.ktv.domain.Subscriber;
+
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.function.BiConsumer;
@@ -8,19 +11,27 @@ import java.util.function.Function;
 public class EntityField<E, T> {
 
     public enum Types {
-        String(java.lang.String.class),
-        Integer(java.lang.Integer.class),
-        Boolean(java.lang.Boolean.class),
-        Date(LocalDate.class);
+        String(java.lang.String.class, false),
+        Integer(java.lang.Integer.class, false),
+        Boolean(java.lang.Boolean.class, false),
+        Date(LocalDate.class, false),
+        Subscriber(org.lostfan.ktv.domain.Subscriber.class, true),
+        Service(org.lostfan.ktv.domain.Service.class, true);
 
         private Class clazz;
+        private boolean entityClass;
 
-        Types(Class clazz ) {
+        Types(Class clazz, boolean entityClass ) {
             this.clazz = clazz;
+            this.entityClass = entityClass;
         }
 
         public Class getClazz() {
             return this.clazz;
+        }
+
+        public boolean isEntityClass() {
+            return this.entityClass;
         }
 
     }

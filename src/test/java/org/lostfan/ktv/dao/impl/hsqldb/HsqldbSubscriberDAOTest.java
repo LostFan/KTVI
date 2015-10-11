@@ -70,7 +70,7 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataSubscribers();
         Subscriber subscriber = new Subscriber();
         subscriber.setName("Jayme");
-        subscriber.setAccount(700500);
+        subscriber.setAccount("700500");
         subscriberDao.save(subscriber);
         assertEquals(subscriberDao.getAllSubscribers().get(3).getId().intValue(), 4);
     }
@@ -80,7 +80,7 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataSubscribers();
         Subscriber subscriber = new Subscriber();
         subscriber.setName("Robb");
-        subscriber.setAccount(700453);
+        subscriber.setAccount("700453");
         subscriberDao.save(subscriber);
         assertEquals(subscriberDao.getAllSubscribers().size(), 4);
     }
@@ -90,10 +90,10 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataSubscribers();
         Subscriber subscriber = new Subscriber();
         subscriber.setName("Sansa");
-        subscriber.setAccount(700989);
+        subscriber.setAccount("700989");
         subscriberDao.save(subscriber);
         assertEquals(subscriberDao.getAllSubscribers().get(3).getName(), "Sansa");
-        assertEquals(subscriberDao.getAllSubscribers().get(3).getAccount().intValue(), 700989);
+        assertEquals(subscriberDao.getAllSubscribers().get(3).getAccount(), "700989");
     }
 
     @Test
@@ -109,7 +109,7 @@ public class HsqldbSubscriberDAOTest {
     public void updateExistingSubscriberByIdCorrectSubscriberCountTest() throws SQLException {
         insertStubDataSubscribers();
         Subscriber subscriber = subscriberDao.getSubscriber(1);
-        subscriber.setAccount(700736);
+        subscriber.setAccount("700736");
         subscriber.setName("No one");
         subscriberDao.update(subscriber);
         assertEquals(subscriberDao.getAllSubscribers().size(), 3);
@@ -119,7 +119,7 @@ public class HsqldbSubscriberDAOTest {
     public void updateExistingSubscriberByIdShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubDataSubscribers();
         Subscriber subscriber = subscriberDao.getSubscriber(1);
-        subscriber.setAccount(700344);
+        subscriber.setAccount("700344");
         subscriberDao.update(subscriber);
         assertEquals(subscriberDao.getSubscriber(1).getName(), "Arya");
     }

@@ -27,7 +27,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
                 Subscriber subscriber = new Subscriber();
                 subscriber.setId(rs.getInt("id"));
                 subscriber.setName(rs.getString("name"));
-                subscriber.setAccount(rs.getInt("account"));
+                subscriber.setAccount(rs.getString("account"));
 
                 subscribers.add(subscriber);
             }
@@ -50,7 +50,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
                 subscriber = new Subscriber();
                 subscriber.setId(rs.getInt("id"));
                 subscriber.setName(rs.getString("name"));
-                subscriber.setAccount(rs.getInt("account"));
+                subscriber.setAccount(rs.getString("account"));
 
             }
 
@@ -66,7 +66,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"subscriber\" (\"name\", \"account\") VALUES(?, ?)");
             preparedStatement.setString(1, subscriber.getName());
-            preparedStatement.setInt(2, subscriber.getAccount());
+            preparedStatement.setString(2, subscriber.getAccount());
             preparedStatement.executeUpdate();
 
         } catch (SQLException ex) {
@@ -80,7 +80,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"subscriber\" set \"name\" = ?, \"account\" = ? where \"id\" = ?");
                 preparedStatement.setString(1, subscriber.getName());
-                preparedStatement.setInt(2, subscriber.getAccount());
+                preparedStatement.setString(2, subscriber.getAccount());
                 preparedStatement.setInt(3, subscriber.getId());
                 preparedStatement.executeUpdate();
 

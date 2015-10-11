@@ -28,6 +28,8 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField<>("payment.id", EntityField.Types.Integer, Payment::getId, Payment::setId));
         this.fields.add(new EntityField<>("payment.payDate", EntityField.Types.Date, Payment::getDate, Payment::setDate));
+        this.fields.add(new EntityField<>("subscriber", EntityField.Types.Subscriber, Payment::getSubscriberId, Payment::setSubscriberId));
+        this.fields.add(new EntityField<>("service", EntityField.Types.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
         this.fields.add(new EntityField<>("payment.price", EntityField.Types.Integer, Payment::getPrice, Payment::setPrice));
     }
 

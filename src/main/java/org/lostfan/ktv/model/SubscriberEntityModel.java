@@ -24,7 +24,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField<>("subscriber.id", EntityField.Types.Integer, Subscriber::getId, Subscriber::setId));
-        this.fields.add(new EntityField<>("subscriber.account", EntityField.Types.Integer, Subscriber::getAccount, Subscriber::setAccount));
+        this.fields.add(new EntityField<>("subscriber.account", EntityField.Types.String, Subscriber::getAccount, Subscriber::setAccount));
         this.fields.add(new EntityField<>("subscriber.name", EntityField.Types.String, Subscriber::getName, Subscriber::setName));
         this.fields.add(new EntityField<>("subscriber.balance", EntityField.Types.Integer, Subscriber::getBalance, Subscriber::setBalance));
         this.fields.add(new EntityField<>("subscriber.connected", EntityField.Types.Boolean, Subscriber::isConnected, Subscriber::setConnected));
@@ -76,7 +76,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
                 criterion -> criterion.getFieldName(),
                 Function.identity()));
         Subscriber subscriber = new Subscriber();
-        subscriber.setAccount((Integer) collect.get("subscriber.account").getValue());
+        subscriber.setAccount((String) collect.get("subscriber.account").getValue());
         subscriber.setName((String) collect.get("subscriber.name").getValue());
         if(collect.get("subscriber.id") != null) {
             Integer subscriberId = (Integer) collect.get("subscriber.id").getValue();

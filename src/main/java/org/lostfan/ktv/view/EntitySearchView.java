@@ -6,6 +6,8 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.event.MenuKeyEvent;
+import javax.swing.event.MenuKeyListener;
 
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
@@ -70,6 +72,8 @@ public class EntitySearchView {
         public Object getValue() {
             switch (getSelectedFieldType()) {
                 case String:
+                case Service:
+                case Subscriber:
                     return this.valueTextField.getText();
                 case Integer:
                     return Integer.parseInt(this.valueTextField.getText());
@@ -94,10 +98,32 @@ public class EntitySearchView {
             }
             if (getSelectedFieldType() != null && getSelectedFieldType() != EntityField.Types.Boolean && getSelectedFieldType() != EntityField.Types.Date) {
                 panel.add(this.valueTextField, c);
+                JPopupMenu jpm = new JPopupMenu();
+                JMenuItem item = new JMenuItem("x =    " + "y = ");
+                jpm.addMenuKeyListener(new MenuKeyListener() {
+                    @Override
+                    public void menuKeyTyped(MenuKeyEvent e) {
+                        System.out.println(1);
+                    }
+
+                    @Override
+                    public void menuKeyPressed(MenuKeyEvent e) {
+                        System.out.println(2);
+                    }
+
+                    @Override
+                    public void menuKeyReleased(MenuKeyEvent e) {
+                        System.out.println(3);
+                    }
+                });
+                jpm.add(item);
+                valueTextField.setComponentPopupMenu(jpm);
             }
             if (getSelectedFieldType() != null && getSelectedFieldType() == EntityField.Types.Date) {
                 panel.add(this.datePicker, c);
             }
+            panel.add(new JList<>());
+            panel.add(new JPopupMenu());
 
 
             panel.add(this.removeButton, c);
@@ -205,3 +231,4 @@ public class EntitySearchView {
         return ResourceBundles.getGuiBundle().getString(key);
     }
 }
+

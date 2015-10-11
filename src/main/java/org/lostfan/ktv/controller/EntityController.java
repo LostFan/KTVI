@@ -11,6 +11,8 @@ import org.lostfan.ktv.view.EntityView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class EntityController {
@@ -27,6 +29,8 @@ public class EntityController {
         this.view.addAddActionListener(new AddActionListener());
         this.view.addChangeActionListener(new ChangeActionListener());
         this.view.addDeleteActionListener(new DeleteActionListener());
+        this.view.addDoubleClickListener(new ChangeMouseDoubleClickListener());
+
     }
 
     public void setModel(EntityModel model) {
@@ -82,6 +86,23 @@ public class EntityController {
             }
         }
     }
+
+    private class ChangeMouseDoubleClickListener extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2) {
+                int selectedIndex = view.getSelectedIndex();
+                EntityView entityView = new EntityView(model, model.getList().get(selectedIndex));
+                entityView.addAddActionListener(e1 -> {
+                    List<FieldValue> fieldValues = entityView.getValues();
+                    model.saveOrEditEntity(fieldValues);
+                });
+
+            }
+        }
+    }
+
+
 
     private class DeleteActionListener implements ActionListener {
         @Override

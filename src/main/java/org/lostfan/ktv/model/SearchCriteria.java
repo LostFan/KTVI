@@ -74,6 +74,40 @@ public class SearchCriteria {
         }
     }
 
+    public static class Service extends SearchCriteria {
+
+        static {
+            criteria.put(EntityField.Types.Service, new ArrayList<>());
+        }
+
+        private static void init() { }
+
+        public static final Service Equals = new Service(EntityField.Types.Service, "criteria.string.equals");
+        public static final Service Contains = new Service(EntityField.Types.Service, "criteria.string.contains");
+        public static final Service NotContains = new Service(EntityField.Types.Service, "criteria.string.notcontains");
+
+        private Service(EntityField.Types type, java.lang.String title) {
+            super(type, title);
+        }
+    }
+
+    public static class Subscriber extends SearchCriteria {
+
+        static {
+            criteria.put(EntityField.Types.Subscriber, new ArrayList<>());
+        }
+
+        private static void init() { }
+
+        public static final Subscriber Equals = new Subscriber(EntityField.Types.Subscriber, "criteria.string.equals");
+        public static final Subscriber Contains = new Subscriber(EntityField.Types.Subscriber, "criteria.string.contains");
+        public static final Subscriber NotContains = new Subscriber(EntityField.Types.Subscriber, "criteria.string.notcontains");
+
+        private Subscriber(EntityField.Types type, java.lang.String title) {
+            super(type, title);
+        }
+    }
+
     private static Map<EntityField.Types, List<SearchCriteria>> criteria = new HashMap<>();
 
     static {
@@ -82,6 +116,8 @@ public class SearchCriteria {
         Integer.init();
         Boolean.init();
         Date.init();
+        Service.init();
+        Subscriber.init();
     }
 
     public static List<SearchCriteria> getCritera(EntityField.Types type) {
