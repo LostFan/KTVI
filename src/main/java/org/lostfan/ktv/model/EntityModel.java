@@ -22,4 +22,6 @@ public interface EntityModel<T> {
     void setSearchCriteria(List<FieldSearchCriterion<T>> criteria);
 
     void saveOrEditEntity(List<FieldValue<T>> fieldValues);
+
+    void deleteEntityByRow(List<Integer> rowNumbers);
 }

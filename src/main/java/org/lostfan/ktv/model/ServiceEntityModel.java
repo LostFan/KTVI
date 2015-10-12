@@ -70,16 +70,30 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
         Service service = new Service();
         service.setName(collect.get("service.name").getValue().toString());
         service.setAdditionalService((Boolean) collect.get("service.additional").getValue());
-        if(collect.get("service.id") != null) {
-            Integer serviceId = (Integer) collect.get("service.id").getValue();
-            System.out.println(serviceId);
 
+        if(collect.get("service.id").getValue() != null) {
+            Integer serviceId = (Integer) collect.get("service.id").getValue();
+            System.out.println("serviceId = " + serviceId);
+            service.setId((Integer) collect.get("service.id").getValue());
             if (this.dao.getService(serviceId) != null) {
-                service.setId((Integer) collect.get("service.id").getValue());
                 this.dao.update(service);
             } else {
-            this.dao.save(service);
+                this.dao.save(service);
             }
+        } else {
+            this.dao.save(service);
+        }
+        this.services = this.dao.getAllServices();
+        this.notifyObservers(null);
+    }
+
+    @Override
+    public void deleteEntityByRow(List<Integer> rowNumbers) {
+        for (Integer rowNumber : rowNumbers) {
+            System.out.println("rowNumber " + rowNumber);
+            int id = getList().get(rowNumber).getId();
+            System.out.println("id " + id);
+            this.dao.delete(id);
         }
         this.services = this.dao.getAllServices();
         this.notifyObservers(null);

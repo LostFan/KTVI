@@ -70,6 +70,17 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.subscribers = stream.collect(Collectors.toList());
         this.notifyObservers(null);
     }
+
+    @Override
+    public void deleteEntityByRow(List<Integer> rowNumbers) {
+        for (Integer rowNumber : rowNumbers) {
+            int id = getList().get(rowNumber).getId();
+            this.dao.delete(id);
+        }
+        this.subscribers = this.dao.getAllSubscribers();
+        this.notifyObservers(null);
+    }
+
     @Override
     public void saveOrEditEntity(List<FieldValue<Subscriber>> fieldValues) {
         Map<String, FieldValue> collect =  fieldValues.stream().collect(Collectors.toMap(
@@ -78,7 +89,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         Subscriber subscriber = new Subscriber();
         subscriber.setAccount((String) collect.get("subscriber.account").getValue());
         subscriber.setName((String) collect.get("subscriber.name").getValue());
-        if(collect.get("subscriber.id") != null) {
+        if(collect.get("subscriber.id").getValue() != null) {
             Integer subscriberId = (Integer) collect.get("subscriber.id").getValue();
             System.out.println(subscriberId);
 
@@ -88,6 +99,8 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
             } else {
                 this.dao.save(subscriber);
             }
+        } else {
+            this.dao.save(subscriber);
         }
         this.subscribers = this.dao.getAllSubscribers();
         this.notifyObservers(null);

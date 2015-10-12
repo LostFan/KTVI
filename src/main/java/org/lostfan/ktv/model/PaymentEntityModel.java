@@ -41,7 +41,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         Payment payment = new Payment();
         payment.setPrice((Integer) collect.get("payment.price").getValue());
         payment.setDate((LocalDate) collect.get("payment.price").getValue());
-        if(collect.get("payment.id") != null) {
+        if(collect.get("payment.id").getValue() != null) {
             Integer paymentId = (Integer) collect.get("payment.id").getValue();
             System.out.println(paymentId);
 
@@ -51,6 +51,18 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
             } else {
                 this.dao.save(payment);
             }
+        } else {
+            this.dao.save(payment);
+        }
+        this.payments = this.dao.getAllPayments();
+        this.notifyObservers(null);
+    }
+
+    @Override
+    public void deleteEntityByRow(List<Integer> rowNumbers) {
+        for (Integer rowNumber : rowNumbers) {
+            int id = getList().get(rowNumber).getId();
+            this.dao.delete(id);
         }
         this.payments = this.dao.getAllPayments();
         this.notifyObservers(null);

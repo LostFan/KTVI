@@ -138,7 +138,8 @@ public class EntitySearchView {
     public static final int WIDTH = 750;
     public static final int HEIGHT = 500;
 
-    private JFrame frame;
+    private JDialog frame;
+//    private JDialog dialog;
     private JPanel criteriaPanel;
     private List<CriterionComponents> criteria;
     private JButton addButton;
@@ -148,9 +149,10 @@ public class EntitySearchView {
 
     public EntitySearchView(EntityModel model) {
         this.model = model;
-        this.frame = new JFrame(getString("buttons.search") + ": " +
-                ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
+        this.frame = new JDialog(new JFrame(), getString("buttons.search") + ": " +
+                ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()), true);
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
         this.criteria = new ArrayList<>();
 
         this.addButton = new JButton(getString("buttons.addCriterion"));
@@ -161,6 +163,9 @@ public class EntitySearchView {
         });
 
         this.findButton = new JButton(getString("buttons.find"));
+        this.findButton.addActionListener(e -> {
+            frame.setVisible(false);
+        });
 
         this.cancelButton = new JButton(getString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {

@@ -5,6 +5,7 @@ import org.lostfan.ktv.dao.impl.hsqldb.HsqldbServiceDAO;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.model.FieldValue;
+import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
@@ -13,7 +14,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import javax.swing.*;
 
 public class EntityController {
 
@@ -49,12 +55,14 @@ public class EntityController {
         EntitySearchView entitySearchView;
         public SearchFindActionListener(EntitySearchView entitySearchView) {
             this.entitySearchView = entitySearchView;
+            List<FieldSearchCriterion> criteria = this.entitySearchView.getSearchCriteria();
+            model.setSearchCriteria(criteria);
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            List<FieldSearchCriterion> criteria = this.entitySearchView.getSearchCriteria();
-            model.setSearchCriteria(criteria);
+//            List<FieldSearchCriterion> criteria = this.entitySearchView.getSearchCriteria();
+//            model.setSearchCriteria(criteria);
         }
     }
 
@@ -107,13 +115,29 @@ public class EntityController {
     private class DeleteActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.print("Delete action.");
+
             int selectedIndex = view.getSelectedIndex();
             if (selectedIndex == -1) {
                 System.out.println("No selection");
-            } else {
-                System.out.println("Service name:" + model.getList().get(selectedIndex));
+                return;
             }
+            int optionType = JOptionPane.OK_CANCEL_OPTION;
+            int messageType = JOptionPane.QUESTION_MESSAGE;
+            Object[] selValues = {ResourceBundles.getGuiBundle().getString("buttons.yes"),
+                    ResourceBundles.getGuiBundle().getString("buttons.cancel") };
+            String message = ResourceBundles.getGuiBundle().getString("menu.delete") + " : "
+                    + ResourceBundles.getEntityBundle().getString(model.getEntityNameKey());
+            int result = JOptionPane.showOptionDialog(null,
+                    ResourceBundles.getGuiBundle().getString("menu.deleteQuestion"), message,
+                    optionType, messageType, null, selValues,
+                    selValues[0]);
+            System.out.println("Service name:" + model.getList().get(selectedIndex));
+            if(result == 0) {
+                model.deleteEntityByRow(IntStream.of(view.getSelectedIndexes()).boxed().collect(Collectors.toList()));
+            }
+
+
+
         }
     }
 }

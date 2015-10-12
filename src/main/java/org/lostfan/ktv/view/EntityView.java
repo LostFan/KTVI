@@ -98,7 +98,13 @@ public class EntityView {
         this.frame = new JFrame(ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.addButton = new JButton(getString("buttons.add"));
+        this.addButton.addActionListener(e -> {
+            frame.setVisible(false);
+        });
         this.cancelButton = new JButton(getString("buttons.cancel"));
+        this.cancelButton.addActionListener(e -> {
+            frame.setVisible(false);
+        });
 
         for (Object entityField : model.getFields()) {
             nameAndValueFieldses.add(new NameAndValueFields((EntityField) entityField));
@@ -177,7 +183,6 @@ public class EntityView {
 
     public void addAddActionListener(ActionListener listener) {
         this.addButton.addActionListener(listener);
-        System.out.println(123);
     }
 
     public void addCancelActionListener(ActionListener listener) {

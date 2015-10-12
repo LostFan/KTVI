@@ -81,6 +81,11 @@ public class EntityTableView {
         return this.table.getSelectedRow();
     }
 
+    public int[] getSelectedIndexes() {
+        return this.table.getSelectedRows();
+    }
+
+
     public JPanel getContentPanel() {
         return this.contentPanel;
     }
