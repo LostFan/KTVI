@@ -1,6 +1,7 @@
 package org.lostfan.ktv.model;
 
 import java.util.List;
+import java.util.Map;
 import javax.swing.table.TableModel;
 
 public interface EntityModel<T> {
@@ -21,7 +22,7 @@ public interface EntityModel<T> {
 
     void setSearchCriteria(List<FieldSearchCriterion<T>> criteria);
 
-    void saveOrEditEntity(List<FieldValue<T>> fieldValues);
+    void saveOrEditEntity(Map<String, Object> fieldValues);
 
     void deleteEntityByRow(List<Integer> rowNumbers);
 }

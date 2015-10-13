@@ -2,14 +2,11 @@ package org.lostfan.ktv.view;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.model.BaseEntityModel;
-import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 
@@ -88,6 +85,21 @@ public class EntityTableView {
 
     public JPanel getContentPanel() {
         return this.contentPanel;
+    }
+
+    public boolean isConfirm() {
+        int optionType = JOptionPane.OK_CANCEL_OPTION;
+        int messageType = JOptionPane.QUESTION_MESSAGE;
+        Object[] selValues = {ResourceBundles.getGuiBundle().getString("buttons.yes"),
+                ResourceBundles.getGuiBundle().getString("buttons.cancel") };
+        String message = ResourceBundles.getGuiBundle().getString("window.delete") + " : "
+                + ResourceBundles.getEntityBundle().getString(model.getEntityNameKey());
+        int result = JOptionPane.showOptionDialog(null,
+                ResourceBundles.getGuiBundle().getString("message.deleteQuestion"), message,
+                optionType, messageType, null, selValues,
+                selValues[0]);
+
+        return result == 0 ? true : false;
     }
 
     public void setModel(BaseEntityModel model) {

@@ -98,26 +98,6 @@ public class EntitySearchView {
             }
             if (getSelectedFieldType() != null && getSelectedFieldType() != EntityField.Types.Boolean && getSelectedFieldType() != EntityField.Types.Date) {
                 panel.add(this.valueTextField, c);
-                JPopupMenu jpm = new JPopupMenu();
-                JMenuItem item = new JMenuItem("x =    " + "y = ");
-                jpm.addMenuKeyListener(new MenuKeyListener() {
-                    @Override
-                    public void menuKeyTyped(MenuKeyEvent e) {
-                        System.out.println(1);
-                    }
-
-                    @Override
-                    public void menuKeyPressed(MenuKeyEvent e) {
-                        System.out.println(2);
-                    }
-
-                    @Override
-                    public void menuKeyReleased(MenuKeyEvent e) {
-                        System.out.println(3);
-                    }
-                });
-                jpm.add(item);
-                valueTextField.setComponentPopupMenu(jpm);
             }
             if (getSelectedFieldType() != null && getSelectedFieldType() == EntityField.Types.Date) {
                 panel.add(this.datePicker, c);

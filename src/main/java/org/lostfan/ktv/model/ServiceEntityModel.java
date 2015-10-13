@@ -63,18 +63,16 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
     }
 
     @Override
-    public void saveOrEditEntity(List<FieldValue<Service>> fieldValues) {
-        Map<String, FieldValue>  collect =  fieldValues.stream().collect(Collectors.toMap(
-                criterion -> criterion.getFieldName(),
-                Function.identity()));
-        Service service = new Service();
-        service.setName(collect.get("service.name").getValue().toString());
-        service.setAdditionalService((Boolean) collect.get("service.additional").getValue());
+    public void saveOrEditEntity(Map<String, Object> collect) {
 
-        if(collect.get("service.id").getValue() != null) {
-            Integer serviceId = (Integer) collect.get("service.id").getValue();
+        Service service = new Service();
+        service.setName(collect.get("service.name").toString());
+        service.setAdditionalService((Boolean) collect.get("service.additional"));
+
+        if(collect.get("service.id") != null) {
+            Integer serviceId = (Integer) collect.get("service.id");
             System.out.println("serviceId = " + serviceId);
-            service.setId((Integer) collect.get("service.id").getValue());
+            service.setId((Integer) collect.get("service.id"));
             if (this.dao.getService(serviceId) != null) {
                 this.dao.update(service);
             } else {

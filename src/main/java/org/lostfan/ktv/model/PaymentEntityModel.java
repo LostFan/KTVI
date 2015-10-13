@@ -34,19 +34,16 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     }
 
     @Override
-    public void saveOrEditEntity(List<FieldValue<Payment>> fieldValues) {
-        Map<String, FieldValue> collect =  fieldValues.stream().collect(Collectors.toMap(
-                criterion -> criterion.getFieldName(),
-                Function.identity()));
+    public void saveOrEditEntity(Map<String, Object> collect) {
         Payment payment = new Payment();
-        payment.setPrice((Integer) collect.get("payment.price").getValue());
-        payment.setDate((LocalDate) collect.get("payment.price").getValue());
-        if(collect.get("payment.id").getValue() != null) {
-            Integer paymentId = (Integer) collect.get("payment.id").getValue();
+        payment.setPrice((Integer) collect.get("payment.price"));
+        payment.setDate((LocalDate) collect.get("payment.price"));
+        if(collect.get("payment.id") != null) {
+            Integer paymentId = (Integer) collect.get("payment.id");
             System.out.println(paymentId);
 
             if (this.dao.getPayment(paymentId) != null) {
-                payment.setId((Integer) collect.get("payment.id").getValue());
+                payment.setId((Integer) collect.get("payment.id"));
                 this.dao.update(payment);
             } else {
                 this.dao.save(payment);

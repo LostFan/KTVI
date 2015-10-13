@@ -13,7 +13,11 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by 1 on 08.10.2015.
@@ -169,16 +173,17 @@ public class EntityView {
 
     }
 
-    public List<FieldValue> getValues() {
-        List<FieldValue> fieldValues = new ArrayList<>();
+    public Map<String, Object> getValues() {
+        Map<String, Object> map = new HashMap<>();
         for (NameAndValueFields nameAndValueFields : this.nameAndValueFieldses) {
-            String fieldName = nameAndValueFields.getEntityField().getTitleKey();
-            FieldValue fieldValue =
-                    new FieldValue(fieldName,  nameAndValueFields.getValue());
-            fieldValues.add(fieldValue);
+            map.put(nameAndValueFields.getEntityField().getTitleKey(), nameAndValueFields.getValue());
+//            String fieldName = nameAndValueFields.getEntityField().getTitleKey();
+//            FieldValue fieldValue =
+//                    new FieldValue(fieldName,  nameAndValueFields.getValue());
+//            fieldValues.add(fieldValue);
         }
 
-        return fieldValues;
+        return map;
     }
 
     public void addAddActionListener(ActionListener listener) {
