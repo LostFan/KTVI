@@ -150,6 +150,18 @@ public class HsqldbServiceDAOTest {
         assertEquals(serviceDao.getServicePricesByServiceId(2).size(), 1);
     }
 
+    @Test
+    public void getExistingServiceByBeginningPartOfNameHigherRegisterTest() throws SQLException {
+        insertStubDataServices();
+        assertEquals(serviceDao.getServicesByBeginningPartOfName("Serv").size(), 3);
+    }
+
+    @Test
+    public void getExistingServiceByBeginningPartOfNameLowerRegisterTest() throws SQLException {
+        insertStubDataServices();
+        assertEquals(serviceDao.getServicesByBeginningPartOfName("serv").size(), 3);
+    }
+
     private void insertStubDataServices() throws SQLException {
         executeQuery("INSERT INTO \"service\" (\"id\", \"name\", \"additional\") VALUES(1, 'Service 1 name', false);");
         executeQuery("INSERT INTO \"service\" (\"id\", \"name\", \"additional\") VALUES(2, 'Service 2 name', true);");

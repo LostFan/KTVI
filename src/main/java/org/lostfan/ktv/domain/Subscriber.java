@@ -1,6 +1,5 @@
 package org.lostfan.ktv.domain;
 
-import java.util.List;
 
 public class Subscriber {
 

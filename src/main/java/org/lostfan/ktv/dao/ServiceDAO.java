@@ -21,4 +21,6 @@ public interface ServiceDAO {
     int getPriceByDate(int serviceId, LocalDate date);
 
      List<ServicePrice> getServicePricesByServiceId(int serviceId);
+
+    List<Service> getServicesByBeginningPartOfName(String str);
 }

@@ -25,4 +25,7 @@ public interface EntityModel<T> {
     void saveOrEditEntity(Map<String, Object> fieldValues);
 
     void deleteEntityByRow(List<Integer> rowNumbers);
+
+    List<EntityComboBoxModel> getEntityComboBoxModels();
+
 }

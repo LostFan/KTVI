@@ -1,7 +1,9 @@
 package org.lostfan.ktv.controller;
 
+import org.lostfan.ktv.model.EntityComboBoxModel;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.view.ComboBoxView;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;

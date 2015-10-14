@@ -343,6 +343,18 @@ public class HsqldbSubscriberDAOTest {
         assertNull(subscriberDao.getSubscriberTariffs(1).get(1).getDisconnectTariff());
     }
 
+    @Test
+    public void getExistingServiceByBeginningPartOfNameHigherRegisterTest() throws SQLException {
+        insertStubDataSubscribers();
+        assertEquals(subscriberDao.getSubscribersByBeginningPartOfName("Arya").size(), 1);
+    }
+
+    @Test
+    public void getExistingServiceByBeginningPartOfNameLowerRegisterTest() throws SQLException {
+        insertStubDataSubscribers();
+        assertEquals(subscriberDao.getSubscribersByBeginningPartOfName("jon").size(), 1);
+    }
+
     private void insertStubDataSubscribers() throws SQLException {
         executeQuery("INSERT INTO \"subscriber\" (\"id\", \"name\", \"account\") VALUES(1, 'Arya', 700111);");
         executeQuery("INSERT INTO \"subscriber\" (\"id\", \"name\", \"account\") VALUES(2, 'Edard', 700321);");

@@ -41,4 +41,8 @@ public interface SubscriberDAO {
     void saveSubscriberTariff(SubscriberTariff subscriberTariff);
 
     void updateSubscriberTariff(SubscriberTariff subscriberTariff);
+
+    List<Subscriber> getSubscribersByBeginningPartOfName(String str);
+
+    List<Subscriber> getSubscribersByBeginningPartOfAccount(String str);
 }

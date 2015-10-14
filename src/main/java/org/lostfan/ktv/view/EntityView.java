@@ -3,13 +3,21 @@ package org.lostfan.ktv.view;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
+import org.lostfan.ktv.controller.ComboBoxController;
+import org.lostfan.ktv.dao.ServiceDAO;
+import org.lostfan.ktv.domain.Catalog;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.utils.DateLabelFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +39,7 @@ public class EntityView {
         private JCheckBox checkBox;
         private JDatePickerImpl datePicker;
         private EntityField entityField;
+        private JComboBox jComboBox;
 
         public NameAndValueFields(EntityField entityField) {
             this.entityField = entityField;
@@ -38,6 +47,8 @@ public class EntityView {
             this.checkBox = new JCheckBox();
             this.valueTextField = new JTextField(20);
             this.datePicker = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
+            this.jComboBox = new JComboBox();
+            this.jComboBox.setEditable(true);
         }
 
         public EntityField.Types getSelectedFieldType() {
@@ -67,7 +78,7 @@ public class EntityView {
 
             c.insets = new Insets(0,10,10,10);
             panel.add(this.label, c);
-            if (getSelectedFieldType() != EntityField.Types.Boolean && getSelectedFieldType() != EntityField.Types.Date) {
+            if (getSelectedFieldType() == EntityField.Types.String || getSelectedFieldType() == EntityField.Types.Integer) {
                 panel.add(this.valueTextField, c);
             }
             if (getSelectedFieldType() == EntityField.Types.Date) {
@@ -75,6 +86,21 @@ public class EntityView {
             }
             if (getSelectedFieldType() == EntityField.Types.Boolean) {
                 panel.add(this.checkBox, c);
+            }
+
+            if(getSelectedFieldType().isEntityClass()) {
+
+                List<EntityComboBoxModel> entityComboBoxModels= model.getEntityComboBoxModels();
+                for (EntityComboBoxModel entityComboBoxModel : entityComboBoxModels) {
+                    if(entityComboBoxModel.getEntityClass() == getSelectedFieldType().getClazz()) {
+                        ComboBoxView comboBoxView = new ComboBoxView(entityComboBoxModel);
+                        new ComboBoxController(entityComboBoxModel, comboBoxView);
+                        jComboBox = comboBoxView.getJComboBox();
+                    }
+                }
+
+
+                panel.add(this.jComboBox, c);
             }
 
             c.gridy = criteriaNumber;
@@ -127,22 +153,24 @@ public class EntityView {
             Object o = nameAndValueFields.getEntityField().get(entity);
             if (nameAndValueFields.getSelectedFieldType() == EntityField.Types.String ) {
                 nameAndValueFields.valueTextField.setText(o.toString());
-            }
+            } else
             if (nameAndValueFields.getSelectedFieldType() == EntityField.Types.Integer) {
                 if(o != null) {
                     nameAndValueFields.valueTextField.setText(o.toString());
                 } else {
                     nameAndValueFields.valueTextField.setText("0");
                 }
-            }
+            } else
             if (nameAndValueFields.getSelectedFieldType() == EntityField.Types.Date) {
                 LocalDate localDate = (LocalDate) o;
                 nameAndValueFields.datePicker.getModel().setDate(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
                 nameAndValueFields.datePicker.getModel().setSelected(true);
-            }
+            } else
             if (nameAndValueFields.getSelectedFieldType() == EntityField.Types.Boolean) {
 
                 nameAndValueFields.checkBox.setSelected((Boolean) o);
+            } else {
+                nameAndValueFields.jComboBox.setSelectedItem(((Catalog) o).getName());
             }
         }
 

@@ -337,4 +337,48 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
+
+    public List<Subscriber> getSubscribersByBeginningPartOfName(String str) {
+        List<Subscriber> subscribers = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber\" where LOWER(\"name\") LIKE ?");
+            preparedStatement.setString(1, (str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Subscriber subscriber = new Subscriber();
+                subscriber.setId(rs.getInt("id"));
+                subscriber.setName(rs.getString("name"));
+                subscriber.setAccount(rs.getString("account"));
+
+                subscribers.add(subscriber);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscribers;
+    }
+
+    public List<Subscriber> getSubscribersByBeginningPartOfAccount(String str) {
+        List<Subscriber> subscribers = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"account\" where LOWER(\"name\") LIKE ?");
+            preparedStatement.setString(1, (str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Subscriber subscriber = new Subscriber();
+                subscriber.setId(rs.getInt("id"));
+                subscriber.setName(rs.getString("name"));
+                subscriber.setAccount(rs.getString("account"));
+
+                subscribers.add(subscriber);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscribers;
+    }
 }

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.table.TableModel;
@@ -37,11 +36,9 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     public void saveOrEditEntity(Map<String, Object> collect) {
         Payment payment = new Payment();
         payment.setPrice((Integer) collect.get("payment.price"));
-        payment.setDate((LocalDate) collect.get("payment.price"));
+        payment.setDate((LocalDate) collect.get("payment.payDate"));
         if(collect.get("payment.id") != null) {
             Integer paymentId = (Integer) collect.get("payment.id");
-            System.out.println(paymentId);
-
             if (this.dao.getPayment(paymentId) != null) {
                 payment.setId((Integer) collect.get("payment.id"));
                 this.dao.update(payment);
@@ -63,6 +60,14 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         }
         this.payments = this.dao.getAllPayments();
         this.notifyObservers(null);
+    }
+
+    @Override
+    public List<EntityComboBoxModel> getEntityComboBoxModels() {
+        List<EntityComboBoxModel> entityComboBoxModels = new ArrayList<>();
+        entityComboBoxModels.add(new ServiceComboBoxModel());
+        entityComboBoxModels.add(new SubscriberComboBoxModel());
+        return entityComboBoxModels;
     }
 
     @Override

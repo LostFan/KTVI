@@ -1,18 +1,15 @@
 package org.lostfan.ktv.model;
 
-import org.lostfan.ktv.dao.DAOFactory;
-import org.lostfan.ktv.dao.ServiceDAO;
-import org.lostfan.ktv.domain.Service;
-import org.lostfan.ktv.utils.ResourceBundles;
-
-import javax.swing.table.TableModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.swing.table.TableModel;
+
+import org.lostfan.ktv.dao.DAOFactory;
+import org.lostfan.ktv.dao.ServiceDAO;
+import org.lostfan.ktv.domain.Service;
 
 public class ServiceEntityModel extends BaseEntityModel<Service> {
 
@@ -88,9 +85,7 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
     @Override
     public void deleteEntityByRow(List<Integer> rowNumbers) {
         for (Integer rowNumber : rowNumbers) {
-            System.out.println("rowNumber " + rowNumber);
             int id = getList().get(rowNumber).getId();
-            System.out.println("id " + id);
             this.dao.delete(id);
         }
         this.services = this.dao.getAllServices();
@@ -109,5 +104,10 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
 
         this.services = stream.collect(Collectors.toList());
         this.notifyObservers(null);
+    }
+
+    @Override
+    public List<EntityComboBoxModel> getEntityComboBoxModels() {
+        return null;
     }
 }

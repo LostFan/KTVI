@@ -3,7 +3,6 @@ package org.lostfan.ktv.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.table.TableModel;
@@ -82,14 +81,17 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     }
 
     @Override
+    public List<EntityComboBoxModel> getEntityComboBoxModels() {
+        return null;
+    }
+
+    @Override
     public void saveOrEditEntity(Map<String, Object> collect) {
         Subscriber subscriber = new Subscriber();
         subscriber.setAccount((String) collect.get("subscriber.account"));
         subscriber.setName((String) collect.get("subscriber.name"));
         if(collect.get("subscriber.id") != null) {
             Integer subscriberId = (Integer) collect.get("subscriber.id");
-            System.out.println(subscriberId);
-
             if (this.dao.getSubscriber(subscriberId) != null) {
                 subscriber.setId((Integer) collect.get("subscriber.id"));
                 this.dao.update(subscriber);
@@ -102,4 +104,9 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.subscribers = this.dao.getAllSubscribers();
         this.notifyObservers(null);
     }
+
+//    @Override
+//    public Map<Integer, String> getListByBeginningPartOfName(String str, Class clazz) {
+//        return null;
+//    }
 }

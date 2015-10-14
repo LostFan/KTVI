@@ -102,8 +102,8 @@ public class EntitySearchView {
             if (getSelectedFieldType() != null && getSelectedFieldType() == EntityField.Types.Date) {
                 panel.add(this.datePicker, c);
             }
-            panel.add(new JList<>());
-            panel.add(new JPopupMenu());
+//            panel.add(new JList<>());
+//            panel.add(new JPopupMenu());
 
 
             panel.add(this.removeButton, c);

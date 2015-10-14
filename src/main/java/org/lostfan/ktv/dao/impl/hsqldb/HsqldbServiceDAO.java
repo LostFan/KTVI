@@ -151,4 +151,27 @@ public class HsqldbServiceDAO implements ServiceDAO {
 
         return servicePrices;
     }
+
+
+    public List<Service> getServicesByBeginningPartOfName(String str) {
+        List<Service> services = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"service\" where LOWER(\"name\") LIKE ?");
+            preparedStatement.setString(1, (str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Service service = new Service();
+                service.setId(rs.getInt("id"));
+                service.setName(rs.getString("name"));
+                service.setAdditionalService(rs.getBoolean("additional"));
+
+                services.add(service);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return services;
+    }
 }
