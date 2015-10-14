@@ -3,7 +3,6 @@ package org.lostfan.ktv.dao.impl.hsqldb;
 import static org.junit.Assert.*;
 import static org.lostfan.ktv.utils.DatabaseUtils.*;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -2,7 +2,6 @@ package org.lostfan.ktv.dao.impl.hsqldb;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
