@@ -4,28 +4,18 @@ import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.controller.ComboBoxController;
-import org.lostfan.ktv.dao.ServiceDAO;
-import org.lostfan.ktv.domain.Catalog;
-import org.lostfan.ktv.model.*;
+import org.lostfan.ktv.model.EntityComboBoxModel;
+import org.lostfan.ktv.model.EntityField;
+import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.utils.DateLabelFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Created by 1 on 08.10.2015.
@@ -170,7 +160,7 @@ public class EntityView {
 
                 nameAndValueFields.checkBox.setSelected((Boolean) o);
             } else {
-                nameAndValueFields.jComboBox.setSelectedItem(((Catalog) o).getName());
+                nameAndValueFields.jComboBox.setSelectedItem(o);
             }
         }
 
