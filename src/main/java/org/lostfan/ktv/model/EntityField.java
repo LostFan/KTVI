@@ -26,6 +26,7 @@ public class EntityField<E, T> {
             this.entityClass = entityClass;
         }
 
+
         public Class getClazz() {
             return this.clazz;
         }

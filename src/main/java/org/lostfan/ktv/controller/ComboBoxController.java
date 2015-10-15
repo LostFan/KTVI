@@ -19,7 +19,7 @@ public class ComboBoxController {
     public ComboBoxController(EntityComboBoxModel model, ComboBoxView view) {
         this.model = model;
         this.view = view;
-        this.view.addKeyListener(new FindActionListener());
+        this.view.addLocalKeyListener(new FindActionListener());
     }
 
     private class FindActionListener implements KeyListener {

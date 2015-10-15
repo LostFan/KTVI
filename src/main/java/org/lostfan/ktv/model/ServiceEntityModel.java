@@ -68,7 +68,6 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
 
         if(collect.get("service.id") != null) {
             Integer serviceId = (Integer) collect.get("service.id");
-            System.out.println("serviceId = " + serviceId);
             service.setId((Integer) collect.get("service.id"));
             if (this.dao.getService(serviceId) != null) {
                 this.dao.update(service);

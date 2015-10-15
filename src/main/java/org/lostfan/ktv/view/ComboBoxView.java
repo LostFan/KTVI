@@ -16,6 +16,7 @@ import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import org.lostfan.ktv.controller.ComboBoxController;
 import org.lostfan.ktv.model.EntityComboBoxModel;
 import org.lostfan.ktv.model.ValueComboBoxModel;
 import org.lostfan.ktv.utils.Observer;
@@ -23,7 +24,7 @@ import org.lostfan.ktv.utils.Observer;
 /**
  * Created by Ihar_Niakhlebau on 14-Oct-15.
  */
-public class ComboBoxView {
+public class ComboBoxView extends JComboBox{
 
 //    private class ModelObserver implements Observer {
 //        @Override
@@ -39,20 +40,20 @@ public class ComboBoxView {
     private ValueComboBoxModel valueComboBoxModel;
 
     public ComboBoxView(EntityComboBoxModel model) {
-        this.model = model;
-        valueComboBoxModel = new ValueComboBoxModel(model);
-        jComboBox = new JComboBox(valueComboBoxModel);
-        jComboBox.setEditable(true);
 
-        textfield = (JTextField)     this.jComboBox.getEditor().getEditorComponent();
-        jComboBox.addItemListener(new ItemListener() {
+        textfield = (JTextField)     this.getEditor().getEditorComponent();
+        this.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                JComboBox box = (JComboBox)e.getSource();
+                JComboBox box = (JComboBox) e.getSource();
                 textfield.setText(box.getSelectedItem().toString());
             }
         });
-
+        new ComboBoxController(model, this);
+        this.model = model;
+        valueComboBoxModel = new ValueComboBoxModel(model);
+        this.setModel(valueComboBoxModel);
+        this.setEditable(true);
 //        this.modelObserver = new ModelObserver();
 //
 //        model.addObserver(this.modelObserver);
@@ -60,16 +61,10 @@ public class ComboBoxView {
     }
 
     private void comboFilter(String enteredText) {
-
         valueComboBoxModel = new ValueComboBoxModel(model, enteredText);
-
         if (valueComboBoxModel.getSize() > 0) {
-            jComboBox.setModel(valueComboBoxModel);
-            jComboBox.setSelectedItem(enteredText);
-            jComboBox.showPopup();
-        }
-        else {
-            jComboBox.hidePopup();
+            this.setModel(valueComboBoxModel);
+//            this.setSelectedItem(enteredText);
         }
     }
 
@@ -78,33 +73,35 @@ public class ComboBoxView {
     }
 
     public JComboBox getJComboBox() {
-        return jComboBox;
+        return this;
     }
+
+    public Object getSelectedNameById(int id) {
+        return valueComboBoxModel.getSelectedNameById(id);
+    }
+
 
 //    private void revalidate() {
 //        this.jComboBox.invalidate();
 //        this.jComboBox.repaint();
 //    }
 
-    public void addKeyListener(KeyListener listener) {
+    public void addLocalKeyListener(KeyListener listener) {
         this.textfield.addKeyListener(listener);
     }
 
     public void keyClick(KeyEvent ke) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-
-                if((ke.getKeyCode() < 37 || ke.getKeyCode() > 40) && ke.getKeyCode() != 10) { //up, right, left, down and enter keys
+                if((ke.getKeyCode() < 37 || ke.getKeyCode() > 40)) { //up, right, left, down and enter keys
                     comboFilter(textfield.getText());
                 }
-//                else {
-//                    jComboBox.showPopup();
-//                }
-//                if(ke.getKeyCode() == 10) {
-//                    if(valueComboBoxModel.getSelectedItem())
-
-//                    comboFilter(jComboBox.getComponentPopupMenu().getName());
-//                }
+                if(ke.getKeyCode() == 10) {
+                    getJComboBox().hidePopup();
+                }
+                else {
+                    getJComboBox().showPopup();
+                }
             }
         });
     }
@@ -112,6 +109,9 @@ public class ComboBoxView {
     public boolean isReloadComboBoxData(KeyEvent ke) {
         if(ke.getKeyCode() >= 37 && ke.getKeyCode() <= 40) {
             return false;
+        }
+        if(ke.getKeyCode() == 10) {
+            textfield.setText(valueComboBoxModel.getSelectedName());
         }
         return true;
     }

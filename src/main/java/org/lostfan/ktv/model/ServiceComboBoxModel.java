@@ -54,4 +54,9 @@ public class ServiceComboBoxModel extends EntityComboBoxModel<Service> {
     public Class getEntityClass() {
         return Service.class;
     }
+
+    @Override
+    public String getNameById(int id) {
+        return this.dao.getService(id).getName();
+    }
 }

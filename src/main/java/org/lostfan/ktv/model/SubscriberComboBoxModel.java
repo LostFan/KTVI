@@ -55,4 +55,9 @@ public class SubscriberComboBoxModel extends EntityComboBoxModel<Subscriber> {
     public Class getEntityClass() {
         return Subscriber.class;
     }
+
+    @Override
+    public String getNameById(int id) {
+        return this.dao.getSubscriber(id).getName();
+    }
 }

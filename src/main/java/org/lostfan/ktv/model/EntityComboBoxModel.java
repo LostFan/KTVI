@@ -17,4 +17,6 @@ public abstract class EntityComboBoxModel<T> extends Observable {
     public abstract  List<EntityField<T, ?>> getFields();
 
     public abstract Class getEntityClass();
+
+    public abstract String getNameById(int id);
 }
