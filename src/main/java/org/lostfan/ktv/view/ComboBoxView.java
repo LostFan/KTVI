@@ -1,20 +1,9 @@
 package org.lostfan.ktv.view;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.List;
 import javax.swing.*;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 
 import org.lostfan.ktv.controller.ComboBoxController;
 import org.lostfan.ktv.model.EntityComboBoxModel;
@@ -42,13 +31,15 @@ public class ComboBoxView extends JComboBox{
     public ComboBoxView(EntityComboBoxModel model) {
 
         textfield = (JTextField)     this.getEditor().getEditorComponent();
-        this.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                JComboBox box = (JComboBox) e.getSource();
-                textfield.setText(box.getSelectedItem().toString());
-            }
-        });
+//        this.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//
+//                JComboBox box = (JComboBox) e.getSource();
+//                System.out.println("!!!! " + box.getSelectedItem().toString());
+//                textfield.setText("Подключение");
+//            }
+//        });
         new ComboBoxController(model, this);
         this.model = model;
         valueComboBoxModel = new ValueComboBoxModel(model);
@@ -64,7 +55,10 @@ public class ComboBoxView extends JComboBox{
         valueComboBoxModel = new ValueComboBoxModel(model, enteredText);
         if (valueComboBoxModel.getSize() > 0) {
             this.setModel(valueComboBoxModel);
+            getJComboBox().showPopup();
 //            this.setSelectedItem(enteredText);
+        } else {
+            getJComboBox().hidePopup();
         }
     }
 
@@ -90,6 +84,10 @@ public class ComboBoxView extends JComboBox{
         this.textfield.addKeyListener(listener);
     }
 
+    public void addComboBoxActionListener(ActionListener listener) {
+        this.addActionListener(listener);
+    }
+
     public void keyClick(KeyEvent ke) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -99,9 +97,6 @@ public class ComboBoxView extends JComboBox{
                 if(ke.getKeyCode() == 10) {
                     getJComboBox().hidePopup();
                 }
-                else {
-                    getJComboBox().showPopup();
-                }
             }
         });
     }
@@ -110,9 +105,11 @@ public class ComboBoxView extends JComboBox{
         if(ke.getKeyCode() >= 37 && ke.getKeyCode() <= 40) {
             return false;
         }
-        if(ke.getKeyCode() == 10) {
-            textfield.setText(valueComboBoxModel.getSelectedName());
-        }
         return true;
     }
+
+    public void editTextFieldText() {
+        textfield.setText(valueComboBoxModel.getSelectedName());
+    }
+
 }

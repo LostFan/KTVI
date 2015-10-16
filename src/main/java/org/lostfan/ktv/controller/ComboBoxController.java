@@ -1,5 +1,7 @@
 package org.lostfan.ktv.controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -19,10 +21,11 @@ public class ComboBoxController {
     public ComboBoxController(EntityComboBoxModel model, ComboBoxView view) {
         this.model = model;
         this.view = view;
-        this.view.addLocalKeyListener(new FindActionListener());
+        this.view.addLocalKeyListener(new LocalKeyListener());
+        this.view.addComboBoxActionListener(new ComboBoxActionListener());
     }
 
-    private class FindActionListener implements KeyListener {
+    private class LocalKeyListener implements KeyListener {
         @Override
         public void keyTyped(KeyEvent e) {
 
@@ -35,17 +38,26 @@ public class ComboBoxController {
 
         @Override
         public void keyReleased(KeyEvent ke) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        view.keyClick(ke);
-                        if(view.isReloadComboBoxData(ke)) {
-                            model.getListByBeginningPartOfName(view.getText());
-                        }
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    view.keyClick(ke);
+                    if(view.isReloadComboBoxData(ke)) {
+                        model.getListByBeginningPartOfName(view.getText());
                     }
-                });
-
-
+                }
+            });
         }
     }
 
+    private class ComboBoxActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    view.editTextFieldText();
+                }
+            });
+
+        }
+    }
 }

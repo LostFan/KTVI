@@ -1,9 +1,6 @@
 package org.lostfan.ktv.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
@@ -75,6 +72,9 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
     public String getSelectedName() {
         if (this.currentValue == null) {
             return null;
+        }
+        if(this.values.get(this.currentValue) == null) {
+            return (String) this.currentValue;
         }
         return (String) this.values.get(this.currentValue).getValue();
     }
