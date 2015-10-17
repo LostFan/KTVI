@@ -55,6 +55,9 @@ public class ComboBoxController {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     view.editTextFieldText();
+                    if(view.isReloadComboBoxData()) {
+                        model.getListByBeginningPartOfName(view.getText());
+                    }
                 }
             });
 

@@ -30,6 +30,7 @@ public class ServiceComboBoxModel extends EntityComboBoxModel<Service> {
     @Override
     public List<Service> getListByBeginningPartOfName(String str) {
         this.services = dao.getServicesByBeginningPartOfName(str);
+        this.notifyObservers(null);
         return this.services;
     }
 

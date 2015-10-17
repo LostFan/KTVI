@@ -30,6 +30,7 @@ public class SubscriberComboBoxModel extends EntityComboBoxModel<Subscriber> {
     @Override
     public List<Subscriber> getListByBeginningPartOfName(String str) {
         this.subscribers = dao.getSubscribersByBeginningPartOfName(str);
+        this.notifyObservers(null);
         return this.subscribers;
     }
 

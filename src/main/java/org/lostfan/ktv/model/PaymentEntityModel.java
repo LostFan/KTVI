@@ -37,6 +37,8 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         Payment payment = new Payment();
         payment.setPrice((Integer) collect.get("payment.price"));
         payment.setDate((LocalDate) collect.get("payment.payDate"));
+        payment.setSubscriberId((Integer) collect.get("subscriber"));
+        payment.setServicePaymentId((Integer) collect.get("service"));
         if(collect.get("payment.id") != null) {
             Integer paymentId = (Integer) collect.get("payment.id");
             if (this.dao.getPayment(paymentId) != null) {

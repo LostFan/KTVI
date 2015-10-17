@@ -8,6 +8,7 @@ import org.lostfan.ktv.model.EntityComboBoxModel;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.utils.DateLabelFormatter;
+import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.*;
@@ -64,10 +65,12 @@ public class EntityView {
                 case Boolean:
                     return ((JCheckBox) this.jComponent).isSelected();
                 case Date:
-                    java.sql.Date selectedDate = new java.sql.Date(((Date) ((JDatePanelImpl) this.jComponent).getModel().getValue()).getTime());
+                    java.sql.Date selectedDate = new java.sql.Date(((Date) ((JDatePickerImpl) this.jComponent).getModel().getValue()).getTime());
                     return selectedDate.toLocalDate();
+                default:
+                    return  ((ComboBoxView) this.jComponent).getSelectedId();
             }
-            return null;
+//            return null;
         }
 
         public void addComponentsTo(JPanel rootPanel, int criteriaNumber) {
@@ -77,9 +80,10 @@ public class EntityView {
 
             c.insets = new Insets(0,10,10,10);
             panel.add(this.label, c);
-//            if (getSelectedFieldType() == EntityField.Types.String || getSelectedFieldType() == EntityField.Types.Integer) {
-//                panel.add(this.jComponent, c);
-//            }
+            DefaultContextMenu contextMenu = new DefaultContextMenu();
+            if (getSelectedFieldType() == EntityField.Types.String || getSelectedFieldType() == EntityField.Types.Integer) {
+                contextMenu.add((JTextField) this.jComponent);
+            }
 //            if (getSelectedFieldType() == EntityField.Types.Date) {
 //                panel.add(this.jComponent, c);
 //            }
@@ -93,6 +97,7 @@ public class EntityView {
                 for (EntityComboBoxModel entityComboBoxModel : entityComboBoxModels) {
                     if(entityComboBoxModel.getEntityClass() == getSelectedFieldType().getClazz()) {
                         this.jComponent = new ComboBoxView(entityComboBoxModel);
+                        contextMenu.add((JTextField) ((JComboBox)this.jComponent).getEditor().getEditorComponent());
 //                        new ComboBoxController(entityComboBoxModel, comboBoxView);
 //                        this.jComponent = comboBoxView.getJComboBox();
                     }
@@ -101,6 +106,8 @@ public class EntityView {
 
 
             }
+
+
             panel.add(this.jComponent, c);
             c.gridy = criteriaNumber;
             c.anchor = GridBagConstraints.NORTH;
@@ -147,7 +154,6 @@ public class EntityView {
         this(model);
 
         this.addButton.setText(getString("buttons.change"));
-
         for (NameAndValueField nameAndValueField : nameAndValueFields) {
             Object o = nameAndValueField.getEntityField().get(entity);
             if (nameAndValueField.getSelectedFieldType() == EntityField.Types.String ) {
@@ -169,8 +175,10 @@ public class EntityView {
 
                 ((JCheckBox) nameAndValueField.jComponent).setSelected((Boolean) o);
             } else {
+                ((ComboBoxView) nameAndValueField.jComponent).setId((Integer) o);
                 o =((ComboBoxView) nameAndValueField.jComponent).getSelectedNameById((Integer) o);
-                ((ComboBoxView) nameAndValueField.jComponent).setSelectedItem(o);
+//                ((ComboBoxView) nameAndValueField.jComponent).setSelectedItem(o);
+                ((JTextField)(((ComboBoxView) nameAndValueField.jComponent).getEditor().getEditorComponent())).setText((String)o);
             }
         }
 
@@ -179,6 +187,7 @@ public class EntityView {
     }
 
     private void buildLayout() {
+
         frame.setSize(new Dimension(WIDTH, HEIGHT));
         frame.setLocationRelativeTo(null);
 
