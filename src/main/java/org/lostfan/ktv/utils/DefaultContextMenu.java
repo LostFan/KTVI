@@ -41,26 +41,22 @@ public class DefaultContextMenu extends JPopupMenu
         undoManager = new UndoManager();
         clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
-        undo = new JMenuItem("Undo");
+        undo = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.undo"));
         undo.setEnabled(false);
         undo.setAccelerator(KeyStroke.getKeyStroke("control Z"));
-        undo.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
+        undo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
                 undoManager.undo();
             }
         });
 
         add(undo);
 
-        redo = new JMenuItem("Redo");
+        redo = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.redo"));
         redo.setEnabled(false);
         redo.setAccelerator(KeyStroke.getKeyStroke("control Y"));
-        redo.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
+        redo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
                 undoManager.redo();
             }
         });
@@ -69,46 +65,40 @@ public class DefaultContextMenu extends JPopupMenu
 
         add(new JSeparator());
 
-        cut = new JMenuItem("Cut");
+        cut = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.cut"));
         cut.setEnabled(false);
         cut.setAccelerator(KeyStroke.getKeyStroke("control X"));
-        cut.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
+        cut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
                 jTextComponent.cut();
             }
         });
 
         add(cut);
 
-        copy = new JMenuItem("Copy");
+        copy = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.copy"));
         copy.setEnabled(false);
         copy.setAccelerator(KeyStroke.getKeyStroke("control C"));
-        copy.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
+        copy.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
                 jTextComponent.copy();
             }
         });
 
         add(copy);
 
-        paste = new JMenuItem("Paste");
+        paste = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.paste"));
         paste.setEnabled(false);
         paste.setAccelerator(KeyStroke.getKeyStroke("control V"));
-        paste.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
+        paste.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
                 jTextComponent.paste();
             }
         });
 
         add(paste);
 
-        delete = new JMenuItem("Delete");
+        delete = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.delete"));
         delete.setEnabled(false);
         delete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
         delete.addActionListener(new ActionListener()
@@ -123,7 +113,7 @@ public class DefaultContextMenu extends JPopupMenu
 
         add(new JSeparator());
 
-        selectAll = new JMenuItem("Select All");
+        selectAll = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.selectall"));
         selectAll.setEnabled(false);
         selectAll.setAccelerator(KeyStroke.getKeyStroke("control A"));
         selectAll.addActionListener(new ActionListener()
