@@ -1,9 +1,7 @@
 package org.lostfan.ktv.controller;
 
-import org.lostfan.ktv.model.EntityComboBoxModel;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.EntityModel;
-import org.lostfan.ktv.view.ComboBoxView;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
@@ -30,7 +28,7 @@ public class EntityController {
         this.view.addAddActionListener(new AddActionListener());
         this.view.addChangeActionListener(new ChangeActionListener());
         this.view.addDeleteActionListener(new DeleteActionListener());
-        this.view.addDoubleClickListener(new ChangeMouseDoubleClickListener());
+        this.view.addDoubleClickListener(new TableDoubleClickListener());
 
     }
 
@@ -90,7 +88,7 @@ public class EntityController {
         }
     }
 
-    private class ChangeMouseDoubleClickListener extends MouseAdapter {
+    private class TableDoubleClickListener extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {

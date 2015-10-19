@@ -16,22 +16,23 @@ public class SubscriberComboBoxModel extends EntityComboBoxModel<Subscriber> {
     private SubscriberDAO dao;
     private List<Subscriber> subscribers;
     private List<EntityField<Subscriber, ?>> fields;
+    private EntityField entityFieldId;
+    private EntityField entityFieldName;
 
 
     public SubscriberComboBoxModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("subscriber.id", EntityField.Types.Integer, Subscriber::getId, Subscriber::setId));
-        this.fields.add(new EntityField<>("subscriber.name", EntityField.Types.String, Subscriber::getName, Subscriber::setName));
+        entityFieldId = new EntityField<>("subscriber.id", EntityField.Types.Integer, Subscriber::getId, Subscriber::setId);
+        entityFieldName = new EntityField<>("subscriber.name", EntityField.Types.String, Subscriber::getName, Subscriber::setName);
     }
 
 
     @Override
-    public List<Subscriber> getListByBeginningPartOfName(String str) {
+    public void setListByBeginningPartOfName(String str) {
         this.subscribers = dao.getSubscribersByBeginningPartOfName(str);
         this.notifyObservers(null);
-        return this.subscribers;
     }
 
     @Override
@@ -44,8 +45,13 @@ public class SubscriberComboBoxModel extends EntityComboBoxModel<Subscriber> {
     }
 
     @Override
-    public List<EntityField<Subscriber, ?>> getFields() {
-        return this.fields;
+    public EntityField<Subscriber, ?> getEntityFieldName() {
+        return entityFieldName;
+    }
+
+    @Override
+    public EntityField<Subscriber, ?> getEntityFieldId() {
+        return entityFieldId;
     }
 
     public ComboBoxModel getTableModel() {
@@ -55,10 +61,5 @@ public class SubscriberComboBoxModel extends EntityComboBoxModel<Subscriber> {
     @Override
     public Class getEntityClass() {
         return Subscriber.class;
-    }
-
-    @Override
-    public String getNameById(int id) {
-        return this.dao.getSubscriber(id).getName();
     }
 }

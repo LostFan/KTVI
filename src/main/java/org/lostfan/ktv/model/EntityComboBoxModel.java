@@ -12,11 +12,11 @@ public abstract class EntityComboBoxModel<T> extends Observable {
 
     public abstract  List<T> getList();
 
-    public abstract List<T> getListByBeginningPartOfName(String str);
+    public abstract void setListByBeginningPartOfName(String str);
 
-    public abstract  List<EntityField<T, ?>> getFields();
+    public abstract EntityField<T,?> getEntityFieldName();
+
+    public abstract EntityField<T,?> getEntityFieldId();
 
     public abstract Class getEntityClass();
-
-    public abstract String getNameById(int id);
 }

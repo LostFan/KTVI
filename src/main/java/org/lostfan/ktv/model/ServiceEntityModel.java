@@ -22,7 +22,7 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<Service, Integer>("service.id", EntityField.Types.Integer, Service::getId, Service::setId));
+        this.fields.add(new EntityField<>("service.id", EntityField.Types.Integer, Service::getId, Service::setId));
         this.fields.add(new EntityField<>("service.name", EntityField.Types.String, Service::getName, Service::setName));
         this.fields.add(new EntityField<>("service.additional", EntityField.Types.Boolean, Service::isAdditionalService, Service::setAdditionalService));
     }

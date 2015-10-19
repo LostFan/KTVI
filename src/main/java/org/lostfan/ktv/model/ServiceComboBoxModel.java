@@ -16,22 +16,23 @@ public class ServiceComboBoxModel extends EntityComboBoxModel<Service> {
     private ServiceDAO dao;
     private List<Service> services;
     private List<EntityField<Service, ?>> fields;
+    private EntityField entityFieldId;
+    private EntityField entityFieldName;
 
 
     public ServiceComboBoxModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("service.id", EntityField.Types.Integer, Service::getId, Service::setId));
-        this.fields.add(new EntityField<>("service.name", EntityField.Types.String, Service::getName, Service::setName));
+        entityFieldId = new EntityField<>("service.id", EntityField.Types.Integer, Service::getId, Service::setId);
+        entityFieldName = new EntityField<>("service.name", EntityField.Types.String, Service::getName, Service::setName);
     }
 
 
     @Override
-    public List<Service> getListByBeginningPartOfName(String str) {
+    public void setListByBeginningPartOfName(String str) {
         this.services = dao.getServicesByBeginningPartOfName(str);
         this.notifyObservers(null);
-        return this.services;
     }
 
     @Override
@@ -43,8 +44,13 @@ public class ServiceComboBoxModel extends EntityComboBoxModel<Service> {
     }
 
     @Override
-    public List<EntityField<Service, ?>> getFields() {
-        return this.fields;
+    public EntityField<Service, ?> getEntityFieldName() {
+        return entityFieldName;
+    }
+
+    @Override
+    public EntityField<Service, ?> getEntityFieldId() {
+        return entityFieldId;
     }
 
     public ComboBoxModel getTableModel() {
@@ -54,10 +60,5 @@ public class ServiceComboBoxModel extends EntityComboBoxModel<Service> {
     @Override
     public Class getEntityClass() {
         return Service.class;
-    }
-
-    @Override
-    public String getNameById(int id) {
-        return this.dao.getService(id).getName();
     }
 }

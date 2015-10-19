@@ -42,7 +42,7 @@ public class ComboBoxController {
                 public void run() {
                     view.keyClick(ke);
                     if(view.isReloadComboBoxData(ke)) {
-                        model.getListByBeginningPartOfName(view.getText());
+                        model.setListByBeginningPartOfName(view.getText());
                     }
                 }
             });
@@ -56,7 +56,7 @@ public class ComboBoxController {
                 public void run() {
                     view.editTextFieldText();
                     if(view.isReloadComboBoxData()) {
-                        model.getListByBeginningPartOfName(view.getText());
+                        model.setListByBeginningPartOfName(view.getText());
                     }
                 }
             });

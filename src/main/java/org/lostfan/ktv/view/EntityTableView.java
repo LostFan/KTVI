@@ -107,7 +107,7 @@ public class EntityTableView {
         this.model = model;
         model.addObserver(this.modelObserver);
 
-        this.table = new JTable(model.getTableModel());
+        this.table.setModel(model.getTableModel());
         this.tableScrollPane.setViewportView(this.table);
 
         revalidate();

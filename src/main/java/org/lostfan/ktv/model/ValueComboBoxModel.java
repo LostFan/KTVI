@@ -35,6 +35,7 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
     }
 
     private Object currentValue;
+    private Object currentValueWithId;
     private EntityComboBoxModel<T> model;
     private Map<String, IdAndValue> values;
     private Integer id;
@@ -45,30 +46,31 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
 
     public void setModel(EntityComboBoxModel<T> model) {
         this.model = model;
-        values = this.model.getList().stream().collect(Collectors.toMap(criterion ->
-                (String) this.model.getFields().get(1).get(criterion) + "(" + this.model.getFields().get(0).get(criterion) + ")"
-                , criterion -> {
+        values = this.model.getList().stream().collect(Collectors.toMap(entity ->
+                this.model.getEntityFieldName().get(entity) + "(" + this.model.getEntityFieldId().get(entity) + ")"
+                , entity -> {
             IdAndValue idAndValue = new IdAndValue();
-            idAndValue.setId((Integer) this.model.getFields().get(0).get(criterion));
-            idAndValue.setValue(this.model.getFields().get(1).get(criterion));
+            idAndValue.setId((Integer) this.model.getEntityFieldId().get(entity));
+            idAndValue.setValue(this.model.getEntityFieldName().get(entity));
             return idAndValue;
         }));
     }
 
     public void setNewModel(EntityComboBoxModel<T> model, String currentValue) {
         this.model = model;
-        values = this.model.getList().stream().collect(Collectors.toMap(criterion ->
-                (String) this.model.getFields().get(1).get(criterion) + "(" + this.model.getFields().get(0).get(criterion) + ")"
-                , criterion -> {
+        values = this.model.getList().stream().collect(Collectors.toMap(entity ->
+                this.model.getEntityFieldName().get(entity) + "(" + this.model.getEntityFieldId().get(entity) + ")"
+                , entity -> {
             IdAndValue idAndValue = new IdAndValue();
-            idAndValue.setId((Integer) this.model.getFields().get(0).get(criterion));
-            idAndValue.setValue(this.model.getFields().get(1).get(criterion));
+            idAndValue.setId((Integer) this.model.getEntityFieldId().get(entity));
+            idAndValue.setValue(this.model.getEntityFieldName().get(entity));
             return idAndValue;
         }));
         this.currentValue = (Object) currentValue;
-        if ((id != null && this.values.get(((String) this.currentValue +"(" + id.toString() +")")) == null)
-                && this.values.get(((String) this.currentValue)) == null) {
-            id =null;
+        if (id != null && !this.values.containsKey(currentValue +"(" + id +")")
+                && !this.values.containsKey(this.currentValue)) {
+            id = null;
+            currentValueWithId = null;
         }
 
     }
@@ -81,14 +83,13 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
         if (this.currentValue == null) {
             return null;
         }
-        if(this.values.get(this.currentValue) == null) {
+        if(!this.values.containsKey(this.currentValue)) {
             return (String) this.currentValue;
         }
         return (String) this.values.get(this.currentValue).getValue();
     }
 
-    public Object getSelectedNameById(int id) {
-
+    public Object getSelectedNameById() {
         return values.values().stream().filter(set -> set.getId() == id).findFirst().get().getValue();
     }
 
@@ -100,9 +101,15 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
     @Override
     public void setSelectedItem(Object anItem) {
         this.currentValue = anItem;
-        if(this.values.get(this.currentValue) != null) {
+        if(values.containsKey(anItem)) {
+            this.currentValueWithId = anItem;
+        } else if(!(this.values.containsKey(this.currentValueWithId) && this.values.get(currentValueWithId).getValue().equals(anItem))) {
+            currentValueWithId = null;
+        }
+        if(this.values.containsKey(this.currentValue)) {
             id = this.values.get(this.currentValue).getId();
-        } else if (id != null && this.values.get(((String) this.currentValue +"(" + id.toString() +")")) == null){
+        } else if (id != null && !this.values.containsKey(this.currentValueWithId)){
+            this.currentValueWithId = null;
             id = null;
         }
     }
@@ -119,8 +126,8 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
 
     @Override
     public String getElementAt(int index) {
-        Object id = this.model.getFields().get(0).get(this.model.getList().get(index));
-        Object value = this.model.getFields().get(1).get(this.model.getList().get(index)) +"(" + this.model.getFields().get(0).get(this.model.getList().get(index)) +")";
+        Object id = this.model.getEntityFieldId().get(this.model.getList().get(index));
+        Object value = this.model.getEntityFieldName().get(this.model.getList().get(index)) +"(" + this.model.getEntityFieldId().get(this.model.getList().get(index)) +")";
         return (String) value;
     }
 

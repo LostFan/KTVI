@@ -176,7 +176,7 @@ public class EntityView {
                 ((JCheckBox) nameAndValueField.jComponent).setSelected((Boolean) o);
             } else {
                 ((ComboBoxView) nameAndValueField.jComponent).setId((Integer) o);
-                o =((ComboBoxView) nameAndValueField.jComponent).getSelectedNameById((Integer) o);
+                o =((ComboBoxView) nameAndValueField.jComponent).getSelectedName();
 //                ((ComboBoxView) nameAndValueField.jComponent).setSelectedItem(o);
                 ((JTextField)(((ComboBoxView) nameAndValueField.jComponent).getEditor().getEditorComponent())).setText((String)o);
             }

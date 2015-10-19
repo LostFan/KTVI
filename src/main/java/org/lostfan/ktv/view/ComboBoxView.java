@@ -72,8 +72,8 @@ public class ComboBoxView extends JComboBox{
         return this;
     }
 
-    public Object getSelectedNameById(int id) {
-        return valueComboBoxModel.getSelectedNameById(id);
+    public Object getSelectedName() {
+        return valueComboBoxModel.getSelectedNameById();
     }
 
     public void setId(int id){
