@@ -40,10 +40,11 @@ public class ComboBoxController {
         public void keyReleased(KeyEvent ke) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    view.keyClick(ke);
                     if(view.isReloadComboBoxData(ke)) {
                         model.setListByBeginningPartOfName(view.getText());
                     }
+                    view.keyClick(ke);
+                    System.out.println("3="+view.getSelectedId());
                 }
             });
         }
@@ -57,7 +58,10 @@ public class ComboBoxController {
                     view.editTextFieldText();
                     if(view.isReloadComboBoxData()) {
                         model.setListByBeginningPartOfName(view.getText());
+                        System.out.println("1=" + view.getSelectedId());
+                        view.comboFilter(view.getText());
                     }
+                    System.out.println("2="+view.getSelectedId());
                 }
             });
 

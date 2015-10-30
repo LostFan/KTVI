@@ -45,7 +45,8 @@ public class EntityTableModel<T> implements TableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return false;
+//        System.out.println(this.model.getFields().get(columnIndex).getType().isEntityClass());
+        return this.model.getFields().get(columnIndex).getType().isEntityClass() ? true : false;
     }
 
     @Override

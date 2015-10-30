@@ -51,7 +51,7 @@ public class ComboBoxView extends JComboBox{
 
     }
 
-    private void comboFilter(String enteredText) {
+    public void comboFilter(String enteredText) {
         valueComboBoxModel.setNewModel(model, enteredText);
         if (valueComboBoxModel.getSize() > 0) {
             this.setModel(valueComboBoxModel);
@@ -126,6 +126,8 @@ public class ComboBoxView extends JComboBox{
                     getJComboBox().hidePopup();
                 }
 
+                thisRevalidate();
+
             }
         });
     }
@@ -142,9 +144,6 @@ public class ComboBoxView extends JComboBox{
     }
 
     public void editTextFieldText() {
-        if(!getJComboBox().isPopupVisible()) {
-            comboFilter(textfield.getText());
-        }
         textfield.setText(valueComboBoxModel.getSelectedName());
     }
 

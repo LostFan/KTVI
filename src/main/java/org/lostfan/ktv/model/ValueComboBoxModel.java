@@ -1,5 +1,6 @@
 package org.lostfan.ktv.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
     private EntityComboBoxModel<T> model;
     private Map<String, IdAndValue> values;
     private Integer id;
+    private List<String> nameWithIdList;
 
     public ValueComboBoxModel(EntityComboBoxModel<T> model) {
         setModel(model);
@@ -46,8 +48,12 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
 
     public void setModel(EntityComboBoxModel<T> model) {
         this.model = model;
-        values = this.model.getList().stream().collect(Collectors.toMap(entity ->
-                this.model.getEntityFieldName().get(entity) + "(" + this.model.getEntityFieldId().get(entity) + ")"
+        nameWithIdList = new ArrayList<>();
+        values = this.model.getList().stream().collect(Collectors.toMap(entity -> {
+            String field =  this.model.getEntityFieldName().get(entity) + "(" + this.model.getEntityFieldId().get(entity) + ")";
+            nameWithIdList.add(field);
+            return field;
+        }
                 , entity -> {
             IdAndValue idAndValue = new IdAndValue();
             idAndValue.setId((Integer) this.model.getEntityFieldId().get(entity));
@@ -57,15 +63,7 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
     }
 
     public void setNewModel(EntityComboBoxModel<T> model, String currentValue) {
-        this.model = model;
-        values = this.model.getList().stream().collect(Collectors.toMap(entity ->
-                this.model.getEntityFieldName().get(entity) + "(" + this.model.getEntityFieldId().get(entity) + ")"
-                , entity -> {
-            IdAndValue idAndValue = new IdAndValue();
-            idAndValue.setId((Integer) this.model.getEntityFieldId().get(entity));
-            idAndValue.setValue(this.model.getEntityFieldName().get(entity));
-            return idAndValue;
-        }));
+        setModel(model);
         this.currentValue = (Object) currentValue;
         if (id != null && !this.values.containsKey(currentValue +"(" + id +")")
                 && !this.values.containsKey(this.currentValue)) {
@@ -126,9 +124,12 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
 
     @Override
     public String getElementAt(int index) {
-        Object id = this.model.getEntityFieldId().get(this.model.getList().get(index));
-        Object value = this.model.getEntityFieldName().get(this.model.getList().get(index)) +"(" + this.model.getEntityFieldId().get(this.model.getList().get(index)) +")";
-        return (String) value;
+//        Object id = this.model.getEntityFieldId().get(this.model.getList().get(index));
+//        Object value = this.model.getEntityFieldName().get(this.model.getList().get(index)) +"(" + this.model.getEntityFieldId().get(this.model.getList().get(index)) +")";
+        if(index >= nameWithIdList.size()) {
+            return null;
+        }
+        return nameWithIdList.get(index);
     }
 
     @Override

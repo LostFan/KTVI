@@ -6,11 +6,12 @@ import java.awt.event.MouseListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.lostfan.ktv.model.StringActionTableCellEditor;
 import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 
-public class EntityTableView {
+public class EntityTableView<T> {
 
     private class ModelObserver implements Observer {
         @Override
@@ -29,9 +30,9 @@ public class EntityTableView {
 
     private ModelObserver modelObserver;
 
-    private BaseEntityModel model;
+    private BaseEntityModel<T> model;
 
-    public EntityTableView(BaseEntityModel model) {
+    public EntityTableView(BaseEntityModel<T> model) {
         this.model = model;
 
         this.table = new JTable(model.getTableModel());
@@ -58,6 +59,7 @@ public class EntityTableView {
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.LEFT);
         this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
+        addStringActionTableCellEditorToColumns();
         this.tableScrollPane = new JScrollPane(this.table);
 
         this.contentPanel.add(tableScrollPane, BorderLayout.CENTER);
@@ -113,7 +115,20 @@ public class EntityTableView {
         revalidate();
     }
 
+    private void addStringActionTableCellEditorToColumns() {
+        JTextField textField = new JTextField();
+        textField.setBorder(BorderFactory.createEmptyBorder());
+        textField.setEditable(false);
+        DefaultCellEditor editor = new DefaultCellEditor(textField);
+        editor.setClickCountToStart(1);
+        for (int columnIndex=0;columnIndex< table.getColumnCount(); columnIndex++) {
+            if(this.model.getFields().get(columnIndex).getType().isEntityClass()); {
+                this.table.getColumn(table.getColumnName(columnIndex)).setCellEditor(new StringActionTableCellEditor(editor));
+            }
+        }
+    }
     private void revalidate() {
+        addStringActionTableCellEditorToColumns();
         this.contentPanel.invalidate();
         this.contentPanel.repaint();
     }
