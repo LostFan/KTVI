@@ -38,25 +38,25 @@ public class HsqldbServiceDAOTest {
 
     @Test
     public void emptyServicesTest() {
-        assertEquals(serviceDao.getAllServices().size(), 0);
+        assertEquals(serviceDao.getAll().size(), 0);
     }
 
     @Test
     public void getAllServicesReturnsCorrectServiceCountTest() throws SQLException {
         insertStubDataServices();
-        assertEquals(serviceDao.getAllServices().size(), 3);
+        assertEquals(serviceDao.getAll().size(), 3);
     }
 
     @Test
     public void getAllServicesReturnsAllExistingServicesTest() throws SQLException {
         insertStubDataServices();
-        assertEquals(serviceDao.getAllServices().get(0).getId().intValue(), 1);
+        assertEquals(serviceDao.getAll().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingServiceByIdTest() throws SQLException {
         insertStubDataServices();
-        assertEquals(serviceDao.getService(1).getId().intValue(), 1);
+        assertEquals(serviceDao.get(1).getId().intValue(), 1);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class HsqldbServiceDAOTest {
         service.setName("Service 4 name");
         service.setAdditionalService(true);
         serviceDao.save(service);
-        assertEquals(serviceDao.getAllServices().size(), 4);
+        assertEquals(serviceDao.getAll().size(), 4);
     }
 
     @Test
@@ -76,8 +76,8 @@ public class HsqldbServiceDAOTest {
         service.setName("Service 4 name");
         service.setAdditionalService(true);
         serviceDao.save(service);
-        assertEquals(serviceDao.getAllServices().get(3).getName(), "Service 4 name");
-        assertEquals(serviceDao.getAllServices().get(3).isAdditionalService(), true);
+        assertEquals(serviceDao.getAll().get(3).getName(), "Service 4 name");
+        assertEquals(serviceDao.getAll().get(3).isAdditionalService(), true);
     }
 
     @Test
@@ -87,49 +87,49 @@ public class HsqldbServiceDAOTest {
         service.setName("Service 4 name");
         service.setAdditionalService(true);
         serviceDao.save(service);
-        assertEquals(serviceDao.getAllServices().get(3).getId().intValue(), 4);
+        assertEquals(serviceDao.getAll().get(3).getId().intValue(), 4);
     }
 
     @Test
     public void updateExistingServiceByIdShouldMatchUpdatedValuesTest() throws SQLException {
         insertStubDataServices();
-        Service service = serviceDao.getService(1);
+        Service service = serviceDao.get(1);
         service.setName("Service 1 name new");
         serviceDao.update(service);
-        assertEquals(serviceDao.getService(1).getName(), "Service 1 name new");
+        assertEquals(serviceDao.get(1).getName(), "Service 1 name new");
     }
 
     @Test
     public void updateExistingServiceByIdCorrectServiceCountTest() throws SQLException {
         insertStubDataServices();
-        Service service = serviceDao.getService(1);
+        Service service = serviceDao.get(1);
         service.setAdditionalService(false);
         service.setName("Service 1 name new");
         serviceDao.update(service);
-        assertEquals(serviceDao.getAllServices().size(), 3);
+        assertEquals(serviceDao.getAll().size(), 3);
     }
 
     @Test
     public void updateExistingServiceByIdShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubDataServices();
-        Service service = serviceDao.getService(1);
+        Service service = serviceDao.get(1);
         service.setAdditionalService(false);
         serviceDao.update(service);
-        assertEquals(serviceDao.getService(1).getName(), "Service 1 name");
+        assertEquals(serviceDao.get(1).getName(), "Service 1 name");
     }
 
     @Test
     public void deleteServiceByIdCorrectServiceCountTest() throws SQLException {
         insertStubDataServices();
         serviceDao.delete(1);
-        assertEquals(serviceDao.getAllServices().size(), 2);
+        assertEquals(serviceDao.getAll().size(), 2);
     }
 
     @Test
     public void deleteServiceByIdShouldDeleteCorrectDataTest() throws SQLException {
         insertStubDataServices();
         serviceDao.delete(1);
-        assertEquals(serviceDao.getService(1), null);
+        assertEquals(serviceDao.get(1), null);
     }
 
     @Test

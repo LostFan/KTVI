@@ -44,25 +44,25 @@ public class HsqldbSubscriberDAOTest {
 
     @Test
     public void emptySubscribersTest() {
-        assertEquals(subscriberDao.getAllSubscribers().size(), 0);
+        assertEquals(subscriberDao.getAll().size(), 0);
     }
 
     @Test
     public void getAllSubscribersReturnsCorrectSubscriberCountTest() throws SQLException {
         insertStubDataSubscribers();
-        assertEquals(subscriberDao.getAllSubscribers().size(), 3);
+        assertEquals(subscriberDao.getAll().size(), 3);
     }
 
     @Test
     public void getAllSubscribersReturnsAllExistingSubscribersTest() throws SQLException {
         insertStubDataSubscribers();
-        assertEquals(subscriberDao.getAllSubscribers().get(0).getId().intValue(), 1);
+        assertEquals(subscriberDao.getAll().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingSubscriberByIdTest() throws SQLException {
         insertStubDataSubscribers();
-        assertEquals(subscriberDao.getSubscriber(1).getId().intValue(), 1);
+        assertEquals(subscriberDao.get(1).getId().intValue(), 1);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class HsqldbSubscriberDAOTest {
         subscriber.setName("Jayme");
         subscriber.setAccount("700500");
         subscriberDao.save(subscriber);
-        assertEquals(subscriberDao.getAllSubscribers().get(3).getId().intValue(), 4);
+        assertEquals(subscriberDao.getAll().get(3).getId().intValue(), 4);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class HsqldbSubscriberDAOTest {
         subscriber.setName("Robb");
         subscriber.setAccount("700453");
         subscriberDao.save(subscriber);
-        assertEquals(subscriberDao.getAllSubscribers().size(), 4);
+        assertEquals(subscriberDao.getAll().size(), 4);
     }
 
     @Test
@@ -92,50 +92,50 @@ public class HsqldbSubscriberDAOTest {
         subscriber.setName("Sansa");
         subscriber.setAccount("700989");
         subscriberDao.save(subscriber);
-        assertEquals(subscriberDao.getAllSubscribers().get(3).getName(), "Sansa");
-        assertEquals(subscriberDao.getAllSubscribers().get(3).getAccount(), "700989");
+        assertEquals(subscriberDao.getAll().get(3).getName(), "Sansa");
+        assertEquals(subscriberDao.getAll().get(3).getAccount(), "700989");
     }
 
     @Test
     public void updateExistingSubscriberByIdShouldMatchUpdatedValuesTest() throws SQLException {
         insertStubDataSubscribers();
-        Subscriber subscriber = subscriberDao.getSubscriber(1);
+        Subscriber subscriber = subscriberDao.get(1);
         subscriber.setName("No one");
         subscriberDao.update(subscriber);
-        assertEquals(subscriberDao.getSubscriber(1).getName(), "No one");
+        assertEquals(subscriberDao.get(1).getName(), "No one");
     }
 
     @Test
     public void updateExistingSubscriberByIdCorrectSubscriberCountTest() throws SQLException {
         insertStubDataSubscribers();
-        Subscriber subscriber = subscriberDao.getSubscriber(1);
+        Subscriber subscriber = subscriberDao.get(1);
         subscriber.setAccount("700736");
         subscriber.setName("No one");
         subscriberDao.update(subscriber);
-        assertEquals(subscriberDao.getAllSubscribers().size(), 3);
+        assertEquals(subscriberDao.getAll().size(), 3);
     }
 
     @Test
     public void updateExistingSubscriberByIdShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubDataSubscribers();
-        Subscriber subscriber = subscriberDao.getSubscriber(1);
+        Subscriber subscriber = subscriberDao.get(1);
         subscriber.setAccount("700344");
         subscriberDao.update(subscriber);
-        assertEquals(subscriberDao.getSubscriber(1).getName(), "Arya");
+        assertEquals(subscriberDao.get(1).getName(), "Arya");
     }
 
     @Test
     public void deleteSubscriberByIdCorrectSubscriberCountTest() throws SQLException {
         insertStubDataSubscribers();
         subscriberDao.delete(1);
-        assertEquals(subscriberDao.getAllSubscribers().size(), 2);
+        assertEquals(subscriberDao.getAll().size(), 2);
     }
 
     @Test
     public void deleteSubscriberByIdShouldDeleteCorrectDataTest() throws SQLException {
         insertStubDataSubscribers();
         subscriberDao.delete(1);
-        assertEquals(subscriberDao.getSubscriber(1), null);
+        assertEquals(subscriberDao.get(1), null);
     }
 
     @Test

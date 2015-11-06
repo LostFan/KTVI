@@ -14,11 +14,6 @@ public abstract class BaseEntityModel<T> extends Observable implements EntityMod
     }
 
     @Override
-    public FieldsComboBoxModel<T> getFieldComboBoxModel() {
-        return new FieldsComboBoxModel<>(this.getFields());
-    }
-
-    @Override
     public List<FieldSearchCriterion<T>> getSearchCriteria() {
         return this.searchCriteria;
     }

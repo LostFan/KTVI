@@ -2,7 +2,7 @@ package org.lostfan.ktv.domain;
 
 import java.util.List;
 
-public class Service {
+public class Service implements Entity  {
 
     private Integer id;
 

@@ -6,11 +6,11 @@ import java.util.List;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.ServicePrice;
 
-public interface ServiceDAO {
+public interface ServiceDAO extends EntityDAO<Service> {
 
-    List<Service> getAllServices();
+    List<Service> getAll();
 
-    Service getService(int id);
+    Service get(int id);
 
     void save(Service service);
 
@@ -20,7 +20,7 @@ public interface ServiceDAO {
 
     int getPriceByDate(int serviceId, LocalDate date);
 
-     List<ServicePrice> getServicePricesByServiceId(int serviceId);
+    List<ServicePrice> getServicePricesByServiceId(int serviceId);
 
     List<Service> getServicesByBeginningPartOfName(String str);
 }

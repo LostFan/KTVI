@@ -1,7 +1,6 @@
 package org.lostfan.ktv.dao.impl.hsqldb;
 
 import org.lostfan.ktv.dao.SubscriberDAO;
-import org.lostfan.ktv.dao.TariffDAO;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
@@ -18,7 +17,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         return ConnectionManager.getManager().getConnection();
     }
 
-    public List<Subscriber> getAllSubscribers() {
+    public List<Subscriber> getAll() {
         List<Subscriber> subscribers = new ArrayList<>();
         try {
             Statement statement = getConnection().createStatement();
@@ -39,7 +38,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         return subscribers;
     }
 
-    public Subscriber getSubscriber(int id) {
+    public Subscriber get(int id) {
         Subscriber subscriber = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber\" where \"id\" = ?");
@@ -75,7 +74,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     public void update(Subscriber subscriber) {
-        if(getSubscriber(subscriber.getId()) != null) {
+        if(get(subscriber.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"subscriber\" set \"name\" = ?, \"account\" = ? where \"id\" = ?");
@@ -93,7 +92,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     public void delete(int subscriberId) {
-        if(getSubscriber(subscriberId) != null) {
+        if(get(subscriberId) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "DELETE FROM  \"subscriber\" where \"id\" = ?");
@@ -113,7 +112,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     public Integer getTariffIdByDate(int subscriberId, LocalDate date) {
-        if(getSubscriber(subscriberId) != null) {
+        if(get(subscriberId) != null) {
             Integer tariffId = null;
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"subscriber_tariff\" where \"subscriber_id\" = ? AND \"connection_date\" <= ?" +
@@ -135,7 +134,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     public Integer getSessionIdByDate(int subscriberId, LocalDate date) {
-        if(getSubscriber(subscriberId) != null) {
+        if(get(subscriberId) != null) {
             Integer sessionId = null;
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"subscriber_session\" where \"subscriber_id\" = ? AND \"connection_date\" <= ?" +

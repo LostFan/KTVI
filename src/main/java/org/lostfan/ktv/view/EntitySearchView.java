@@ -6,8 +6,6 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.event.MenuKeyEvent;
-import javax.swing.event.MenuKeyListener;
 
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
@@ -15,6 +13,8 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.utils.DateLabelFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.view.model.CriteriaComboBoxModel;
+import org.lostfan.ktv.view.model.FieldsComboBoxModel;
 
 public class EntitySearchView {
 
@@ -28,7 +28,7 @@ public class EntitySearchView {
 
         public CriterionComponents() {
 
-            this.fieldComboBox = new JComboBox<String>(model.getFieldComboBoxModel());
+            this.fieldComboBox = new JComboBox<String>(new FieldsComboBoxModel(model.getFields()));
 
             this.fieldComboBox.addActionListener(e -> {
                 criterionComboBox = new JComboBox<>(
@@ -54,7 +54,7 @@ public class EntitySearchView {
             });
         }
 
-        public EntityField.Types getSelectedFieldType() {
+        public Types getSelectedFieldType() {
             if (fieldComboBox.getSelectedItem() == null) {
                 return null;
             }
@@ -96,10 +96,10 @@ public class EntitySearchView {
             if (this.fieldComboBox.getSelectedItem() != null) {
                 panel.add(this.criterionComboBox, c);
             }
-            if (getSelectedFieldType() != null && getSelectedFieldType() != EntityField.Types.Boolean && getSelectedFieldType() != EntityField.Types.Date) {
+            if (getSelectedFieldType() != null && getSelectedFieldType() != Types.Boolean && getSelectedFieldType() != Types.Date) {
                 panel.add(this.valueTextField, c);
             }
-            if (getSelectedFieldType() != null && getSelectedFieldType() == EntityField.Types.Date) {
+            if (getSelectedFieldType() != null && getSelectedFieldType() == Types.Date) {
                 panel.add(this.datePicker, c);
             }
 //            panel.add(new JList<>());

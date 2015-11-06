@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.swing.table.TableModel;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.PaymentDAO;
@@ -25,11 +24,11 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
 
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("payment.id", EntityField.Types.Integer, Payment::getId, Payment::setId));
-        this.fields.add(new EntityField<>("payment.payDate", EntityField.Types.Date, Payment::getDate, Payment::setDate));
-        this.fields.add(new EntityField<>("subscriber", EntityField.Types.Subscriber, Payment::getSubscriberId, Payment::setSubscriberId));
-        this.fields.add(new EntityField<>("service", EntityField.Types.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
-        this.fields.add(new EntityField<>("payment.price", EntityField.Types.Integer, Payment::getPrice, Payment::setPrice));
+        this.fields.add(new EntityField<>("payment.id", Types.Integer, Payment::getId, Payment::setId));
+        this.fields.add(new EntityField<>("payment.payDate", Types.Date, Payment::getDate, Payment::setDate));
+        this.fields.add(new EntityField<>("subscriber", Types.Subscriber, Payment::getSubscriberId, Payment::setSubscriberId));
+        this.fields.add(new EntityField<>("service", Types.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
+        this.fields.add(new EntityField<>("payment.price", Types.Integer, Payment::getPrice, Payment::setPrice));
     }
 
     @Override
@@ -73,6 +72,14 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     }
 
     @Override
+    public List<EntityModel> getEntityModels() {
+        List<EntityModel> entityModels = new ArrayList<>();
+        entityModels.add(new ServiceEntityModel());
+        entityModels.add(new SubscriberEntityModel());
+        return entityModels;
+    }
+
+    @Override
     public String getEntityName() {
         return "payment";
     }
@@ -90,18 +97,9 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         return this.payments;
     }
 
-    public TableModel getTableModel() {
-        return new EntityTableModel<>(this);
-    }
-
     @Override
     public String getEntityNameKey() {
         return "payments";
-    }
-
-    @Override
-    public FieldsComboBoxModel<Payment> getFieldComboBoxModel() {
-        return new FieldsComboBoxModel<>(fields);
     }
 
     @Override
@@ -116,5 +114,10 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
 
         this.payments = stream.collect(Collectors.toList());
         this.notifyObservers(null);
+    }
+
+    @Override
+    public Class getEntityClass() {
+        return Payment.class;
     }
 }

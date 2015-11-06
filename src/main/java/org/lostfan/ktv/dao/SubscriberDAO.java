@@ -3,16 +3,15 @@ package org.lostfan.ktv.dao;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
 
-public interface SubscriberDAO {
+public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
-    List<Subscriber> getAllSubscribers();
+    List<Subscriber> getAll();
 
-    Subscriber getSubscriber(int id);
+    Subscriber get(int id);
 
     void save(Subscriber subscriber);
 

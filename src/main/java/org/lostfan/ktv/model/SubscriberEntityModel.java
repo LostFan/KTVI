@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.swing.table.TableModel;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.SubscriberDAO;
@@ -22,11 +21,11 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.dao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("subscriber.id", EntityField.Types.Integer, Subscriber::getId, Subscriber::setId));
-        this.fields.add(new EntityField<>("subscriber.account", EntityField.Types.String, Subscriber::getAccount, Subscriber::setAccount));
-        this.fields.add(new EntityField<>("subscriber.name", EntityField.Types.String, Subscriber::getName, Subscriber::setName));
-        this.fields.add(new EntityField<>("subscriber.balance", EntityField.Types.Integer, Subscriber::getBalance, Subscriber::setBalance));
-        this.fields.add(new EntityField<>("subscriber.connected", EntityField.Types.Boolean, Subscriber::isConnected, Subscriber::setConnected));
+        this.fields.add(new EntityField<>("subscriber.id", Types.Integer, Subscriber::getId, Subscriber::setId));
+        this.fields.add(new EntityField<>("subscriber.account", Types.String, Subscriber::getAccount, Subscriber::setAccount));
+        this.fields.add(new EntityField<>("subscriber.name", Types.String, Subscriber::getName, Subscriber::setName));
+        this.fields.add(new EntityField<>("subscriber.balance", Types.Integer, Subscriber::getBalance, Subscriber::setBalance));
+        this.fields.add(new EntityField<>("subscriber.connected", Types.Boolean, Subscriber::isConnected, Subscriber::setConnected));
     }
 
     @Override
@@ -41,14 +40,10 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
     public List<Subscriber> getList() {
         if (this.subscribers == null) {
-            this.subscribers = this.dao.getAllSubscribers();
+            this.subscribers = this.dao.getAll();
         }
 
         return this.subscribers;
-    }
-
-    public TableModel getTableModel() {
-        return new EntityTableModel<>(this);
     }
 
     @Override
@@ -60,7 +55,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     public void setSearchCriteria(List<FieldSearchCriterion<Subscriber>> criteria) {
         super.setSearchCriteria(criteria);
 
-        this.subscribers = this.dao.getAllSubscribers();
+        this.subscribers = this.dao.getAll();
         Stream<Subscriber> stream = this.subscribers.stream();
         for (FieldSearchCriterion<Subscriber> fieldSearchCriterion : criteria) {
             stream = stream.filter(fieldSearchCriterion.buildPredicate());
@@ -76,12 +71,17 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
             int id = getList().get(rowNumber).getId();
             this.dao.delete(id);
         }
-        this.subscribers = this.dao.getAllSubscribers();
+        this.subscribers = this.dao.getAll();
         this.notifyObservers(null);
     }
 
     @Override
     public List<EntityComboBoxModel> getEntityComboBoxModels() {
+        return null;
+    }
+
+    @Override
+    public List<EntityModel> getEntityModels() {
         return null;
     }
 
@@ -92,7 +92,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         subscriber.setName((String) collect.get("subscriber.name"));
         if(collect.get("subscriber.id") != null) {
             Integer subscriberId = (Integer) collect.get("subscriber.id");
-            if (this.dao.getSubscriber(subscriberId) != null) {
+            if (this.dao.get(subscriberId) != null) {
                 subscriber.setId((Integer) collect.get("subscriber.id"));
                 this.dao.update(subscriber);
             } else {
@@ -101,11 +101,16 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         } else {
             this.dao.save(subscriber);
         }
-        this.subscribers = this.dao.getAllSubscribers();
+        this.subscribers = this.dao.getAll();
         this.notifyObservers(null);
     }
 
-//    @Override
+    @Override
+    public Class getEntityClass() {
+        return Subscriber.class;
+    }
+
+    //    @Override
 //    public Map<Integer, String> getListByBeginningPartOfName(String str, Class clazz) {
 //        return null;
 //    }

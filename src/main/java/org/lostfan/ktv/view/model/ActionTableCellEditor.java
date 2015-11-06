@@ -1,4 +1,4 @@
-package org.lostfan.ktv.model;
+package org.lostfan.ktv.view.model;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +12,7 @@ import javax.swing.table.TableCellEditor;
 /**
  * Created by Ihar_Niakhlebau on 30-Oct-15.
  */
-public abstract class ActionTableCellEditor implements TableCellEditor, ActionListener {
+public abstract class ActionTableCellEditor implements TableCellEditor {
 
     private TableCellEditor editor;
     private JButton viewTableEntitiesButton = new JButton();
@@ -23,31 +23,45 @@ public abstract class ActionTableCellEditor implements TableCellEditor, ActionLi
     protected int row, column;
 
     public ActionTableCellEditor(TableCellEditor editor){
-        URL urlTableEntities = ActionTableCellEditor.class.getClassLoader().getResource("images/dotdotdot.gif");
+        URL urlTableEntities = ActionTableCellEditor.class.getClassLoader().getResource("images/ellipsis.gif");
 
         if(urlTableEntities != null) {
-            ImageIcon DOTDOTDOT_ICON = new ImageIcon(urlTableEntities);
-            Image image = DOTDOTDOT_ICON.getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-            DOTDOTDOT_ICON = new ImageIcon(image);
-            viewTableEntitiesButton.setIcon(DOTDOTDOT_ICON);
+            ImageIcon ELLIPSIS_ICON = new ImageIcon(urlTableEntities);
+            Image image = ELLIPSIS_ICON.getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+            ELLIPSIS_ICON = new ImageIcon(image);
+            viewTableEntitiesButton.setIcon(ELLIPSIS_ICON);
         }
 
         URL urlEntity = ActionTableCellEditor.class.getClassLoader().getResource("images/search.png");
 
         if(urlEntity != null) {
-            ImageIcon DOTDOTDOT_ICON = new ImageIcon(urlEntity);
-            Image image = DOTDOTDOT_ICON.getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-            DOTDOTDOT_ICON = new ImageIcon(image);
-            viewEntityButton.setIcon(DOTDOTDOT_ICON);
+            ImageIcon ELLIPSIS_ICON = new ImageIcon(urlEntity);
+            Image image = ELLIPSIS_ICON.getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
+            ELLIPSIS_ICON = new ImageIcon(image);
+            viewEntityButton.setIcon(ELLIPSIS_ICON);
         }
 
         this.editor = editor;
-        viewTableEntitiesButton.addActionListener(this);
+        viewTableEntitiesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                editor.cancelCellEditing();
+                openEntityTableView(table, row, column);
+            }
+        });
 
         // ui-tweaking
         viewTableEntitiesButton.setFocusable(false);
         viewTableEntitiesButton.setFocusPainted(false);
         viewTableEntitiesButton.setMargin(new Insets(0, 0, 0, 0));
+
+        viewEntityButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                editor.cancelCellEditing();
+                openEntityView(table, row, column);
+            }
+        });
 
         viewEntityButton.setFocusable(false);
         viewEntityButton.setFocusPainted(false);
@@ -96,11 +110,8 @@ public abstract class ActionTableCellEditor implements TableCellEditor, ActionLi
         editor.removeCellEditorListener(l);
     }
 
-    public final void actionPerformed(ActionEvent e){
-        editor.cancelCellEditing();
-        editCell(table, row, column);
-    }
+    protected abstract void openEntityTableView(JTable table, int row, int column);
 
-    protected abstract void editCell(JTable table, int row, int column);
+    protected abstract void openEntityView(JTable table, int row, int column);
 }
 

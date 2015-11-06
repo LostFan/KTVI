@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.swing.table.TableModel;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.ServiceDAO;
@@ -22,9 +21,9 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("service.id", EntityField.Types.Integer, Service::getId, Service::setId));
-        this.fields.add(new EntityField<>("service.name", EntityField.Types.String, Service::getName, Service::setName));
-        this.fields.add(new EntityField<>("service.additional", EntityField.Types.Boolean, Service::isAdditionalService, Service::setAdditionalService));
+        this.fields.add(new EntityField<>("service.id", Types.Integer, Service::getId, Service::setId));
+        this.fields.add(new EntityField<>("service.name", Types.String, Service::getName, Service::setName));
+        this.fields.add(new EntityField<>("service.additional", Types.Boolean, Service::isAdditionalService, Service::setAdditionalService));
     }
 
     @Override
@@ -34,24 +33,15 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
 
     public List<Service> getList() {
         if (this.services == null) {
-            this.services = this.dao.getAllServices();
+            this.services = this.dao.getAll();
         }
 
         return this.services;
     }
 
-    public TableModel getTableModel() {
-        return new EntityTableModel<>(this);
-    }
-
     @Override
     public String getEntityNameKey() {
         return "services";
-    }
-
-    @Override
-    public FieldsComboBoxModel<Service> getFieldComboBoxModel() {
-        return new FieldsComboBoxModel<>(fields);
     }
 
     @Override
@@ -69,7 +59,7 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
         if(collect.get("service.id") != null) {
             Integer serviceId = (Integer) collect.get("service.id");
             service.setId((Integer) collect.get("service.id"));
-            if (this.dao.getService(serviceId) != null) {
+            if (this.dao.get(serviceId) != null) {
                 this.dao.update(service);
             } else {
                 this.dao.save(service);
@@ -77,7 +67,7 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
         } else {
             this.dao.save(service);
         }
-        this.services = this.dao.getAllServices();
+        this.services = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -87,7 +77,7 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
             int id = getList().get(rowNumber).getId();
             this.dao.delete(id);
         }
-        this.services = this.dao.getAllServices();
+        this.services = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -95,7 +85,7 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
     public void setSearchCriteria(List<FieldSearchCriterion<Service>> criteria) {
         super.setSearchCriteria(criteria);
 
-        this.services = this.dao.getAllServices();
+        this.services = this.dao.getAll();
         Stream<Service> stream = this.services.stream();
         for (FieldSearchCriterion<Service> serviceFieldSearchCriterion : criteria) {
             stream = stream.filter(serviceFieldSearchCriterion.buildPredicate());
@@ -108,5 +98,15 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
     @Override
     public List<EntityComboBoxModel> getEntityComboBoxModels() {
         return null;
+    }
+
+    @Override
+    public List<EntityModel> getEntityModels() {
+        return null;
+    }
+
+    @Override
+    public Class getEntityClass() {
+        return Service.class;
     }
 }

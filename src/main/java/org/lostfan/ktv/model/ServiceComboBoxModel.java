@@ -2,7 +2,6 @@ package org.lostfan.ktv.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.ServiceDAO;
@@ -24,8 +23,8 @@ public class ServiceComboBoxModel extends EntityComboBoxModel<Service> {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
         this.fields = new ArrayList<>();
-        entityFieldId = new EntityField<>("service.id", EntityField.Types.Integer, Service::getId, Service::setId);
-        entityFieldName = new EntityField<>("service.name", EntityField.Types.String, Service::getName, Service::setName);
+        entityFieldId = new EntityField<>("service.id", Types.Integer, Service::getId, Service::setId);
+        entityFieldName = new EntityField<>("service.name", Types.String, Service::getName, Service::setName);
     }
 
 
@@ -38,7 +37,7 @@ public class ServiceComboBoxModel extends EntityComboBoxModel<Service> {
     @Override
     public List<Service> getList() {
         if (this.services == null) {
-            this.services = this.dao.getAllServices();
+            this.services = this.dao.getAll();
         }
         return this.services;
     }
@@ -51,10 +50,6 @@ public class ServiceComboBoxModel extends EntityComboBoxModel<Service> {
     @Override
     public EntityField<Service, ?> getEntityFieldId() {
         return entityFieldId;
-    }
-
-    public ComboBoxModel getTableModel() {
-        return new ValueComboBoxModel<>(this);
     }
 
     @Override

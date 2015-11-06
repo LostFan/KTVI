@@ -26,7 +26,7 @@ public class DummyApplication {
         ServiceDAO dao = daoFactory.getServiceDAO();
 
         // Get some data
-        List<Service> services = dao.getAllServices();
+        List<Service> services = dao.getAll();
         System.out.println("Services found: " + services.size());
     }
 }

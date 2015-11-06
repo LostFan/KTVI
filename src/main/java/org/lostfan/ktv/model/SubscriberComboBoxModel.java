@@ -2,7 +2,6 @@ package org.lostfan.ktv.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.SubscriberDAO;
@@ -24,8 +23,8 @@ public class SubscriberComboBoxModel extends EntityComboBoxModel<Subscriber> {
         this.dao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
 
         this.fields = new ArrayList<>();
-        entityFieldId = new EntityField<>("subscriber.id", EntityField.Types.Integer, Subscriber::getId, Subscriber::setId);
-        entityFieldName = new EntityField<>("subscriber.name", EntityField.Types.String, Subscriber::getName, Subscriber::setName);
+        entityFieldId = new EntityField<>("subscriber.id", Types.Integer, Subscriber::getId, Subscriber::setId);
+        entityFieldName = new EntityField<>("subscriber.name", Types.String, Subscriber::getName, Subscriber::setName);
     }
 
 
@@ -38,7 +37,7 @@ public class SubscriberComboBoxModel extends EntityComboBoxModel<Subscriber> {
     @Override
     public List<Subscriber> getList() {
         if (this.subscribers == null) {
-            this.subscribers = this.dao.getAllSubscribers();
+            this.subscribers = this.dao.getAll();
         }
 
         return this.subscribers;
@@ -52,10 +51,6 @@ public class SubscriberComboBoxModel extends EntityComboBoxModel<Subscriber> {
     @Override
     public EntityField<Subscriber, ?> getEntityFieldId() {
         return entityFieldId;
-    }
-
-    public ComboBoxModel getTableModel() {
-        return new ValueComboBoxModel<>(this);
     }
 
     @Override

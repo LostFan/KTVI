@@ -16,7 +16,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
         return ConnectionManager.getManager().getConnection();
     }
 
-    public List<Service> getAllServices() {
+    public List<Service> getAll() {
         List<Service> services = new ArrayList<>();
         try {
             Statement statement = getConnection().createStatement();
@@ -37,7 +37,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
         return services;
     }
 
-    public Service getService(int id) {
+    public Service get(int id) {
         Service service = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"service\" where \"id\" = ?");
@@ -73,7 +73,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
     }
 
     public void update(Service service) {
-        if(getService(service.getId()) != null) {
+        if(get(service.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"service\" set \"name\" = ?, \"additional\" = ? where \"id\" = ?");
@@ -91,7 +91,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
     }
 
     public void delete(int serviceId) {
-        if(getService(serviceId) != null) {
+        if(get(serviceId) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "DELETE FROM  \"service\" where \"id\" = ?");
@@ -107,7 +107,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
     }
 
     public int getPriceByDate(int serviceId, LocalDate date) {
-        if(getService(serviceId) != null) {
+        if(get(serviceId) != null) {
             int price = 0;
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"service_price\" where \"service_id\" = ? AND \"date\" <= ?" +

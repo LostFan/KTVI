@@ -1,5 +1,6 @@
-package org.lostfan.ktv.model;
+package org.lostfan.ktv.view.model;
 
+import org.lostfan.ktv.model.SearchCriteria;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.*;

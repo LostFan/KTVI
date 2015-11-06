@@ -3,10 +3,10 @@ package org.lostfan.ktv.view;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
-import org.lostfan.ktv.controller.ComboBoxController;
 import org.lostfan.ktv.model.EntityComboBoxModel;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.model.Types;
 import org.lostfan.ktv.utils.DateLabelFormatter;
 import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.utils.ResourceBundles;
@@ -34,6 +34,7 @@ public class EntityView {
             switch (entityField.getType()) {
                 case String:
                 case Integer:
+                case Double:
                     this.jComponent = new JTextField(20);
                     break;
                 case Boolean:
@@ -51,7 +52,7 @@ public class EntityView {
 
         }
 
-        public EntityField.Types getSelectedFieldType() {
+        public Types getSelectedFieldType() {
             return entityField.getType();
         }
 
@@ -62,6 +63,8 @@ public class EntityView {
                     return ((JTextField) this.jComponent).getText();
                 case Integer:
                     return !((JTextField) this.jComponent).getText().isEmpty() ? Integer.parseInt(((JTextField) this.jComponent).getText()): null;
+                case Double:
+                    return !((JTextField) this.jComponent).getText().isEmpty() ? Double.parseDouble(((JTextField) this.jComponent).getText()): null;
                 case Boolean:
                     return ((JCheckBox) this.jComponent).isSelected();
                 case Date:
@@ -81,7 +84,7 @@ public class EntityView {
             c.insets = new Insets(0,10,10,10);
             panel.add(this.label, c);
             DefaultContextMenu contextMenu = new DefaultContextMenu();
-            if (getSelectedFieldType() == EntityField.Types.String || getSelectedFieldType() == EntityField.Types.Integer) {
+            if (getSelectedFieldType() == Types.String || getSelectedFieldType() == Types.Integer || getSelectedFieldType() == Types.Double) {
                 contextMenu.add((JTextField) this.jComponent);
             }
 //            if (getSelectedFieldType() == EntityField.Types.Date) {
@@ -156,22 +159,22 @@ public class EntityView {
         this.addButton.setText(getString("buttons.change"));
         for (NameAndValueField nameAndValueField : nameAndValueFields) {
             Object o = nameAndValueField.getEntityField().get(entity);
-            if (nameAndValueField.getSelectedFieldType() == EntityField.Types.String ) {
+            if (nameAndValueField.getSelectedFieldType() == Types.String ) {
                 ((JTextField) nameAndValueField.jComponent).setText(o.toString());
             } else
-            if (nameAndValueField.getSelectedFieldType() == EntityField.Types.Integer) {
+            if (nameAndValueField.getSelectedFieldType() == Types.Integer || nameAndValueField.getSelectedFieldType() == Types.Double) {
                 if(o != null) {
                     ((JTextField) nameAndValueField.jComponent).setText(o.toString());
                 } else {
                     ((JTextField) nameAndValueField.jComponent).setText("0");
                 }
             } else
-            if (nameAndValueField.getSelectedFieldType() == EntityField.Types.Date) {
+            if (nameAndValueField.getSelectedFieldType() == Types.Date) {
                 LocalDate localDate = (LocalDate) o;
                 ((JDatePickerImpl) nameAndValueField.jComponent).getModel().setDate(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
                 ((JDatePickerImpl) nameAndValueField.jComponent).getModel().setSelected(true);
             } else
-            if (nameAndValueField.getSelectedFieldType() == EntityField.Types.Boolean) {
+            if (nameAndValueField.getSelectedFieldType() == Types.Boolean) {
 
                 ((JCheckBox) nameAndValueField.jComponent).setSelected((Boolean) o);
             } else {

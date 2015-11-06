@@ -6,10 +6,10 @@ import java.awt.event.MouseListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import org.lostfan.ktv.model.StringActionTableCellEditor;
 import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.view.model.EntityTableModel;
 
 public class EntityTableView<T> {
 
@@ -35,7 +35,7 @@ public class EntityTableView<T> {
     public EntityTableView(BaseEntityModel<T> model) {
         this.model = model;
 
-        this.table = new JTable(model.getTableModel());
+        this.table = new JTable(new EntityTableModel<>(model));
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         this.table.setAutoCreateRowSorter(true);
         this.table.setFillsViewportHeight(true);
@@ -109,7 +109,7 @@ public class EntityTableView<T> {
         this.model = model;
         model.addObserver(this.modelObserver);
 
-        this.table.setModel(model.getTableModel());
+        this.table.setModel(new EntityTableModel<>(model));
         this.tableScrollPane.setViewportView(this.table);
 
         revalidate();
@@ -122,8 +122,8 @@ public class EntityTableView<T> {
         DefaultCellEditor editor = new DefaultCellEditor(textField);
         editor.setClickCountToStart(1);
         for (int columnIndex=0;columnIndex< table.getColumnCount(); columnIndex++) {
-            if(this.model.getFields().get(columnIndex).getType().isEntityClass()); {
-                this.table.getColumn(table.getColumnName(columnIndex)).setCellEditor(new StringActionTableCellEditor(editor));
+            if(this.model.getFields().get(columnIndex).getType().isEntityClass()) {
+//                this.table.getColumn(table.getColumnName(columnIndex)).setCellEditor(new EntityActionTableCellEditor(editor));
             }
         }
     }

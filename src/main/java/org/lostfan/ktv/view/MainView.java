@@ -29,9 +29,11 @@ public class MainView {
         this.frame.setJMenuBar(this.menuBar);
         JMenu fileMenu = new JMenu(getGuiString("menu.file"));
         JMenu entityMenu = new JMenu(getGuiString("menu.entities"));
+        JMenu documentMenu = new JMenu(getGuiString("menu.documents"));
         JMenu reportMenu = new JMenu(getGuiString("menu.reports"));
         menuBar.add(fileMenu);
         menuBar.add(entityMenu);
+        menuBar.add(documentMenu);
         menuBar.add(reportMenu);
 
         for (EntityModel entityModel : model.getEntityModels()) {
@@ -42,6 +44,15 @@ public class MainView {
                     entityModelListener.entityChanged(entityModel);
             });
         }
+        for (EntityModel entityModel : model.getDocumentModels()) {
+            JMenuItem entityMenuItem = new JMenuItem(getEntityString(entityModel.getEntityNameKey()));
+            documentMenu.add(entityMenuItem);
+            entityMenuItem.addActionListener(e -> {
+                if (entityModelListener != null)
+                    entityModelListener.entityChanged(entityModel);
+            });
+        }
+
 
         model.addObserver(args -> {
             setContentPanel(model.getContentPanel());

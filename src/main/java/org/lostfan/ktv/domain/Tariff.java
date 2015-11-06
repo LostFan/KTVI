@@ -1,8 +1,6 @@
 package org.lostfan.ktv.domain;
 
-import java.util.List;
-
-public class Tariff {
+public class Tariff implements Entity  {
 
     private int id;
 

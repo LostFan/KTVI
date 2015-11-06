@@ -1,7 +1,7 @@
 package org.lostfan.ktv.domain;
 
 
-public class Subscriber {
+public class Subscriber implements Entity {
 
     private Integer id;
 
