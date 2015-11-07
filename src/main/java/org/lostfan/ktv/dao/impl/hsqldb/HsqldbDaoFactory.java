@@ -10,6 +10,7 @@ public class HsqldbDaoFactory extends DAOFactory {
     private ServiceDAO serviceDAO;
     private SubscriberDAO subscriberDAO;
     private TariffDAO tariffDAO;
+    private StreetDAO streetDAO;
 
     public HsqldbDaoFactory() {
         this.materialDAO = new HsqldbMaterialDAO();
@@ -18,6 +19,7 @@ public class HsqldbDaoFactory extends DAOFactory {
         this.serviceDAO = new HsqldbServiceDAO();
         this.subscriberDAO = new HsqldbSubscriberDAO();
         this.tariffDAO = new HsqldbTariffDAO();
+        this.streetDAO = new HsqldbStreetDAO();
     }
 
     @Override
@@ -48,5 +50,10 @@ public class HsqldbDaoFactory extends DAOFactory {
     @Override
     public TariffDAO getTariffDAO() {
         return this.tariffDAO;
+    }
+
+    @Override
+    public StreetDAO getStreetDAO() {
+        return this.streetDAO;
     }
 }

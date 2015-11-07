@@ -13,6 +13,8 @@ public class Subscriber implements Entity {
 
     private boolean connected;
 
+    private Integer streetId;
+
     public Integer getId() {
         return id;
     }
@@ -51,5 +53,13 @@ public class Subscriber implements Entity {
 
     public void setAccount(String account) {
         this.account = account;
+    }
+
+    public Integer getStreetId() {
+        return streetId;
+    }
+
+    public void setStreetId(Integer streetId) {
+        this.streetId = streetId;
     }
 }

@@ -19,6 +19,7 @@ public class MainModel extends Observable {
         this.entityModels.add(new SubscriberEntityModel());
         this.entityModels.add(new MaterialEntityModel());
         this.entityModels.add(new TariffEntityModel());
+        this.entityModels.add(new StreetEntityModel());
         this.documentModels.add(new PaymentEntityModel());
         this.documentModels.add(new MaterialConsumptionEntityModel());
     }

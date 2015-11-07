@@ -3,10 +3,12 @@ package org.lostfan.ktv.view.model;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.model.Types;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.event.TableModelListener;
@@ -54,15 +56,14 @@ public class EntityTableModel<T> implements TableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object value = this.model.getFields().get(columnIndex).get(this.model.getList().get(rowIndex));
-        if(getColumnClass(columnIndex) == Integer.class && value ==null) {
+        Types thisType = this.model.getFields().get(columnIndex).getType();
+        if(thisType.getClazz() == Integer.class && value ==null) {
             return 0;
         }
-        if(getColumnClass(columnIndex) == Subscriber.class) {
-            value =  subscriberDAO.get((Integer) value).getName();
+        if( thisType.isEntityClass()) {
+            value =  ((Entity) thisType.getDAO().get((Integer) value)).getName();
         }
-        if(getColumnClass(columnIndex) == Service.class) {
-            value =  serviceDAO.get((Integer) value).getName();
-        }
+
         return value;
     }
 

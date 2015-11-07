@@ -23,11 +23,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"subscriber\"");
             while (rs.next()) {
-                Subscriber subscriber = new Subscriber();
-                subscriber.setId(rs.getInt("id"));
-                subscriber.setName(rs.getString("name"));
-                subscriber.setAccount(rs.getString("account"));
-
+                Subscriber subscriber = createSubscriber(rs);
                 subscribers.add(subscriber);
             }
 
@@ -46,10 +42,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                subscriber = new Subscriber();
-                subscriber.setId(rs.getInt("id"));
-                subscriber.setName(rs.getString("name"));
-                subscriber.setAccount(rs.getString("account"));
+                subscriber = createSubscriber(rs);
 
             }
 
@@ -63,9 +56,12 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     public void save(Subscriber subscriber) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"subscriber\" (\"name\", \"account\") VALUES(?, ?)");
+                    "INSERT INTO \"subscriber\" (\"name\", \"account\", \"street_id\") VALUES(?, ?)");
             preparedStatement.setString(1, subscriber.getName());
             preparedStatement.setString(2, subscriber.getAccount());
+            if(subscriber.getStreetId() != null) {
+                preparedStatement.setInt(3, subscriber.getStreetId());
+            }
             preparedStatement.executeUpdate();
 
         } catch (SQLException ex) {
@@ -77,10 +73,13 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         if(get(subscriber.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"subscriber\" set \"name\" = ?, \"account\" = ? where \"id\" = ?");
+                        "UPDATE \"subscriber\" set \"name\" = ?, \"account\" = ?, \"street_id\" = ? where \"id\" = ?");
                 preparedStatement.setString(1, subscriber.getName());
                 preparedStatement.setString(2, subscriber.getAccount());
-                preparedStatement.setInt(3, subscriber.getId());
+                if(subscriber.getStreetId() != null) {
+                    preparedStatement.setInt(3, subscriber.getStreetId());
+                }
+                preparedStatement.setInt(4, subscriber.getId());
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
@@ -344,11 +343,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             preparedStatement.setString(1, (str + "%").toLowerCase());
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Subscriber subscriber = new Subscriber();
-                subscriber.setId(rs.getInt("id"));
-                subscriber.setName(rs.getString("name"));
-                subscriber.setAccount(rs.getString("account"));
-
+                Subscriber subscriber = createSubscriber(rs);
                 subscribers.add(subscriber);
             }
 
@@ -366,11 +361,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             preparedStatement.setString(1, (str + "%").toLowerCase());
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Subscriber subscriber = new Subscriber();
-                subscriber.setId(rs.getInt("id"));
-                subscriber.setName(rs.getString("name"));
-                subscriber.setAccount(rs.getString("account"));
-
+                Subscriber subscriber = createSubscriber(rs);
                 subscribers.add(subscriber);
             }
 
@@ -379,5 +370,14 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         }
 
         return subscribers;
+    }
+
+    private Subscriber createSubscriber(ResultSet rs) throws SQLException{
+        Subscriber subscriber = new Subscriber();
+        subscriber.setId(rs.getInt("id"));
+        subscriber.setName(rs.getString("name"));
+        subscriber.setAccount(rs.getString("account"));
+        subscriber.setStreetId(rs.getInt("street_id"));
+        return subscriber;
     }
 }

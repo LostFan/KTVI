@@ -10,3 +10,4 @@ DROP TABLE IF EXISTS "tariff";
 DROP TABLE IF EXISTS "service_price";
 DROP TABLE IF EXISTS "service";
 DROP TABLE IF EXISTS "material";
+DROP TABLE IF EXISTS "street";

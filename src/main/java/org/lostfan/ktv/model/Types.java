@@ -15,7 +15,8 @@ public enum Types {
     Date(LocalDate.class, false, null),
     Double(java.lang.Double.class, false, null),
     Subscriber(org.lostfan.ktv.domain.Subscriber.class, true, DAOFactory.getDefaultDAOFactory().getSubscriberDAO()),
-    Service(org.lostfan.ktv.domain.Service.class, true, DAOFactory.getDefaultDAOFactory().getServiceDAO());
+    Service(org.lostfan.ktv.domain.Service.class, true, DAOFactory.getDefaultDAOFactory().getServiceDAO()),
+    Street(org.lostfan.ktv.domain.Street.class, true, DAOFactory.getDefaultDAOFactory().getStreetDAO());
 
     private Class clazz;
     private boolean entityClass;

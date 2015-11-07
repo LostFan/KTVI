@@ -23,4 +23,6 @@ public abstract class DAOFactory {
     public abstract SubscriberDAO getSubscriberDAO();
 
     public abstract TariffDAO getTariffDAO();
+
+    public abstract StreetDAO getStreetDAO();
 }

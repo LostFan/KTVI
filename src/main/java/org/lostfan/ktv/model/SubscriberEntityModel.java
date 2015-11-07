@@ -24,6 +24,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.fields.add(new EntityField<>("subscriber.id", Types.Integer, Subscriber::getId, Subscriber::setId));
         this.fields.add(new EntityField<>("subscriber.account", Types.String, Subscriber::getAccount, Subscriber::setAccount));
         this.fields.add(new EntityField<>("subscriber.name", Types.String, Subscriber::getName, Subscriber::setName));
+        this.fields.add(new EntityField<>("subscriber.street_id", Types.Street, Subscriber::getStreetId, Subscriber::setStreetId));
         this.fields.add(new EntityField<>("subscriber.balance", Types.Integer, Subscriber::getBalance, Subscriber::setBalance));
         this.fields.add(new EntityField<>("subscriber.connected", Types.Boolean, Subscriber::isConnected, Subscriber::setConnected));
     }
@@ -77,7 +78,9 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
     @Override
     public List<EntityComboBoxModel> getEntityComboBoxModels() {
-        return null;
+        List<EntityComboBoxModel> entityComboBoxModels = new ArrayList<>();
+        entityComboBoxModels.add(new StreetComboBoxModel());
+        return entityComboBoxModels;
     }
 
     @Override
@@ -90,6 +93,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         Subscriber subscriber = new Subscriber();
         subscriber.setAccount((String) collect.get("subscriber.account"));
         subscriber.setName((String) collect.get("subscriber.name"));
+        subscriber.setStreetId((Integer) collect.get("subscriber.street_id"));
         if(collect.get("subscriber.id") != null) {
             Integer subscriberId = (Integer) collect.get("subscriber.id");
             if (this.dao.get(subscriberId) != null) {

@@ -1,3 +1,7 @@
+INSERT INTO "street" ("id", "name") VALUES(1, 'ул. 30 лет Победы');
+INSERT INTO "street" ("id", "name") VALUES(2, 'пер. Гоголя');
+INSERT INTO "street" ("id", "name") VALUES(3, 'ул. Первомайская');
+
 INSERT INTO "material" ("id", "name", "price", "unit") VALUES(1, 'Кабель сетевой', 10000, 'м');
 INSERT INTO "material" ("id", "name", "price", "unit") VALUES(2, 'Тюнер', 500000, 'шт.');
 INSERT INTO "material" ("id", "name", "price", "unit") VALUES(3, 'гайка', 500, 'шт.');
@@ -32,11 +36,11 @@ INSERT INTO "tariff_price" ("tariff_id", "date", "price") VALUES(2, '2015-05-01'
 INSERT INTO "tariff_price" ("tariff_id", "date", "price") VALUES(3, '2015-01-01', 50000);
 INSERT INTO "tariff_price" ("tariff_id", "date", "price") VALUES(3, '2015-05-01', 75000);
 
-INSERT INTO "subscriber" ("id", "account", "name") VALUES(1, 700111, 'Иванов');
-INSERT INTO "subscriber" ("id", "account", "name") VALUES(2, 700231, 'Петров');
-INSERT INTO "subscriber" ("id", "account", "name") VALUES(3, 700567, 'Сидоров');
-INSERT INTO "subscriber" ("id", "account", "name") VALUES(4, 700431, 'Романов');
-INSERT INTO "subscriber" ("id", "account", "name") VALUES(5, 700267, 'Фролова');
+INSERT INTO "subscriber" ("id", "account", "name", "street_id") VALUES(1, 700111, 'Иванов', 1);
+INSERT INTO "subscriber" ("id", "account", "name", "street_id") VALUES(2, 700231, 'Петров', 1);
+INSERT INTO "subscriber" ("id", "account", "name", "street_id") VALUES(3, 700567, 'Сидоров', 2);
+INSERT INTO "subscriber" ("id", "account", "name", "street_id") VALUES(4, 700431, 'Романов', 2);
+INSERT INTO "subscriber" ("id", "account", "name", "street_id") VALUES(5, 700267, 'Фролова', 3);
 
 INSERT INTO "subscriber_session" ("id", "subscriber_id", "connection_date", "disconnection_date") VALUES(1, 1, '2015-06-01', '2015-07-15');
 INSERT INTO "subscriber_session" ("id", "subscriber_id", "connection_date") VALUES(2, 1, '2015-08-01');
