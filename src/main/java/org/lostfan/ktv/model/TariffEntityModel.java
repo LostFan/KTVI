@@ -59,11 +59,6 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
     }
 
     @Override
-    public List<EntitySearcherModel> getEntityComboBoxModels() {
-        return null;
-    }
-
-    @Override
     public List<EntityModel> getEntityModels() {
         List<EntityModel> entityModels = new ArrayList<>();
         entityModels.add(new ServiceEntityModel());

@@ -25,8 +25,6 @@ public interface EntityModel<T extends Entity> {
 
     void deleteEntityByRow(List<Integer> rowNumbers);
 
-    List<EntitySearcherModel> getEntityComboBoxModels();
-
     List<EntityModel> getEntityModels();
 
     Class getEntityClass();

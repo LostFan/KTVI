@@ -23,36 +23,35 @@ import java.util.List;
  */
 public class EntityView {
 
-    private class NameAndValueField {
+    private class LabelFieldPanel extends JPanel {
 
         private JLabel label;
         private JComponent jComponent;
         private EntityField entityField;
 
-        public NameAndValueField(EntityField entityField, Entity entity) {
+        public LabelFieldPanel(EntityField entityField) {
             this.entityField = entityField;
             switch (entityField.getType()) {
                 case String:
                 case Integer:
                 case Double:
                     JTextField textField = new JTextField(20);
-                    if (entity != null) {
-                        textField.setText(entityField.get(entity).toString());
+                    if (EntityView.this.entity != null) {
+                        textField.setText(String.valueOf(entityField.get(EntityView.this.entity)));
                     }
                     this.jComponent = textField;
                     break;
                 case Boolean:
                     JCheckBox checkBox = new JCheckBox();
-                    if (entity != null) {
-                        checkBox.setSelected((Boolean)entityField.get(entity));
+                    if (EntityView.this.entity != null) {
+                        checkBox.setSelected((Boolean)entityField.get(EntityView.this.entity));
                     }
                     this.jComponent = checkBox;
                     break;
                 case Date:
-
                     JDatePickerImpl datePicker = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
-                    if (entity != null) {
-                        LocalDate localDate = (LocalDate) entityField.get(entity);
+                    if (EntityView.this.entity != null) {
+                        LocalDate localDate = (LocalDate) entityField.get(EntityView.this.entity);
                         datePicker.getModel().setDate(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
                         datePicker.getModel().setSelected(true);
                     }
@@ -61,9 +60,9 @@ public class EntityView {
                 default:
                     EntityComboBox comboBox = EntityComboBoxFactory.createComboBox(entityField.getType());
                     comboBox.setEditable(true);
-                    if (entity != null) {
-                        Object value = entityField.get(entity);
-                        comboBox.setId((Integer) value);
+                    if (EntityView.this.entity != null) {
+                        Object value = entityField.get(EntityView.this.entity);
+                        comboBox.setSelectedId((Integer) value);
                         value = comboBox.getSelectedName();
                         ((JTextField)((comboBox).getEditor().getEditorComponent())).setText((String) value);
                     }
@@ -72,15 +71,27 @@ public class EntityView {
 
             this.label = new JLabel(ResourceBundles.getEntityBundle().getString(entityField.getTitleKey()), SwingConstants.LEFT);
 
-        }
+            setLayout(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
 
-        public EntityFieldTypes getSelectedFieldType() {
-            return entityField.getType();
+            c.insets = new Insets(0, 10, 10, 10);
+            add(this.label, c);
+            DefaultContextMenu contextMenu = new DefaultContextMenu();
+            if (this.entityField.getType() == EntityFieldTypes.String
+                    || this.entityField.getType() == EntityFieldTypes.Integer
+                    || this.entityField.getType() == EntityFieldTypes.Double) {
+                contextMenu.add((JTextField) this.jComponent);
+            }
+
+            if(this.entityField.getType().isEntityClass()) {
+                contextMenu.add((JTextField) ((JComboBox)this.jComponent).getEditor().getEditorComponent());
+            }
+            add(this.jComponent, c);
         }
 
 
         public Object getValue() {
-            switch (getSelectedFieldType()) {
+            switch (this.entityField.getType()) {
                 case String:
                     return ((JTextField) this.jComponent).getText();
                 case Integer:
@@ -95,62 +106,26 @@ public class EntityView {
                 default:
                     return  ((EntityComboBox) this.jComponent).getSelectedId();
             }
-//            return null;
-        }
-
-        public void addComponentsTo(JPanel rootPanel, int criteriaNumber) {
-            JPanel panel = new JPanel();
-            panel.setLayout(new GridBagLayout());
-            GridBagConstraints c = new GridBagConstraints();
-
-            c.insets = new Insets(0,10,10,10);
-            panel.add(this.label, c);
-            DefaultContextMenu contextMenu = new DefaultContextMenu();
-            if (getSelectedFieldType() == EntityFieldTypes.String || getSelectedFieldType() == EntityFieldTypes.Integer || getSelectedFieldType() == EntityFieldTypes.Double) {
-                contextMenu.add((JTextField) this.jComponent);
-            }
-//            if (getSelectedFieldType() == EntityField.EntityFieldTypes.Date) {
-//                panel.add(this.jComponent, c);
-//            }
-//            if (getSelectedFieldType() == EntityField.EntityFieldTypes.Boolean) {
-//                panel.add(this.jComponent, c);
-//            }
-
-            if(getSelectedFieldType().isEntityClass()) {
-                contextMenu.add((JTextField) ((JComboBox)this.jComponent).getEditor().getEditorComponent());
-            }
-
-
-            panel.add(this.jComponent, c);
-            c.gridy = criteriaNumber;
-            c.anchor = GridBagConstraints.NORTH;
-
-            rootPanel.add(panel, c);
-        }
-
-        public EntityField getEntityField() {
-            return entityField;
         }
     }
+
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 700;
 
     private JFrame frame;
-    private List<NameAndValueField> nameAndValueFields;
+    private List<LabelFieldPanel> labelFieldPanels;
     private JButton addButton;
     private JButton cancelButton;
     private EntityModel model;
-    private Integer objectId;
+
+    private Entity entity;
 
     public EntityView(EntityModel model) {
         this(model, null);
     }
 
     public EntityView(EntityModel model, Entity entity) {
-        if (entity != null) {
-            objectId = entity.getId();
-        }
-
+        this.entity = entity;
         this.model = model;
         this.frame = new JFrame(ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -163,9 +138,9 @@ public class EntityView {
             frame.setVisible(false);
         });
 
-        nameAndValueFields = new ArrayList<>();
+        labelFieldPanels = new ArrayList<>();
         for (Object entityField : model.getFields()) {
-            nameAndValueFields.add(new NameAndValueField((EntityField) entityField, entity));
+            labelFieldPanels.add(new LabelFieldPanel((EntityField) entityField));
         }
         buildLayout();
         frame.setVisible(true);
@@ -185,14 +160,20 @@ public class EntityView {
         JPanel panelInner = new JPanel(new GridLayout(4, 1, 0, 10));
         panel.add(panelInner);
 
-        for (int i = 0; i < this.nameAndValueFields.size(); i++) {
-            this.nameAndValueFields.get(i).addComponentsTo(panelInner, i + 1);
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(0, 10, 10, 10);
+        c.anchor = GridBagConstraints.NORTH;
+        for (int i = 0; i < this.labelFieldPanels.size(); i++) {
+            c.gridy = i;
+            panelInner.add(this.labelFieldPanels.get(i), c);
         }
+
         JPanel butPanel1 = new JPanel();
         List<EntityModel> entityModels = model.getTableModels();
         if(entityModels != null) {
             for (EntityModel entityModel : entityModels) {
-                EntityInnerTableView entityInnerTableView = new EntityInnerTableView((BaseEntityModel) entityModel, objectId);
+                EntityInnerTableView entityInnerTableView =
+                        new EntityInnerTableView((BaseEntityModel) entityModel, this.entity == null ? null : this.entity.getId());
                 butPanel1.add(entityInnerTableView.getContentPanel());
             }
         }
@@ -206,12 +187,8 @@ public class EntityView {
 
     public Map<String, Object> getValues() {
         Map<String, Object> map = new HashMap<>();
-        for (NameAndValueField nameAndValueField : this.nameAndValueFields) {
-            map.put(nameAndValueField.getEntityField().getTitleKey(), nameAndValueField.getValue());
-//            String fieldName = nameAndValueFields.getEntityField().getTitleKey();
-//            FieldValue fieldValue =
-//                    new FieldValue(fieldName,  nameAndValueFields.getValue());
-//            fieldValues.add(fieldValue);
+        for (LabelFieldPanel labelFieldPanel : this.labelFieldPanels) {
+            map.put(labelFieldPanel.entityField.getTitleKey(), labelFieldPanel.getValue());
         }
 
         return map;

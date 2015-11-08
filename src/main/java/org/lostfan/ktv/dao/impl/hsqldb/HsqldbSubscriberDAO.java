@@ -56,7 +56,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     public void save(Subscriber subscriber) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"subscriber\" (\"name\", \"account\", \"street_id\") VALUES(?, ?)");
+                    "INSERT INTO \"subscriber\" (\"name\", \"account\", \"street_id\") VALUES(?, ?, ?)");
             preparedStatement.setString(1, subscriber.getName());
             preparedStatement.setString(2, subscriber.getAccount());
             if(subscriber.getStreetId() != null) {

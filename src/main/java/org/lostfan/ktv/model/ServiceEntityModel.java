@@ -101,11 +101,6 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
     }
 
     @Override
-    public List<EntitySearcherModel> getEntityComboBoxModels() {
-        return null;
-    }
-
-    @Override
     public List<EntityModel> getEntityModels() {
         return null;
     }

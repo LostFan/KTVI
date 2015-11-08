@@ -57,11 +57,6 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
     }
 
     @Override
-    public List<EntitySearcherModel> getEntityComboBoxModels() {
-        return null;
-    }
-
-    @Override
     public List<EntityModel> getEntityModels() {
         return null;
     }

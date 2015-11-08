@@ -1,15 +1,11 @@
 package org.lostfan.ktv.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.domain.Service;
 
-/**
- * Created by Ihar_Niakhlebau on 14-Oct-15.
- */
 public class ServiceSearcherModel extends EntitySearcherModel<Service> {
 
     private ServiceDAO dao;

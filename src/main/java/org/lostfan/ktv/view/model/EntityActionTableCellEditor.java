@@ -6,13 +6,9 @@ import javax.swing.table.TableCellEditor;
 
 import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.view.EntityView;
-import org.lostfan.ktv.view.model.ActionTableCellEditor;
-import org.lostfan.ktv.view.model.EntityTableModel;
 
-/**
- * Created by Ihar_Niakhlebau on 30-Oct-15.
- */
 public class EntityActionTableCellEditor extends ActionTableCellEditor {
+
     public EntityActionTableCellEditor(TableCellEditor editor){
         super(editor);
     }

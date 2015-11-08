@@ -4,46 +4,37 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntitySearcherModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
 
-/**
- * Created by Ihar_Niakhlebau on 14-Oct-15.
- */
-public class EntityComboBoxModel<T extends Entity> extends DefaultComboBoxModel<String> {
+public class EntityComboBoxModel<T extends Entity> implements ComboBoxModel<String> {
 
-    public class IdAndValue
-    {
-        private int id;
-        private Object value;
+    private class FormattedEntity {
+        private Entity entity;
+        private String formattedName;
 
-        public int getId() {
-            return id;
+        private FormattedEntity(Entity entity, String formattedName) {
+            this.entity = entity;
+            this.formattedName = formattedName;
         }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
     }
 
     private Object currentValue;
-    private Object currentValueWithId;
+    private Object currentFormattedValue;
     private EntitySearcherModel<T> model;
-    private Map<String, IdAndValue> values;
+    /**
+     * ID of the selected entity.
+     */
     private Integer id;
-    private List<String> nameWithIdList;
+    /**
+     * Key - the formatted name of an entity
+     * Value - an entity index in the model list
+     */
+    private Map<String, Integer> formattedNames;
+    private List<FormattedEntity> entities;
 
     public EntityComboBoxModel(EntitySearcherModel<T> model) {
         setModel(model);
@@ -51,49 +42,63 @@ public class EntityComboBoxModel<T extends Entity> extends DefaultComboBoxModel<
 
     public void setModel(EntitySearcherModel<T> model) {
         this.model = model;
-        nameWithIdList = new ArrayList<>();
-        values = this.model.getList().stream().collect(Collectors.toMap(entity -> {
-                String formattedName = String.format("%s (%d)", entity.getName(), entity.getId());
-                nameWithIdList.add(formattedName);
-                return formattedName;
-            } , entity -> {
-                IdAndValue idAndValue = new IdAndValue();
-                idAndValue.setId(entity.getId());
-                idAndValue.setValue(entity.getName());
-                return idAndValue;
-        }));
+        this.formattedNames = new HashMap<>(this.model.getList().size());
+        this.entities = new ArrayList<>(this.model.getList().size());
+        List<T> entities = this.model.getList();
+        for (int i = 0; i < entities.size(); ++i) {
+            String formattedName = formatName(entities.get(i).getName(), entities.get(i).getId());
+            this.formattedNames.put(formattedName, i);
+            this.entities.add(new FormattedEntity(entities.get(i), formattedName));
+        }
     }
 
     public void setNewModel(EntitySearcherModel<T> model, String currentValue) {
         setModel(model);
         this.currentValue = (Object) currentValue;
-        if (id != null && !this.values.containsKey(currentValue +"(" + id +")")
-                && !this.values.containsKey(this.currentValue)) {
+        if (id != null && !this.formattedNames.containsKey(formatName(currentValue.toString(), id))
+                && !this.formattedNames.containsKey(this.currentValue)) {
             id = null;
-            currentValueWithId = null;
+            currentFormattedValue = null;
         }
-
     }
 
     public Integer getSelectedId() {
         return this.id;
     }
 
+    /**
+     * Returns non-formatted value of the "Name" field of the entity
+     */
     public String getSelectedName() {
         if (this.currentValue == null) {
             return null;
         }
-        if(!this.values.containsKey(this.currentValue)) {
-            return (String) this.currentValue;
+
+        Integer index = this.formattedNames.get(this.currentValue);
+        if (index != null) {
+            return this.entities.get(index).entity.getName();
         }
-        return (String) this.values.get(this.currentValue).getValue();
+        return String.valueOf(this.currentValue);
     }
 
+    /**
+     * Returns the value of the "name" field according to the current selected id.
+     */
     public Object getSelectedNameById() {
-        return values.values().stream().filter(set -> set.getId() == id).findFirst().get().getValue();
+        if (id == null) {
+            return null;
+        }
+
+        for (FormattedEntity entity : entities) {
+            if (entity.entity.getId().equals(id)) {
+                return entity.entity.getName();
+            }
+        }
+
+        return null;
     }
 
-    public void setId(int id){
+    public void setSelectedId(int id){
         this.id = id;
     }
 
@@ -101,15 +106,21 @@ public class EntityComboBoxModel<T extends Entity> extends DefaultComboBoxModel<
     @Override
     public void setSelectedItem(Object anItem) {
         this.currentValue = anItem;
-        if(values.containsKey(anItem)) {
-            this.currentValueWithId = anItem;
-        } else if(!(this.values.containsKey(this.currentValueWithId) && this.values.get(currentValueWithId).getValue().equals(anItem))) {
-            currentValueWithId = null;
+
+        // anItem is a formatted name
+        if(formattedNames.containsKey(anItem)) {
+            this.currentFormattedValue = anItem;
         }
-        if(this.values.containsKey(this.currentValue)) {
-            id = this.values.get(this.currentValue).getId();
-        } else if (id != null && !this.values.containsKey(this.currentValueWithId)){
-            this.currentValueWithId = null;
+        // currentFormattedValue is not the same as anItem
+        else if(!(this.formattedNames.containsKey(this.currentFormattedValue)
+                && this.entities.get(this.formattedNames.get(currentFormattedValue)).entity.getName().equals(anItem))) {
+            currentFormattedValue = null;
+        }
+
+        if(this.formattedNames.containsKey(this.currentValue)) {
+            id = this.entities.get(this.formattedNames.get(this.currentValue)).entity.getId();
+        } else if (id != null && !this.formattedNames.containsKey(this.currentFormattedValue)){
+            this.currentFormattedValue = null;
             id = null;
         }
     }
@@ -126,12 +137,10 @@ public class EntityComboBoxModel<T extends Entity> extends DefaultComboBoxModel<
 
     @Override
     public String getElementAt(int index) {
-//        Object id = this.model.getEntityFieldId().get(this.model.getList().get(index));
-//        Object value = this.model.getEntityFieldName().get(this.model.getList().get(index)) +"(" + this.model.getEntityFieldId().get(this.model.getList().get(index)) +")";
-        if(index >= nameWithIdList.size()) {
+        if(index >= entities.size()) {
             return null;
         }
-        return nameWithIdList.get(index);
+        return entities.get(index).formattedName;
     }
 
     @Override
@@ -142,5 +151,9 @@ public class EntityComboBoxModel<T extends Entity> extends DefaultComboBoxModel<
     @Override
     public void removeListDataListener(ListDataListener l) {
 
+    }
+
+    private String formatName(String name, Integer id) {
+        return String.format("%s (%d)", name, id);
     }
 }

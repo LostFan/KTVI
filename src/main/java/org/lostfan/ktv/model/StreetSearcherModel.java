@@ -7,9 +7,6 @@ import org.lostfan.ktv.domain.Street;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Ihar_Niakhlebau on 14-Oct-15.
- */
 public class StreetSearcherModel extends EntitySearcherModel<Street> {
 
     private StreetDAO dao;

@@ -6,9 +6,6 @@ import javax.swing.*;
 import org.lostfan.ktv.model.EntitySearcherModel;
 import org.lostfan.ktv.utils.Observer;
 
-/**
- * Created by Ihar_Niakhlebau on 14-Oct-15.
- */
 public class EntityComboBox extends JComboBox{
 
     private class ModelObserver implements Observer {
@@ -19,25 +16,26 @@ public class EntityComboBox extends JComboBox{
     }
 
     private JComboBox jComboBox;
-    private JTextField textfield;
+    private JTextField textField;
     private EntitySearcherModel model;
     private ModelObserver modelObserver;
     private EntityComboBoxModel entityComboBoxModel;
 
     EntityComboBox(EntitySearcherModel model) {
-        textfield = (JTextField)     this.getEditor().getEditorComponent();
+        textField = (JTextField)     this.getEditor().getEditorComponent();
         new EntityComboBoxController(model, this);
         this.model = model;
         entityComboBoxModel = new EntityComboBoxModel(model);
         this.setModel(entityComboBoxModel);
-        textfield.addFocusListener(new FocusListener() {
+        textField.addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(FocusEvent e) {}
+            public void focusGained(FocusEvent e) {
+            }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if(!textfield.getText().isEmpty() && entityComboBoxModel.getSelectedId() == null) {
-                    textfield.requestFocusInWindow();
+                if (!textField.getText().isEmpty() && entityComboBoxModel.getSelectedId() == null) {
+                    textField.requestFocusInWindow();
                 }
             }
         });
@@ -52,13 +50,11 @@ public class EntityComboBox extends JComboBox{
         entityComboBoxModel.setNewModel(model, enteredText);
         if (entityComboBoxModel.getSize() > 0) {
             this.setModel(entityComboBoxModel);
-//            getJComboBox().showPopup();
-//            this.setSelectedItem(enteredText);
         }
     }
 
     public String getText() {
-        return textfield.getText();
+        return textField.getText();
     }
 
     public Integer getSelectedId() {
@@ -73,8 +69,8 @@ public class EntityComboBox extends JComboBox{
         return entityComboBoxModel.getSelectedNameById();
     }
 
-    public void setId(int id){
-        entityComboBoxModel.setId(id);
+    public void setSelectedId(int id){
+        entityComboBoxModel.setSelectedId(id);
     }
 
 
@@ -86,7 +82,7 @@ public class EntityComboBox extends JComboBox{
     }
 
     public void addLocalKeyListener(KeyListener listener) {
-        this.textfield.addKeyListener(listener);
+        this.textField.addKeyListener(listener);
     }
 
     public void addComboBoxActionListener(ActionListener listener) {
@@ -97,7 +93,7 @@ public class EntityComboBox extends JComboBox{
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 if ((ke.getKeyCode() < 37 || ke.getKeyCode() > 40) && ke.getKeyCode() != 10) { //up, right, left, down and enter keys
-                    comboFilter(textfield.getText());
+                    comboFilter(textField.getText());
                 }
 
                 boolean popupVisible = true;
@@ -141,7 +137,7 @@ public class EntityComboBox extends JComboBox{
     }
 
     public void editTextFieldText() {
-        textfield.setText(entityComboBoxModel.getSelectedName());
+        textField.setText(entityComboBoxModel.getSelectedName());
     }
 
 }

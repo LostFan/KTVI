@@ -82,13 +82,6 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     }
 
     @Override
-    public List<EntitySearcherModel> getEntityComboBoxModels() {
-        List<EntitySearcherModel> entitySearcherModels = new ArrayList<>();
-        entitySearcherModels.add(new StreetSearcherModel());
-        return entitySearcherModels;
-    }
-
-    @Override
     public List<EntityModel> getEntityModels() {
         return null;
     }

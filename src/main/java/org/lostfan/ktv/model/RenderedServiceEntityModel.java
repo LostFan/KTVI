@@ -63,14 +63,6 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     @Override
-    public List<EntitySearcherModel> getEntityComboBoxModels() {
-        List<EntitySearcherModel> entitySearcherModels = new ArrayList<>();
-        entitySearcherModels.add(new ServiceSearcherModel());
-        entitySearcherModels.add(new SubscriberSearcherModel());
-        return entitySearcherModels;
-    }
-
-    @Override
     public List<EntityModel> getEntityModels() {
         List<EntityModel> entityModels = new ArrayList<>();
         entityModels.add(new ServiceEntityModel());

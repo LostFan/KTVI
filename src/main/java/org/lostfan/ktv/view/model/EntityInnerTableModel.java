@@ -48,7 +48,6 @@ public class EntityInnerTableModel<T extends Entity> implements TableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-//        System.out.println(this.model.getFields().get(columnIndex).getType().isEntityClass());
         return true;
     }
 
@@ -56,11 +55,11 @@ public class EntityInnerTableModel<T extends Entity> implements TableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object value = this.model.getFields().get(columnIndex).get(this.model.getList().get(rowIndex));
         EntityFieldTypes thisType = this.model.getFields().get(columnIndex).getType();
-        if(thisType.getClazz() == Integer.class && value ==null) {
+        if (thisType.getClazz() == Integer.class && value ==null) {
             return 0;
         }
-        if( thisType.isEntityClass()) {
-            value =  ((Entity) thisType.getDAO().get((Integer) value)).getName();
+        if (thisType.isEntityClass()) {
+            value = ((Entity) thisType.getDAO().get((Integer) value)).getName();
         }
 
         return value;
@@ -80,9 +79,4 @@ public class EntityInnerTableModel<T extends Entity> implements TableModel {
     public void removeTableModelListener(TableModelListener l) {
 
     }
-
-    public EntityModel getEntityModel() {
-        return this.model;
-    }
-
 }

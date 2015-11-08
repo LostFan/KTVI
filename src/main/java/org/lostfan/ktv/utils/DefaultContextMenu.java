@@ -14,14 +14,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 
 @SuppressWarnings("serial")
-public class DefaultContextMenu extends JPopupMenu
-{
+public class DefaultContextMenu extends JPopupMenu {
+
     private Clipboard clipboard;
 
     private UndoManager undoManager;
@@ -129,56 +127,40 @@ public class DefaultContextMenu extends JPopupMenu
 
     public void add(JTextComponent jTextComponent)
     {
-        jTextComponent.addKeyListener(new KeyAdapter()
-        {
+        jTextComponent.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent pressedEvent)
-            {
+            public void keyPressed(KeyEvent pressedEvent) {
                 if ((pressedEvent.getKeyCode() == KeyEvent.VK_Z)
-                        && ((pressedEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0))
-                {
-                    if (undoManager.canUndo())
-                    {
+                        && ((pressedEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+                    if (undoManager.canUndo()) {
                         undoManager.undo();
                     }
                 }
 
                 if ((pressedEvent.getKeyCode() == KeyEvent.VK_Y)
-                        && ((pressedEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0))
-                {
-                    if (undoManager.canRedo())
-                    {
+                        && ((pressedEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+                    if (undoManager.canRedo()) {
                         undoManager.redo();
                     }
                 }
             }
         });
 
-        jTextComponent.addMouseListener(new MouseAdapter()
-        {
+        jTextComponent.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseReleased(MouseEvent releasedEvent)
-            {
-                if (releasedEvent.getButton() == MouseEvent.BUTTON3)
-                {
+            public void mouseReleased(MouseEvent releasedEvent) {
+                if (releasedEvent.getButton() == MouseEvent.BUTTON3) {
                     processClick(releasedEvent);
                 }
             }
         });
 
-        jTextComponent.getDocument().addUndoableEditListener(
-                new UndoableEditListener()
-                {
-                    @Override
-                    public void undoableEditHappened(UndoableEditEvent event)
-                    {
-                        undoManager.addEdit(event.getEdit());
-                    }
-                });
+        jTextComponent.getDocument().addUndoableEditListener(event -> {
+            undoManager.addEdit(event.getEdit());
+        });
     }
 
-    private void processClick(MouseEvent event)
-    {
+    private void processClick(MouseEvent event) {
         jTextComponent = (JTextComponent) event.getSource();
 
         boolean enableUndo = undoManager.canUndo();
@@ -192,32 +174,25 @@ public class DefaultContextMenu extends JPopupMenu
         String selectedText = jTextComponent.getSelectedText();
         String text = jTextComponent.getText();
 
-        if (text != null)
-        {
-            if (text.length() > 0)
-            {
+        if (text != null) {
+            if (text.length() > 0) {
                 enableSelectAll = true;
             }
         }
 
-        if (selectedText != null)
-        {
-            if (selectedText.length() > 0)
-            {
+        if (selectedText != null) {
+            if (selectedText.length() > 0) {
                 enableCut = true;
                 enableCopy = true;
                 enableDelete = true;
             }
         }
 
-        try
-        {
-            if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor))
-            {
+        try {
+            if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
                 enablePaste = true;
             }
-        } catch (Exception exception)
-        {
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
 
