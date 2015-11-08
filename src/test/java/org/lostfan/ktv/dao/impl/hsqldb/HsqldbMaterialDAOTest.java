@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lostfan.ktv.dao.DAOFactory;
+import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.dao.MaterialDAO;
 import org.lostfan.ktv.domain.Material;
 import org.lostfan.ktv.domain.MaterialConsumption;
@@ -23,12 +24,14 @@ import static org.lostfan.ktv.utils.DatabaseUtils.executeSqlFile;
 public class HsqldbMaterialDAOTest {
 
     private static MaterialDAO materialDao;
+    private static MaterialConsumptionDAO materialConsumptionDAO;
 
     @BeforeClass
     public static void init() throws IOException, SQLException {
         ConnectionManager.setManager(new TestHsqldbConnectionManager());
         DAOFactory.setDefaultDAOFactory(new HsqldbDaoFactory());
         materialDao = DAOFactory.getDefaultDAOFactory().getMaterialDAO();
+        materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
         executeSqlFile("/hsqldb/drop.sql");
         executeSqlFile("/hsqldb/create.sql");
     }
@@ -46,25 +49,25 @@ public class HsqldbMaterialDAOTest {
 
     @Test
     public void emptyMaterialsTest() {
-        assertEquals(materialDao.getAllMaterials().size(), 0);
+        assertEquals(materialDao.getAll().size(), 0);
     }
 
     @Test
     public void getAllServicesReturnsCorrectMaterialCountTest() throws SQLException {
         insertStubData();
-        assertEquals(materialDao.getAllMaterials().size(), 3);
+        assertEquals(materialDao.getAll().size(), 3);
     }
 
     @Test
     public void getAllServicesReturnsAllExistingMaterialsTest() throws SQLException {
         insertStubData();
-        assertEquals(materialDao.getAllMaterials().get(0).getId(), 1);
+        assertEquals(materialDao.getAll().get(0).getId(), 1);
     }
 
     @Test
     public void getExistingMaterialByIdTest() throws SQLException {
         insertStubData();
-        assertEquals(materialDao.getMaterial(1).getId(), 1);
+        assertEquals(materialDao.get(1).getId(), 1);
     }
 
     @Test
@@ -75,7 +78,7 @@ public class HsqldbMaterialDAOTest {
         material.setUnit("m");
         material.setPrice(30000);
         materialDao.save(material);
-        assertEquals(materialDao.getAllMaterials().size(), 4);
+        assertEquals(materialDao.getAll().size(), 4);
     }
 
     @Test
@@ -86,9 +89,9 @@ public class HsqldbMaterialDAOTest {
         material.setUnit("m");
         material.setPrice(30000);
         materialDao.save(material);
-        assertEquals(materialDao.getAllMaterials().get(3).getName(), "New");
-        assertEquals(materialDao.getAllMaterials().get(3).getPrice(), 30000);
-        assertEquals(materialDao.getAllMaterials().get(3).getUnit(), "m");
+        assertEquals(materialDao.getAll().get(3).getName(), "New");
+        assertEquals(materialDao.getAll().get(3).getPrice(), 30000);
+        assertEquals(materialDao.getAll().get(3).getUnit(), "m");
     }
 
     @Test
@@ -99,82 +102,82 @@ public class HsqldbMaterialDAOTest {
         material.setUnit("m");
         material.setPrice(30000);
         materialDao.save(material);
-        assertEquals(materialDao.getAllMaterials().get(3).getId(), 4);
+        assertEquals(materialDao.getAll().get(3).getId(), 4);
     }
 
     @Test
     public void updateExistingMaterialByIdShouldMatchUpdatedValuesTest() throws SQLException {
         insertStubData();
-        Material material = materialDao.getMaterial(1);
+        Material material = materialDao.get(1);
         material.setPrice(2);
         materialDao.update(material);
-        assertEquals(materialDao.getMaterial(1).getPrice(), 2);
+        assertEquals(materialDao.get(1).getPrice(), 2);
     }
 
     @Test
     public void updateExistingMaterialByIdCorrectServiceCountTest() throws SQLException {
         insertStubData();
-        Material material = materialDao.getMaterial(1);
+        Material material = materialDao.get(1);
         material.setName("New");
         material.setPrice(2);
         materialDao.update(material);
-        assertEquals(materialDao.getAllMaterials().size(), 3);
+        assertEquals(materialDao.getAll().size(), 3);
     }
 
     @Test
     public void updateExistingMaterialByIdShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubData();
-        Material material = materialDao.getMaterial(1);
+        Material material = materialDao.get(1);
         material.setPrice(2);
         materialDao.update(material);
-        assertEquals(materialDao.getMaterial(1).getName(), "One");
+        assertEquals(materialDao.get(1).getName(), "One");
     }
 
     @Test
     public void deleteMaterialByIdCorrectServiceCountTest() throws SQLException {
         insertStubDataMaterials();
         materialDao.delete(1);
-        assertEquals(materialDao.getAllMaterials().size(), 2);
+        assertEquals(materialDao.getAll().size(), 2);
     }
 
     @Test
     public void deleteMaterialByIdShouldDeleteCorrectDataTest() throws SQLException {
         insertStubDataMaterials();
         materialDao.delete(1);
-        assertEquals(materialDao.getMaterial(1), null);
+        assertEquals(materialDao.get(1), null);
     }
 
     @Test
-    public void getAllMaterialConsumptionsByRenderedServiceIdShouldReturnsCorrectCountTest() throws SQLException {
+    public void getAllByRenderedServiceIdShouldReturnsCorrectCountTest() throws SQLException {
         insertStubData();
-        assertEquals(materialDao.getMaterialConsumptionsByRenderedServiceId(1).size(), 2);
-        assertEquals(materialDao.getMaterialConsumptionsByRenderedServiceId(2).size(), 1);
-        assertEquals(materialDao.getMaterialConsumptionsByRenderedServiceId(3).size(), 0);
+        assertEquals(materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(1).size(), 2);
+        assertEquals(materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(2).size(), 1);
+        assertEquals(materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(3).size(), 0);
     }
 
     @Test
-    public void getAllMaterialConsumptionsByRenderedServiceIdShouldReturnsCorrectDataTest() throws SQLException {
+    public void getAllByRenderedServiceIdShouldReturnsCorrectDataTest() throws SQLException {
         insertStubData();
-        assertEquals(materialDao.getMaterialConsumptionsByRenderedServiceId(1).get(0).getId(), 1);
-        assertEquals(materialDao.getMaterialConsumptionsByRenderedServiceId(2).get(0).getId(), 3);
+        assertEquals(materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(1).get(0).getId(), 1);
+        assertEquals(materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(2).get(0).getId(), 3);
     }
 
     @Test
     public void getAllServicesReturnsCorrectMaterialConsumptionCountTest() throws SQLException {
         insertStubData();
-        assertEquals(materialDao.getAllMaterialConsumptions().size(), 3);
+        assertEquals(materialConsumptionDAO.getAll().size(), 3);
     }
 
     @Test
     public void getAllServicesReturnsAllExistingMaterialConsumptionsTest() throws SQLException {
         insertStubData();
-        assertEquals(materialDao.getAllMaterialConsumptions().get(0).getId(), 1);
+        assertEquals(materialConsumptionDAO.getAll().get(0).getId(), 1);
     }
 
     @Test
     public void getExistingMaterialConsumptionByIdTest() throws SQLException {
         insertStubData();
-        assertEquals(materialDao.getMaterialConsumption(1).getId(), 1);
+        assertEquals(materialConsumptionDAO.get(1).getId(), 1);
     }
 
     @Test
@@ -184,8 +187,8 @@ public class HsqldbMaterialDAOTest {
         materialConsumption.setAmount(1);
         materialConsumption.setRenderedServiceId(1);
         materialConsumption.setMaterialId(1);
-        materialDao.saveMaterialConsumption(materialConsumption);
-        assertEquals(materialDao.getAllMaterialConsumptions().size(), 4);
+        materialConsumptionDAO.save(materialConsumption);
+        assertEquals(materialConsumptionDAO.getAll().size(), 4);
     }
 
     @Test
@@ -195,9 +198,9 @@ public class HsqldbMaterialDAOTest {
         materialConsumption.setAmount(1);
         materialConsumption.setRenderedServiceId(1);
         materialConsumption.setMaterialId(1);
-        materialDao.saveMaterialConsumption(materialConsumption);
-        assertEquals(materialDao.getAllMaterialConsumptions().get(3).getRenderedServiceId(),1);
-        assertEquals(materialDao.getAllMaterialConsumptions().get(3).getMaterialId(), 1);
+        materialConsumptionDAO.save(materialConsumption);
+        assertEquals(materialConsumptionDAO.getAll().get(3).getRenderedServiceId(),1);
+        assertEquals(materialConsumptionDAO.getAll().get(3).getMaterialId(), 1);
     }
 
     @Test
@@ -207,49 +210,49 @@ public class HsqldbMaterialDAOTest {
         materialConsumption.setAmount(1);
         materialConsumption.setRenderedServiceId(1);
         materialConsumption.setMaterialId(1);
-        materialDao.saveMaterialConsumption(materialConsumption);
-        assertEquals(materialDao.getAllMaterialConsumptions().get(3).getId(), 4);
+        materialConsumptionDAO.save(materialConsumption);
+        assertEquals(materialConsumptionDAO.getAll().get(3).getId(), 4);
     }
 
     @Test
     public void updateExistingMaterialConsumptionByIdShouldMatchUpdatedValuesTest() throws SQLException {
         insertStubData();
-        MaterialConsumption materialConsumption = materialDao.getMaterialConsumption(1);
+        MaterialConsumption materialConsumption = materialConsumptionDAO.get(1);
         materialConsumption.setMaterialId(2);
-        materialDao.updateMaterialConsumption(materialConsumption);
-        assertEquals(materialDao.getMaterialConsumption(1).getMaterialId(), 2);
+        materialConsumptionDAO.update(materialConsumption);
+        assertEquals(materialConsumptionDAO.get(1).getMaterialId(), 2);
     }
 
     @Test
     public void updateExistingMaterialConsumptionByIdCorrectServiceCountTest() throws SQLException {
         insertStubData();
-        MaterialConsumption materialConsumption = materialDao.getMaterialConsumption(1);
+        MaterialConsumption materialConsumption = materialConsumptionDAO.get(1);
         materialConsumption.setMaterialId(2);
-        materialDao.updateMaterialConsumption(materialConsumption);
-        assertEquals(materialDao.getAllMaterialConsumptions().size(), 3);
+        materialConsumptionDAO.update(materialConsumption);
+        assertEquals(materialConsumptionDAO.getAll().size(), 3);
     }
 
     @Test
     public void updateExistingMaterialConsumptionByIdShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubData();
-        MaterialConsumption materialConsumption = materialDao.getMaterialConsumption(1);
+        MaterialConsumption materialConsumption = materialConsumptionDAO.get(1);
         materialConsumption.setMaterialId(2);
-        materialDao.updateMaterialConsumption(materialConsumption);
-        assertEquals(materialDao.getMaterialConsumption(1).getRenderedServiceId(), 1);
+        materialConsumptionDAO.update(materialConsumption);
+        assertEquals(materialConsumptionDAO.get(1).getRenderedServiceId(), 1);
     }
 
     @Test
-    public void deleteMaterialConsumptionByIdCorrectServiceCountTest() throws SQLException {
+    public void deleteByIdCorrectServiceCountTest() throws SQLException {
         insertStubData();
-        materialDao.deleteMaterialConsumption(1);
-        assertEquals(materialDao.getAllMaterialConsumptions().size(), 2);
+        materialConsumptionDAO.delete(1);
+        assertEquals(materialConsumptionDAO.getAll().size(), 2);
     }
 
     @Test
-    public void deleteMaterialConsumptionByIdShouldDeleteCorrectDataTest() throws SQLException {
+    public void deleteByIdShouldDeleteCorrectDataTest() throws SQLException {
         insertStubData();
-        materialDao.deleteMaterialConsumption(1);
-        assertEquals(materialDao.getMaterialConsumption(1), null);
+        materialConsumptionDAO.delete(1);
+        assertEquals(materialConsumptionDAO.get(1), null);
     }
 
     private void insertStubDataServices() throws SQLException {

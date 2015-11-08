@@ -57,14 +57,14 @@ INSERT INTO "subscriber_tariff" ("id", "subscriber_id", "connection_date", "tari
 INSERT INTO "subscriber_tariff" ("id", "subscriber_id", "connection_date", "disconnection_date", "tariff_id") VALUES(6, 5, '2015-03-01', '2015-07-01', 1);
 INSERT INTO "subscriber_tariff" ("id", "subscriber_id", "connection_date", "tariff_id") VALUES(7, 5, '2015-07-01', 2);
 
-INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(1, 1, 2, '2015-06-01');
-INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(2, 1, 4, '2015-07-15');
-INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(3, 1, 3, '2015-08-01');
-INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(4, 2, 2, '2015-02-01');
-INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(5, 3, 2, '2015-03-01');
-INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(6, 3, 4, '2015-06-01');
-INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(7, 4, 2, '2015-03-01');
-INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(8, 5, 2, '2015-03-01');
+INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date", "price") VALUES(1, 1, 2, '2015-06-01', 10000);
+INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date", "price") VALUES(2, 1, 4, '2015-07-15', 20000);
+INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date", "price") VALUES(3, 1, 3, '2015-08-01', 30000);
+INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date", "price") VALUES(4, 2, 2, '2015-02-01', 20000);
+INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date", "price") VALUES(5, 3, 2, '2015-03-01', 20000);
+INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date", "price") VALUES(6, 3, 4, '2015-06-01', 20000);
+INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date", "price") VALUES(7, 4, 2, '2015-03-01', 20000);
+INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date", "price") VALUES(8, 5, 2, '2015-03-01', 20000);
 INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(9, 5, 5, '2015-07-01');
 INSERT INTO "rendered_service" ("id", "subscriber_id", "service_id", "date") VALUES(10, 5, 6, '2015-07-23');
 

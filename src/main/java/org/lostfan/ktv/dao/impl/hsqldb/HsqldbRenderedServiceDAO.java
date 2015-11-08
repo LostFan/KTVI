@@ -26,11 +26,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"rendered_service\"");
             while (rs.next()) {
-                RenderedService renderedService = new RenderedService();
-                renderedService.setId(rs.getInt("id"));
-                renderedService.setServiceId(rs.getInt("service_id"));
-                renderedService.setSubscriberId(rs.getInt("subscriber_id"));
-                renderedService.setDate(rs.getDate("date").toLocalDate());
+                RenderedService renderedService = createRenderedService(rs);
 
                 renderedServices.add(renderedService);
             }
@@ -50,12 +46,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                renderedService = new RenderedService();
-                renderedService.setId(rs.getInt("id"));
-                renderedService.setServiceId(rs.getInt("service_id"));
-                renderedService.setSubscriberId(rs.getInt("subscriber_id"));
-                renderedService.setDate(rs.getDate("date").toLocalDate());
-
+                renderedService = createRenderedService(rs);
             }
 
         } catch (SQLException ex) {
@@ -72,11 +63,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             preparedStatement.setDate(1, Date.valueOf(date));
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                RenderedService renderedService = new RenderedService();
-                renderedService.setId(rs.getInt("id"));
-                renderedService.setServiceId(rs.getInt("service_id"));
-                renderedService.setSubscriberId(rs.getInt("subscriber_id"));
-                renderedService.setDate(rs.getDate("date").toLocalDate());
+                RenderedService renderedService = createRenderedService(rs);
                 renderedServices.add(renderedService);
             }
 
@@ -94,11 +81,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             preparedStatement.setInt(1, subscriberId);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                RenderedService renderedService = new RenderedService();
-                renderedService.setId(rs.getInt("id"));
-                renderedService.setServiceId(rs.getInt("service_id"));
-                renderedService.setSubscriberId(rs.getInt("subscriber_id"));
-                renderedService.setDate(rs.getDate("date").toLocalDate());
+                RenderedService renderedService = createRenderedService(rs);
                 renderedServices.add(renderedService);
             }
 
@@ -112,10 +95,11 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
     public void save(RenderedService renderedService) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"rendered_service\" (\"subscriber_id\", \"service_id\", \"date\") VALUES(?, ?, ?)");
+                    "INSERT INTO \"rendered_service\" (\"subscriber_id\", \"service_id\", \"date\",  \"price\") VALUES(?, ?, ?, ?)");
             preparedStatement.setInt(1, renderedService.getSubscriberId());
             preparedStatement.setInt(2, renderedService.getServiceId());
             preparedStatement.setDate(3, Date.valueOf(renderedService.getDate()));
+            preparedStatement.setInt(4, renderedService.getPrice());
             preparedStatement.executeUpdate();
 
         } catch (SQLException ex) {
@@ -127,11 +111,12 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         if(getRenderedService(renderedService.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"rendered_service\" set \"subscriber_id\" = ?, \"service_id\" = ?, \"date\" = ? where \"id\" = ?");
+                        "UPDATE \"rendered_service\" set \"subscriber_id\" = ?, \"service_id\" = ?, \"date\" = ?, \"price\" = ? where \"id\" = ?");
                 preparedStatement.setInt(1, renderedService.getSubscriberId());
                 preparedStatement.setInt(2, renderedService.getServiceId());
                 preparedStatement.setDate(3, Date.valueOf(renderedService.getDate()));
-                preparedStatement.setInt(4, renderedService.getId());
+                preparedStatement.setInt(4, renderedService.getPrice());
+                preparedStatement.setInt(5, renderedService.getId());
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
@@ -156,5 +141,15 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         } else {
             throw new UnsupportedOperationException("Delete nonexistent element");
         }
+    }
+
+    private RenderedService createRenderedService(ResultSet rs) throws SQLException{
+        RenderedService renderedService = new RenderedService();
+        renderedService.setId(rs.getInt("id"));
+        renderedService.setServiceId(rs.getInt("service_id"));
+        renderedService.setSubscriberId(rs.getInt("subscriber_id"));
+        renderedService.setPrice(rs.getInt("price"));
+        renderedService.setDate(rs.getDate("date").toLocalDate());
+        return renderedService;
     }
 }

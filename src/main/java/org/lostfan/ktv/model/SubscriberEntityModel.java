@@ -48,6 +48,11 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     }
 
     @Override
+    public List<Subscriber> getListByForeignKey(int foreignKey) {
+        return null;
+    }
+
+    @Override
     public String getEntityNameKey() {
         return "subscribers";
     }

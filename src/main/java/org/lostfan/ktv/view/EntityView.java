@@ -3,10 +3,7 @@ package org.lostfan.ktv.view;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
-import org.lostfan.ktv.model.EntityComboBoxModel;
-import org.lostfan.ktv.model.EntityField;
-import org.lostfan.ktv.model.EntityModel;
-import org.lostfan.ktv.model.Types;
+import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.utils.DateLabelFormatter;
 import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.utils.ResourceBundles;
@@ -130,8 +127,9 @@ public class EntityView {
     private JButton addButton;
     private JButton cancelButton;
     private EntityModel model;
+    private Object objectId;
 
-    public EntityView(EntityModel model) {
+    public void create(EntityModel model) {
         nameAndValueFields = new ArrayList<>();
         this.model = model;
         this.frame = new JFrame(ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
@@ -152,9 +150,14 @@ public class EntityView {
         frame.setVisible(true);
     }
 
-    public EntityView(EntityModel model, Object entity) {
+    public EntityView(EntityModel model) {
+        create(model);
+    }
 
-        this(model);
+    public EntityView(EntityModel model, Object entity) {
+        objectId = ((BaseEntityModel) model).getId(entity);
+
+        create(model);
 
         this.addButton.setText(getString("buttons.change"));
         for (NameAndValueField nameAndValueField : nameAndValueFields) {
@@ -197,7 +200,7 @@ public class EntityView {
         frame.setLayout(new BorderLayout(10, 10));
         frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel panel = new JPanel(new GridLayout(2,1));
         frame.add(panel, BorderLayout.LINE_START);
 
         JPanel panelInner = new JPanel(new GridLayout(4, 1, 0, 10));
@@ -206,6 +209,15 @@ public class EntityView {
         for (int i = 0; i < this.nameAndValueFields.size(); i++) {
             this.nameAndValueFields.get(i).addComponentsTo(panelInner, i + 1);
         }
+        JPanel butPanel1 = new JPanel();
+        List<EntityModel> entityModels = model.getTableModels();
+        if(entityModels != null) {
+            for (EntityModel entityModel : entityModels) {
+                EntityInnerTableView entityInnerTableView = new EntityInnerTableView((BaseEntityModel) entityModel, objectId);
+                butPanel1.add(entityInnerTableView.getContentPanel());
+            }
+        }
+        panel.add(butPanel1);
         JPanel butPanel = new JPanel();
         butPanel.add(addButton);
         butPanel.add(cancelButton);

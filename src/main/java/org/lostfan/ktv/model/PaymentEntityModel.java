@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,7 +22,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     public PaymentEntityModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getPaymentDAO();
         fields = new ArrayList<>();
-
+        super.getter = Payment::getId;
 
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField<>("payment.id", Types.Integer, Payment::getId, Payment::setId));
@@ -30,6 +31,8 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         this.fields.add(new EntityField<>("service", Types.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
         this.fields.add(new EntityField<>("payment.price", Types.Integer, Payment::getPrice, Payment::setPrice));
     }
+
+
 
     @Override
     public void saveOrEditEntity(Map<String, Object> collect) {
@@ -95,6 +98,11 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         }
 
         return this.payments;
+    }
+
+    @Override
+    public List<Payment> getListByForeignKey(int foreignKey) {
+        return null;
     }
 
     @Override

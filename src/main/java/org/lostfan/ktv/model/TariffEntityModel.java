@@ -90,6 +90,11 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
     }
 
     @Override
+    public List<Tariff> getListByForeignKey(int foreignKey) {
+        return null;
+    }
+
+    @Override
     public String getEntityNameKey() {
         return "tariffs";
     }

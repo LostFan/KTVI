@@ -7,6 +7,8 @@ public interface EntityModel<T> {
 
     List<T> getList();
 
+    List<T> getListByForeignKey(int foreignKey);
+
     String getEntityNameKey();
 
     String getEntityName();
@@ -26,5 +28,7 @@ public interface EntityModel<T> {
     List<EntityModel> getEntityModels();
 
     Class getEntityClass();
+
+    List<EntityModel> getTableModels();
 
 }

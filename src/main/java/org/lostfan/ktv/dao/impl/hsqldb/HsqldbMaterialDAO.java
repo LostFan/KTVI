@@ -6,7 +6,6 @@ import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +19,7 @@ public class HsqldbMaterialDAO implements MaterialDAO {
         return ConnectionManager.getManager().getConnection();
     }
 
-    public List<Material> getAllMaterials() {
+    public List<Material> getAll() {
         List<Material> materials = new ArrayList<>();
         try {
             Statement statement = getConnection().createStatement();
@@ -41,7 +40,7 @@ public class HsqldbMaterialDAO implements MaterialDAO {
         return materials;
     }
 
-    public Material getMaterial(int id) {
+    public Material get(int id) {
         Material material = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"material\" where \"id\" = ?");
@@ -79,7 +78,7 @@ public class HsqldbMaterialDAO implements MaterialDAO {
     }
 
     public void update(Material material) {
-        if (getMaterial(material.getId()) != null) {
+        if (get(material.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"material\" set \"name\" = ?, \"price\" = ?, \"unit\" = ? where \"id\" = ?");
@@ -98,7 +97,7 @@ public class HsqldbMaterialDAO implements MaterialDAO {
     }
 
     public void delete(int id) {
-        if(getMaterial(id) != null) {
+        if(get(id) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "DELETE FROM  \"material\" where \"id\" = ?");
@@ -111,120 +110,5 @@ public class HsqldbMaterialDAO implements MaterialDAO {
         } else {
             throw new UnsupportedOperationException("Delete nonexistent element");
         }
-    }
-
-    public List<MaterialConsumption> getAllMaterialConsumptions() {
-        List<MaterialConsumption> materialConsumptions = new ArrayList<>();
-        try {
-            Statement statement = getConnection().createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM \"material_consumption\"");
-            while (rs.next()) {
-                MaterialConsumption materialConsumption = new MaterialConsumption();
-                materialConsumption.setId(rs.getInt("id"));
-                materialConsumption.setMaterialId(rs.getInt("material_id"));
-                materialConsumption.setRenderedServiceId(rs.getInt("rendered_service_id"));
-                materialConsumption.setAmount(rs.getDouble("amount"));
-                materialConsumptions.add(materialConsumption);
-            }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return materialConsumptions;
-    }
-
-    public MaterialConsumption getMaterialConsumption(int id) {
-        MaterialConsumption materialConsumption = null;
-        try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"material_consumption\" where \"id\" = ?");
-            preparedStatement.setInt(1, id);
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                materialConsumption = new MaterialConsumption();
-                materialConsumption.setId(rs.getInt("id"));
-                materialConsumption.setMaterialId(rs.getInt("material_id"));
-                materialConsumption.setRenderedServiceId(rs.getInt("rendered_service_id"));
-                materialConsumption.setAmount(rs.getDouble("amount"));
-
-            }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return materialConsumption;
-    }
-
-    public void saveMaterialConsumption(MaterialConsumption materialConsumption) {
-        try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"material_consumption\" (\"material_id\", \"rendered_service_id\", \"amount\") VALUES(?, ?, ?)");
-            preparedStatement.setInt(1, materialConsumption.getMaterialId());
-            preparedStatement.setInt(2, materialConsumption.getRenderedServiceId());
-            preparedStatement.setDouble(3, materialConsumption.getAmount());
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void updateMaterialConsumption(MaterialConsumption materialConsumption) {
-        if(getMaterialConsumption(materialConsumption.getId()) != null) {
-            try {
-                PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"material_consumption\" set \"material_id\" = ?, \"rendered_service_id\" = ?, \"amount\" = ? where \"id\" = ?");
-                preparedStatement.setInt(1, materialConsumption.getMaterialId());
-                preparedStatement.setInt(2, materialConsumption.getRenderedServiceId());
-                preparedStatement.setDouble(3, materialConsumption.getAmount());
-                preparedStatement.setInt(4, materialConsumption.getId());
-                preparedStatement.executeUpdate();
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
-        }
-    }
-
-    public void deleteMaterialConsumption(int materialConsumptionId) {
-        if(getMaterialConsumption(materialConsumptionId) != null) {
-            try {
-                PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "DELETE FROM  \"material_consumption\" where \"id\" = ?");
-                preparedStatement.setInt(1, materialConsumptionId);
-                preparedStatement.executeUpdate();
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            throw new UnsupportedOperationException("Delete nonexistent element");
-        }
-    }
-
-    public List<MaterialConsumption> getMaterialConsumptionsByRenderedServiceId(int renderedServiceId) {
-        List<MaterialConsumption> materialConsumptions = new ArrayList<>();
-        try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"material_consumption\" WHERE \"rendered_service_id\" = ?");
-            preparedStatement.setInt(1, renderedServiceId);
-            ResultSet rs = preparedStatement.executeQuery();
-            while (rs.next()) {
-                MaterialConsumption materialConsumption = new MaterialConsumption();
-                materialConsumption.setId(rs.getInt("id"));
-                materialConsumption.setMaterialId(rs.getInt("material_id"));
-                materialConsumption.setRenderedServiceId(rs.getInt("rendered_service_id"));
-                materialConsumption.setAmount(rs.getDouble("amount"));
-                materialConsumptions.add(materialConsumption);
-            }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return materialConsumptions;
     }
 }

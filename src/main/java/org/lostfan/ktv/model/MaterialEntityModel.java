@@ -37,7 +37,7 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
         material.setUnit((String) collect.get("material.unit"));
         if(collect.get("material.id") != null) {
             Integer materialId = (Integer) collect.get("material.id");
-            if (this.dao.getMaterial(materialId) != null) {
+            if (this.dao.get(materialId) != null) {
                 material.setId((Integer) collect.get("material.id"));
                 this.dao.update(material);
             } else {
@@ -46,7 +46,7 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
         } else {
             this.dao.save(material);
         }
-        this.materials = this.dao.getAllMaterials();
+        this.materials = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -56,7 +56,7 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
             int id = getList().get(rowNumber).getId();
             this.dao.delete(id);
         }
-        this.materials = this.dao.getAllMaterials();
+        this.materials = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -85,10 +85,15 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
 
     public List<Material> getList() {
         if (this.materials == null) {
-            this.materials = this.dao.getAllMaterials();
+            this.materials = this.dao.getAll();
         }
 
         return this.materials;
+    }
+
+    @Override
+    public List<Material> getListByForeignKey(int foreignKey) {
+        return null;
     }
 
     @Override
@@ -100,7 +105,7 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
     public void setSearchCriteria(List<FieldSearchCriterion<Material>> criteria) {
         super.setSearchCriteria(criteria);
 
-        this.materials = this.dao.getAllMaterials();
+        this.materials = this.dao.getAll();
         Stream<Material> stream = this.materials.stream();
         for (FieldSearchCriterion<Material> materialFieldSearchCriterion : criteria) {
             stream = stream.filter(materialFieldSearchCriterion.buildPredicate());

@@ -71,6 +71,7 @@ CREATE TABLE "rendered_service" (
   "subscriber_id" INTEGER NOT NULL,
   "service_id" INTEGER NOT NULL,
   "date" DATE NOT NULL,
+  "price" INTEGER DEFAULT 0,
   FOREIGN KEY ("subscriber_id") REFERENCES "subscriber"("id"),
   FOREIGN KEY ("service_id") REFERENCES "service"("id")
 );

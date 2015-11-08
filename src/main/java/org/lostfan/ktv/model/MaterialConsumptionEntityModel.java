@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.lostfan.ktv.dao.DAOFactory;
+import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.dao.MaterialDAO;
 import org.lostfan.ktv.domain.MaterialConsumption;
 
@@ -14,13 +15,13 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
 
     private List<EntityField<MaterialConsumption, ?>> fields;
 
-    private MaterialDAO dao;
+    private MaterialConsumptionDAO dao;
     private List<MaterialConsumption> materialConsumptions;
 
     public MaterialConsumptionEntityModel() {
-        this.dao = DAOFactory.getDefaultDAOFactory().getMaterialDAO();
+        this.dao = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
         fields = new ArrayList<>();
-
+        super.getter = MaterialConsumption::getId;
 
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField<>("materialConsumption.id", Types.Integer, MaterialConsumption::getId, MaterialConsumption::setId));
@@ -37,16 +38,16 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
         materialConsumption.setAmount((Double) collect.get("materialConsumption.amount"));
         if(collect.get("materialConsumption.id") != null) {
             Integer materialConsumptionId = (Integer) collect.get("materialConsumption.id");
-            if (this.dao.getMaterialConsumption(materialConsumptionId) != null) {
+            if (this.dao.get(materialConsumptionId) != null) {
                 materialConsumption.setId((Integer) collect.get("materialConsumption.id"));
-                this.dao.updateMaterialConsumption(materialConsumption);
+                this.dao.update(materialConsumption);
             } else {
-                this.dao.saveMaterialConsumption(materialConsumption);
+                this.dao.save(materialConsumption);
             }
         } else {
-            this.dao.saveMaterialConsumption(materialConsumption);
+            this.dao.save(materialConsumption);
         }
-        this.materialConsumptions = this.dao.getAllMaterialConsumptions();
+        this.materialConsumptions = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -56,7 +57,7 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
             int id = getList().get(rowNumber).getId();
             this.dao.delete(id);
         }
-        this.materialConsumptions = this.dao.getAllMaterialConsumptions();
+        this.materialConsumptions = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -88,7 +89,16 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
 
     public List<MaterialConsumption> getList() {
         if (this.materialConsumptions == null) {
-            this.materialConsumptions = this.dao.getAllMaterialConsumptions();
+            this.materialConsumptions = this.dao.getAll();
+        }
+
+        return this.materialConsumptions;
+    }
+
+    @Override
+    public List<MaterialConsumption> getListByForeignKey(int foreignKey) {
+        if (this.materialConsumptions == null) {
+            this.materialConsumptions = this.dao.getMaterialConsumptionsByRenderedServiceId(foreignKey);
         }
 
         return this.materialConsumptions;
@@ -103,7 +113,7 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
     public void setSearchCriteria(List<FieldSearchCriterion<MaterialConsumption>> criteria) {
         super.setSearchCriteria(criteria);
 
-        this.materialConsumptions = this.dao.getAllMaterialConsumptions();
+        this.materialConsumptions = this.dao.getAll();
         Stream<MaterialConsumption> stream = this.materialConsumptions.stream();
         for (FieldSearchCriterion<MaterialConsumption> materialConsumptionFieldSearchCriterion : criteria) {
             stream = stream.filter(materialConsumptionFieldSearchCriterion.buildPredicate());
