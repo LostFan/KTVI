@@ -1,4 +1,7 @@
-package org.lostfan.ktv.model;
+package org.lostfan.ktv.view.components;
+
+import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.model.EntitySearcherModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +13,7 @@ import javax.swing.event.ListDataListener;
 /**
  * Created by Ihar_Niakhlebau on 14-Oct-15.
  */
-public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
+public class EntityComboBoxModel<T extends Entity> extends DefaultComboBoxModel<String> {
 
     public class IdAndValue
     {
@@ -37,32 +40,31 @@ public class ValueComboBoxModel<T> extends DefaultComboBoxModel<String> {
 
     private Object currentValue;
     private Object currentValueWithId;
-    private EntityComboBoxModel<T> model;
+    private EntitySearcherModel<T> model;
     private Map<String, IdAndValue> values;
     private Integer id;
     private List<String> nameWithIdList;
 
-    public ValueComboBoxModel(EntityComboBoxModel<T> model) {
+    public EntityComboBoxModel(EntitySearcherModel<T> model) {
         setModel(model);
     }
 
-    public void setModel(EntityComboBoxModel<T> model) {
+    public void setModel(EntitySearcherModel<T> model) {
         this.model = model;
         nameWithIdList = new ArrayList<>();
         values = this.model.getList().stream().collect(Collectors.toMap(entity -> {
-            String field =  this.model.getEntityFieldName().get(entity) + "(" + this.model.getEntityFieldId().get(entity) + ")";
-            nameWithIdList.add(field);
-            return field;
-        }
-                , entity -> {
-            IdAndValue idAndValue = new IdAndValue();
-            idAndValue.setId((Integer) this.model.getEntityFieldId().get(entity));
-            idAndValue.setValue(this.model.getEntityFieldName().get(entity));
-            return idAndValue;
+                String formattedName = String.format("%s (%d)", entity.getName(), entity.getId());
+                nameWithIdList.add(formattedName);
+                return formattedName;
+            } , entity -> {
+                IdAndValue idAndValue = new IdAndValue();
+                idAndValue.setId(entity.getId());
+                idAndValue.setValue(entity.getName());
+                return idAndValue;
         }));
     }
 
-    public void setNewModel(EntityComboBoxModel<T> model, String currentValue) {
+    public void setNewModel(EntitySearcherModel<T> model, String currentValue) {
         setModel(model);
         this.currentValue = (Object) currentValue;
         if (id != null && !this.values.containsKey(currentValue +"(" + id +")")

@@ -2,7 +2,7 @@ package org.lostfan.ktv.domain;
 
 public class Street implements Entity {
 
-    private int id;
+    private Integer id;
 
     private String name;
 
@@ -10,11 +10,11 @@ public class Street implements Entity {
         return name;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

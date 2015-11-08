@@ -2,9 +2,9 @@ package org.lostfan.ktv.domain;
 
 import java.time.LocalDate;
 
-public class SubscriberSession {
+public class SubscriberSession implements Entity {
 
-    private int id;
+    private Integer id;
 
     private int subscriberId;
 
@@ -12,11 +12,11 @@ public class SubscriberSession {
 
     private LocalDate disconnectionDate;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -42,5 +42,10 @@ public class SubscriberSession {
 
     public void setSubscriberId(int subscriberId) {
         this.subscriberId = subscriberId;
+    }
+
+    @Override
+    public String getName() {
+        return id.toString();
     }
 }

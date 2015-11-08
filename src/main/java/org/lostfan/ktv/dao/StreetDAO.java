@@ -19,4 +19,6 @@ public interface StreetDAO extends EntityDAO<Street> {
     void delete(int subscriberId);
 
     List<Street> getStreetsByBeginningPartOfName(String str);
+
+    List<Street> getAllContainsInName(String str);
 }

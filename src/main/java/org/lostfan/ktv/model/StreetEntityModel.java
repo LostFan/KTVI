@@ -23,8 +23,8 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
 
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("street.id", Types.Integer, Street::getId, Street::setId));
-        this.fields.add(new EntityField<>("street.name", Types.String, Street::getName, Street::setName));
+        this.fields.add(new EntityField<>("street.id", EntityFieldTypes.Integer, Street::getId, Street::setId));
+        this.fields.add(new EntityField<>("street.name", EntityFieldTypes.String, Street::getName, Street::setName));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
     }
 
     @Override
-    public List<EntityComboBoxModel> getEntityComboBoxModels() {
+    public List<EntitySearcherModel> getEntityComboBoxModels() {
         return null;
     }
 

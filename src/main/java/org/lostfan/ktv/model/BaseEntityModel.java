@@ -1,16 +1,15 @@
 package org.lostfan.ktv.model;
 
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.utils.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class BaseEntityModel<T> extends Observable implements EntityModel<T> {
+public abstract class BaseEntityModel<T extends Entity> extends Observable implements EntityModel<T> {
 
     private List<FieldSearchCriterion<T>> searchCriteria;
-
-    protected Function<T, Object> getter;
 
     public BaseEntityModel() {
         this.searchCriteria = new ArrayList<>();
@@ -29,10 +28,6 @@ public abstract class BaseEntityModel<T> extends Observable implements EntityMod
     @Override
     public List<EntityModel> getTableModels() {
         return null;
-    }
-
-    public Object getId(T entity) {
-        return getter.apply(entity);
     }
 
 }

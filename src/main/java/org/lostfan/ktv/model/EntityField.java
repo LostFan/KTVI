@@ -6,12 +6,11 @@ import java.util.function.Function;
 public class EntityField<E, T> {
 
     private String titleKey;
-    private Types type;
+    private EntityFieldTypes type;
     private Function<E, T> getter;
     private BiConsumer<E, T> setter;
 
-
-    public EntityField(String titleKey, Types type, Function<E, T> getter, BiConsumer<E, T> setter) {
+    public EntityField(String titleKey, EntityFieldTypes type, Function<E, T> getter, BiConsumer<E, T> setter) {
         this.titleKey = titleKey;
         this.type = type;
         this.getter = getter;
@@ -22,11 +21,11 @@ public class EntityField<E, T> {
         return titleKey;
     }
 
-    public Types getType() {
+    public EntityFieldTypes getType() {
         return type;
     }
 
-    public T get(E entity) {
+    public Object get(E entity) {
         return getter.apply(entity);
     }
 

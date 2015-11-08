@@ -1,45 +1,42 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.components;
 
 import java.awt.event.*;
 import javax.swing.*;
 
-import org.lostfan.ktv.controller.ComboBoxController;
-import org.lostfan.ktv.model.EntityComboBoxModel;
-import org.lostfan.ktv.model.ValueComboBoxModel;
+import org.lostfan.ktv.model.EntitySearcherModel;
 import org.lostfan.ktv.utils.Observer;
 
 /**
  * Created by Ihar_Niakhlebau on 14-Oct-15.
  */
-public class ComboBoxView extends JComboBox{
+public class EntityComboBox extends JComboBox{
 
     private class ModelObserver implements Observer {
         @Override
         public void update(Object args) {
-            ComboBoxView.this.thisRevalidate();
+            EntityComboBox.this.thisRevalidate();
         }
     }
 
     private JComboBox jComboBox;
     private JTextField textfield;
-    private EntityComboBoxModel model;
+    private EntitySearcherModel model;
     private ModelObserver modelObserver;
-    private ValueComboBoxModel valueComboBoxModel;
+    private EntityComboBoxModel entityComboBoxModel;
 
-    public ComboBoxView(EntityComboBoxModel model) {
-
+    EntityComboBox(EntitySearcherModel model) {
         textfield = (JTextField)     this.getEditor().getEditorComponent();
-        new ComboBoxController(model, this);
+        new EntityComboBoxController(model, this);
         this.model = model;
-        valueComboBoxModel = new ValueComboBoxModel(model);
-        this.setModel(valueComboBoxModel);
+        entityComboBoxModel = new EntityComboBoxModel(model);
+        this.setModel(entityComboBoxModel);
         textfield.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {}
 
             @Override
             public void focusLost(FocusEvent e) {
-                if(!textfield.getText().isEmpty() && valueComboBoxModel.getSelectedId() == null) {
+                if(!textfield.getText().isEmpty() && entityComboBoxModel.getSelectedId() == null) {
                     textfield.requestFocusInWindow();
                 }
             }
@@ -52,9 +49,9 @@ public class ComboBoxView extends JComboBox{
     }
 
     public void comboFilter(String enteredText) {
-        valueComboBoxModel.setNewModel(model, enteredText);
-        if (valueComboBoxModel.getSize() > 0) {
-            this.setModel(valueComboBoxModel);
+        entityComboBoxModel.setNewModel(model, enteredText);
+        if (entityComboBoxModel.getSize() > 0) {
+            this.setModel(entityComboBoxModel);
 //            getJComboBox().showPopup();
 //            this.setSelectedItem(enteredText);
         }
@@ -65,7 +62,7 @@ public class ComboBoxView extends JComboBox{
     }
 
     public Integer getSelectedId() {
-        return valueComboBoxModel.getSelectedId();
+        return entityComboBoxModel.getSelectedId();
     }
 
     public JComboBox getJComboBox() {
@@ -73,11 +70,11 @@ public class ComboBoxView extends JComboBox{
     }
 
     public Object getSelectedName() {
-        return valueComboBoxModel.getSelectedNameById();
+        return entityComboBoxModel.getSelectedNameById();
     }
 
     public void setId(int id){
-        valueComboBoxModel.setId(id);
+        entityComboBoxModel.setId(id);
     }
 
 
@@ -104,13 +101,13 @@ public class ComboBoxView extends JComboBox{
                 }
 
                 boolean popupVisible = true;
-                if (valueComboBoxModel.getSize() == 0) {
+                if (entityComboBoxModel.getSize() == 0) {
                     popupVisible = false;
-                } else if (valueComboBoxModel.getSelectedId() == null && ke.getKeyCode() == 10) {
+                } else if (entityComboBoxModel.getSelectedId() == null && ke.getKeyCode() == 10) {
 
                 }
                 if (ke.getKeyCode() == 10) {
-                    if (valueComboBoxModel.getSelectedId() == null) {
+                    if (entityComboBoxModel.getSelectedId() == null) {
                         popupVisible = true;
                         getJComboBox().setSelectedIndex(0);
 
@@ -144,7 +141,7 @@ public class ComboBoxView extends JComboBox{
     }
 
     public void editTextFieldText() {
-        textfield.setText(valueComboBoxModel.getSelectedName());
+        textfield.setText(entityComboBoxModel.getSelectedName());
     }
 
 }

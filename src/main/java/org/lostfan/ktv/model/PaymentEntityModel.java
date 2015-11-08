@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,14 +21,13 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     public PaymentEntityModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getPaymentDAO();
         fields = new ArrayList<>();
-        super.getter = Payment::getId;
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("payment.id", Types.Integer, Payment::getId, Payment::setId));
-        this.fields.add(new EntityField<>("payment.payDate", Types.Date, Payment::getDate, Payment::setDate));
-        this.fields.add(new EntityField<>("subscriber", Types.Subscriber, Payment::getSubscriberId, Payment::setSubscriberId));
-        this.fields.add(new EntityField<>("service", Types.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
-        this.fields.add(new EntityField<>("payment.price", Types.Integer, Payment::getPrice, Payment::setPrice));
+        this.fields.add(new EntityField<>("payment.id", EntityFieldTypes.Integer, Payment::getId, Payment::setId));
+        this.fields.add(new EntityField<>("payment.payDate", EntityFieldTypes.Date, Payment::getDate, Payment::setDate));
+        this.fields.add(new EntityField<>("subscriber", EntityFieldTypes.Subscriber, Payment::getSubscriberId, Payment::setSubscriberId));
+        this.fields.add(new EntityField<>("service", EntityFieldTypes.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
+        this.fields.add(new EntityField<>("payment.price", EntityFieldTypes.Integer, Payment::getPrice, Payment::setPrice));
     }
 
 
@@ -67,11 +65,11 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     }
 
     @Override
-    public List<EntityComboBoxModel> getEntityComboBoxModels() {
-        List<EntityComboBoxModel> entityComboBoxModels = new ArrayList<>();
-        entityComboBoxModels.add(new ServiceComboBoxModel());
-        entityComboBoxModels.add(new SubscriberComboBoxModel());
-        return entityComboBoxModels;
+    public List<EntitySearcherModel> getEntityComboBoxModels() {
+        List<EntitySearcherModel> entitySearcherModels = new ArrayList<>();
+        entitySearcherModels.add(new ServiceSearcherModel());
+        entitySearcherModels.add(new SubscriberSearcherModel());
+        return entitySearcherModels;
     }
 
     @Override

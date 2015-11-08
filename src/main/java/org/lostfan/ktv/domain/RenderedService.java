@@ -3,9 +3,9 @@ package org.lostfan.ktv.domain;
 import java.time.LocalDate;
 import java.util.List;
 
-public class RenderedService {
+public class RenderedService implements Entity {
 
-    private int id;
+    private Integer id;
 
     private int subscriberId;
 
@@ -15,11 +15,11 @@ public class RenderedService {
 
     private int price;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -53,5 +53,10 @@ public class RenderedService {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    @Override
+    public String getName() {
+        return id.toString();
     }
 }

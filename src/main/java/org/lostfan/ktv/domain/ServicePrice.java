@@ -2,9 +2,9 @@ package org.lostfan.ktv.domain;
 
 import java.time.LocalDate;
 
-public class ServicePrice {
+public class ServicePrice implements Entity {
 
-    private int id;
+    private Integer id;
 
     private int serviceId;
 
@@ -12,11 +12,11 @@ public class ServicePrice {
 
     private LocalDate date;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -42,5 +42,10 @@ public class ServicePrice {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    @Override
+    public String getName() {
+        return id.toString();
     }
 }

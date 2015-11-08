@@ -2,19 +2,19 @@ package org.lostfan.ktv.domain;
 
 import java.time.LocalDate;
 
-public class TariffPrice {
+public class TariffPrice implements Entity {
 
-    private int tariffId;
+    private Integer tariffId;
 
     private int price;
 
     private LocalDate date;
 
-    public int getTariffId() {
+    public Integer getTariffId() {
         return tariffId;
     }
 
-    public void setTariffId(int tariffId) {
+    public void setTariffId(Integer tariffId) {
         this.tariffId = tariffId;
     }
 
@@ -32,5 +32,15 @@ public class TariffPrice {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    @Override
+    public Integer getId() {
+        return tariffId;
+    }
+
+    @Override
+    public String getName() {
+        return tariffId.toString();
     }
 }

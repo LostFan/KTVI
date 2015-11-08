@@ -22,12 +22,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"service\"");
             while (rs.next()) {
-                Service service = new Service();
-                service.setId(rs.getInt("id"));
-                service.setName(rs.getString("name"));
-                service.setAdditionalService(rs.getBoolean("additional"));
-
-                services.add(service);
+                services.add(constructService(rs));
             }
 
         } catch (SQLException ex) {
@@ -44,13 +39,8 @@ public class HsqldbServiceDAO implements ServiceDAO {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
-            while (rs.next()) {
-                service = new Service();
-                service.setId(rs.getInt("id"));
-                service.setName(rs.getString("name"));
-                service.setAdditionalService(rs.getBoolean("additional"));
-
-            }
+            rs.next();
+            service = constructService(rs);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -58,6 +48,8 @@ public class HsqldbServiceDAO implements ServiceDAO {
 
         return service;
     }
+
+
 
     public void save(Service service) {
         try {
@@ -160,12 +152,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
             preparedStatement.setString(1, (str + "%").toLowerCase());
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Service service = new Service();
-                service.setId(rs.getInt("id"));
-                service.setName(rs.getString("name"));
-                service.setAdditionalService(rs.getBoolean("additional"));
-
-                services.add(service);
+                services.add(constructService(rs));
             }
 
         } catch (SQLException ex) {
@@ -173,5 +160,14 @@ public class HsqldbServiceDAO implements ServiceDAO {
         }
 
         return services;
+    }
+
+    private Service constructService(ResultSet rs) throws SQLException {
+        Service service;
+        service = new Service();
+        service.setId(rs.getInt("id"));
+        service.setName(rs.getString("name"));
+        service.setAdditionalService(rs.getBoolean("additional"));
+        return service;
     }
 }

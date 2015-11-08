@@ -23,9 +23,9 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
 
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("tariff.id", Types.Integer, Tariff::getId, Tariff::setId));
-        this.fields.add(new EntityField<>("tariff.name", Types.String, Tariff::getName, Tariff::setName));
-        this.fields.add(new EntityField<>("tariff.channels", Types.String, Tariff::getChannels, Tariff::setChannels));
+        this.fields.add(new EntityField<>("tariff.id", EntityFieldTypes.Integer, Tariff::getId, Tariff::setId));
+        this.fields.add(new EntityField<>("tariff.name", EntityFieldTypes.String, Tariff::getName, Tariff::setName));
+        this.fields.add(new EntityField<>("tariff.channels", EntityFieldTypes.String, Tariff::getChannels, Tariff::setChannels));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
     }
 
     @Override
-    public List<EntityComboBoxModel> getEntityComboBoxModels() {
+    public List<EntitySearcherModel> getEntityComboBoxModels() {
         return null;
     }
 

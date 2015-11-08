@@ -207,7 +207,7 @@ public class HsqldbSubscriberDAOTest {
         subscriberSession.setSubscriberId(1);
         subscriberSession.setConnectionDate(LocalDate.of(2015, 11, 12));
         subscriberDao.saveSubscriberSession(subscriberSession);
-        assertEquals(subscriberDao.getSubscriberSessions(1).get(2).getId(), 3);
+        assertEquals(subscriberDao.getSubscriberSessions(1).get(2).getId().intValue(), 3);
     }
 
     @Test
@@ -275,7 +275,7 @@ public class HsqldbSubscriberDAOTest {
         subscriberTariff.setTariffId(1);
         subscriberTariff.setConnectTariff(LocalDate.of(2015, 11, 12));
         subscriberDao.saveSubscriberTariff(subscriberTariff);
-        assertEquals(subscriberDao.getSubscriberTariffs(1).get(2).getId(), 3);
+        assertEquals(subscriberDao.getSubscriberTariffs(1).get(2).getId().intValue(), 3);
     }
 
     @Test

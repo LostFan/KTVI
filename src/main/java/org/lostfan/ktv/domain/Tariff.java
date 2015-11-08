@@ -2,7 +2,7 @@ package org.lostfan.ktv.domain;
 
 public class Tariff implements Entity  {
 
-    private int id;
+    private Integer id;
 
     private String name;
 
@@ -24,7 +24,7 @@ public class Tariff implements Entity  {
         this.channels = channels;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

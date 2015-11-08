@@ -21,9 +21,9 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("service.id", Types.Integer, Service::getId, Service::setId));
-        this.fields.add(new EntityField<>("service.name", Types.String, Service::getName, Service::setName));
-        this.fields.add(new EntityField<>("service.additional", Types.Boolean, Service::isAdditionalService, Service::setAdditionalService));
+        this.fields.add(new EntityField<>("service.id", EntityFieldTypes.Integer, Service::getId, Service::setId));
+        this.fields.add(new EntityField<>("service.name", EntityFieldTypes.String, Service::getName, Service::setName));
+        this.fields.add(new EntityField<>("service.additional", EntityFieldTypes.Boolean, Service::isAdditionalService, Service::setAdditionalService));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
     }
 
     @Override
-    public List<EntityComboBoxModel> getEntityComboBoxModels() {
+    public List<EntitySearcherModel> getEntityComboBoxModels() {
         return null;
     }
 

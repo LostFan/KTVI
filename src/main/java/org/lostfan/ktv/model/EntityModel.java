@@ -1,9 +1,11 @@
 package org.lostfan.ktv.model;
 
+import org.lostfan.ktv.domain.Entity;
+
 import java.util.List;
 import java.util.Map;
 
-public interface EntityModel<T> {
+public interface EntityModel<T extends Entity> {
 
     List<T> getList();
 
@@ -23,7 +25,7 @@ public interface EntityModel<T> {
 
     void deleteEntityByRow(List<Integer> rowNumbers);
 
-    List<EntityComboBoxModel> getEntityComboBoxModels();
+    List<EntitySearcherModel> getEntityComboBoxModels();
 
     List<EntityModel> getEntityModels();
 

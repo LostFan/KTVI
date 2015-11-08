@@ -3,20 +3,17 @@ package org.lostfan.ktv.model;
 import java.util.List;
 import java.util.Map;
 
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.utils.Observable;
 
 /**
  * Created by Ihar_Niakhlebau on 14-Oct-15.
  */
-public abstract class EntityComboBoxModel<T> extends Observable {
+public abstract class EntitySearcherModel<T extends Entity> extends Observable {
 
     public abstract  List<T> getList();
 
-    public abstract void setListByBeginningPartOfName(String str);
-
-    public abstract EntityField<T,?> getEntityFieldName();
-
-    public abstract EntityField<T,?> getEntityFieldId();
+    public abstract void setSearchQuery(String query);
 
     public abstract Class getEntityClass();
 }

@@ -56,13 +56,13 @@ public class HsqldbTariffDAOTest {
     @Test
     public void getAllServicesReturnsAllExistingTariffsTest() throws SQLException {
         insertStubDataTariffs();
-        assertEquals(tariffDAO.getAllTariffs().get(0).getId(), 1);
+        assertEquals(tariffDAO.getAllTariffs().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingTariffByIdTest() throws SQLException {
         insertStubDataTariffs();
-        assertEquals(tariffDAO.getTariff(1).getId(), 1);
+        assertEquals(tariffDAO.getTariff(1).getId().intValue(), 1);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class HsqldbTariffDAOTest {
         tariff.setChannels("30");
         tariff.setName("New");
         tariffDAO.save(tariff);
-        assertEquals(tariffDAO.getAllTariffs().get(3).getId(), 4);
+        assertEquals(tariffDAO.getAllTariffs().get(3).getId().intValue(), 4);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class HsqldbTariffDAOTest {
     @Test
     public void getAllServicesReturnsAllExistingTariffPricesTest() throws SQLException {
         insertStubData();
-        assertEquals(tariffDAO.getAllTariffPrices().get(0).getTariffId(), 1);
+        assertEquals(tariffDAO.getAllTariffPrices().get(0).getTariffId().intValue(), 1);
     }
 
     @Test

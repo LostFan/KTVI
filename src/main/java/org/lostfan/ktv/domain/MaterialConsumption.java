@@ -1,11 +1,13 @@
 package org.lostfan.ktv.domain;
 
+import org.lostfan.ktv.model.SearchCriteria;
+
 /**
  * Created by Roman Savoskin on 21.08.2015.
  */
-public class MaterialConsumption {
+public class MaterialConsumption implements Entity {
 
-    private int id;
+    private Integer id;
 
     private int materialId;
 
@@ -13,11 +15,11 @@ public class MaterialConsumption {
 
     private double amount;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -43,5 +45,9 @@ public class MaterialConsumption {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public String getName() {
+        return id.toString();
     }
 }

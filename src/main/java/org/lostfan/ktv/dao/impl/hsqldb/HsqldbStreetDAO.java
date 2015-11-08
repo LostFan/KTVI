@@ -21,9 +21,7 @@ public class HsqldbStreetDAO implements StreetDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"street\"");
             while (rs.next()) {
-                Street street = new Street();
-                street.setId(rs.getInt("id"));
-                street.setName(rs.getString("name"));
+                Street street = constructEntity(rs);
 
                 streets.add(street);
             }
@@ -42,12 +40,8 @@ public class HsqldbStreetDAO implements StreetDAO {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
-            while (rs.next()) {
-                street = new Street();
-                street.setId(rs.getInt("id"));
-                street.setName(rs.getString("name"));
-
-            }
+            rs.next();
+            street = constructEntity(rs);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -108,10 +102,7 @@ public class HsqldbStreetDAO implements StreetDAO {
             preparedStatement.setString(1, (str + "%").toLowerCase());
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Street street = new Street();
-                street.setId(rs.getInt("id"));
-                street.setName(rs.getString("name"));
-                streets.add(street);
+                streets.add(constructEntity(rs));
             }
 
         } catch (SQLException ex) {
@@ -119,5 +110,30 @@ public class HsqldbStreetDAO implements StreetDAO {
         }
 
         return streets;
+    }
+
+    @Override
+    public List<Street> getAllContainsInName(String str) {
+        List<Street> streets = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"street\" where LOWER(\"name\") LIKE ?");
+            preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                streets.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return streets;
+    }
+
+    private Street constructEntity(ResultSet rs) throws SQLException {
+        Street street = new Street();
+        street.setId(rs.getInt("id"));
+        street.setName(rs.getString("name"));
+        return street;
     }
 }

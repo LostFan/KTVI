@@ -23,10 +23,10 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
 
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("material.id", Types.Integer, Material::getId, Material::setId));
-        this.fields.add(new EntityField<>("material.name", Types.String, Material::getName, Material::setName));
-        this.fields.add(new EntityField<>("material.price", Types.Integer, Material::getPrice, Material::setPrice));
-        this.fields.add(new EntityField<>("material.unit", Types.String, Material::getUnit, Material::setUnit));
+        this.fields.add(new EntityField<>("material.id", EntityFieldTypes.Integer, Material::getId, Material::setId));
+        this.fields.add(new EntityField<>("material.name", EntityFieldTypes.String, Material::getName, Material::setName));
+        this.fields.add(new EntityField<>("material.price", EntityFieldTypes.Integer, Material::getPrice, Material::setPrice));
+        this.fields.add(new EntityField<>("material.unit", EntityFieldTypes.String, Material::getUnit, Material::setUnit));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
     }
 
     @Override
-    public List<EntityComboBoxModel> getEntityComboBoxModels() {
+    public List<EntitySearcherModel> getEntityComboBoxModels() {
         return null;
     }
 

@@ -1,5 +1,6 @@
 package org.lostfan.ktv.controller;
 
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.view.EntitySearchView;
@@ -78,7 +79,7 @@ public class EntityController {
             if (selectedIndex == -1) {
                 System.out.println("No selection");
             } else {
-                EntityView entityView = new EntityView(model, model.getList().get(selectedIndex));
+                EntityView entityView = new EntityView(model, (Entity)model.getList().get(selectedIndex));
                 entityView.addAddActionListener(e1 -> {
                     Map<String, Object> values = entityView.getValues();
                     model.saveOrEditEntity(values);
@@ -93,7 +94,7 @@ public class EntityController {
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
                 int selectedIndex = view.getSelectedIndex();
-                EntityView entityView = new EntityView(model, model.getList().get(selectedIndex));
+                EntityView entityView = new EntityView(model, (Entity) model.getList().get(selectedIndex));
                 entityView.addAddActionListener(e1 -> {
                     Map<String, Object> values = entityView.getValues();
                     model.saveOrEditEntity(values);

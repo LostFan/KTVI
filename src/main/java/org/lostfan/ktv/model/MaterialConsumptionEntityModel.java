@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.MaterialConsumptionDAO;
-import org.lostfan.ktv.dao.MaterialDAO;
 import org.lostfan.ktv.domain.MaterialConsumption;
 
 public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialConsumption> {
@@ -21,13 +20,12 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
     public MaterialConsumptionEntityModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
         fields = new ArrayList<>();
-        super.getter = MaterialConsumption::getId;
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("materialConsumption.id", Types.Integer, MaterialConsumption::getId, MaterialConsumption::setId));
-        this.fields.add(new EntityField<>("material", Types.Integer, MaterialConsumption::getMaterialId, MaterialConsumption::setMaterialId));
-        this.fields.add(new EntityField<>("service", Types.Service, MaterialConsumption::getRenderedServiceId, MaterialConsumption::setRenderedServiceId));
-        this.fields.add(new EntityField<>("materialConsumption.amount", Types.Double, MaterialConsumption::getAmount, MaterialConsumption::setAmount));
+        this.fields.add(new EntityField<>("materialConsumption.id", EntityFieldTypes.Integer, MaterialConsumption::getId, MaterialConsumption::setId));
+        this.fields.add(new EntityField<>("material", EntityFieldTypes.Integer, MaterialConsumption::getMaterialId, MaterialConsumption::setMaterialId));
+        this.fields.add(new EntityField<>("service", EntityFieldTypes.Service, MaterialConsumption::getRenderedServiceId, MaterialConsumption::setRenderedServiceId));
+        this.fields.add(new EntityField<>("materialConsumption.amount", EntityFieldTypes.Double, MaterialConsumption::getAmount, MaterialConsumption::setAmount));
     }
 
     @Override
@@ -62,11 +60,11 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
     }
 
     @Override
-    public List<EntityComboBoxModel> getEntityComboBoxModels() {
-        List<EntityComboBoxModel> entityComboBoxModels = new ArrayList<>();
-        entityComboBoxModels.add(new ServiceComboBoxModel());
-        entityComboBoxModels.add(new SubscriberComboBoxModel());
-        return entityComboBoxModels;
+    public List<EntitySearcherModel> getEntityComboBoxModels() {
+        List<EntitySearcherModel> entitySearcherModels = new ArrayList<>();
+        entitySearcherModels.add(new ServiceSearcherModel());
+        entitySearcherModels.add(new SubscriberSearcherModel());
+        return entitySearcherModels;
     }
 
     @Override

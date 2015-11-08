@@ -57,13 +57,13 @@ public class HsqldbRenderedServiceDAOTest {
     @Test
     public void getAllServicesReturnsAllExistingRenderedServicesTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getAllRenderedServices().get(0).getId(), 1);
+        assertEquals(renderedServiceDao.getAllRenderedServices().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingRenderedServiceByIdTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getRenderedService(1).getId(), 1);
+        assertEquals(renderedServiceDao.getRenderedService(1).getId().intValue(), 1);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class HsqldbRenderedServiceDAOTest {
         renderedService.setSubscriberId(3);
         renderedService.setDate(LocalDate.of(2015, 11, 11));
         renderedServiceDao.save(renderedService);
-        assertEquals(renderedServiceDao.getAllRenderedServices().get(3).getId(), 4);
+        assertEquals(renderedServiceDao.getAllRenderedServices().get(3).getId().intValue(), 4);
     }
 
     @Test

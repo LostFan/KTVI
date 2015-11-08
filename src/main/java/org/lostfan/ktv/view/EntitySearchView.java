@@ -54,7 +54,7 @@ public class EntitySearchView {
             });
         }
 
-        public Types getSelectedFieldType() {
+        public EntityFieldTypes getSelectedFieldType() {
             if (fieldComboBox.getSelectedItem() == null) {
                 return null;
             }
@@ -96,10 +96,10 @@ public class EntitySearchView {
             if (this.fieldComboBox.getSelectedItem() != null) {
                 panel.add(this.criterionComboBox, c);
             }
-            if (getSelectedFieldType() != null && getSelectedFieldType() != Types.Boolean && getSelectedFieldType() != Types.Date) {
+            if (getSelectedFieldType() != null && getSelectedFieldType() != EntityFieldTypes.Boolean && getSelectedFieldType() != EntityFieldTypes.Date) {
                 panel.add(this.valueTextField, c);
             }
-            if (getSelectedFieldType() != null && getSelectedFieldType() == Types.Date) {
+            if (getSelectedFieldType() != null && getSelectedFieldType() == EntityFieldTypes.Date) {
                 panel.add(this.datePicker, c);
             }
 //            panel.add(new JList<>());

@@ -6,12 +6,14 @@ import java.awt.event.MouseListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.BaseEntityModel;
+import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.view.model.EntityTableModel;
 
-public class EntityTableView<T> {
+public class EntityTableView {
 
     private class ModelObserver implements Observer {
         @Override
@@ -30,9 +32,9 @@ public class EntityTableView<T> {
 
     private ModelObserver modelObserver;
 
-    private BaseEntityModel<T> model;
+    private BaseEntityModel model;
 
-    public EntityTableView(BaseEntityModel<T> model) {
+    public EntityTableView(BaseEntityModel<? extends Entity> model) {
         this.model = model;
 
         this.table = new JTable(new EntityTableModel<>(model));
@@ -104,7 +106,7 @@ public class EntityTableView<T> {
         return result == 0 ? true : false;
     }
 
-    public void setModel(BaseEntityModel model) {
+    public void setModel(BaseEntityModel<? extends Entity> model) {
         this.model.removeObserver(modelObserver);
         this.model = model;
         model.addObserver(this.modelObserver);
@@ -122,7 +124,7 @@ public class EntityTableView<T> {
         DefaultCellEditor editor = new DefaultCellEditor(textField);
         editor.setClickCountToStart(1);
         for (int columnIndex=0;columnIndex< table.getColumnCount(); columnIndex++) {
-            if(this.model.getFields().get(columnIndex).getType().isEntityClass()) {
+            if(((EntityField)this.model.getFields().get(columnIndex)).getType().isEntityClass()) {
 //                this.table.getColumn(table.getColumnName(columnIndex)).setCellEditor(new EntityActionTableCellEditor(editor));
             }
         }

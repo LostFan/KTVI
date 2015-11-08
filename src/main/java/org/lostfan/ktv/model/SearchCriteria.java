@@ -2,26 +2,24 @@ package org.lostfan.ktv.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class SearchCriteria {
 
     public static class String extends SearchCriteria {
 
         static {
-            criteria.put(Types.String, new ArrayList<>());
+            criteria.put(EntityFieldTypes.String, new ArrayList<>());
         }
 
         private static void init() { }
 
-        public static final String Equals = new String(Types.String, "criteria.string.equals");
-        public static final String Contains = new String(Types.String, "criteria.string.contains");
-        public static final String NotContains = new String(Types.String, "criteria.string.notcontains");
+        public static final String Equals = new String(EntityFieldTypes.String, "criteria.string.equals");
+        public static final String Contains = new String(EntityFieldTypes.String, "criteria.string.contains");
+        public static final String NotContains = new String(EntityFieldTypes.String, "criteria.string.notcontains");
 
-        private String(Types type, java.lang.String title) {
+        private String(EntityFieldTypes type, java.lang.String title) {
             super(type, title);
         }
     }
@@ -29,16 +27,16 @@ public class SearchCriteria {
     public static class Integer extends SearchCriteria {
 
         static {
-            criteria.put(Types.Integer, new ArrayList<>());
+            criteria.put(EntityFieldTypes.Integer, new ArrayList<>());
         }
 
         private static void init() { }
 
-        public static final Integer Equals = new Integer(Types.Integer, "criteria.integer.equals");
-        public static final Integer GreaterThan = new Integer(Types.Integer, "criteria.integer.greater");
-        public static final Integer LessThan = new Integer(Types.Integer, "criteria.integer.less");
+        public static final Integer Equals = new Integer(EntityFieldTypes.Integer, "criteria.integer.equals");
+        public static final Integer GreaterThan = new Integer(EntityFieldTypes.Integer, "criteria.integer.greater");
+        public static final Integer LessThan = new Integer(EntityFieldTypes.Integer, "criteria.integer.less");
 
-        private Integer(Types type, java.lang.String title) {
+        private Integer(EntityFieldTypes type, java.lang.String title) {
             super(type, title);
         }
     }
@@ -46,16 +44,16 @@ public class SearchCriteria {
     public static class Double extends SearchCriteria {
 
         static {
-            criteria.put(Types.Integer, new ArrayList<>());
+            criteria.put(EntityFieldTypes.Integer, new ArrayList<>());
         }
 
         private static void init() { }
 
-        public static final Double Equals = new Double(Types.Double, "criteria.integer.equals");
-        public static final Double GreaterThan = new Double(Types.Double, "criteria.integer.greater");
-        public static final Double LessThan = new Double(Types.Double, "criteria.integer.less");
+        public static final Double Equals = new Double(EntityFieldTypes.Double, "criteria.integer.equals");
+        public static final Double GreaterThan = new Double(EntityFieldTypes.Double, "criteria.integer.greater");
+        public static final Double LessThan = new Double(EntityFieldTypes.Double, "criteria.integer.less");
 
-        private Double(Types type, java.lang.String title) {
+        private Double(EntityFieldTypes type, java.lang.String title) {
             super(type, title);
         }
     }
@@ -63,15 +61,15 @@ public class SearchCriteria {
     public static class Boolean extends SearchCriteria {
 
         static {
-            criteria.put(Types.Boolean, new ArrayList<>());
+            criteria.put(EntityFieldTypes.Boolean, new ArrayList<>());
         }
 
         private static void init() { }
 
-        public static final Boolean True = new Boolean(Types.Boolean, "criteria.boolean.true");
-        public static final Boolean False = new Boolean(Types.Boolean, "criteria.boolean.false");
+        public static final Boolean True = new Boolean(EntityFieldTypes.Boolean, "criteria.boolean.true");
+        public static final Boolean False = new Boolean(EntityFieldTypes.Boolean, "criteria.boolean.false");
 
-        private Boolean(Types type, java.lang.String title) {
+        private Boolean(EntityFieldTypes type, java.lang.String title) {
             super(type, title);
         }
     }
@@ -79,16 +77,16 @@ public class SearchCriteria {
     public static class Date extends SearchCriteria {
 
         static {
-            criteria.put(Types.Date, new ArrayList<>());
+            criteria.put(EntityFieldTypes.Date, new ArrayList<>());
         }
 
         private static void init() { }
 
-        public static final Date Equals = new Date(Types.Date, "criteria.date.equals");
-        public static final Date EarlierThan = new Date(Types.Date, "criteria.date.earlier");
-        public static final Date LaterThan = new Date(Types.Date, "criteria.date.later");
+        public static final Date Equals = new Date(EntityFieldTypes.Date, "criteria.date.equals");
+        public static final Date EarlierThan = new Date(EntityFieldTypes.Date, "criteria.date.earlier");
+        public static final Date LaterThan = new Date(EntityFieldTypes.Date, "criteria.date.later");
 
-        private Date(Types type, java.lang.String title) {
+        private Date(EntityFieldTypes type, java.lang.String title) {
             super(type, title);
         }
     }
@@ -96,16 +94,16 @@ public class SearchCriteria {
 //    public static class Service extends SearchCriteria {
 //
 //        static {
-//            criteria.put(Types.Service, new ArrayList<>());
+//            criteria.put(EntityFieldTypes.Service, new ArrayList<>());
 //        }
 //
 //        private static void init() { }
 //
-//        public static final Service Equals = new Service(Types.Service, "criteria.string.equals");
-//        public static final Service Contains = new Service(Types.Service, "criteria.string.contains");
-//        public static final Service NotContains = new Service(Types.Service, "criteria.string.notcontains");
+//        public static final Service Equals = new Service(EntityFieldTypes.Service, "criteria.string.equals");
+//        public static final Service Contains = new Service(EntityFieldTypes.Service, "criteria.string.contains");
+//        public static final Service NotContains = new Service(EntityFieldTypes.Service, "criteria.string.notcontains");
 //
-//        private Service(Types type, java.lang.String title) {
+//        private Service(EntityFieldTypes type, java.lang.String title) {
 //            super(type, title);
 //        }
 //    }
@@ -113,16 +111,16 @@ public class SearchCriteria {
 //    public static class Subscriber extends SearchCriteria {
 //
 //        static {
-//            criteria.put(Types.Subscriber, new ArrayList<>());
+//            criteria.put(EntityFieldTypes.Subscriber, new ArrayList<>());
 //        }
 //
 //        private static void init() { }
 //
-//        public static final Subscriber Equals = new Subscriber(Types.Subscriber, "criteria.string.equals");
-//        public static final Subscriber Contains = new Subscriber(Types.Subscriber, "criteria.string.contains");
-//        public static final Subscriber NotContains = new Subscriber(Types.Subscriber, "criteria.string.notcontains");
+//        public static final Subscriber Equals = new Subscriber(EntityFieldTypes.Subscriber, "criteria.string.equals");
+//        public static final Subscriber Contains = new Subscriber(EntityFieldTypes.Subscriber, "criteria.string.contains");
+//        public static final Subscriber NotContains = new Subscriber(EntityFieldTypes.Subscriber, "criteria.string.notcontains");
 //
-//        private Subscriber(Types type, java.lang.String title) {
+//        private Subscriber(EntityFieldTypes type, java.lang.String title) {
 //            super(type, title);
 //        }
 //    }
@@ -130,21 +128,21 @@ public class SearchCriteria {
     public static class Entity extends SearchCriteria {
 
         static {
-            criteria.put(Types.Service, new ArrayList<>());
+            criteria.put(EntityFieldTypes.Service, new ArrayList<>());
         }
 
         private static void init() { }
 
-        public static final Entity Equals = new Entity(Types.Service, "criteria.string.equals");
-        public static final Entity Contains = new Entity(Types.Service, "criteria.string.contains");
-        public static final Entity NotContains = new Entity(Types.Service, "criteria.string.notcontains");
+        public static final Entity Equals = new Entity(EntityFieldTypes.Service, "criteria.string.equals");
+        public static final Entity Contains = new Entity(EntityFieldTypes.Service, "criteria.string.contains");
+        public static final Entity NotContains = new Entity(EntityFieldTypes.Service, "criteria.string.notcontains");
 
-        private Entity(Types type, java.lang.String title) {
+        private Entity(EntityFieldTypes type, java.lang.String title) {
             super(type, title);
         }
     }
 
-    private static Map<Types, List<SearchCriteria>> criteria = new HashMap<>();
+    private static Map<EntityFieldTypes, List<SearchCriteria>> criteria = new HashMap<>();
     private static List<SearchCriteria> criteriaSet = new ArrayList<>();
 
     static {
@@ -158,16 +156,16 @@ public class SearchCriteria {
         Entity.init();
     }
 
-    public static List<SearchCriteria> getCritera(Types type) {
+    public static List<SearchCriteria> getCritera(EntityFieldTypes type) {
         if(type.isEntityClass())
             return criteriaSet;
         return criteria.get(type);
     }
 
-    private final Types type;
+    private final EntityFieldTypes type;
     private final java.lang.String title;
 
-    private SearchCriteria(Types type, java.lang.String title) {
+    private SearchCriteria(EntityFieldTypes type, java.lang.String title) {
         this.type = type;
         this.title = title;
         if(type.isEntityClass()) {
@@ -177,7 +175,7 @@ public class SearchCriteria {
         }
     }
 
-    public Types getType() {
+    public EntityFieldTypes getType() {
         return type;
     }
 

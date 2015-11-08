@@ -2,6 +2,8 @@ package org.lostfan.ktv.view;
 
 import org.lostfan.ktv.controller.EntityInnerTableController;
 import org.lostfan.ktv.model.BaseEntityModel;
+import org.lostfan.ktv.model.EntityField;
+import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.view.model.EntityInnerTableModel;
@@ -35,12 +37,12 @@ public class EntityInnerTableView<T> {
 
     private ModelObserver modelObserver;
 
-    private BaseEntityModel<T> model;
+    private BaseEntityModel model;
 
-    public EntityInnerTableView(BaseEntityModel<T> model, Object foreignId) {
+    public EntityInnerTableView(BaseEntityModel model, Object foreignId) {
         this.model = model;
 
-        this.table = new JTable(new EntityInnerTableModel<>(model, foreignId));
+        this.table = new JTable(new EntityInnerTableModel(model, foreignId));
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         this.table.setAutoCreateRowSorter(true);
         this.table.setFillsViewportHeight(true);
@@ -116,7 +118,7 @@ public class EntityInnerTableView<T> {
         this.model = model;
         model.addObserver(this.modelObserver);
 
-        this.table.setModel(new EntityTableModel<>(model));
+        this.table.setModel(new EntityTableModel(model));
         this.tableScrollPane.setViewportView(this.table);
 
         revalidate();
@@ -129,7 +131,7 @@ public class EntityInnerTableView<T> {
         DefaultCellEditor editor = new DefaultCellEditor(textField);
         editor.setClickCountToStart(1);
         for (int columnIndex=0;columnIndex< table.getColumnCount(); columnIndex++) {
-            if(this.model.getFields().get(columnIndex).getType().isEntityClass()) {
+            if(((EntityField)this.model.getFields().get(columnIndex)).getType().isEntityClass()) {
 //                this.table.getColumn(table.getColumnName(columnIndex)).setCellEditor(new EntityActionTableCellEditor(editor));
             }
         }

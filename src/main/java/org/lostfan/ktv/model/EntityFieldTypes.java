@@ -5,10 +5,8 @@ import java.time.LocalDate;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
 
-/**
-* Created by Ihar_Niakhlebau on 05-Nov-15.
-*/
-public enum Types {
+public enum EntityFieldTypes {
+
     String(java.lang.String.class, false, null),
     Integer(java.lang.Integer.class, false, null),
     Boolean(java.lang.Boolean.class, false, null),
@@ -22,7 +20,7 @@ public enum Types {
     private boolean entityClass;
     private EntityDAO dao;
 
-    Types(Class clazz, boolean entityClass, EntityDAO dao) {
+    EntityFieldTypes(Class clazz, boolean entityClass, EntityDAO dao) {
         this.clazz = clazz;
         this.entityClass = entityClass;
         this.dao = dao;

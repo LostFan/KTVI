@@ -3,10 +3,13 @@ package org.lostfan.ktv.view;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.utils.DateLabelFormatter;
 import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.view.components.EntityComboBox;
+import org.lostfan.ktv.view.components.EntityComboBoxFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,30 +29,52 @@ public class EntityView {
         private JComponent jComponent;
         private EntityField entityField;
 
-        public NameAndValueField(EntityField entityField) {
+        public NameAndValueField(EntityField entityField, Entity entity) {
             this.entityField = entityField;
             switch (entityField.getType()) {
                 case String:
                 case Integer:
                 case Double:
-                    this.jComponent = new JTextField(20);
+                    JTextField textField = new JTextField(20);
+                    if (entity != null) {
+                        textField.setText(entityField.get(entity).toString());
+                    }
+                    this.jComponent = textField;
                     break;
                 case Boolean:
-                    this.jComponent = new JCheckBox();
+                    JCheckBox checkBox = new JCheckBox();
+                    if (entity != null) {
+                        checkBox.setSelected((Boolean)entityField.get(entity));
+                    }
+                    this.jComponent = checkBox;
                     break;
                 case Date:
-                    this.jComponent = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
+
+                    JDatePickerImpl datePicker = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
+                    if (entity != null) {
+                        LocalDate localDate = (LocalDate) entityField.get(entity);
+                        datePicker.getModel().setDate(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
+                        datePicker.getModel().setSelected(true);
+                    }
+                    this.jComponent = datePicker;
                     break;
                 default:
-                    this.jComponent = new JComboBox();
-                    ((JComboBox) this.jComponent).setEditable(true);
+                    EntityComboBox comboBox = EntityComboBoxFactory.createComboBox(entityField.getType());
+                    comboBox.setEditable(true);
+                    if (entity != null) {
+                        Object value = entityField.get(entity);
+                        comboBox.setId((Integer) value);
+                        value = comboBox.getSelectedName();
+                        ((JTextField)((comboBox).getEditor().getEditorComponent())).setText((String) value);
+                    }
+                    this.jComponent = comboBox;
             }
 
             this.label = new JLabel(ResourceBundles.getEntityBundle().getString(entityField.getTitleKey()), SwingConstants.LEFT);
 
         }
 
-        public Types getSelectedFieldType() {
+        public EntityFieldTypes getSelectedFieldType() {
             return entityField.getType();
         }
 
@@ -68,7 +93,7 @@ public class EntityView {
                     java.sql.Date selectedDate = new java.sql.Date(((Date) ((JDatePickerImpl) this.jComponent).getModel().getValue()).getTime());
                     return selectedDate.toLocalDate();
                 default:
-                    return  ((ComboBoxView) this.jComponent).getSelectedId();
+                    return  ((EntityComboBox) this.jComponent).getSelectedId();
             }
 //            return null;
         }
@@ -81,30 +106,18 @@ public class EntityView {
             c.insets = new Insets(0,10,10,10);
             panel.add(this.label, c);
             DefaultContextMenu contextMenu = new DefaultContextMenu();
-            if (getSelectedFieldType() == Types.String || getSelectedFieldType() == Types.Integer || getSelectedFieldType() == Types.Double) {
+            if (getSelectedFieldType() == EntityFieldTypes.String || getSelectedFieldType() == EntityFieldTypes.Integer || getSelectedFieldType() == EntityFieldTypes.Double) {
                 contextMenu.add((JTextField) this.jComponent);
             }
-//            if (getSelectedFieldType() == EntityField.Types.Date) {
+//            if (getSelectedFieldType() == EntityField.EntityFieldTypes.Date) {
 //                panel.add(this.jComponent, c);
 //            }
-//            if (getSelectedFieldType() == EntityField.Types.Boolean) {
+//            if (getSelectedFieldType() == EntityField.EntityFieldTypes.Boolean) {
 //                panel.add(this.jComponent, c);
 //            }
 
             if(getSelectedFieldType().isEntityClass()) {
-
-                List<EntityComboBoxModel> entityComboBoxModels= model.getEntityComboBoxModels();
-                for (EntityComboBoxModel entityComboBoxModel : entityComboBoxModels) {
-                    if(entityComboBoxModel.getEntityClass() == getSelectedFieldType().getClazz()) {
-                        this.jComponent = new ComboBoxView(entityComboBoxModel);
-                        contextMenu.add((JTextField) ((JComboBox)this.jComponent).getEditor().getEditorComponent());
-//                        new ComboBoxController(entityComboBoxModel, comboBoxView);
-//                        this.jComponent = comboBoxView.getJComboBox();
-                    }
-                }
-
-
-
+                contextMenu.add((JTextField) ((JComboBox)this.jComponent).getEditor().getEditorComponent());
             }
 
 
@@ -127,10 +140,17 @@ public class EntityView {
     private JButton addButton;
     private JButton cancelButton;
     private EntityModel model;
-    private Object objectId;
+    private Integer objectId;
 
-    public void create(EntityModel model) {
-        nameAndValueFields = new ArrayList<>();
+    public EntityView(EntityModel model) {
+        this(model, null);
+    }
+
+    public EntityView(EntityModel model, Entity entity) {
+        if (entity != null) {
+            objectId = entity.getId();
+        }
+
         this.model = model;
         this.frame = new JFrame(ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -143,53 +163,12 @@ public class EntityView {
             frame.setVisible(false);
         });
 
+        nameAndValueFields = new ArrayList<>();
         for (Object entityField : model.getFields()) {
-            nameAndValueFields.add(new NameAndValueField((EntityField) entityField));
+            nameAndValueFields.add(new NameAndValueField((EntityField) entityField, entity));
         }
         buildLayout();
         frame.setVisible(true);
-    }
-
-    public EntityView(EntityModel model) {
-        create(model);
-    }
-
-    public EntityView(EntityModel model, Object entity) {
-        objectId = ((BaseEntityModel) model).getId(entity);
-
-        create(model);
-
-        this.addButton.setText(getString("buttons.change"));
-        for (NameAndValueField nameAndValueField : nameAndValueFields) {
-            Object o = nameAndValueField.getEntityField().get(entity);
-            if (nameAndValueField.getSelectedFieldType() == Types.String ) {
-                ((JTextField) nameAndValueField.jComponent).setText(o.toString());
-            } else
-            if (nameAndValueField.getSelectedFieldType() == Types.Integer || nameAndValueField.getSelectedFieldType() == Types.Double) {
-                if(o != null) {
-                    ((JTextField) nameAndValueField.jComponent).setText(o.toString());
-                } else {
-                    ((JTextField) nameAndValueField.jComponent).setText("0");
-                }
-            } else
-            if (nameAndValueField.getSelectedFieldType() == Types.Date) {
-                LocalDate localDate = (LocalDate) o;
-                ((JDatePickerImpl) nameAndValueField.jComponent).getModel().setDate(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
-                ((JDatePickerImpl) nameAndValueField.jComponent).getModel().setSelected(true);
-            } else
-            if (nameAndValueField.getSelectedFieldType() == Types.Boolean) {
-
-                ((JCheckBox) nameAndValueField.jComponent).setSelected((Boolean) o);
-            } else {
-                ((ComboBoxView) nameAndValueField.jComponent).setId((Integer) o);
-                o =((ComboBoxView) nameAndValueField.jComponent).getSelectedName();
-//                ((ComboBoxView) nameAndValueField.jComponent).setSelectedItem(o);
-                ((JTextField)(((ComboBoxView) nameAndValueField.jComponent).getEditor().getEditorComponent())).setText((String)o);
-            }
-        }
-
-        frame.revalidate();
-        frame.repaint();
     }
 
     private void buildLayout() {

@@ -4,17 +4,15 @@ import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.domain.Service;
-import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.model.EntityModel;
-import org.lostfan.ktv.model.Types;
+import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-public class EntityTableModel<T> implements TableModel {
+public class EntityTableModel<T extends Entity> implements TableModel {
 
     private BaseEntityModel<T> model;
     private SubscriberDAO subscriberDAO;
@@ -56,7 +54,7 @@ public class EntityTableModel<T> implements TableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object value = this.model.getFields().get(columnIndex).get(this.model.getList().get(rowIndex));
-        Types thisType = this.model.getFields().get(columnIndex).getType();
+        EntityFieldTypes thisType = this.model.getFields().get(columnIndex).getType();
         if(thisType.getClazz() == Integer.class && value ==null) {
             return 0;
         }

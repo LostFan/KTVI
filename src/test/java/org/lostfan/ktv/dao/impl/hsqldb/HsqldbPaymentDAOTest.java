@@ -55,13 +55,13 @@ public class HsqldbPaymentDAOTest {
     @Test
     public void getAllServicesReturnsAllExistingPaymentsTest() throws SQLException {
         insertStubData();
-        assertEquals(paymentDao.getAllPayments().get(0).getId(), 1);
+        assertEquals(paymentDao.getAllPayments().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingPaymentByIdTest() throws SQLException {
         insertStubData();
-        assertEquals(paymentDao.getPayment(1).getId(), 1);
+        assertEquals(paymentDao.getPayment(1).getId().intValue(), 1);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class HsqldbPaymentDAOTest {
         payment.setSubscriberId(3);
         payment.setDate(LocalDate.of(2015, 11, 11));
         paymentDao.save(payment);
-        assertEquals(paymentDao.getAllPayments().get(3).getId(), 4);
+        assertEquals(paymentDao.getAllPayments().get(3).getId().intValue(), 4);
     }
 
     @Test
@@ -185,13 +185,13 @@ public class HsqldbPaymentDAOTest {
     @Test
     public void getAllServicesReturnsAllExistingPaymentTypesTest() throws SQLException {
         insertStubDataPaymentTypes();
-        assertEquals(paymentDao.getAllPaymentTypes().get(0).getId(), 1);
+        assertEquals(paymentDao.getAllPaymentTypes().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingPaymentTypeByIdTest() throws SQLException {
         insertStubDataPaymentTypes();
-        assertEquals(paymentDao.getPaymentType(1).getId(), 1);
+        assertEquals(paymentDao.getPaymentType(1).getId().intValue(), 1);
     }
 
     @Test
@@ -218,7 +218,7 @@ public class HsqldbPaymentDAOTest {
         PaymentType paymentType = new PaymentType();
         paymentType.setName("New");
         paymentDao.savePaymentType(paymentType);
-        assertEquals(paymentDao.getAllPaymentTypes().get(2).getId(), 3);
+        assertEquals(paymentDao.getAllPaymentTypes().get(2).getId().intValue(), 3);
     }
 
     @Test
