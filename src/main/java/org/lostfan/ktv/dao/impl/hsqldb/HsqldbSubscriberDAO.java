@@ -23,7 +23,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"subscriber\"");
             while (rs.next()) {
-                Subscriber subscriber = createSubscriber(rs);
+                Subscriber subscriber = constructEntity(rs);
                 subscribers.add(subscriber);
             }
 
@@ -42,7 +42,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                subscriber = createSubscriber(rs);
+                subscriber = constructEntity(rs);
 
             }
 
@@ -343,7 +343,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             preparedStatement.setString(1, (str + "%").toLowerCase());
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Subscriber subscriber = createSubscriber(rs);
+                Subscriber subscriber = constructEntity(rs);
                 subscribers.add(subscriber);
             }
 
@@ -361,7 +361,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             preparedStatement.setString(1, (str + "%").toLowerCase());
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Subscriber subscriber = createSubscriber(rs);
+                Subscriber subscriber = constructEntity(rs);
                 subscribers.add(subscriber);
             }
 
@@ -372,7 +372,25 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         return subscribers;
     }
 
-    private Subscriber createSubscriber(ResultSet rs) throws SQLException{
+    @Override
+    public List<Subscriber> getAllContainsInName(String str) {
+        List<Subscriber> subscribers = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber\" where LOWER(\"name\") LIKE ?");
+            preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                subscribers.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscribers;
+    }
+
+    private Subscriber constructEntity(ResultSet rs) throws SQLException{
         Subscriber subscriber = new Subscriber();
         subscriber.setId(rs.getInt("id"));
         subscriber.setName(rs.getString("name"));
