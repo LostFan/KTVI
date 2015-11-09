@@ -23,8 +23,8 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
 
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField<>("materialConsumption.id", EntityFieldTypes.Integer, MaterialConsumption::getId, MaterialConsumption::setId));
-        this.fields.add(new EntityField<>("material", EntityFieldTypes.Integer, MaterialConsumption::getMaterialId, MaterialConsumption::setMaterialId));
-        this.fields.add(new EntityField<>("service", EntityFieldTypes.Service, MaterialConsumption::getRenderedServiceId, MaterialConsumption::setRenderedServiceId));
+        this.fields.add(new EntityField<>("material", EntityFieldTypes.Material, MaterialConsumption::getMaterialId, MaterialConsumption::setMaterialId));
+        this.fields.add(new EntityField<>("renderedService", EntityFieldTypes.RenderedService, MaterialConsumption::getRenderedServiceId, MaterialConsumption::setRenderedServiceId));
         this.fields.add(new EntityField<>("materialConsumption.amount", EntityFieldTypes.Double, MaterialConsumption::getAmount, MaterialConsumption::setAmount));
     }
 

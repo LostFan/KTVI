@@ -20,13 +20,13 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return ConnectionManager.getManager().getConnection();
     }
 
-    public List<RenderedService> getAllRenderedServices() {
+    public List<RenderedService> getAll() {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"rendered_service\"");
             while (rs.next()) {
-                RenderedService renderedService = createRenderedService(rs);
+                RenderedService renderedService = constructEntity(rs);
 
                 renderedServices.add(renderedService);
             }
@@ -38,7 +38,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
-    public RenderedService getRenderedService(int id) {
+    public RenderedService get(int id) {
         RenderedService renderedService = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"id\" = ?");
@@ -46,7 +46,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                renderedService = createRenderedService(rs);
+                renderedService = constructEntity(rs);
             }
 
         } catch (SQLException ex) {
@@ -63,7 +63,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             preparedStatement.setDate(1, Date.valueOf(date));
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                RenderedService renderedService = createRenderedService(rs);
+                RenderedService renderedService = constructEntity(rs);
                 renderedServices.add(renderedService);
             }
 
@@ -81,7 +81,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             preparedStatement.setInt(1, subscriberId);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                RenderedService renderedService = createRenderedService(rs);
+                RenderedService renderedService = constructEntity(rs);
                 renderedServices.add(renderedService);
             }
 
@@ -108,7 +108,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
     }
 
     public void update(RenderedService renderedService) {
-        if(getRenderedService(renderedService.getId()) != null) {
+        if(get(renderedService.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"rendered_service\" set \"subscriber_id\" = ?, \"service_id\" = ?, \"date\" = ?, \"price\" = ? where \"id\" = ?");
@@ -128,7 +128,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
     }
 
     public void delete(int id) {
-        if(getRenderedService(id) != null) {
+        if(get(id) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "DELETE FROM  \"rendered_service\" where \"id\" = ?");
@@ -143,7 +143,25 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         }
     }
 
-    private RenderedService createRenderedService(ResultSet rs) throws SQLException{
+    @Override
+    public List<RenderedService> getAllContainsInName(String str) {
+        List<RenderedService> renderedServices = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where LOWER(\"id\") LIKE ?");
+            preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                renderedServices.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return renderedServices;
+    }
+
+    private RenderedService constructEntity(ResultSet rs) throws SQLException{
         RenderedService renderedService = new RenderedService();
         renderedService.setId(rs.getInt("id"));
         renderedService.setServiceId(rs.getInt("service_id"));

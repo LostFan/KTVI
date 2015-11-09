@@ -25,12 +25,7 @@ public class HsqldbMaterialDAO implements MaterialDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"material\"");
             while (rs.next()) {
-                Material material = new Material();
-                material.setId(rs.getInt("id"));
-                material.setPrice(rs.getInt("price"));
-                material.setName(rs.getString("name"));
-                material.setUnit(rs.getString("unit"));
-                materials.add(material);
+                materials.add(constructEntity(rs));
             }
 
         } catch (SQLException ex) {
@@ -48,11 +43,7 @@ public class HsqldbMaterialDAO implements MaterialDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                material = new Material();
-                material.setId(rs.getInt("id"));
-                material.setPrice(rs.getInt("price"));
-                material.setName(rs.getString("name"));
-                material.setUnit(rs.getString("unit"));
+                material = constructEntity(rs);
 
             }
 
@@ -62,6 +53,7 @@ public class HsqldbMaterialDAO implements MaterialDAO {
 
         return material;
     }
+
 
     public void save(Material material) {
         try {
@@ -110,5 +102,33 @@ public class HsqldbMaterialDAO implements MaterialDAO {
         } else {
             throw new UnsupportedOperationException("Delete nonexistent element");
         }
+    }
+
+    @Override
+    public List<Material> getAllContainsInName(String str) {
+        List<Material> materials = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"material\" where LOWER(\"name\") LIKE ?");
+            preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                materials.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return materials;
+    }
+
+    private Material constructEntity(ResultSet rs) throws SQLException {
+        Material material;
+        material = new Material();
+        material.setId(rs.getInt("id"));
+        material.setPrice(rs.getInt("price"));
+        material.setName(rs.getString("name"));
+        material.setUnit(rs.getString("unit"));
+        return material;
     }
 }

@@ -45,25 +45,25 @@ public class HsqldbRenderedServiceDAOTest {
 
     @Test
     public void emptyRenderedServicesTest() {
-        assertEquals(renderedServiceDao.getAllRenderedServices().size(), 0);
+        assertEquals(renderedServiceDao.getAll().size(), 0);
     }
 
     @Test
     public void getAllServicesReturnsCorrectRenderedServiceCountTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getAllRenderedServices().size(), 3);
+        assertEquals(renderedServiceDao.getAll().size(), 3);
     }
 
     @Test
     public void getAllServicesReturnsAllExistingRenderedServicesTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getAllRenderedServices().get(0).getId().intValue(), 1);
+        assertEquals(renderedServiceDao.getAll().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingRenderedServiceByIdTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getRenderedService(1).getId().intValue(), 1);
+        assertEquals(renderedServiceDao.get(1).getId().intValue(), 1);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class HsqldbRenderedServiceDAOTest {
         renderedService.setSubscriberId(3);
         renderedService.setDate(LocalDate.of(2015,11,11));
         renderedServiceDao.save(renderedService);
-        assertEquals(renderedServiceDao.getAllRenderedServices().size(), 4);
+        assertEquals(renderedServiceDao.getAll().size(), 4);
     }
 
     @Test
@@ -85,9 +85,9 @@ public class HsqldbRenderedServiceDAOTest {
         renderedService.setSubscriberId(3);
         renderedService.setDate(LocalDate.of(2015, 11, 11));
         renderedServiceDao.save(renderedService);
-        assertEquals(renderedServiceDao.getAllRenderedServices().get(3).getServiceId(), 1);
-        assertEquals(renderedServiceDao.getAllRenderedServices().get(3).getSubscriberId(), 3);
-        assertEquals(renderedServiceDao.getAllRenderedServices().get(3).getDate(), LocalDate.of(2015, 11, 11));
+        assertEquals(renderedServiceDao.getAll().get(3).getServiceId(), 1);
+        assertEquals(renderedServiceDao.getAll().get(3).getSubscriberId(), 3);
+        assertEquals(renderedServiceDao.getAll().get(3).getDate(), LocalDate.of(2015, 11, 11));
     }
 
     @Test
@@ -98,49 +98,49 @@ public class HsqldbRenderedServiceDAOTest {
         renderedService.setSubscriberId(3);
         renderedService.setDate(LocalDate.of(2015, 11, 11));
         renderedServiceDao.save(renderedService);
-        assertEquals(renderedServiceDao.getAllRenderedServices().get(3).getId().intValue(), 4);
+        assertEquals(renderedServiceDao.getAll().get(3).getId().intValue(), 4);
     }
 
     @Test
     public void updateExistingRenderedServiceByIdShouldMatchUpdatedValuesTest() throws SQLException {
         insertStubData();
-        RenderedService renderedService = renderedServiceDao.getRenderedService(1);
+        RenderedService renderedService = renderedServiceDao.get(1);
         renderedService.setServiceId(2);
         renderedServiceDao.update(renderedService);
-        assertEquals(renderedServiceDao.getRenderedService(1).getServiceId(), 2);
+        assertEquals(renderedServiceDao.get(1).getServiceId(), 2);
     }
 
     @Test
     public void updateExistingRenderedServiceByIdCorrectServiceCountTest() throws SQLException {
         insertStubData();
-        RenderedService renderedService = renderedServiceDao.getRenderedService(1);
+        RenderedService renderedService = renderedServiceDao.get(1);
         renderedService.setServiceId(2);
         renderedService.setSubscriberId(2);
         renderedServiceDao.update(renderedService);
-        assertEquals(renderedServiceDao.getAllRenderedServices().size(), 3);
+        assertEquals(renderedServiceDao.getAll().size(), 3);
     }
 
     @Test
     public void updateExistingRenderedServiceByIdShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubData();
-        RenderedService renderedService = renderedServiceDao.getRenderedService(1);
+        RenderedService renderedService = renderedServiceDao.get(1);
         renderedService.setServiceId(2);
         renderedServiceDao.update(renderedService);
-        assertEquals(renderedServiceDao.getRenderedService(1).getSubscriberId(), 1);
+        assertEquals(renderedServiceDao.get(1).getSubscriberId(), 1);
     }
 
     @Test
     public void deleteRenderedServiceByIdCorrectServiceCountTest() throws SQLException {
         insertStubData();
         renderedServiceDao.delete(1);
-        assertEquals(renderedServiceDao.getAllRenderedServices().size(), 2);
+        assertEquals(renderedServiceDao.getAll().size(), 2);
     }
 
     @Test
     public void deleteRenderedServiceByIdShouldDeleteCorrectDataTest() throws SQLException {
         insertStubData();
         renderedServiceDao.delete(1);
-        assertEquals(renderedServiceDao.getRenderedService(1), null);
+        assertEquals(renderedServiceDao.get(1), null);
     }
 
     @Test

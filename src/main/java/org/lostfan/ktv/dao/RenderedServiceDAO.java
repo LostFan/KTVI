@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.lostfan.ktv.domain.RenderedService;
 
-public interface RenderedServiceDAO {
+public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
 
-    List<RenderedService> getAllRenderedServices();
+    List<RenderedService> getAll();
 
-    RenderedService getRenderedService(int id);
+    RenderedService get(int id);
 
     List<RenderedService> getRenderedServicesByDate(LocalDate date);
 
@@ -20,4 +20,6 @@ public interface RenderedServiceDAO {
     void update(RenderedService renderedService);
 
     void delete(int id);
+
+    List<RenderedService> getAllContainsInName(String str);
 }

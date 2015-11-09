@@ -39,7 +39,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         renderedService.setPrice((Integer) collect.get("renderedService.price"));
         if(collect.get("renderedService.id") != null) {
             Integer renderedServiceId = (Integer) collect.get("renderedService.id");
-            if (this.dao.getRenderedService(renderedServiceId) != null) {
+            if (this.dao.get(renderedServiceId) != null) {
                 renderedService.setId((Integer) collect.get("renderedService.id"));
                 this.dao.update(renderedService);
             } else {
@@ -48,7 +48,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         } else {
             this.dao.save(renderedService);
         }
-        this.renderedServices = this.dao.getAllRenderedServices();
+        this.renderedServices = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -58,7 +58,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             int id = getList().get(rowNumber).getId();
             this.dao.delete(id);
         }
-        this.renderedServices = this.dao.getAllRenderedServices();
+        this.renderedServices = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -82,7 +82,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     public List<RenderedService> getList() {
         if (this.renderedServices == null) {
-            this.renderedServices = this.dao.getAllRenderedServices();
+            this.renderedServices = this.dao.getAll();
         }
 
         return this.renderedServices;
@@ -102,7 +102,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     public void setSearchCriteria(List<FieldSearchCriterion<RenderedService>> criteria) {
         super.setSearchCriteria(criteria);
 
-        this.renderedServices = this.dao.getAllRenderedServices();
+        this.renderedServices = this.dao.getAll();
         Stream<RenderedService> stream = this.renderedServices.stream();
         for (FieldSearchCriterion<RenderedService> renderedServiceFieldSearchCriterion : criteria) {
             stream = stream.filter(renderedServiceFieldSearchCriterion.buildPredicate());

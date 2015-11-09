@@ -17,4 +17,6 @@ public interface MaterialDAO extends EntityDAO<Material> {
     void update(Material material);
 
     void delete(int id);
+
+    List<Material> getAllContainsInName(String str);
 }

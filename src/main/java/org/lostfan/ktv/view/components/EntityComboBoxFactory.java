@@ -16,6 +16,12 @@ public class EntityComboBoxFactory {
             case Subscriber:
                 model = new SubscriberSearcherModel();
                 break;
+            case Material:
+                model = new MaterialSearcherModel();
+                break;
+            case RenderedService:
+                model = new RenderedServiceSearcherModel();
+                break;
             default:
                 throw new IllegalArgumentException("Wrong type: " + type.toString());
         }
