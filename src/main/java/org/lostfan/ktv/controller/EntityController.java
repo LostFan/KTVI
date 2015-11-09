@@ -3,18 +3,13 @@ package org.lostfan.ktv.controller;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class EntityController {
 
@@ -25,11 +20,10 @@ public class EntityController {
         this.model = model;
         this.view = view;
 
-        this.view.addFindActionListener(new FindActionListener());
-        this.view.addAddActionListener(new AddActionListener());
-        this.view.addChangeActionListener(new ChangeActionListener());
-        this.view.addDeleteActionListener(new DeleteActionListener());
-        this.view.addDoubleClickListener(new TableDoubleClickListener());
+        this.view.setFindActionListener(new FindActionListener());
+        this.view.setAddActionListener(new AddActionListener());
+        this.view.setChangeActionListener(new ChangeActionListener());
+        this.view.setDeleteActionListener(new DeleteActionListener());
 
     }
 
@@ -37,16 +31,18 @@ public class EntityController {
         this.model = model;
     }
 
-    private class FindActionListener implements ActionListener {
+    private class FindActionListener implements ViewActionListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(Object args) {
             EntitySearchView entitySearchView = new EntitySearchView(model);
-            entitySearchView.addFindActionListener(new SearchFindActionListener(entitySearchView));
+            entitySearchView.setFindActionListener(new SearchFindActionListener(entitySearchView));
         }
     }
 
-    private class SearchFindActionListener implements ActionListener {
+    private class SearchFindActionListener implements ViewActionListener {
+
         EntitySearchView entitySearchView;
+
         public SearchFindActionListener(EntitySearchView entitySearchView) {
             this.entitySearchView = entitySearchView;
             List<FieldSearchCriterion> criteria = this.entitySearchView.getSearchCriteria();
@@ -54,70 +50,43 @@ public class EntityController {
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(Object args) {
 //            List<FieldSearchCriterion> criteria = this.entitySearchView.getSearchCriteria();
 //            model.setSearchCriteria(criteria);
         }
     }
 
-    private class AddActionListener implements ActionListener {
+    private class AddActionListener implements ViewActionListener {
+
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(Object args) {
             EntityView entityView = new EntityView(model);
-            entityView.addAddActionListener(e1 -> {
+            entityView.setAddActionListener(args_ -> {
                 Map<String, Object> values = entityView.getValues();
                 model.saveOrEditEntity(values);
             });
         }
     }
 
-    private class ChangeActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.print("Change action.");
-            int selectedIndex = view.getSelectedIndex();
-            if (selectedIndex == -1) {
-                System.out.println("No selection");
-            } else {
-                EntityView entityView = new EntityView(model, (Entity)model.getList().get(selectedIndex));
-                entityView.addAddActionListener(e1 -> {
-                    Map<String, Object> values = entityView.getValues();
-                    model.saveOrEditEntity(values);
-                });
+    private class ChangeActionListener implements ViewActionListener {
 
-            }
+        @Override
+        public void actionPerformed(Object args) {
+            int selectedIndex = (Integer) args;
+            EntityView entityView = new EntityView(model, (Entity) model.getList().get(selectedIndex));
+            entityView.setAddActionListener(args_ -> {
+                Map<String, Object> values = entityView.getValues();
+                model.saveOrEditEntity(values);
+            });
         }
     }
 
-    private class TableDoubleClickListener extends MouseAdapter {
+    private class DeleteActionListener implements ViewActionListener {
+
         @Override
-        public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() == 2) {
-                int selectedIndex = view.getSelectedIndex();
-                EntityView entityView = new EntityView(model, (Entity) model.getList().get(selectedIndex));
-                entityView.addAddActionListener(e1 -> {
-                    Map<String, Object> values = entityView.getValues();
-                    model.saveOrEditEntity(values);
-                });
-
-            }
-        }
-    }
-
-
-
-    private class DeleteActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            int selectedIndex = view.getSelectedIndex();
-            if (selectedIndex == -1) {
-                System.out.println("No selection");
-                return;
-            }
-            if(view.isConfirm()) {
-                model.deleteEntityByRow(IntStream.of(view.getSelectedIndexes()).boxed().collect(Collectors.toList()));
-            }
+        public void actionPerformed(Object args) {
+            List<Integer> selectedIndexes = (List<Integer>) args;
+            model.deleteEntityByRow(selectedIndexes);
         }
     }
 }

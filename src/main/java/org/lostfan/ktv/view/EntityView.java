@@ -8,6 +8,7 @@ import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.utils.DateLabelFormatter;
 import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.components.EntityComboBox;
 import org.lostfan.ktv.view.components.EntityComboBoxFactory;
 
@@ -118,6 +119,9 @@ public class EntityView {
     private JButton cancelButton;
     private EntityModel model;
 
+    private ViewActionListener addActionListener;
+    private ViewActionListener cancelActionListener;
+
     private Entity entity;
 
     public EntityView(EntityModel model) {
@@ -131,10 +135,17 @@ public class EntityView {
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.addButton = new JButton(getString(entity == null ? "buttons.add" : "buttons.change"));
         this.addButton.addActionListener(e -> {
+            if (this.addActionListener != null) {
+                this.addActionListener.actionPerformed(null);
+            }
             frame.setVisible(false);
         });
+
         this.cancelButton = new JButton(getString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {
+            if (this.cancelActionListener != null) {
+                this.cancelActionListener.actionPerformed(null);
+            }
             frame.setVisible(false);
         });
 
@@ -194,12 +205,12 @@ public class EntityView {
         return map;
     }
 
-    public void addAddActionListener(ActionListener listener) {
-        this.addButton.addActionListener(listener);
+    public void setAddActionListener(ViewActionListener addActionListener) {
+        this.addActionListener = addActionListener;
     }
 
-    public void addCancelActionListener(ActionListener listener) {
-        this.addButton.addActionListener(listener);
+    public void setCancelActionListener(ViewActionListener cancelActionListener) {
+        this.cancelActionListener = cancelActionListener;
     }
 
     private String getString(String key) {

@@ -1,8 +1,11 @@
 package org.lostfan.ktv.view;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -11,6 +14,7 @@ import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.model.EntityTableModel;
 
 public class EntityTableView {
@@ -34,6 +38,11 @@ public class EntityTableView {
 
     private BaseEntityModel model;
 
+    private ViewActionListener findActionListener;
+    private ViewActionListener addActionListener;
+    private ViewActionListener changeActionListener;
+    private ViewActionListener deleteActionListener;
+
     public EntityTableView(BaseEntityModel<? extends Entity> model) {
         this.model = model;
 
@@ -41,11 +50,47 @@ public class EntityTableView {
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         this.table.setAutoCreateRowSorter(true);
         this.table.setFillsViewportHeight(true);
+        this.table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                EntityTableView view = EntityTableView.this;
+                // Dbl Click at the table row
+                if (e.getClickCount() == 2 && view.changeActionListener != null) {
+                    view.changeActionListener.actionPerformed(view.table.getSelectedRow());
+                }
+            }
+        });
 
         this.findButton = new JButton(getString("buttons.find"));
+        this.findButton.addActionListener(e -> {
+            if (this.findActionListener != null) {
+                this.findActionListener.actionPerformed(null);
+            }
+        });
+
         this.addButton = new JButton(getString("buttons.add"));
+        this.addButton.addActionListener(e -> {
+            if (this.addActionListener != null) {
+                this.addActionListener.actionPerformed(null);
+            }
+        });
+
         this.changeButton = new JButton(getString("buttons.changeSelected"));
+        this.changeButton.addActionListener(e -> {
+            int selectedRow = this.table.getSelectedRow();
+            if (selectedRow != -1 && this.changeActionListener != null) {
+                this.changeActionListener.actionPerformed(selectedRow);
+            }
+        });
+
         this.deleteButton = new JButton(getString("buttons.delete"));
+        this.deleteButton.addActionListener(e -> {
+            int[] selectedRows = this.table.getSelectedRows();
+            if (selectedRows.length != 0 && confirmDeletion() && this.deleteActionListener != null) {
+                List<Integer> selectedIndexes = IntStream.of(selectedRows).boxed().collect(Collectors.toList());
+                this.deleteActionListener.actionPerformed(selectedIndexes);
+            }
+        });
 
         buildLayout();
 
@@ -91,7 +136,7 @@ public class EntityTableView {
         return this.contentPanel;
     }
 
-    public boolean isConfirm() {
+    private boolean confirmDeletion() {
         int optionType = JOptionPane.OK_CANCEL_OPTION;
         int messageType = JOptionPane.QUESTION_MESSAGE;
         Object[] selValues = {ResourceBundles.getGuiBundle().getString("buttons.yes"),
@@ -129,30 +174,27 @@ public class EntityTableView {
             }
         }
     }
+
     private void revalidate() {
         addStringActionTableCellEditorToColumns();
         this.contentPanel.invalidate();
         this.contentPanel.repaint();
     }
 
-    public void addFindActionListener(ActionListener listener) {
-        this.findButton.addActionListener(listener);
+    public void setFindActionListener(ViewActionListener findActionListener) {
+        this.findActionListener = findActionListener;
     }
 
-    public void addAddActionListener(ActionListener listener) {
-        this.addButton.addActionListener(listener);
+    public void setAddActionListener(ViewActionListener addActionListener) {
+        this.addActionListener = addActionListener;
     }
 
-    public void addChangeActionListener(ActionListener listener) {
-        this.changeButton.addActionListener(listener);
+    public void setChangeActionListener(ViewActionListener changeActionListener) {
+        this.changeActionListener = changeActionListener;
     }
 
-    public void addDoubleClickListener(MouseListener listener) {
-        this.table.addMouseListener(listener);
-    }
-
-    public void addDeleteActionListener(ActionListener listener) {
-        this.deleteButton.addActionListener(listener);
+    public void setDeleteActionListener(ViewActionListener deleteActionListener) {
+        this.deleteActionListener = deleteActionListener;
     }
 
     private String getString(String key) {

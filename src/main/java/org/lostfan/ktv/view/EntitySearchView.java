@@ -13,6 +13,7 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.utils.DateLabelFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.model.CriteriaComboBoxModel;
 import org.lostfan.ktv.view.model.FieldsComboBoxModel;
 
@@ -127,6 +128,8 @@ public class EntitySearchView {
     private JButton cancelButton;
     private EntityModel model;
 
+    private ViewActionListener findActionListener;
+
     public EntitySearchView(EntityModel model) {
         this.model = model;
         this.frame = new JDialog(new JFrame(), getString("buttons.search") + ": " +
@@ -149,7 +152,10 @@ public class EntitySearchView {
 
         this.cancelButton = new JButton(getString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {
-            frame.setVisible(false);
+            if (this.findActionListener != null) {
+                this.findActionListener.actionPerformed(null);
+                frame.setVisible(false);
+            }
         });
 
         buildLayout();
@@ -192,8 +198,8 @@ public class EntitySearchView {
         this.frame.repaint();
     }
 
-    public void addFindActionListener(ActionListener listener) {
-        this.findButton.addActionListener(listener);
+    public void setFindActionListener(ViewActionListener findActionListener) {
+        this.findActionListener = findActionListener;
     }
 
     public List<FieldSearchCriterion> getSearchCriteria() {

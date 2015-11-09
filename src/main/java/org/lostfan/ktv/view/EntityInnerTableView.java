@@ -3,15 +3,14 @@ package org.lostfan.ktv.view;
 import org.lostfan.ktv.controller.EntityInnerTableController;
 import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.model.EntityField;
-import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.model.EntityInnerTableModel;
 import org.lostfan.ktv.view.model.EntityTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
@@ -30,10 +29,12 @@ public class EntityInnerTableView<T> {
     private JScrollPane tableScrollPane;
     private JButton addCopyButton;
     private JButton addButton;
-    private JButton stringBackButton;
+    private JButton restoreRowButton;
     private JButton deleteButton;
     private JButton upButton;
     private JButton downButton;
+
+    private ViewActionListener addActionListener;
 
     private ModelObserver modelObserver;
 
@@ -49,8 +50,15 @@ public class EntityInnerTableView<T> {
 
 
         this.addButton = new JButton(getString("buttons.add"));
+        this.addButton.addActionListener(e -> {
+            if (this.addActionListener != null) {
+                this.addActionListener.actionPerformed(null);
+                revalidate();
+            }
+        });
+
         this.addCopyButton = new JButton(getString("buttons.addCopy"));
-        this.stringBackButton = new JButton(getString("buttons.stringBack"));
+        this.restoreRowButton = new JButton(getString("buttons.stringBack"));
         this.deleteButton = new JButton(getString("buttons.delete"));
 
         buildLayout();
@@ -81,7 +89,7 @@ public class EntityInnerTableView<T> {
 
         rightPanelInner.add(this.addCopyButton);
         rightPanelInner.add(this.addButton);
-        rightPanelInner.add(this.stringBackButton);
+        rightPanelInner.add(this.restoreRowButton);
         rightPanelInner.add(this.deleteButton);
     }
 
@@ -142,21 +150,16 @@ public class EntityInnerTableView<T> {
         this.contentPanel.repaint();
     }
 
+    public void setAddActionListener(ViewActionListener addActionListener) {
+        this.addActionListener = addActionListener;
+    }
+
     public void addFindActionListener(ActionListener listener) {
         this.addCopyButton.addActionListener(listener);
     }
 
-    public void addAddActionListener(ActionListener listener) {
-        this.addButton.addActionListener(listener);
-        this.addButton.addActionListener(e -> {
-//            System.out.println(((DefaultTableModel)this.table.getModel()).getRowCount());
-//            ((DefaultTableModel)this.table.getModel()).removeRow(1);
-            this.revalidate();
-        });
-    }
-
     public void addChangeActionListener(ActionListener listener) {
-        this.stringBackButton.addActionListener(listener);
+        this.restoreRowButton.addActionListener(listener);
     }
 
     public void addDoubleClickListener(MouseListener listener) {

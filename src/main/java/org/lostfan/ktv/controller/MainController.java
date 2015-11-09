@@ -6,9 +6,6 @@ import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.MainView;
 
-/**
- * Created by Ihar_Niakhlebau on 30-Sep-15.
- */
 public class MainController {
 
     private MainView view;
