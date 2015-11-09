@@ -23,4 +23,6 @@ public interface ServiceDAO extends EntityDAO<Service> {
     List<ServicePrice> getServicePricesByServiceId(int serviceId);
 
     List<Service> getServicesByBeginningPartOfName(String str);
+
+    List<Service> getAllContainsInName(String str);
 }

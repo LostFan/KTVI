@@ -22,7 +22,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"service\"");
             while (rs.next()) {
-                services.add(constructService(rs));
+                services.add(constructEntity(rs));
             }
 
         } catch (SQLException ex) {
@@ -40,7 +40,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             rs.next();
-            service = constructService(rs);
+            service = constructEntity(rs);
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -152,7 +152,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
             preparedStatement.setString(1, (str + "%").toLowerCase());
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                services.add(constructService(rs));
+                services.add(constructEntity(rs));
             }
 
         } catch (SQLException ex) {
@@ -162,7 +162,25 @@ public class HsqldbServiceDAO implements ServiceDAO {
         return services;
     }
 
-    private Service constructService(ResultSet rs) throws SQLException {
+    @Override
+    public List<Service> getAllContainsInName(String str) {
+        List<Service> services = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"service\" where LOWER(\"name\") LIKE ?");
+            preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                services.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return services;
+    }
+
+    private Service constructEntity(ResultSet rs) throws SQLException {
         Service service;
         service = new Service();
         service.setId(rs.getInt("id"));

@@ -45,5 +45,5 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     List<Subscriber> getSubscribersByBeginningPartOfAccount(String str);
 
-    public List<Subscriber> getAllContainsInName(String str);
+    List<Subscriber> getAllContainsInName(String str);
 }
