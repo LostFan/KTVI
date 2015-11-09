@@ -73,13 +73,19 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         if(get(subscriber.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"subscriber\" set \"name\" = ?, \"account\" = ?, \"street_id\" = ? where \"id\" = ?");
+                        "UPDATE \"subscriber\" set " +
+                                "\"name\" = ?, " +
+                                "\"account\" = ?, " +
+                                "\"street_id\" = ?, " +
+                                "\"balance\" = ?, " +
+                                "\"connected\" = ? " +
+                                "where \"id\" = ?");
                 preparedStatement.setString(1, subscriber.getName());
                 preparedStatement.setString(2, subscriber.getAccount());
-                if(subscriber.getStreetId() != null) {
-                    preparedStatement.setInt(3, subscriber.getStreetId());
-                }
-                preparedStatement.setInt(4, subscriber.getId());
+                preparedStatement.setInt(3, subscriber.getStreetId());
+                preparedStatement.setInt(4, subscriber.getBalance());
+                preparedStatement.setBoolean(5, subscriber.isConnected());
+                preparedStatement.setInt(6, subscriber.getId());
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
@@ -396,6 +402,8 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         subscriber.setName(rs.getString("name"));
         subscriber.setAccount(rs.getString("account"));
         subscriber.setStreetId(rs.getInt("street_id"));
+        subscriber.setBalance(rs.getInt("balance"));
+        subscriber.setConnected(rs.getBoolean("connected"));
         return subscriber;
     }
 }

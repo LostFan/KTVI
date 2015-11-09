@@ -129,7 +129,7 @@ public class EntityView {
         this.model = model;
         this.frame = new JFrame(ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
         this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.addButton = new JButton(getString("buttons.add"));
+        this.addButton = new JButton(getString(entity == null ? "buttons.add" : "buttons.change"));
         this.addButton.addActionListener(e -> {
             frame.setVisible(false);
         });

@@ -87,15 +87,17 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     }
 
     @Override
-    public void saveOrEditEntity(Map<String, Object> collect) {
+    public void saveOrEditEntity(Map<String, Object> fieldValues) {
         Subscriber subscriber = new Subscriber();
-        subscriber.setAccount((String) collect.get("subscriber.account"));
-        subscriber.setName((String) collect.get("subscriber.name"));
-        subscriber.setStreetId((Integer) collect.get("subscriber.street_id"));
-        if(collect.get("subscriber.id") != null) {
-            Integer subscriberId = (Integer) collect.get("subscriber.id");
+        subscriber.setAccount((String) fieldValues.get("subscriber.account"));
+        subscriber.setName((String) fieldValues.get("subscriber.name"));
+        subscriber.setStreetId((Integer) fieldValues.get("subscriber.street_id"));
+        subscriber.setBalance((Integer) fieldValues.get("subscriber.balance"));
+        subscriber.setConnected((Boolean) fieldValues.get("subscriber.connected"));
+        if(fieldValues.get("subscriber.id") != null) {
+            Integer subscriberId = (Integer) fieldValues.get("subscriber.id");
             if (this.dao.get(subscriberId) != null) {
-                subscriber.setId((Integer) collect.get("subscriber.id"));
+                subscriber.setId((Integer) fieldValues.get("subscriber.id"));
                 this.dao.update(subscriber);
             } else {
                 this.dao.save(subscriber);
