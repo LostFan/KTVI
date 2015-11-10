@@ -12,7 +12,7 @@ import org.lostfan.ktv.domain.Subscriber;
 
 public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
-    private List<EntityField<Subscriber, ?>> fields;
+    private List<EntityField> fields;
 
     private List<Subscriber> subscribers;
 
@@ -20,12 +20,12 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.dao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("subscriber.id", EntityFieldTypes.Integer, Subscriber::getId, Subscriber::setId));
-        this.fields.add(new EntityField<>("subscriber.account", EntityFieldTypes.String, Subscriber::getAccount, Subscriber::setAccount));
-        this.fields.add(new EntityField<>("subscriber.name", EntityFieldTypes.String, Subscriber::getName, Subscriber::setName));
-        this.fields.add(new EntityField<>("subscriber.street_id", EntityFieldTypes.Street, Subscriber::getStreetId, Subscriber::setStreetId));
-        this.fields.add(new EntityField<>("subscriber.balance", EntityFieldTypes.Integer, Subscriber::getBalance, Subscriber::setBalance));
-        this.fields.add(new EntityField<>("subscriber.connected", EntityFieldTypes.Boolean, Subscriber::isConnected, Subscriber::setConnected));
+        this.fields.add(new EntityField("subscriber.id", EntityFieldTypes.Integer, Subscriber::getId, Subscriber::setId));
+        this.fields.add(new EntityField("subscriber.account", EntityFieldTypes.String, Subscriber::getAccount, Subscriber::setAccount));
+        this.fields.add(new EntityField("subscriber.name", EntityFieldTypes.String, Subscriber::getName, Subscriber::setName));
+        this.fields.add(new EntityField("subscriber.street_id", EntityFieldTypes.Street, Subscriber::getStreetId, Subscriber::setStreetId));
+        this.fields.add(new EntityField("subscriber.balance", EntityFieldTypes.Integer, Subscriber::getBalance, Subscriber::setBalance));
+        this.fields.add(new EntityField("subscriber.connected", EntityFieldTypes.Boolean, Subscriber::isConnected, Subscriber::setConnected));
     }
 
     @Override
@@ -34,7 +34,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     }
 
     @Override
-    public List<EntityField<Subscriber, ?>> getFields() {
+    public List<EntityField> getFields() {
         return this.fields;
     }
 

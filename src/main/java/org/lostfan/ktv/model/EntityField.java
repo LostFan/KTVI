@@ -1,16 +1,19 @@
 package org.lostfan.ktv.model;
 
+import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.domain.Subscriber;
+
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class EntityField<E, T> {
+public class EntityField {
 
     private String titleKey;
     private EntityFieldTypes type;
-    private Function<E, T> getter;
-    private BiConsumer<E, T> setter;
+    private Function getter;
+    private BiConsumer setter;
 
-    public EntityField(String titleKey, EntityFieldTypes type, Function<E, T> getter, BiConsumer<E, T> setter) {
+    public <T, V> EntityField(String titleKey, EntityFieldTypes type, Function<T, V> getter, BiConsumer<T, V> setter) {
         this.titleKey = titleKey;
         this.type = type;
         this.getter = getter;
@@ -25,11 +28,13 @@ public class EntityField<E, T> {
         return type;
     }
 
-    public Object get(E entity) {
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> Object get(T entity) {
         return getter.apply(entity);
     }
 
-    public void set(E entity, T value) {
+    @SuppressWarnings("unchecked")
+    public <T extends Entity> void set(T entity, Object value) {
         setter.accept(entity, value);
     }
 }

@@ -1,8 +1,8 @@
 package org.lostfan.ktv.view;
 
 import org.lostfan.ktv.controller.EntityInnerTableController;
-import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.model.EntityField;
+import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
@@ -39,9 +39,9 @@ public class EntityInnerTableView<T> {
 
     private ModelObserver modelObserver;
 
-    private BaseEntityModel model;
+    private EntityModel model;
 
-    public EntityInnerTableView(BaseEntityModel model, Object foreignId) {
+    public EntityInnerTableView(EntityModel model, Object foreignId) {
         this.model = model;
 
         this.table = new JTable(new EntityInnerTableModel(model, foreignId));
@@ -122,7 +122,7 @@ public class EntityInnerTableView<T> {
         return result == 0 ? true : false;
     }
 
-    public void setModel(BaseEntityModel model) {
+    public void setModel(EntityModel model) {
         this.model.removeObserver(modelObserver);
         this.model = model;
         model.addObserver(this.modelObserver);

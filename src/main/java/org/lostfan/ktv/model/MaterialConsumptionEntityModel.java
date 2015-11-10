@@ -12,7 +12,7 @@ import org.lostfan.ktv.domain.MaterialConsumption;
 
 public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialConsumption> {
 
-    private List<EntityField<MaterialConsumption, ?>> fields;
+    private List<EntityField> fields;
 
     private List<MaterialConsumption> materialConsumptions;
 
@@ -21,10 +21,10 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
         fields = new ArrayList<>();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("materialConsumption.id", EntityFieldTypes.Integer, MaterialConsumption::getId, MaterialConsumption::setId));
-        this.fields.add(new EntityField<>("material", EntityFieldTypes.Material, MaterialConsumption::getMaterialId, MaterialConsumption::setMaterialId));
-        this.fields.add(new EntityField<>("renderedService", EntityFieldTypes.RenderedService, MaterialConsumption::getRenderedServiceId, MaterialConsumption::setRenderedServiceId));
-        this.fields.add(new EntityField<>("materialConsumption.amount", EntityFieldTypes.Double, MaterialConsumption::getAmount, MaterialConsumption::setAmount));
+        this.fields.add(new EntityField("materialConsumption.id", EntityFieldTypes.Integer, MaterialConsumption::getId, MaterialConsumption::setId));
+        this.fields.add(new EntityField("material", EntityFieldTypes.Material, MaterialConsumption::getMaterialId, MaterialConsumption::setMaterialId));
+        this.fields.add(new EntityField("renderedService", EntityFieldTypes.RenderedService, MaterialConsumption::getRenderedServiceId, MaterialConsumption::setRenderedServiceId));
+        this.fields.add(new EntityField("materialConsumption.amount", EntityFieldTypes.Double, MaterialConsumption::getAmount, MaterialConsumption::setAmount));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
     }
 
     @Override
-    public List<EntityField<MaterialConsumption, ?>> getFields() {
+    public List<EntityField> getFields() {
         return this.fields;
     }
 

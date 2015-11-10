@@ -1,12 +1,13 @@
 package org.lostfan.ktv.model;
 
+import org.lostfan.ktv.utils.BaseObservable;
 import org.lostfan.ktv.utils.Observable;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainModel extends Observable {
+public class MainModel extends BaseObservable {
 
     private List<EntityModel> entityModels;
     private List<EntityModel> documentModels;

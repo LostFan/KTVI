@@ -14,16 +14,14 @@ import java.util.Map;
 public class EntityController {
 
     private EntityModel model;
-    private EntityTableView view;
 
     public EntityController(EntityModel model, EntityTableView view) {
         this.model = model;
-        this.view = view;
 
-        this.view.setFindActionListener(new FindActionListener());
-        this.view.setAddActionListener(new AddActionListener());
-        this.view.setChangeActionListener(new ChangeActionListener());
-        this.view.setDeleteActionListener(new DeleteActionListener());
+        view.setFindActionListener(new FindActionListener());
+        view.setAddActionListener(new AddActionListener());
+        view.setChangeActionListener(new ChangeActionListener());
+        view.setDeleteActionListener(new DeleteActionListener());
 
     }
 

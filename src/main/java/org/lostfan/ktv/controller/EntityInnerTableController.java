@@ -5,6 +5,7 @@ import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.EntityInnerTableView;
 
 public class EntityInnerTableController {
+
     private EntityModel model;
     private EntityInnerTableView view;
 

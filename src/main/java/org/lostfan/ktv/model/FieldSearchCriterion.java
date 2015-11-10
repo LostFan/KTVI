@@ -10,7 +10,7 @@ import org.lostfan.ktv.domain.Subscriber;
 import java.time.LocalDate;
 import java.util.function.Predicate;
 
-public class FieldSearchCriterion<E> {
+public class FieldSearchCriterion<E extends Entity> {
 
     private EntityField entityField;
     private SearchCriteria criterion;

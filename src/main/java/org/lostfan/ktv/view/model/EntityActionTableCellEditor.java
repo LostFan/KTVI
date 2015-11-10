@@ -22,7 +22,7 @@ public class EntityActionTableCellEditor extends ActionTableCellEditor {
             textArea.setCaretPosition(0);
         }
         int result = JOptionPane.showOptionDialog(table
-                , new JScrollPane(textArea), (String)table.getColumnName(column)
+                , new JScrollPane(textArea), table.getColumnName(column)
                 , JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if(result==JOptionPane.OK_OPTION)
             table.setValueAt(textArea.getText(), row, column);
@@ -37,6 +37,5 @@ public class EntityActionTableCellEditor extends ActionTableCellEditor {
                 new EntityView(entityModel);
             }
         }
-        ;
     }
 }

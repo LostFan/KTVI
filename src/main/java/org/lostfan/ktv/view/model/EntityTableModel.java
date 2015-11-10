@@ -1,10 +1,6 @@
 package org.lostfan.ktv.view.model;
 
-import org.lostfan.ktv.dao.DAOFactory;
-import org.lostfan.ktv.dao.ServiceDAO;
-import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.utils.ResourceBundles;
@@ -14,14 +10,9 @@ import javax.swing.table.TableModel;
 
 public class EntityTableModel<T extends Entity> implements TableModel {
 
-    private BaseEntityModel<T> model;
-    private SubscriberDAO subscriberDAO;
-    private ServiceDAO serviceDAO;
-
-    public EntityTableModel(BaseEntityModel<T> model) {
+    private EntityModel<T> model;
+    public EntityTableModel(EntityModel<T> model) {
         this.model = model;
-        this.subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
-        this.serviceDAO = DAOFactory.getDefaultDAOFactory().getServiceDAO();
     }
 
     @Override
@@ -47,8 +38,7 @@ public class EntityTableModel<T extends Entity> implements TableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-//        System.out.println(this.model.getFields().get(columnIndex).getType().isEntityClass());
-        return this.model.getFields().get(columnIndex).getType().isEntityClass() ? true : false;
+        return this.model.getFields().get(columnIndex).getType().isEntityClass();
     }
 
     @Override

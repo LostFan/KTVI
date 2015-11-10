@@ -10,7 +10,7 @@ import java.util.Map;
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
 
-public class EntityComboBoxModel<T extends Entity> implements ComboBoxModel<String> {
+public class EntityComboBoxModel implements ComboBoxModel<String> {
 
     private class FormattedEntity {
         private Entity entity;
@@ -24,7 +24,7 @@ public class EntityComboBoxModel<T extends Entity> implements ComboBoxModel<Stri
 
     private Object currentValue;
     private Object currentFormattedValue;
-    private EntitySearcherModel<T> model;
+    private EntitySearcherModel model;
     /**
      * ID of the selected entity.
      */
@@ -36,15 +36,15 @@ public class EntityComboBoxModel<T extends Entity> implements ComboBoxModel<Stri
     private Map<String, Integer> formattedNames;
     private List<FormattedEntity> entities;
 
-    public EntityComboBoxModel(EntitySearcherModel<T> model) {
+    public EntityComboBoxModel(EntitySearcherModel model) {
         setModel(model);
     }
 
-    public void setModel(EntitySearcherModel<T> model) {
+    public void setModel(EntitySearcherModel model) {
         this.model = model;
         this.formattedNames = new HashMap<>(this.model.getList().size());
         this.entities = new ArrayList<>(this.model.getList().size());
-        List<T> entities = this.model.getList();
+        List<? extends Entity> entities = this.model.getList();
         for (int i = 0; i < entities.size(); ++i) {
             String formattedName = formatName(entities.get(i).getName(), entities.get(i).getId());
             this.formattedNames.put(formattedName, i);
@@ -52,10 +52,10 @@ public class EntityComboBoxModel<T extends Entity> implements ComboBoxModel<Stri
         }
     }
 
-    public void setNewModel(EntitySearcherModel<T> model, String currentValue) {
+    public void setNewModel(EntitySearcherModel model, String currentValue) {
         setModel(model);
-        this.currentValue = (Object) currentValue;
-        if (id != null && !this.formattedNames.containsKey(formatName(currentValue.toString(), id))
+        this.currentValue = currentValue;
+        if (id != null && !this.formattedNames.containsKey(formatName(currentValue, id))
                 && !this.formattedNames.containsKey(this.currentValue)) {
             id = null;
             currentFormattedValue = null;

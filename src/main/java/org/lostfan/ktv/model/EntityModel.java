@@ -1,11 +1,12 @@
 package org.lostfan.ktv.model;
 
 import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.utils.Observable;
 
 import java.util.List;
 import java.util.Map;
 
-public interface EntityModel<T extends Entity> {
+public interface EntityModel<T extends Entity> extends Observable {
 
     List<T> getList();
 
@@ -17,7 +18,7 @@ public interface EntityModel<T extends Entity> {
 
     String getEntityName();
 
-    List<EntityField<T, ?>> getFields();
+    List<EntityField> getFields();
 
     List<FieldSearchCriterion<T>> getSearchCriteria();
 

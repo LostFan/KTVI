@@ -1,6 +1,5 @@
 package org.lostfan.ktv.controller;
 
-import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.view.EntityTableView;
@@ -26,12 +25,12 @@ public class MainController {
 
             if (entityController == null) {
                 activeEntityModel = newModel;
-                tableView = new EntityTableView((BaseEntityModel)newModel);
+                tableView = new EntityTableView(newModel);
                 entityController = new EntityController(newModel, tableView);
                 model.setContentPanel(tableView.getContentPanel());
             } else {
                 activeEntityModel = newModel;
-                tableView.setModel((BaseEntityModel)newModel);
+                tableView.setModel(newModel);
                 entityController.setModel(newModel);
                 model.setContentPanel(tableView.getContentPanel());
             }
