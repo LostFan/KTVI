@@ -21,7 +21,7 @@ public class HsqldbTariffDAO implements TariffDAO {
         return ConnectionManager.getManager().getConnection();
     }
 
-    public List<Tariff> getAllTariffs() {
+    public List<Tariff> getAll() {
 
         List<Tariff> tariffs = new ArrayList<>();
         try {
@@ -43,7 +43,7 @@ public class HsqldbTariffDAO implements TariffDAO {
         return tariffs;
     }
 
-    public Tariff getTariff(int id) {
+    public Tariff get(int id) {
         Tariff tariff = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"tariff\" where \"id\" = ?");
@@ -101,7 +101,7 @@ public class HsqldbTariffDAO implements TariffDAO {
     }
 
     public void update(Tariff tariff) {
-        if(getTariff(tariff.getId()) != null) {
+        if(get(tariff.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"tariff\" set \"name\" = ?, \"channels\" = ? where \"id\" = ?");
@@ -119,7 +119,7 @@ public class HsqldbTariffDAO implements TariffDAO {
     }
 
     public void delete(int tariffId) {
-        if(getTariff(tariffId) != null) {
+        if(get(tariffId) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "DELETE FROM  \"tariff\" where \"id\" = ?");

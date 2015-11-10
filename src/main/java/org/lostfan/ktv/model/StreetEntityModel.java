@@ -14,7 +14,6 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
 
     private List<EntityField<Street, ?>> fields;
 
-    private StreetDAO dao;
     private List<Street> streets;
 
     public StreetEntityModel() {

@@ -43,25 +43,25 @@ public class HsqldbPaymentDAOTest {
 
     @Test
     public void emptyPaymentsTest() {
-        assertEquals(paymentDao.getAllPayments().size(), 0);
+        assertEquals(paymentDao.getAll().size(), 0);
     }
 
     @Test
     public void getAllServicesReturnsCorrectPaymentCountTest() throws SQLException {
         insertStubData();
-        assertEquals(paymentDao.getAllPayments().size(), 3);
+        assertEquals(paymentDao.getAll().size(), 3);
     }
 
     @Test
     public void getAllServicesReturnsAllExistingPaymentsTest() throws SQLException {
         insertStubData();
-        assertEquals(paymentDao.getAllPayments().get(0).getId().intValue(), 1);
+        assertEquals(paymentDao.getAll().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingPaymentByIdTest() throws SQLException {
         insertStubData();
-        assertEquals(paymentDao.getPayment(1).getId().intValue(), 1);
+        assertEquals(paymentDao.get(1).getId().intValue(), 1);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class HsqldbPaymentDAOTest {
         payment.setSubscriberId(3);
         payment.setDate(LocalDate.of(2015, 11, 11));
         paymentDao.save(payment);
-        assertEquals(paymentDao.getAllPayments().size(), 4);
+        assertEquals(paymentDao.getAll().size(), 4);
     }
 
     @Test
@@ -83,9 +83,9 @@ public class HsqldbPaymentDAOTest {
         payment.setSubscriberId(3);
         payment.setDate(LocalDate.of(2015, 11, 11));
         paymentDao.save(payment);
-        assertEquals(paymentDao.getAllPayments().get(3).getServicePaymentId().intValue(), 1);
-        assertEquals(paymentDao.getAllPayments().get(3).getSubscriberId(), 3);
-        assertEquals(paymentDao.getAllPayments().get(3).getDate(), LocalDate.of(2015, 11, 11));
+        assertEquals(paymentDao.getAll().get(3).getServicePaymentId().intValue(), 1);
+        assertEquals(paymentDao.getAll().get(3).getSubscriberId(), 3);
+        assertEquals(paymentDao.getAll().get(3).getDate(), LocalDate.of(2015, 11, 11));
     }
 
     @Test
@@ -96,49 +96,49 @@ public class HsqldbPaymentDAOTest {
         payment.setSubscriberId(3);
         payment.setDate(LocalDate.of(2015, 11, 11));
         paymentDao.save(payment);
-        assertEquals(paymentDao.getAllPayments().get(3).getId().intValue(), 4);
+        assertEquals(paymentDao.getAll().get(3).getId().intValue(), 4);
     }
 
     @Test
     public void updateExistingPaymentByIdShouldMatchUpdatedValuesTest() throws SQLException {
         insertStubData();
-        Payment payment = paymentDao.getPayment(1);
+        Payment payment = paymentDao.get(1);
         payment.setServicePaymentId(2);
         paymentDao.update(payment);
-        assertEquals(paymentDao.getPayment(1).getServicePaymentId().intValue(), 2);
+        assertEquals(paymentDao.get(1).getServicePaymentId().intValue(), 2);
     }
 
     @Test
     public void updateExistingPaymentByIdCorrectServiceCountTest() throws SQLException {
         insertStubData();
-        Payment payment = paymentDao.getPayment(1);
+        Payment payment = paymentDao.get(1);
         payment.setServicePaymentId(2);
         payment.setSubscriberId(2);
         paymentDao.update(payment);
-        assertEquals(paymentDao.getAllPayments().size(), 3);
+        assertEquals(paymentDao.getAll().size(), 3);
     }
 
     @Test
     public void updateExistingPaymentByIdShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubData();
-        Payment payment = paymentDao.getPayment(1);
+        Payment payment = paymentDao.get(1);
         payment.setServicePaymentId(2);
         paymentDao.update(payment);
-        assertEquals(paymentDao.getPayment(1).getSubscriberId(), 1);
+        assertEquals(paymentDao.get(1).getSubscriberId(), 1);
     }
 
     @Test
     public void deletePaymentByIdCorrectServiceCountTest() throws SQLException {
         insertStubData();
         paymentDao.delete(1);
-        assertEquals(paymentDao.getAllPayments().size(), 2);
+        assertEquals(paymentDao.getAll().size(), 2);
     }
 
     @Test
     public void deletePaymentByIdShouldDeleteCorrectDataTest() throws SQLException {
         insertStubData();
         paymentDao.delete(1);
-        assertEquals(paymentDao.getPayment(1), null);
+        assertEquals(paymentDao.get(1), null);
     }
 
     @Test

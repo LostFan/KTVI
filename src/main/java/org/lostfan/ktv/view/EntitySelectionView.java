@@ -1,11 +1,10 @@
 package org.lostfan.ktv.view;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -15,84 +14,80 @@ import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.view.model.EntitySelectionModel;
 import org.lostfan.ktv.view.model.EntityTableModel;
 
-public class EntityTableView {
+public class EntitySelectionView<T> {
 
     private class ModelObserver implements Observer {
         @Override
         public void update(Object args) {
-            EntityTableView.this.revalidate();
+            EntitySelectionView.this.revalidate();
         }
     }
 
+    public static final int WIDTH = 750;
+    public static final int HEIGHT = 500;
+
+    private JDialog frame;
     private JPanel contentPanel;
     private JTable table;
     private JScrollPane tableScrollPane;
-    private JButton findButton;
-    private JButton addButton;
-    private JButton changeButton;
-    private JButton deleteButton;
+    private JButton cancelButton;
+    private JButton chooseButton;
+
+    private Entity selectedEntity = null;
+
+
+    private ViewActionListener chooseActionListener;
 
     private ModelObserver modelObserver;
 
     private BaseEntityModel model;
 
-    private ViewActionListener findActionListener;
-    private ViewActionListener addActionListener;
-    private ViewActionListener changeActionListener;
-    private ViewActionListener deleteActionListener;
-
-    public EntityTableView(BaseEntityModel<? extends Entity> model) {
+    public EntitySelectionView(BaseEntityModel model) {
         this.model = model;
 
-        this.table = new JTable(new EntityTableModel<>(model));
+        this.frame = new JDialog(new JFrame(), getString("buttons.search") + ": " +
+                ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()), true);
+        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        this.table = new JTable(new EntitySelectionModel<>(model));
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         this.table.setAutoCreateRowSorter(true);
         this.table.setFillsViewportHeight(true);
+
         this.table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                EntityTableView view = EntityTableView.this;
+                EntitySelectionView view = EntitySelectionView.this;
                 // Dbl Click at the table row
-                if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e) && view.changeActionListener != null) {
-                    view.changeActionListener.actionPerformed(EntityTableView.this.table.convertRowIndexToModel(view.table.getSelectedRow()));
+                if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
+                    selectedEntity = (Entity) model.getList().get(EntitySelectionView.this.table.convertRowIndexToModel(EntitySelectionView.this.getSelectedIndex()));
+                    frame.setVisible(false);
                 }
             }
         });
 
-        this.findButton = new JButton(getString("buttons.find"));
-        this.findButton.addActionListener(e -> {
-            if (this.findActionListener != null) {
-                this.findActionListener.actionPerformed(null);
+
+        this.chooseButton = new JButton(getString("buttons.choose"));
+        this.chooseButton.addActionListener(e -> {
+            if (EntitySelectionView.this.getSelectedIndex() != -1) {
+                selectedEntity = (Entity) model.getList().get(EntitySelectionView.this.table.convertRowIndexToModel(EntitySelectionView.this.getSelectedIndex()));
+                frame.setVisible(false);
             }
         });
 
-        this.addButton = new JButton(getString("buttons.add"));
-        this.addButton.addActionListener(e -> {
-            if (this.addActionListener != null) {
-                this.addActionListener.actionPerformed(null);
-            }
+        this.cancelButton = new JButton(getString("buttons.cancel"));
+        this.cancelButton.addActionListener(e -> {
+                frame.setVisible(false);
         });
 
-        this.changeButton = new JButton(getString("buttons.changeSelected"));
-        this.changeButton.addActionListener(e -> {
-            int selectedRow = this.table.getSelectedRow();
-            if (selectedRow != -1 && this.changeActionListener != null) {
-                this.changeActionListener.actionPerformed(this.table.convertRowIndexToModel(selectedRow));
-            }
-        });
-
-        this.deleteButton = new JButton(getString("buttons.delete"));
-        this.deleteButton.addActionListener(e -> {
-            int[] selectedRows = this.table.getSelectedRows();
-            if (selectedRows.length != 0 && confirmDeletion() && this.deleteActionListener != null) {
-                List<Integer> selectedIndexes = IntStream.of(selectedRows).boxed().collect(Collectors.toList());
-                this.deleteActionListener.actionPerformed(selectedIndexes);
-            }
-        });
 
         buildLayout();
+
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
 
         this.modelObserver = new ModelObserver();
 
@@ -100,6 +95,15 @@ public class EntityTableView {
     }
 
     private void buildLayout() {
+
+        frame.setSize(new Dimension(WIDTH, HEIGHT));
+        frame.setLocationRelativeTo(null);
+
+        frame.setLayout(new BorderLayout(10, 10));
+        frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        frame.setLayout(new BorderLayout());
+//        new EntitySelectionController(model, this);
         this.contentPanel = new JPanel(new BorderLayout(10, 10));
 
         // ID column values should be aligned to the left;
@@ -117,14 +121,19 @@ public class EntityTableView {
         JPanel rightPanelInner = new JPanel(new GridLayout(4, 1, 0, 10));
         rightPanel.add(rightPanelInner);
 
-        rightPanelInner.add(this.findButton);
-        rightPanelInner.add(this.addButton);
-        rightPanelInner.add(this.changeButton);
-        rightPanelInner.add(this.deleteButton);
+        rightPanelInner.add(this.chooseButton);
+        rightPanelInner.add(this.cancelButton);
+
+
+        frame.add(this.contentPanel, BorderLayout.CENTER);
     }
 
     public int getSelectedIndex() {
         return this.table.getSelectedRow();
+    }
+
+    public Entity getSelectedEntity() {
+        return this.selectedEntity;
     }
 
     public int[] getSelectedIndexes() {
@@ -136,7 +145,7 @@ public class EntityTableView {
         return this.contentPanel;
     }
 
-    private boolean confirmDeletion() {
+    public boolean isConfirm() {
         int optionType = JOptionPane.OK_CANCEL_OPTION;
         int messageType = JOptionPane.QUESTION_MESSAGE;
         Object[] selValues = {ResourceBundles.getGuiBundle().getString("buttons.yes"),
@@ -151,12 +160,12 @@ public class EntityTableView {
         return result == 0 ? true : false;
     }
 
-    public void setModel(BaseEntityModel<? extends Entity> model) {
+    public void setModel(BaseEntityModel model) {
         this.model.removeObserver(modelObserver);
         this.model = model;
         model.addObserver(this.modelObserver);
 
-        this.table.setModel(new EntityTableModel<>(model));
+        this.table.setModel(new EntityTableModel(model));
         this.tableScrollPane.setViewportView(this.table);
 
         revalidate();
@@ -174,27 +183,22 @@ public class EntityTableView {
             }
         }
     }
-
     private void revalidate() {
-        addStringActionTableCellEditorToColumns();
+//        addStringActionTableCellEditorToColumns();
         this.contentPanel.invalidate();
         this.contentPanel.repaint();
     }
 
-    public void setFindActionListener(ViewActionListener findActionListener) {
-        this.findActionListener = findActionListener;
+    public void setChooseActionListener(ViewActionListener chooseActionListener) {
+        this.chooseActionListener = chooseActionListener;
     }
 
-    public void setAddActionListener(ViewActionListener addActionListener) {
-        this.addActionListener = addActionListener;
+    public void addCancelActionListener(ActionListener listener) {
+        this.cancelButton.addActionListener(listener);
     }
 
-    public void setChangeActionListener(ViewActionListener changeActionListener) {
-        this.changeActionListener = changeActionListener;
-    }
-
-    public void setDeleteActionListener(ViewActionListener deleteActionListener) {
-        this.deleteActionListener = deleteActionListener;
+    public void addDoubleClickListener(MouseListener listener) {
+        this.table.addMouseListener(listener);
     }
 
     private String getString(String key) {

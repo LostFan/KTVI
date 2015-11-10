@@ -11,6 +11,8 @@ public interface EntityModel<T extends Entity> {
 
     List<T> getListByForeignKey(int foreignKey);
 
+    T getEntity(int id);
+
     String getEntityNameKey();
 
     String getEntityName();

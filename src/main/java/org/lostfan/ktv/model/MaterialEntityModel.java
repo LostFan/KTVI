@@ -14,7 +14,6 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
 
     private List<EntityField<Material, ?>> fields;
 
-    private MaterialDAO dao;
     private List<Material> materials;
 
     public MaterialEntityModel() {

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.lostfan.ktv.dao.DAOFactory;
+import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.domain.Service;
 
@@ -14,7 +15,6 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
 
     private List<EntityField<Service, ?>> fields;
 
-    private ServiceDAO dao;
     private List<Service> services;
 
     public ServiceEntityModel() {

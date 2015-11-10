@@ -6,11 +6,11 @@ import java.util.List;
 import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.domain.TariffPrice;
 
-public interface TariffDAO {
+public interface TariffDAO extends EntityDAO<Tariff> {
 
-    List<Tariff> getAllTariffs();
+    List<Tariff> getAll();
 
-    Tariff getTariff(int id);
+    Tariff get(int id);
 
     List<Tariff> getTariffsByName(String name);
 

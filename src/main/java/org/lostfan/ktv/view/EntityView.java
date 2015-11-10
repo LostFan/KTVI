@@ -3,18 +3,22 @@ package org.lostfan.ktv.view;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
+import org.lostfan.ktv.controller.EntityOneController;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.*;
-import org.lostfan.ktv.utils.DateLabelFormatter;
-import org.lostfan.ktv.utils.DefaultContextMenu;
-import org.lostfan.ktv.utils.ResourceBundles;
-import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.utils.*;
+import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.view.components.EntityComboBox;
 import org.lostfan.ktv.view.components.EntityComboBoxFactory;
+import org.lostfan.ktv.view.components.EntityFactory;
+import org.lostfan.ktv.view.components.EntityModelFactory;
+import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
@@ -29,6 +33,8 @@ public class EntityView {
         private JLabel label;
         private JComponent jComponent;
         private EntityField entityField;
+        private final static int COMBOBOX_INNER_POSITION = 0;
+        private JPanel jPanel = new JPanel(new BorderLayout());
 
         public LabelFieldPanel(EntityField entityField) {
             this.entityField = entityField;
@@ -67,7 +73,45 @@ public class EntityView {
                         value = comboBox.getSelectedName();
                         ((JTextField)((comboBox).getEditor().getEditorComponent())).setText((String) value);
                     }
-                    this.jComponent = comboBox;
+                    jPanel.add(comboBox, BorderLayout.WEST);
+                    JButton tableButton = new JButton("...");
+                    tableButton.setPreferredSize(new Dimension(20, 10));
+                    tableButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityField.getType());
+                            if (entitySelectionView.getSelectedEntity() != null) {
+                                comboBox.setSelectedId(entitySelectionView.getSelectedEntity().getId());
+                                ((JTextField) ((comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.getSelectedEntity().getName());
+                                EntityView.this.frame.invalidate();
+                                EntityView.this.frame.repaint();
+                            }
+                        }
+                    });
+                    jPanel.add(tableButton, BorderLayout.CENTER);
+
+                    JButton entityButton = new JButton();
+                    entityButton.setPreferredSize(new Dimension(20, 10));
+                    URL url = EntitySearchView.class.getClassLoader().getResource("images/search.png");
+                    if(url != null) {
+                        ImageIcon icon = new ImageIcon(url);
+                        Image image = icon.getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
+                        icon = new ImageIcon(image);
+                        entityButton.setIcon(icon);
+                    }
+
+                    entityButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            EntityModel entityModel = EntityModelFactory.createForm(entityField.getType());
+                            EntityView entityView = new EntityView(entityModel, entityModel.getEntity(comboBox.getSelectedId()));
+                            EntityOneController entityOneController = new EntityOneController(entityModel, entityView);
+                            entityView.changeActionListener.actionPerformed(null);
+                        }
+                    });
+
+                    jPanel.add(entityButton, BorderLayout.EAST);
+                    this.jComponent = jPanel;
             }
 
             this.label = new JLabel(ResourceBundles.getEntityBundle().getString(entityField.getTitleKey()), SwingConstants.LEFT);
@@ -85,7 +129,7 @@ public class EntityView {
             }
 
             if(this.entityField.getType().isEntityClass()) {
-                contextMenu.add((JTextField) ((JComboBox)this.jComponent).getEditor().getEditorComponent());
+                contextMenu.add((JTextField) ((JComboBox)this.jComponent.getComponent(COMBOBOX_INNER_POSITION)).getEditor().getEditorComponent());
             }
             add(this.jComponent, c);
         }
@@ -105,7 +149,7 @@ public class EntityView {
                     java.sql.Date selectedDate = new java.sql.Date(((Date) ((JDatePickerImpl) this.jComponent).getModel().getValue()).getTime());
                     return selectedDate.toLocalDate();
                 default:
-                    return  ((EntityComboBox) this.jComponent).getSelectedId();
+                    return  ((EntityComboBox) this.jComponent.getComponent(COMBOBOX_INNER_POSITION)).getSelectedId();
             }
         }
     }
@@ -121,6 +165,7 @@ public class EntityView {
 
     private ViewActionListener addActionListener;
     private ViewActionListener cancelActionListener;
+    private ViewActionListener changeActionListener;
 
     private Entity entity;
 
@@ -211,6 +256,10 @@ public class EntityView {
 
     public void setCancelActionListener(ViewActionListener cancelActionListener) {
         this.cancelActionListener = cancelActionListener;
+    }
+
+    public void setChangeActionListener(ViewActionListener changeActionListener) {
+        this.changeActionListener = changeActionListener;
     }
 
     private String getString(String key) {

@@ -44,25 +44,25 @@ public class HsqldbTariffDAOTest {
 
     @Test
     public void emptyTariffsTest() {
-        assertEquals(tariffDAO.getAllTariffs().size(), 0);
+        assertEquals(tariffDAO.getAll().size(), 0);
     }
 
     @Test
     public void getAllServicesReturnsCorrectTariffCountTest() throws SQLException {
         insertStubDataTariffs();
-        assertEquals(tariffDAO.getAllTariffs().size(), 3);
+        assertEquals(tariffDAO.getAll().size(), 3);
     }
 
     @Test
     public void getAllServicesReturnsAllExistingTariffsTest() throws SQLException {
         insertStubDataTariffs();
-        assertEquals(tariffDAO.getAllTariffs().get(0).getId().intValue(), 1);
+        assertEquals(tariffDAO.getAll().get(0).getId().intValue(), 1);
     }
 
     @Test
     public void getExistingTariffByIdTest() throws SQLException {
         insertStubDataTariffs();
-        assertEquals(tariffDAO.getTariff(1).getId().intValue(), 1);
+        assertEquals(tariffDAO.get(1).getId().intValue(), 1);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class HsqldbTariffDAOTest {
         tariff.setChannels("30");
         tariff.setName("New");
         tariffDAO.save(tariff);
-        assertEquals(tariffDAO.getAllTariffs().size(), 4);
+        assertEquals(tariffDAO.getAll().size(), 4);
     }
 
     @Test
@@ -82,8 +82,8 @@ public class HsqldbTariffDAOTest {
         tariff.setChannels("30");
         tariff.setName("New");
         tariffDAO.save(tariff);
-        assertEquals(tariffDAO.getAllTariffs().get(3).getChannels(), "30");
-        assertEquals(tariffDAO.getAllTariffs().get(3).getName(), "New");
+        assertEquals(tariffDAO.getAll().get(3).getChannels(), "30");
+        assertEquals(tariffDAO.getAll().get(3).getName(), "New");
     }
 
     @Test
@@ -93,48 +93,48 @@ public class HsqldbTariffDAOTest {
         tariff.setChannels("30");
         tariff.setName("New");
         tariffDAO.save(tariff);
-        assertEquals(tariffDAO.getAllTariffs().get(3).getId().intValue(), 4);
+        assertEquals(tariffDAO.getAll().get(3).getId().intValue(), 4);
     }
 
     @Test
     public void updateExistingTariffByIdShouldMatchUpdatedValuesTest() throws SQLException {
         insertStubDataTariffs();
-        Tariff tariff = tariffDAO.getTariff(1);
+        Tariff tariff = tariffDAO.get(1);
         tariff.setChannels("21");
         tariffDAO.update(tariff);
-        assertEquals(tariffDAO.getTariff(1).getChannels(), "21");
+        assertEquals(tariffDAO.get(1).getChannels(), "21");
     }
 
     @Test
     public void updateExistingTariffByIdCorrectServiceCountTest() throws SQLException {
         insertStubDataTariffs();
-        Tariff tariff = tariffDAO.getTariff(1);
+        Tariff tariff = tariffDAO.get(1);
         tariff.setChannels("21");
         tariffDAO.update(tariff);
-        assertEquals(tariffDAO.getAllTariffs().size(), 3);
+        assertEquals(tariffDAO.getAll().size(), 3);
     }
 
     @Test
     public void updateExistingTariffByIdShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubDataTariffs();
-        Tariff tariff = tariffDAO.getTariff(1);
+        Tariff tariff = tariffDAO.get(1);
         tariff.setChannels("21");
         tariffDAO.update(tariff);
-        assertEquals(tariffDAO.getTariff(1).getName(), "Uno");
+        assertEquals(tariffDAO.get(1).getName(), "Uno");
     }
 
     @Test
     public void deleteTariffByIdCorrectServiceCountTest() throws SQLException {
         insertStubDataTariffs();
         tariffDAO.delete(1);
-        assertEquals(tariffDAO.getAllTariffs().size(), 2);
+        assertEquals(tariffDAO.getAll().size(), 2);
     }
 
     @Test
     public void deleteTariffByIdShouldDeleteCorrectDataTest() throws SQLException {
         insertStubDataTariffs();
         tariffDAO.delete(1);
-        assertEquals(tariffDAO.getTariff(1), null);
+        assertEquals(tariffDAO.get(1), null);
     }
 
     @Test

@@ -6,6 +6,7 @@ import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.view.model.EntityActionTableCellEditor;
 import org.lostfan.ktv.view.model.EntityInnerTableModel;
 import org.lostfan.ktv.view.model.EntityTableModel;
 
@@ -140,12 +141,12 @@ public class EntityInnerTableView<T> {
         editor.setClickCountToStart(1);
         for (int columnIndex=0;columnIndex< table.getColumnCount(); columnIndex++) {
             if(((EntityField)this.model.getFields().get(columnIndex)).getType().isEntityClass()) {
-//                this.table.getColumn(table.getColumnName(columnIndex)).setCellEditor(new EntityActionTableCellEditor(editor));
+                this.table.getColumn(table.getColumnName(columnIndex)).setCellEditor(new EntityActionTableCellEditor(editor));
             }
         }
     }
     private void revalidate() {
-//        addStringActionTableCellEditorToColumns();
+        addStringActionTableCellEditorToColumns();
         this.contentPanel.invalidate();
         this.contentPanel.repaint();
     }

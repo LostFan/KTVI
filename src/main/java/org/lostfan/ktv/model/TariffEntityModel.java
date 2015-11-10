@@ -14,7 +14,6 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
 
     private List<EntityField<Tariff, ?>> fields;
 
-    private TariffDAO dao;
     private List<Tariff> tariffs;
 
     public TariffEntityModel() {
@@ -35,7 +34,7 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
         tariff.setName((String) collect.get("tariff.name"));
         if(collect.get("tariff.id") != null) {
             Integer tariffId = (Integer) collect.get("tariff.id");
-            if (this.dao.getTariff(tariffId) != null) {
+            if (this.dao.get(tariffId) != null) {
                 tariff.setId((Integer) collect.get("tariff.id"));
                 this.dao.update(tariff);
             } else {
@@ -44,7 +43,7 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
         } else {
             this.dao.save(tariff);
         }
-        this.tariffs = this.dao.getAllTariffs();
+        this.tariffs = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -54,7 +53,7 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
             int id = getList().get(rowNumber).getId();
             this.dao.delete(id);
         }
-        this.tariffs = this.dao.getAllTariffs();
+        this.tariffs = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -78,7 +77,7 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
 
     public List<Tariff> getList() {
         if (this.tariffs == null) {
-            this.tariffs = this.dao.getAllTariffs();
+            this.tariffs = this.dao.getAll();
         }
 
         return this.tariffs;
@@ -98,7 +97,7 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
     public void setSearchCriteria(List<FieldSearchCriterion<Tariff>> criteria) {
         super.setSearchCriteria(criteria);
 
-        this.tariffs = this.dao.getAllTariffs();
+        this.tariffs = this.dao.getAll();
         Stream<Tariff> stream = this.tariffs.stream();
         for (FieldSearchCriterion<Tariff> tariffFieldSearchCriterion : criteria) {
             stream = stream.filter(tariffFieldSearchCriterion.buildPredicate());

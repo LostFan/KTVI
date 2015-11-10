@@ -14,7 +14,6 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
 
     private List<EntityField<MaterialConsumption, ?>> fields;
 
-    private MaterialConsumptionDAO dao;
     private List<MaterialConsumption> materialConsumptions;
 
     public MaterialConsumptionEntityModel() {
@@ -88,7 +87,7 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
     @Override
     public List<MaterialConsumption> getListByForeignKey(int foreignKey) {
         if (this.materialConsumptions == null) {
-            this.materialConsumptions = this.dao.getMaterialConsumptionsByRenderedServiceId(foreignKey);
+            this.materialConsumptions = ((MaterialConsumptionDAO)this.dao).getMaterialConsumptionsByRenderedServiceId(foreignKey);
         }
 
         return this.materialConsumptions;

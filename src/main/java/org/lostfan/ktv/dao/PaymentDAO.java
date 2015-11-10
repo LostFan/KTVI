@@ -7,11 +7,11 @@ import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.domain.PaymentType;
 import org.lostfan.ktv.domain.Subscriber;
 
-public interface PaymentDAO {
+public interface PaymentDAO extends EntityDAO<Payment> {
 
-    List<Payment> getAllPayments();
+    List<Payment> getAll();
 
-    Payment getPayment(int id);
+    Payment get(int id);
 
     List<Payment> getPaymentsByDate(LocalDate date);
 

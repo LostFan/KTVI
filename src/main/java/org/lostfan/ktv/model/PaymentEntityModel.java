@@ -15,7 +15,6 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
 
     private List<EntityField<Payment, ?>> fields;
 
-    private PaymentDAO dao;
     private List<Payment> payments;
 
     public PaymentEntityModel() {
@@ -41,7 +40,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         payment.setServicePaymentId((Integer) collect.get("service"));
         if(collect.get("payment.id") != null) {
             Integer paymentId = (Integer) collect.get("payment.id");
-            if (this.dao.getPayment(paymentId) != null) {
+            if (this.dao.get(paymentId) != null) {
                 payment.setId((Integer) collect.get("payment.id"));
                 this.dao.update(payment);
             } else {
@@ -50,7 +49,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         } else {
             this.dao.save(payment);
         }
-        this.payments = this.dao.getAllPayments();
+        this.payments = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -60,7 +59,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
             int id = getList().get(rowNumber).getId();
             this.dao.delete(id);
         }
-        this.payments = this.dao.getAllPayments();
+        this.payments = this.dao.getAll();
         this.notifyObservers(null);
     }
 
@@ -84,7 +83,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
 
     public List<Payment> getList() {
         if (this.payments == null) {
-            this.payments = this.dao.getAllPayments();
+            this.payments = this.dao.getAll();
         }
 
         return this.payments;
@@ -104,7 +103,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     public void setSearchCriteria(List<FieldSearchCriterion<Payment>> criteria) {
         super.setSearchCriteria(criteria);
 
-        this.payments = this.dao.getAllPayments();
+        this.payments = this.dao.getAll();
         Stream<Payment> stream = this.payments.stream();
         for (FieldSearchCriterion<Payment> paymentFieldSearchCriterion : criteria) {
             stream = stream.filter(paymentFieldSearchCriterion.buildPredicate());

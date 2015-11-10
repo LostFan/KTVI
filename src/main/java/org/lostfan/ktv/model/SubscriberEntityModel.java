@@ -14,7 +14,6 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
     private List<EntityField<Subscriber, ?>> fields;
 
-    private SubscriberDAO dao;
     private List<Subscriber> subscribers;
 
     public SubscriberEntityModel() {

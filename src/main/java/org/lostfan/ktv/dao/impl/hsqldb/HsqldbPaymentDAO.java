@@ -21,7 +21,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         return ConnectionManager.getManager().getConnection();
     }
 
-    public List<Payment> getAllPayments() {
+    public List<Payment> getAll() {
         List<Payment> payments = new ArrayList<>();
         try {
             Statement statement = getConnection().createStatement();
@@ -44,7 +44,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         return payments;
     }
 
-    public Payment getPayment(int id) {
+    public Payment get(int id) {
         Payment payment = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"payment\" where \"id\" = ?");
@@ -141,7 +141,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
     }
 
     public void update(Payment payment) {
-        if(getPayment(payment.getId()) != null) {
+        if(get(payment.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"payment\" set \"subscriber_id\" = ?, \"service_id\" = ?, \"payment_type_id\" = ?, \"price\" = ?, \"date\" = ? where \"id\" = ?");
@@ -164,7 +164,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
     }
 
     public void delete(int id) {
-        if(getPayment(id) != null) {
+        if(get(id) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "DELETE FROM  \"payment\" where \"id\" = ?");

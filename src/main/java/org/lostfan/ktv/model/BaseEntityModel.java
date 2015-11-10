@@ -1,5 +1,6 @@
 package org.lostfan.ktv.model;
 
+import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.utils.Observable;
 
@@ -10,6 +11,8 @@ import java.util.function.Function;
 public abstract class BaseEntityModel<T extends Entity> extends Observable implements EntityModel<T> {
 
     private List<FieldSearchCriterion<T>> searchCriteria;
+
+    protected EntityDAO<T> dao;
 
     public BaseEntityModel() {
         this.searchCriteria = new ArrayList<>();
@@ -28,6 +31,11 @@ public abstract class BaseEntityModel<T extends Entity> extends Observable imple
     @Override
     public List<EntityModel> getTableModels() {
         return null;
+    }
+
+    @Override
+    public T getEntity(int id) {
+        return dao != null ? dao.get(id) : null;
     }
 
 }

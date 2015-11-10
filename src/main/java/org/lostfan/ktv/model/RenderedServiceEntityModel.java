@@ -15,7 +15,6 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     private List<EntityField<RenderedService, ?>> fields;
 
-    private RenderedServiceDAO dao;
     private List<RenderedService> renderedServices;
 
     public RenderedServiceEntityModel() {
