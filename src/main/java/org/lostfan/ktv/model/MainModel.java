@@ -1,7 +1,7 @@
 package org.lostfan.ktv.model;
 
+import org.lostfan.ktv.model.entity.*;
 import org.lostfan.ktv.utils.BaseObservable;
-import org.lostfan.ktv.utils.Observable;
 
 import javax.swing.*;
 import java.util.ArrayList;

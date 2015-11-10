@@ -1,7 +1,7 @@
 package org.lostfan.ktv.view.model;
 
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.utils.ResourceBundles;
 

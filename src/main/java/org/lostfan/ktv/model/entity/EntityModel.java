@@ -1,10 +1,12 @@
-package org.lostfan.ktv.model;
+package org.lostfan.ktv.model.entity;
 
 import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.model.EntityField;
+import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.utils.Observable;
+import org.lostfan.ktv.validation.Validator;
 
 import java.util.List;
-import java.util.Map;
 
 public interface EntityModel<T extends Entity> extends Observable {
 
@@ -24,7 +26,9 @@ public interface EntityModel<T extends Entity> extends Observable {
 
     void setSearchCriteria(List<FieldSearchCriterion<T>> criteria);
 
-    void saveOrEditEntity(Map<String, Object> fieldValues);
+    void save(T entity);
+
+    T createNewEntity();
 
     void deleteEntityByRow(List<Integer> rowNumbers);
 
@@ -33,5 +37,7 @@ public interface EntityModel<T extends Entity> extends Observable {
     Class getEntityClass();
 
     List<EntityModel> getTableModels();
+
+    Validator<T> getValidator();
 
 }

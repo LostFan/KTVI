@@ -1,14 +1,9 @@
 package org.lostfan.ktv.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.EntityModel;
-import org.lostfan.ktv.model.FieldSearchCriterion;
+import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
-import org.lostfan.ktv.view.EntitySearchView;
-import org.lostfan.ktv.view.EntityTableView;
+import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.EntityView;
 
 public class EntityOneController {
@@ -21,7 +16,6 @@ public class EntityOneController {
         this.view = view;
 
         this.view.setChangeActionListener(new ChangeActionListener());
-
     }
 
     public void setModel(EntityModel model) {
@@ -33,9 +27,16 @@ public class EntityOneController {
 
         @Override
         public void actionPerformed(Object args) {
+
             view.setAddActionListener(args_ -> {
-                Map<String, Object> values = view.getValues();
-                model.saveOrEditEntity(values);
+                Entity entity = view.getEntity();
+                ValidationResult result = model.getValidator().validate(entity);
+                if (result.hasErrors()) {
+                    view.showErrors(result.getErrors());
+                    return;
+                }
+
+                model.save(entity);
             });
         }
     }

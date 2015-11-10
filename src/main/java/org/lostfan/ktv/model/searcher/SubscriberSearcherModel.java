@@ -1,6 +1,5 @@
-package org.lostfan.ktv.model;
+package org.lostfan.ktv.model.searcher;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.lostfan.ktv.dao.DAOFactory;

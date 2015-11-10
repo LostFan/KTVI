@@ -1,12 +1,12 @@
 package org.lostfan.ktv.view.components;
 
-import org.lostfan.ktv.model.BaseEntityModel;
+import org.lostfan.ktv.model.entity.BaseEntityModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
-import org.lostfan.ktv.model.MaterialEntityModel;
-import org.lostfan.ktv.model.RenderedServiceEntityModel;
-import org.lostfan.ktv.model.ServiceEntityModel;
-import org.lostfan.ktv.model.StreetEntityModel;
-import org.lostfan.ktv.model.SubscriberEntityModel;
+import org.lostfan.ktv.model.entity.MaterialEntityModel;
+import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
+import org.lostfan.ktv.model.entity.ServiceEntityModel;
+import org.lostfan.ktv.model.entity.StreetEntityModel;
+import org.lostfan.ktv.model.entity.SubscriberEntityModel;
 import org.lostfan.ktv.view.EntitySelectionView;
 
 public class EntitySelectionFactory {

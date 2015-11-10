@@ -1,6 +1,6 @@
 package org.lostfan.ktv.view;
 
-import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.utils.ResourceBundles;
 

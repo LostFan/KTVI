@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 
 import javax.swing.*;
 
-import org.lostfan.ktv.model.EntitySearcherModel;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 
 public class EntityComboBoxController {
 

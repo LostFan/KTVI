@@ -1,6 +1,6 @@
 package org.lostfan.ktv.controller;
 
-import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.EntityInnerTableView;
 
@@ -23,7 +23,7 @@ public class EntityInnerTableController {
 //            EntityView entityView = new EntityView(model);
 //            entityView.addAddActionListener(e1 -> {
 //                Map<String, Object> values = entityView.getValues();
-//                model.saveOrEditEntity(values);
+//                model.saveOrUpdateEntity(values);
 //            });
         }
     }

@@ -3,7 +3,7 @@ package org.lostfan.ktv.view.components;
 import java.awt.event.*;
 import javax.swing.*;
 
-import org.lostfan.ktv.model.EntitySearcherModel;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.utils.Observer;
 
 public class EntityComboBox extends JComboBox<String> {

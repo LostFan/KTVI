@@ -6,11 +6,11 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.controller.EntityOneController;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.*;
+import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.*;
-import org.lostfan.ktv.utils.Observer;
+import org.lostfan.ktv.validation.Error;
 import org.lostfan.ktv.view.components.EntityComboBox;
 import org.lostfan.ktv.view.components.EntityComboBoxFactory;
-import org.lostfan.ktv.view.components.EntityFactory;
 import org.lostfan.ktv.view.components.EntityModelFactory;
 import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
@@ -152,6 +152,10 @@ public class EntityView {
                     return  ((EntityComboBox) this.jComponent.getComponent(COMBOBOX_INNER_POSITION)).getSelectedId();
             }
         }
+
+        public EntityField getEntityField() {
+            return this.entityField;
+        }
     }
 
     public static final int WIDTH = 1000;
@@ -183,7 +187,6 @@ public class EntityView {
             if (this.addActionListener != null) {
                 this.addActionListener.actionPerformed(null);
             }
-            frame.setVisible(false);
         });
 
         this.cancelButton = new JButton(getString("buttons.cancel"));
@@ -191,7 +194,6 @@ public class EntityView {
             if (this.cancelActionListener != null) {
                 this.cancelActionListener.actionPerformed(null);
             }
-            frame.setVisible(false);
         });
 
         labelFieldPanels = new ArrayList<>();
@@ -241,13 +243,17 @@ public class EntityView {
 
     }
 
-    public Map<String, Object> getValues() {
-        Map<String, Object> map = new HashMap<>();
-        for (LabelFieldPanel labelFieldPanel : this.labelFieldPanels) {
-            map.put(labelFieldPanel.entityField.getTitleKey(), labelFieldPanel.getValue());
+    public Entity getEntity() {
+        Entity entity = this.entity;
+        if (entity == null) {
+            entity = this.model.createNewEntity();
         }
 
-        return map;
+        for (LabelFieldPanel labelFieldPanel : this.labelFieldPanels) {
+            labelFieldPanel.getEntityField().set(entity, labelFieldPanel.getValue());
+        }
+
+        return entity;
     }
 
     public void setAddActionListener(ViewActionListener addActionListener) {
@@ -258,8 +264,29 @@ public class EntityView {
         this.cancelActionListener = cancelActionListener;
     }
 
+    public void showErrors(List<org.lostfan.ktv.validation.Error> errors) {
+        // TODO: add appropriate implementation of visualising the errors
+        for (Error error : errors) {
+            String message = error.getField() != null ? ResourceBundles.getEntityBundle().getString(error.getField()) + " " : "";
+            if (error.getMessage().equals("empty")) {
+                message += "should not be empty";
+            } else {
+                message += error.getMessage();
+            }
+            JOptionPane.showMessageDialog(this.frame, message, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public void setChangeActionListener(ViewActionListener changeActionListener) {
         this.changeActionListener = changeActionListener;
+    }
+
+    public void hide() {
+        this.frame.setVisible(false);
+    }
+
+    public void show() {
+        this.frame.setVisible(true);
     }
 
     private String getString(String key) {

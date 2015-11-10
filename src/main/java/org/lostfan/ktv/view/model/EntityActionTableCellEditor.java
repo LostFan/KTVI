@@ -4,7 +4,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 
-import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.view.EntityView;
 
 public class EntityActionTableCellEditor extends ActionTableCellEditor {

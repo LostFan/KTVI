@@ -2,7 +2,7 @@ package org.lostfan.ktv.view;
 
 import org.lostfan.ktv.controller.EntityInnerTableController;
 import org.lostfan.ktv.model.EntityField;
-import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;

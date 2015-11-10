@@ -1,4 +1,4 @@
-package org.lostfan.ktv.model;
+package org.lostfan.ktv.model.searcher;
 
 import java.util.List;
 
@@ -10,7 +10,6 @@ public class ServiceSearcherModel extends EntitySearcherModel<Service> {
 
     private ServiceDAO dao;
     private List<Service> services;
-
 
     public ServiceSearcherModel() {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();

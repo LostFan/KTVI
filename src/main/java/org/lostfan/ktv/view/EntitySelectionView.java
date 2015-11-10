@@ -9,7 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.BaseEntityModel;
+import org.lostfan.ktv.model.entity.BaseEntityModel;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;

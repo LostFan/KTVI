@@ -2,14 +2,14 @@ package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FieldSearchCriterion;
-import org.lostfan.ktv.model.EntityModel;
+import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
 
 import java.util.List;
-import java.util.Map;
 
 public class EntityController {
 
@@ -60,8 +60,14 @@ public class EntityController {
         public void actionPerformed(Object args) {
             EntityView entityView = new EntityView(model);
             entityView.setAddActionListener(args_ -> {
-                Map<String, Object> values = entityView.getValues();
-                model.saveOrEditEntity(values);
+                Entity entity = entityView.getEntity();
+                ValidationResult result = model.getValidator().validate(entity);
+                if (result.hasErrors()) {
+                    entityView.showErrors(result.getErrors());
+                    return;
+                }
+                model.save(entity);
+                entityView.hide();
             });
         }
     }
@@ -73,8 +79,14 @@ public class EntityController {
             int selectedIndex = (Integer) args;
             EntityView entityView = new EntityView(model, (Entity) model.getList().get(selectedIndex));
             entityView.setAddActionListener(args_ -> {
-                Map<String, Object> values = entityView.getValues();
-                model.saveOrEditEntity(values);
+                Entity entity = entityView.getEntity();
+                ValidationResult result = model.getValidator().validate(entity);
+                if (result.hasErrors()) {
+                    entityView.showErrors(result.getErrors());
+                    return;
+                }
+                model.save(entity);
+                entityView.hide();
             });
         }
     }

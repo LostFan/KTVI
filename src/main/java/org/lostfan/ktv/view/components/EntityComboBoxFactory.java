@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view.components;
 
 import org.lostfan.ktv.model.*;
+import org.lostfan.ktv.model.searcher.*;
 
 public class EntityComboBoxFactory {
 

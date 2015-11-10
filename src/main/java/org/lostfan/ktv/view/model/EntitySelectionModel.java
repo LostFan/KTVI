@@ -4,7 +4,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.BaseEntityModel;
+import org.lostfan.ktv.model.entity.BaseEntityModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.utils.ResourceBundles;
 

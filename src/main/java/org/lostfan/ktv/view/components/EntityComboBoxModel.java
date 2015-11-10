@@ -1,7 +1,7 @@
 package org.lostfan.ktv.view.components;
 
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.EntitySearcherModel;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

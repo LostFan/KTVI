@@ -1,4 +1,4 @@
-package org.lostfan.ktv.model;
+package org.lostfan.ktv.model.searcher;
 
 import java.util.List;
 
