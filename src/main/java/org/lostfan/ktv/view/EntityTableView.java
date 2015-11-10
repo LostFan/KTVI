@@ -2,7 +2,6 @@ package org.lostfan.ktv.view;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -10,8 +9,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.model.EntityField;
+import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
@@ -36,14 +35,14 @@ public class EntityTableView {
 
     private ModelObserver modelObserver;
 
-    private BaseEntityModel model;
+    private EntityModel model;
 
     private ViewActionListener findActionListener;
     private ViewActionListener addActionListener;
     private ViewActionListener changeActionListener;
     private ViewActionListener deleteActionListener;
 
-    public EntityTableView(BaseEntityModel<? extends Entity> model) {
+    public EntityTableView(EntityModel<? extends Entity> model) {
         this.model = model;
 
         this.table = new JTable(new EntityTableModel<>(model));
@@ -151,7 +150,7 @@ public class EntityTableView {
         return result == 0 ? true : false;
     }
 
-    public void setModel(BaseEntityModel<? extends Entity> model) {
+    public void setModel(EntityModel<? extends Entity> model) {
         this.model.removeObserver(modelObserver);
         this.model = model;
         model.addObserver(this.modelObserver);

@@ -1,7 +1,6 @@
 package org.lostfan.ktv.view.model;
 
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.BaseEntityModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.EntityModel;
 import org.lostfan.ktv.utils.ResourceBundles;
@@ -11,11 +10,11 @@ import javax.swing.table.TableModel;
 
 public class EntityInnerTableModel<T extends Entity> implements TableModel {
 
-    private BaseEntityModel<T> model;
+    private EntityModel<T> model;
     private Object foreignId;
     private int size = 0;
 
-    public EntityInnerTableModel(BaseEntityModel<T> model, Object foreignId) {
+    public EntityInnerTableModel(EntityModel<T> model, Object foreignId) {
 
         this.model = model;
         if(foreignId != null) {

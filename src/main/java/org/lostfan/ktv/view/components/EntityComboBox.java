@@ -6,7 +6,7 @@ import javax.swing.*;
 import org.lostfan.ktv.model.EntitySearcherModel;
 import org.lostfan.ktv.utils.Observer;
 
-public class EntityComboBox extends JComboBox{
+public class EntityComboBox extends JComboBox<String> {
 
     private class ModelObserver implements Observer {
         @Override
@@ -15,10 +15,8 @@ public class EntityComboBox extends JComboBox{
         }
     }
 
-    private JComboBox jComboBox;
     private JTextField textField;
     private EntitySearcherModel model;
-    private ModelObserver modelObserver;
     private EntityComboBoxModel entityComboBoxModel;
 
     EntityComboBox(EntitySearcherModel model) {
@@ -40,9 +38,8 @@ public class EntityComboBox extends JComboBox{
             }
         });
         this.setEditable(true);
-        this.modelObserver = new ModelObserver();
 
-        model.addObserver(this.modelObserver);
+        model.addObserver(new ModelObserver());
 
     }
 

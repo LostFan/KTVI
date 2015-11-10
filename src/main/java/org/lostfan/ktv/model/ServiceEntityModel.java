@@ -12,7 +12,7 @@ import org.lostfan.ktv.domain.Service;
 
 public class ServiceEntityModel extends BaseEntityModel<Service> {
 
-    private List<EntityField<Service, ?>> fields;
+    private List<EntityField> fields;
 
     private ServiceDAO dao;
     private List<Service> services;
@@ -21,13 +21,13 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
         this.dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("service.id", EntityFieldTypes.Integer, Service::getId, Service::setId));
-        this.fields.add(new EntityField<>("service.name", EntityFieldTypes.String, Service::getName, Service::setName));
-        this.fields.add(new EntityField<>("service.additional", EntityFieldTypes.Boolean, Service::isAdditionalService, Service::setAdditionalService));
+        this.fields.add(new EntityField("service.id", EntityFieldTypes.Integer, Service::getId, Service::setId));
+        this.fields.add(new EntityField("service.name", EntityFieldTypes.String, Service::getName, Service::setName));
+        this.fields.add(new EntityField("service.additional", EntityFieldTypes.Boolean, Service::isAdditionalService, Service::setAdditionalService));
     }
 
     @Override
-    public List<EntityField<Service, ?>> getFields() {
+    public List<EntityField> getFields() {
         return this.fields;
     }
 

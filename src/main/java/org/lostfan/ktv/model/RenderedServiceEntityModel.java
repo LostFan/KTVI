@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService> {
 
-    private List<EntityField<RenderedService, ?>> fields;
+    private List<EntityField> fields;
 
     private RenderedServiceDAO dao;
     private List<RenderedService> renderedServices;
@@ -23,11 +23,11 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         fields = new ArrayList<>();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId));
-        this.fields.add(new EntityField<>("renderedService.date", EntityFieldTypes.Date, RenderedService::getDate, RenderedService::setDate));
-        this.fields.add(new EntityField<>("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberId, RenderedService::setSubscriberId));
-        this.fields.add(new EntityField<>("service", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId));
-        this.fields.add(new EntityField<>("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
+        this.fields.add(new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId));
+        this.fields.add(new EntityField("renderedService.date", EntityFieldTypes.Date, RenderedService::getDate, RenderedService::setDate));
+        this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberId, RenderedService::setSubscriberId));
+        this.fields.add(new EntityField("service", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId));
+        this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
     }
 
     @Override
@@ -76,7 +76,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     @Override
-    public List<EntityField<RenderedService, ?>> getFields() {
+    public List<EntityField> getFields() {
         return this.fields;
     }
 

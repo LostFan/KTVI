@@ -12,7 +12,7 @@ import org.lostfan.ktv.domain.Tariff;
 
 public class TariffEntityModel extends BaseEntityModel<Tariff> {
 
-    private List<EntityField<Tariff, ?>> fields;
+    private List<EntityField> fields;
 
     private TariffDAO dao;
     private List<Tariff> tariffs;
@@ -23,9 +23,9 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
 
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("tariff.id", EntityFieldTypes.Integer, Tariff::getId, Tariff::setId));
-        this.fields.add(new EntityField<>("tariff.name", EntityFieldTypes.String, Tariff::getName, Tariff::setName));
-        this.fields.add(new EntityField<>("tariff.channels", EntityFieldTypes.String, Tariff::getChannels, Tariff::setChannels));
+        this.fields.add(new EntityField("tariff.id", EntityFieldTypes.Integer, Tariff::getId, Tariff::setId));
+        this.fields.add(new EntityField("tariff.name", EntityFieldTypes.String, Tariff::getName, Tariff::setName));
+        this.fields.add(new EntityField("tariff.channels", EntityFieldTypes.String, Tariff::getChannels, Tariff::setChannels));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
     }
 
     @Override
-    public List<EntityField<Tariff, ?>> getFields() {
+    public List<EntityField> getFields() {
         return this.fields;
     }
 

@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 
 public class FieldsComboBoxModel<E> implements ComboBoxModel<String> {
 
-    private List<EntityField<E, Object>> fields;
-    private Map<String, EntityField<E, Object>> titleFieldMap;
+    private List<EntityField> fields;
+    private Map<String, EntityField> titleFieldMap;
 
     public Object currentValue;
 
-    public FieldsComboBoxModel(List<EntityField<E, Object>> fields) {
+    public FieldsComboBoxModel(List<EntityField> fields) {
         this.fields = fields;
         this.titleFieldMap = this.fields.stream().collect(Collectors.toMap(
                 field-> ResourceBundles.getEntityBundle().getString(field.getTitleKey()),
@@ -25,7 +25,7 @@ public class FieldsComboBoxModel<E> implements ComboBoxModel<String> {
         this.currentValue = null;
     }
 
-    public EntityField<E, Object> getSelectedField() {
+    public EntityField getSelectedField() {
         if (this.currentValue == null) {
             return null;
         }

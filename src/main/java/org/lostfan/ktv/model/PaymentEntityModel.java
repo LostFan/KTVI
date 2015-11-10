@@ -13,7 +13,7 @@ import org.lostfan.ktv.domain.Payment;
 
 public class PaymentEntityModel extends BaseEntityModel<Payment> {
 
-    private List<EntityField<Payment, ?>> fields;
+    private List<EntityField> fields;
 
     private PaymentDAO dao;
     private List<Payment> payments;
@@ -23,11 +23,11 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         fields = new ArrayList<>();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("payment.id", EntityFieldTypes.Integer, Payment::getId, Payment::setId));
-        this.fields.add(new EntityField<>("payment.payDate", EntityFieldTypes.Date, Payment::getDate, Payment::setDate));
-        this.fields.add(new EntityField<>("subscriber", EntityFieldTypes.Subscriber, Payment::getSubscriberId, Payment::setSubscriberId));
-        this.fields.add(new EntityField<>("service", EntityFieldTypes.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
-        this.fields.add(new EntityField<>("payment.price", EntityFieldTypes.Integer, Payment::getPrice, Payment::setPrice));
+        this.fields.add(new EntityField("payment.id", EntityFieldTypes.Integer, Payment::getId, Payment::setId));
+        this.fields.add(new EntityField("payment.payDate", EntityFieldTypes.Date, Payment::getDate, Payment::setDate));
+        this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, Payment::getSubscriberId, Payment::setSubscriberId));
+        this.fields.add(new EntityField("service", EntityFieldTypes.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
+        this.fields.add(new EntityField("payment.price", EntityFieldTypes.Integer, Payment::getPrice, Payment::setPrice));
     }
 
 
@@ -78,7 +78,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     }
 
     @Override
-    public List<EntityField<Payment, ?>> getFields() {
+    public List<EntityField> getFields() {
         return this.fields;
     }
 

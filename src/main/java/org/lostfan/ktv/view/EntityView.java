@@ -184,7 +184,7 @@ public class EntityView {
         if(entityModels != null) {
             for (EntityModel entityModel : entityModels) {
                 EntityInnerTableView entityInnerTableView =
-                        new EntityInnerTableView((BaseEntityModel) entityModel, this.entity == null ? null : this.entity.getId());
+                        new EntityInnerTableView(entityModel, this.entity == null ? null : this.entity.getId());
                 butPanel1.add(entityInnerTableView.getContentPanel());
             }
         }

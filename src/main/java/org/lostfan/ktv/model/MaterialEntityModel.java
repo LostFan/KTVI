@@ -12,7 +12,7 @@ import org.lostfan.ktv.domain.Material;
 
 public class MaterialEntityModel extends BaseEntityModel<Material> {
 
-    private List<EntityField<Material, ?>> fields;
+    private List<EntityField> fields;
 
     private MaterialDAO dao;
     private List<Material> materials;
@@ -21,12 +21,11 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
         this.dao = DAOFactory.getDefaultDAOFactory().getMaterialDAO();
         fields = new ArrayList<>();
 
-
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("material.id", EntityFieldTypes.Integer, Material::getId, Material::setId));
-        this.fields.add(new EntityField<>("material.name", EntityFieldTypes.String, Material::getName, Material::setName));
-        this.fields.add(new EntityField<>("material.price", EntityFieldTypes.Integer, Material::getPrice, Material::setPrice));
-        this.fields.add(new EntityField<>("material.unit", EntityFieldTypes.String, Material::getUnit, Material::setUnit));
+        this.fields.add(new EntityField("material.id", EntityFieldTypes.Integer, Material::getId, Material::setId));
+        this.fields.add(new EntityField("material.name", EntityFieldTypes.String, Material::getName, Material::setName));
+        this.fields.add(new EntityField("material.price", EntityFieldTypes.Integer, Material::getPrice, Material::setPrice));
+        this.fields.add(new EntityField("material.unit", EntityFieldTypes.String, Material::getUnit, Material::setUnit));
     }
 
     @Override
@@ -74,7 +73,7 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
     }
 
     @Override
-    public List<EntityField<Material, ?>> getFields() {
+    public List<EntityField> getFields() {
         return this.fields;
     }
 

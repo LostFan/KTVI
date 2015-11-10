@@ -42,12 +42,9 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
         }
 
         this.editor = editor;
-        viewTableEntitiesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                editor.cancelCellEditing();
-                openEntityTableView(table, row, column);
-            }
+        viewTableEntitiesButton.addActionListener(e -> {
+            editor.cancelCellEditing();
+            openEntityTableView(table, row, column);
         });
 
         // ui-tweaking
@@ -55,12 +52,9 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
         viewTableEntitiesButton.setFocusPainted(false);
         viewTableEntitiesButton.setMargin(new Insets(0, 0, 0, 0));
 
-        viewEntityButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                editor.cancelCellEditing();
-                openEntityView(table, row, column);
-            }
+        viewEntityButton.addActionListener(e -> {
+            editor.cancelCellEditing();
+            openEntityView(table, row, column);
         });
 
         viewEntityButton.setFocusable(false);

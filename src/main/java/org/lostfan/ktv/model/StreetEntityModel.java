@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 public class StreetEntityModel extends BaseEntityModel<Street> {
 
-    private List<EntityField<Street, ?>> fields;
+    private List<EntityField> fields;
 
     private StreetDAO dao;
     private List<Street> streets;
@@ -23,8 +23,8 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
 
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField<>("street.id", EntityFieldTypes.Integer, Street::getId, Street::setId));
-        this.fields.add(new EntityField<>("street.name", EntityFieldTypes.String, Street::getName, Street::setName));
+        this.fields.add(new EntityField("street.id", EntityFieldTypes.Integer, Street::getId, Street::setId));
+        this.fields.add(new EntityField("street.name", EntityFieldTypes.String, Street::getName, Street::setName));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
     }
 
     @Override
-    public List<EntityField<Street, ?>> getFields() {
+    public List<EntityField> getFields() {
         return this.fields;
     }
 
