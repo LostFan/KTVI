@@ -16,7 +16,7 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
     public ServiceEntityModel() {
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField("service.id", EntityFieldTypes.Integer, Service::getId, Service::setId));
+        this.fields.add(new EntityField("service.id", EntityFieldTypes.Integer, Service::getId, Service::setId, false));
         this.fields.add(new EntityField("service.name", EntityFieldTypes.String, Service::getName, Service::setName));
         this.fields.add(new EntityField("service.additional", EntityFieldTypes.Boolean, Service::isAdditionalService, Service::setAdditionalService));
     }

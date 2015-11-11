@@ -167,7 +167,7 @@ public class EntityView {
     private List<LabelFieldPanel> labelFieldPanels;
     private JButton addButton;
     private JButton cancelButton;
-    private EntityModel model;
+    private EntityModel<? extends Entity> model;
 
     private ViewActionListener addActionListener;
     private ViewActionListener cancelActionListener;
@@ -179,7 +179,7 @@ public class EntityView {
         this(model, null);
     }
 
-    public EntityView(EntityModel model, Entity entity) {
+    public <E extends Entity> EntityView(EntityModel<E> model, Entity entity) {
         this.entity = entity;
         this.model = model;
         this.frame = new JFrame(ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
@@ -200,8 +200,11 @@ public class EntityView {
         });
 
         labelFieldPanels = new ArrayList<>();
-        for (Object entityField : model.getFields()) {
-            labelFieldPanels.add(new LabelFieldPanel((EntityField) entityField));
+        for (EntityField entityField : model.getFields()) {
+            if (!entityField.isEditable()) {
+                continue;
+            }
+            labelFieldPanels.add(new LabelFieldPanel(entityField));
         }
         buildLayout();
         frame.setVisible(true);

@@ -12,12 +12,18 @@ public class EntityField {
     private EntityFieldTypes type;
     private Function getter;
     private BiConsumer setter;
+    private boolean editable;
 
-    public <T, V> EntityField(String titleKey, EntityFieldTypes type, Function<T, V> getter, BiConsumer<T, V> setter) {
+    public <T, V> EntityField(String titleKey, EntityFieldTypes type, Function<T, V> getter, BiConsumer<T, V> setter, boolean editable) {
         this.titleKey = titleKey;
         this.type = type;
         this.getter = getter;
         this.setter = setter;
+        this.editable = editable;
+    }
+
+    public <T, V> EntityField(String titleKey, EntityFieldTypes type, Function<T, V> getter, BiConsumer<T, V> setter) {
+        this(titleKey, type, getter, setter, true);
     }
 
     public String getTitleKey() {
@@ -26,6 +32,10 @@ public class EntityField {
 
     public EntityFieldTypes getType() {
         return type;
+    }
+
+    public boolean isEditable() {
+        return editable;
     }
 
     @SuppressWarnings("unchecked")

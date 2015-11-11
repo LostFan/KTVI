@@ -17,7 +17,7 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
         fields = new ArrayList<>();
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField("street.id", EntityFieldTypes.Integer, Street::getId, Street::setId));
+        this.fields.add(new EntityField("street.id", EntityFieldTypes.Integer, Street::getId, Street::setId, false));
         this.fields.add(new EntityField("street.name", EntityFieldTypes.String, Street::getName, Street::setName));
     }
 
