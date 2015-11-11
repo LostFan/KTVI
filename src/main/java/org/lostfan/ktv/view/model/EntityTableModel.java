@@ -5,14 +5,14 @@ import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.utils.ResourceBundles;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+import javax.swing.table.AbstractTableModel;
 
-public class EntityTableModel<T extends Entity> implements TableModel {
+public class EntityTableModel<T extends Entity> extends AbstractTableModel {
 
     private EntityModel<T> model;
     public EntityTableModel(EntityModel<T> model) {
         this.model = model;
+        this.model.addObserver(args -> fireTableDataChanged());
     }
 
     @Override
@@ -53,21 +53,6 @@ public class EntityTableModel<T extends Entity> implements TableModel {
         }
 
         return value;
-    }
-
-    @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-
-    }
-
-    @Override
-    public void addTableModelListener(TableModelListener l) {
-
-    }
-
-    @Override
-    public void removeTableModelListener(TableModelListener l) {
-
     }
 
     public EntityModel getEntityModel() {
