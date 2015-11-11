@@ -22,12 +22,7 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"material_consumption\"");
             while (rs.next()) {
-                MaterialConsumption materialConsumption = new MaterialConsumption();
-                materialConsumption.setId(rs.getInt("id"));
-                materialConsumption.setMaterialId(rs.getInt("material_id"));
-                materialConsumption.setRenderedServiceId(rs.getInt("rendered_service_id"));
-                materialConsumption.setAmount(rs.getDouble("amount"));
-                materialConsumptions.add(materialConsumption);
+                materialConsumptions.add(constructEntity(rs));
             }
 
         } catch (SQLException ex) {
@@ -45,11 +40,7 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                materialConsumption = new MaterialConsumption();
-                materialConsumption.setId(rs.getInt("id"));
-                materialConsumption.setMaterialId(rs.getInt("material_id"));
-                materialConsumption.setRenderedServiceId(rs.getInt("rendered_service_id"));
-                materialConsumption.setAmount(rs.getDouble("amount"));
+                materialConsumption = constructEntity(rs);
 
             }
 
@@ -109,19 +100,14 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
         }
     }
 
-    public List<MaterialConsumption> getMaterialConsumptionsByRenderedServiceId(int renderedServiceId) {
+    public List<MaterialConsumption> getMaterialConsumptionsByRenderedServiceId(int materialConsumptionId) {
         List<MaterialConsumption> materialConsumptions = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"material_consumption\" WHERE \"rendered_service_id\" = ?");
-            preparedStatement.setInt(1, renderedServiceId);
+            preparedStatement.setInt(1, materialConsumptionId);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                MaterialConsumption materialConsumption = new MaterialConsumption();
-                materialConsumption.setId(rs.getInt("id"));
-                materialConsumption.setMaterialId(rs.getInt("material_id"));
-                materialConsumption.setRenderedServiceId(rs.getInt("rendered_service_id"));
-                materialConsumption.setAmount(rs.getDouble("amount"));
-                materialConsumptions.add(materialConsumption);
+                materialConsumptions.add(constructEntity(rs));
             }
 
         } catch (SQLException ex) {
@@ -129,5 +115,32 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
         }
 
         return materialConsumptions;
+    }
+
+    @Override
+    public List<MaterialConsumption> getAllContainsInName(String str) {
+        List<MaterialConsumption> materialConsumptions = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where LOWER(\"id\") LIKE ?");
+            preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                materialConsumptions.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return materialConsumptions;
+    }
+
+    private MaterialConsumption constructEntity(ResultSet rs) throws SQLException{
+        MaterialConsumption materialConsumption = new MaterialConsumption();
+        materialConsumption.setId(rs.getInt("id"));
+        materialConsumption.setMaterialId(rs.getInt("material_id"));
+        materialConsumption.setRenderedServiceId(rs.getInt("rendered_service_id"));
+        materialConsumption.setAmount(rs.getDouble("amount"));
+        return materialConsumption;
     }
 }

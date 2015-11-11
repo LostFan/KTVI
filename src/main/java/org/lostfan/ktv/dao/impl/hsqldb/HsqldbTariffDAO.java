@@ -28,12 +28,7 @@ public class HsqldbTariffDAO implements TariffDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"tariff\"");
             while (rs.next()) {
-                Tariff tariff = new Tariff();
-                tariff.setId(rs.getInt("id"));
-                tariff.setName(rs.getString("name"));
-                tariff.setChannels(rs.getString("channels"));
-
-                tariffs.add(tariff);
+                tariffs.add(constructEntity(rs));
             }
 
         } catch (SQLException ex) {
@@ -51,10 +46,7 @@ public class HsqldbTariffDAO implements TariffDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                tariff = new Tariff();
-                tariff.setId(rs.getInt("id"));
-                tariff.setName(rs.getString("name"));
-                tariff.setChannels(rs.getString("channels"));
+                tariff = constructEntity(rs);
             }
 
         } catch (SQLException ex) {
@@ -71,12 +63,7 @@ public class HsqldbTariffDAO implements TariffDAO {
             preparedStatement.setString(1, name);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Tariff tariff = new Tariff();
-                tariff.setId(rs.getInt("id"));
-                tariff.setName(rs.getString("name"));
-                tariff.setChannels(rs.getString("channels"));
-
-                tariffs.add(tariff);
+                tariffs.add(constructEntity(rs));
             }
 
         } catch (SQLException ex) {
@@ -243,5 +230,31 @@ public class HsqldbTariffDAO implements TariffDAO {
             ex.printStackTrace();
         }
         return price;
+    }
+
+    @Override
+    public List<Tariff> getAllContainsInName(String str) {
+        List<Tariff> tariffs = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where LOWER(\"id\") LIKE ?");
+            preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                tariffs.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return tariffs;
+    }
+
+    private Tariff constructEntity(ResultSet rs) throws SQLException{
+        Tariff tariff = new Tariff();
+        tariff.setId(rs.getInt("id"));
+        tariff.setName(rs.getString("name"));
+        tariff.setChannels(rs.getString("channels"));
+        return tariff;
     }
 }

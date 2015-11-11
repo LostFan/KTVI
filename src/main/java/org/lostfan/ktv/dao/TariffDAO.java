@@ -20,6 +20,8 @@ public interface TariffDAO extends EntityDAO<Tariff> {
 
     void delete(int tariffId);
 
+    List<Tariff> getAllContainsInName(String str);
+
     TariffPrice getTariffPrice(int tariffId, LocalDate date);
 
     List<TariffPrice> getAllTariffPrices();

@@ -15,11 +15,21 @@ public class EntityComboBox extends JComboBox<String> {
         }
     }
 
+    private class OuterModelObserver implements Observer {
+        @Override
+        public void update(Object args) {
+            EntityComboBox.this.rev();
+        }
+    }
+
     private JTextField textField;
     private EntitySearcherModel model;
     private EntityComboBoxModel entityComboBoxModel;
 
-    EntityComboBox(EntitySearcherModel model) {
+    private ModelObserver modelObserver;
+    private OuterModelObserver outerModelObserver;
+
+    public EntityComboBox(EntitySearcherModel model) {
         textField = (JTextField)     this.getEditor().getEditorComponent();
         new EntityComboBoxController(model, this);
         this.model = model;
@@ -39,7 +49,9 @@ public class EntityComboBox extends JComboBox<String> {
         });
         this.setEditable(true);
 
-        model.addObserver(new ModelObserver());
+        this.modelObserver = new ModelObserver();
+        this.outerModelObserver = new OuterModelObserver();
+        model.addObserver(this.modelObserver);
 
     }
 
@@ -134,7 +146,19 @@ public class EntityComboBox extends JComboBox<String> {
     }
 
     public void editTextFieldText() {
-        textField.setText(entityComboBoxModel.getSelectedName());
+        textField.setText(this.entityComboBoxModel.getSelectedName());
     }
 
+
+    private void rev() {
+        if(entityComboBoxModel.getSelectedId() != null) {
+            textField.setText(model.getEntity(entityComboBoxModel.getSelectedId()).getName());
+        }
+        this.invalidate();
+        this.repaint();
+    }
+
+    public Observer getModelObserver() {
+        return this.outerModelObserver;
+    }
 }

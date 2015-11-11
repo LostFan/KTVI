@@ -37,6 +37,7 @@ public class EntityOneController {
                 }
 
                 model.save(entity);
+                view.hide();
             });
         }
     }

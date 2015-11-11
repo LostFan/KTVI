@@ -8,6 +8,7 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.*;
+import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.validation.Error;
 import org.lostfan.ktv.view.components.EntityComboBox;
 import org.lostfan.ktv.view.components.EntityComboBoxFactory;
@@ -104,6 +105,7 @@ public class EntityView {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             EntityModel entityModel = EntityModelFactory.createForm(entityField.getType());
+                            entityModel.addObserver(comboBox.getModelObserver());
                             EntityView entityView = new EntityView(entityModel, entityModel.getEntity(comboBox.getSelectedId()));
                             EntityOneController entityOneController = new EntityOneController(entityModel, entityView);
                             entityView.changeActionListener.actionPerformed(null);
@@ -194,6 +196,7 @@ public class EntityView {
             if (this.cancelActionListener != null) {
                 this.cancelActionListener.actionPerformed(null);
             }
+            hide();
         });
 
         labelFieldPanels = new ArrayList<>();

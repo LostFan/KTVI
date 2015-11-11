@@ -18,4 +18,6 @@ public interface EntityDAO<T extends Entity> {
     void update(T t);
 
     void delete(int id);
+
+    List<T> getAllContainsInName(String str);
 }

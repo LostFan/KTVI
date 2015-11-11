@@ -94,8 +94,6 @@ public class EntityTableView {
         buildLayout();
 
         this.modelObserver = new ModelObserver();
-
-        model.addObserver(this.modelObserver);
     }
 
     private void buildLayout() {

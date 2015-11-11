@@ -19,4 +19,6 @@ public interface MaterialConsumptionDAO extends EntityDAO<MaterialConsumption> {
     void update(MaterialConsumption materialConsumption);
 
     void delete(int materialConsumptionId);
+
+    List<MaterialConsumption> getAllContainsInName(String str);
 }

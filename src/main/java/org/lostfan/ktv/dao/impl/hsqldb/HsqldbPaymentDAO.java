@@ -27,14 +27,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"payment\"");
             while (rs.next()) {
-                Payment payment = new Payment();
-                payment.setId(rs.getInt("id"));
-                payment.setPrice(rs.getInt("price"));
-                payment.setDate(rs.getDate("date").toLocalDate());
-                payment.setPaymentTypeId(rs.getInt("payment_type_id"));
-                payment.setSubscriberId(rs.getInt("subscriber_id"));
-                payment.setServicePaymentId(rs.getInt("service_id"));
-                payments.add(payment);
+                payments.add(constructEntity(rs));
             }
 
         } catch (SQLException ex) {
@@ -52,13 +45,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                payment = new Payment();
-                payment.setId(rs.getInt("id"));
-                payment.setPrice(rs.getInt("price"));
-                payment.setDate(rs.getDate("date").toLocalDate());
-                payment.setPaymentTypeId(rs.getInt("payment_type_id"));
-                payment.setSubscriberId(rs.getInt("subscriber_id"));
-                payment.setServicePaymentId(rs.getInt("service_id"));
+                payment = constructEntity(rs);
 
             }
 
@@ -77,14 +64,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                Payment payment = new Payment();
-                payment.setId(rs.getInt("id"));
-                payment.setPrice(rs.getInt("price"));
-                payment.setDate(rs.getDate("date").toLocalDate());
-                payment.setPaymentTypeId(rs.getInt("payment_type_id"));
-                payment.setSubscriberId(rs.getInt("subscriber_id"));
-                payment.setServicePaymentId(rs.getInt("service_id"));
-                payments.add(payment);
+                payments.add(constructEntity(rs));
 
             }
 
@@ -103,14 +83,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                Payment payment = new Payment();
-                payment.setId(rs.getInt("id"));
-                payment.setPrice(rs.getInt("price"));
-                payment.setDate(rs.getDate("date").toLocalDate());
-                payment.setPaymentTypeId(rs.getInt("payment_type_id"));
-                payment.setSubscriberId(rs.getInt("subscriber_id"));
-                payment.setServicePaymentId(rs.getInt("service_id"));
-                payments.add(payment);
+                payments.add(constructEntity(rs));
 
             }
 
@@ -262,5 +235,34 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         } else {
             throw new UnsupportedOperationException("Delete nonexistent element");
         }
+    }
+
+    @Override
+    public List<Payment> getAllContainsInName(String str) {
+        List<Payment> payments = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where LOWER(\"id\") LIKE ?");
+            preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                payments.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return payments;
+    }
+
+    private Payment constructEntity(ResultSet rs) throws SQLException{
+        Payment payment = new Payment();
+        payment.setId(rs.getInt("id"));
+        payment.setPrice(rs.getInt("price"));
+        payment.setDate(rs.getDate("date").toLocalDate());
+        payment.setPaymentTypeId(rs.getInt("payment_type_id"));
+        payment.setSubscriberId(rs.getInt("subscriber_id"));
+        payment.setServicePaymentId(rs.getInt("service_id"));
+        return payment;
     }
 }

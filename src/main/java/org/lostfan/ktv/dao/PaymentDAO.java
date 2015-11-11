@@ -23,6 +23,8 @@ public interface PaymentDAO extends EntityDAO<Payment> {
 
     void delete(int id);
 
+    List<Payment> getAllContainsInName(String str);
+
     List<PaymentType> getAllPaymentTypes();
 
     PaymentType getPaymentType(int id);

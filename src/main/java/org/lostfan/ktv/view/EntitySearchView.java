@@ -11,13 +11,18 @@ import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.entity.EntityModel;
-import org.lostfan.ktv.utils.DateLabelFormatter;
-import org.lostfan.ktv.utils.ResourceBundles;
-import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.utils.*;
 import org.lostfan.ktv.view.model.CriteriaComboBoxModel;
 import org.lostfan.ktv.view.model.FieldsComboBoxModel;
 
 public class EntitySearchView {
+
+    private class ModelObserver implements org.lostfan.ktv.utils.Observer {
+        @Override
+        public void update(Object args) {
+            EntitySearchView.this.revalidate();
+        }
+    }
 
     private class CriterionComponents {
 
@@ -130,6 +135,8 @@ public class EntitySearchView {
 
     private ViewActionListener findActionListener;
 
+    private ModelObserver modelObserver;
+
     public EntitySearchView(EntityModel model) {
         this.model = model;
         this.frame = new JDialog(new JFrame(), getString("buttons.search") + ": " +
@@ -184,6 +191,10 @@ public class EntitySearchView {
         frame.add(butPanel, BorderLayout.SOUTH);
 
         rebuildCriteriaPanel();
+
+        this.modelObserver = new ModelObserver();
+
+        model.addObserver(this.modelObserver);
     }
 
     private void rebuildCriteriaPanel() {
@@ -220,6 +231,11 @@ public class EntitySearchView {
 
     private String getString(String key) {
         return ResourceBundles.getGuiBundle().getString(key);
+    }
+
+    private void revalidate() {
+        this.frame.invalidate();
+        this.frame.repaint();
     }
 }
 
