@@ -1,6 +1,5 @@
 package org.lostfan.ktv.view;
 
-import net.sourceforge.jdatepicker.JDatePicker;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
@@ -17,146 +16,236 @@ import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
-import java.util.function.Supplier;
 
-/**
- * Created by 1 on 08.10.2015.
- */
 public class EntityView {
 
-    private class LabelFieldPanel {
+    private abstract class LabelFieldInput {
 
         private JLabel label;
-        /**
-         * A Component that represents the source to input a value
-         */
-        private JComponent inputComponent;
+
         private EntityField entityField;
-        /**
-         * Represents a supplier to retrieve the input value.
-         */
-        private Supplier<Object> valueSupplier;
 
-        public LabelFieldPanel(EntityField entityField) {
+        public LabelFieldInput(EntityField entityField) {
+            this.label = new JLabel(ResourceBundles.getEntityBundle().getString(entityField.getTitleKey()), SwingConstants.LEFT);
             this.entityField = entityField;
-            switch (entityField.getType()) {
-                case String:
-                case Integer:
-                case Double:
-                    JTextField textField = new JTextField(20);
-                    textField.setMargin(new Insets(2, 6, 2, 6));
-                    if (EntityView.this.entity != null) {
-                        textField.setText(String.valueOf(entityField.get(EntityView.this.entity)));
-                    }
-                    new DefaultContextMenu().add(textField);
-                    this.inputComponent = textField;
-                    // TODO: textField with a Formatter to filter inappropriate values
-                    switch (entityField.getType()) {
-                        case String:
-                            this.valueSupplier = textField::getText;
-                            break;
-                        case Integer:
-                            this.valueSupplier = () -> {
-                                String text = textField.getText();
-                                if (text == null) {
-                                    return null;
-                                }
-                                try {
-                                    return Integer.parseInt(text);
-                                } catch (NumberFormatException e) {
-                                    return null;
-                                }
-                            };
-                            break;
-                        case Double:
-                            this.valueSupplier = () -> {
-                                String text = textField.getText();
-                                try {
-                                    return Double.parseDouble(text);
-                                } catch (NumberFormatException | NullPointerException e) {
-                                    return null;
-                                }
-                            };
-                            break;
-                    }
-                    break;
-                case Boolean:
-                    JCheckBox checkBox = new JCheckBox();
-                    if (EntityView.this.entity != null) {
-                        checkBox.setSelected((Boolean)entityField.get(EntityView.this.entity));
-                    }
-                    this.inputComponent = checkBox;
-                    this.valueSupplier = checkBox::isSelected;
-                    break;
-                case Date:
-                    JDatePickerImpl datePicker = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
-                    if (EntityView.this.entity != null) {
-                        LocalDate localDate = (LocalDate) entityField.get(EntityView.this.entity);
-                        datePicker.getModel().setDate(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
-                        datePicker.getModel().setSelected(true);
-                    }
-                    this.inputComponent = datePicker;
-                    this.valueSupplier = () -> new java.sql.Date(((Date)datePicker.getModel().getValue()).getTime()).toLocalDate();
-                    break;
-                default:
-                    EntityComboBox comboBox = EntityComboBoxFactory.createComboBox(entityField.getType());
-                    new DefaultContextMenu().add((JTextField) comboBox.getEditor().getEditorComponent());
-                    comboBox.setEditable(true);
-                    if (EntityView.this.entity != null) {
-                        Object value = entityField.get(EntityView.this.entity);
-                        comboBox.setSelectedId((Integer) value);
-                        value = comboBox.getSelectedName();
-                        ((JTextField)((comboBox).getEditor().getEditorComponent())).setText((String) value);
-                    }
-                    JPanel jPanel = new JPanel(new BorderLayout());
-                    jPanel.add(comboBox, BorderLayout.WEST);
+        }
 
-                    // TODO: Move the following 2 buttons into the EntityComboBox component
-                    // and convert it to a JPanel that contains all these 3 components
-                    JButton tableButton = new JButton("...");
-                    tableButton.setPreferredSize(new Dimension(20, 10));
-                    tableButton.addActionListener(e -> {
-                        EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityField.getType());
-                        if (entitySelectionView.getSelectedEntity() != null) {
-                            comboBox.setSelectedId(entitySelectionView.getSelectedEntity().getId());
-                            ((JTextField) ((comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.getSelectedEntity().getName());
-                            EntityView.this.frame.invalidate();
-                            EntityView.this.frame.repaint();
-                        }
-                    });
-                    jPanel.add(tableButton, BorderLayout.CENTER);
+        /**
+         * Returns a Component that represents the source for entering a value
+         */
+        public abstract JComponent getInputComponent();
 
-                    JButton entityButton = new JButton();
-                    entityButton.setPreferredSize(new Dimension(20, 10));
-                    URL url = EntitySearchView.class.getClassLoader().getResource("images/search.png");
-                    if(url != null) {
-                        ImageIcon icon = new ImageIcon(url);
-                        Image image = icon.getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
-                        icon = new ImageIcon(image);
-                        entityButton.setIcon(icon);
-                    }
+        /**
+         * Returns the current value of the component
+         */
+        public abstract Object getValue();
+    }
 
-                    entityButton.addActionListener(e -> {
-                        EntityModel entityModel = EntityModelFactory.createForm(entityField.getType());
-                        entityModel.addObserver(comboBox.getModelObserver());
-                        EntityView entityView = new EntityView(entityModel, entityModel.getEntity(comboBox.getSelectedId()));
-                        EntityOneController entityOneController = new EntityOneController(entityModel, entityView);
-                        entityView.changeActionListener.actionPerformed(null);
-                    });
+    private class StringLabelFieldInput extends LabelFieldInput {
 
-                    jPanel.add(entityButton, BorderLayout.EAST);
-                    this.inputComponent = jPanel;
-                    this.valueSupplier = comboBox::getSelectedId;
+        private JTextField textField;
+
+        public StringLabelFieldInput(EntityField entityField) {
+            super(entityField);
+            this.textField = new JTextField(20);
+            this.textField.setMargin(new Insets(2, 6, 2, 6));
+            if (EntityView.this.entity != null) {
+                this.textField.setText(String.valueOf(entityField.get(EntityView.this.entity)));
+            }
+            new DefaultContextMenu().add(textField);
+        }
+
+        @Override
+        public JComponent getInputComponent() {
+            return this.textField;
+        }
+
+        @Override
+        public Object getValue() {
+            return this.textField.getText();
+        }
+    }
+
+    private class IntegerLabelFieldInput extends LabelFieldInput {
+
+        private JTextField textField;
+
+        public IntegerLabelFieldInput(EntityField entityField) {
+            super(entityField);
+            // TODO: Implement FormattedTextField or another way to filter integer only
+            this.textField = new JTextField(/*20*/);
+            this.textField.setMargin(new Insets(2, 6, 2, 6));
+            if (EntityView.this.entity != null) {
+                this.textField.setText(String.valueOf(entityField.get(EntityView.this.entity)));
+            }
+            new DefaultContextMenu().add(textField);
+        }
+
+        @Override
+        public JComponent getInputComponent() {
+            return this.textField;
+        }
+
+        @Override
+        public Object getValue() {
+            String text = textField.getText();
+            if (text == null) {
+                return null;
+            }
+            try {
+                return Integer.parseInt(text);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+    }
+
+    private class DoubleLabelFieldInput extends LabelFieldInput {
+
+        private JTextField textField;
+
+        public DoubleLabelFieldInput(EntityField entityField) {
+            super(entityField);
+            // TODO: Implement FormattedTextField or another way to filter double values only
+            this.textField = new JTextField(20);
+            this.textField.setMargin(new Insets(2, 6, 2, 6));
+            if (EntityView.this.entity != null) {
+                this.textField.setText(String.valueOf(entityField.get(EntityView.this.entity)));
+            }
+            new DefaultContextMenu().add(textField);
+        }
+
+        @Override
+        public JComponent getInputComponent() {
+            return this.textField;
+        }
+
+        @Override
+        public Object getValue() {
+            String text = textField.getText();
+            try {
+                return Double.parseDouble(text);
+            } catch (NumberFormatException | NullPointerException e) {
+                return null;
+            }
+        }
+    }
+
+    private class BooleanLabelFieldInput extends LabelFieldInput {
+
+        private JCheckBox checkBox;
+
+        public BooleanLabelFieldInput(EntityField entityField) {
+            super(entityField);
+            this.checkBox = new JCheckBox();
+            if (EntityView.this.entity != null) {
+                checkBox.setSelected((Boolean)entityField.get(EntityView.this.entity));
+            }
+        }
+
+        @Override
+        public JComponent getInputComponent() {
+            return this.checkBox;
+        }
+
+        @Override
+        public Object getValue() {
+            return this.checkBox.isSelected();
+        }
+    }
+
+    private class DateLabelFieldInput extends LabelFieldInput {
+
+        private JDatePickerImpl datePicker;
+
+        public DateLabelFieldInput(EntityField entityField) {
+            super(entityField);
+            this.datePicker = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
+            if (EntityView.this.entity != null) {
+                LocalDate localDate = (LocalDate) entityField.get(EntityView.this.entity);
+                this.datePicker.getModel().setDate(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
+                this.datePicker.getModel().setSelected(true);
+            }
+        }
+
+        @Override
+        public JComponent getInputComponent() {
+            return this.datePicker;
+        }
+
+        @Override
+        public Object getValue() {
+            return new java.sql.Date(((Date)datePicker.getModel().getValue()).getTime()).toLocalDate();
+        }
+    }
+
+    private class EntityLabelFieldInput extends LabelFieldInput {
+
+        private EntityComboBox comboBox;
+        private JPanel panel;
+
+        public EntityLabelFieldInput(EntityField entityField) {
+            super(entityField);
+            this.comboBox = EntityComboBoxFactory.createComboBox(entityField.getType());
+            new DefaultContextMenu().add((JTextField) comboBox.getEditor().getEditorComponent());
+            comboBox.setEditable(true);
+            if (EntityView.this.entity != null) {
+                Object value = entityField.get(EntityView.this.entity);
+                comboBox.setSelectedId((Integer) value);
+                value = comboBox.getSelectedName();
+                ((JTextField)((comboBox).getEditor().getEditorComponent())).setText((String) value);
+            }
+            this.panel = new JPanel(new BorderLayout());
+            this.panel.add(comboBox, BorderLayout.WEST);
+
+            // TODO: Move the following 2 buttons into the EntityComboBox component
+            // and convert it to a JPanel that contains all these 3 components
+            JButton tableButton = new JButton("...");
+            tableButton.setPreferredSize(new Dimension(20, 10));
+            tableButton.addActionListener(e -> {
+                EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityField.getType());
+                if (entitySelectionView.getSelectedEntity() != null) {
+                    comboBox.setSelectedId(entitySelectionView.getSelectedEntity().getId());
+                    ((JTextField) ((comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.getSelectedEntity().getName());
+                    EntityView.this.frame.invalidate();
+                    EntityView.this.frame.repaint();
+                }
+            });
+            this.panel.add(tableButton, BorderLayout.CENTER);
+
+            JButton entityButton = new JButton();
+            entityButton.setPreferredSize(new Dimension(20, 10));
+            URL url = EntitySearchView.class.getClassLoader().getResource("images/search.png");
+            if(url != null) {
+                ImageIcon icon = new ImageIcon(url);
+                Image image = icon.getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
+                icon = new ImageIcon(image);
+                entityButton.setIcon(icon);
             }
 
-            this.label = new JLabel(ResourceBundles.getEntityBundle().getString(entityField.getTitleKey()), SwingConstants.LEFT);
-            this.label.setLabelFor(this.inputComponent);
+            entityButton.addActionListener(e -> {
+                EntityModel entityModel = EntityModelFactory.createForm(entityField.getType());
+                entityModel.addObserver(comboBox.getModelObserver());
+                EntityView entityView = new EntityView(entityModel, entityModel.getEntity(comboBox.getSelectedId()));
+                EntityOneController entityOneController = new EntityOneController(entityModel, entityView);
+                entityView.changeActionListener.actionPerformed(null);
+            });
+
+            this.panel.add(entityButton, BorderLayout.EAST);
+        }
+
+        @Override
+        public JComponent getInputComponent() {
+            return this.panel;
+        }
+
+        @Override
+        public Object getValue() {
+            return this.comboBox.getSelectedId();
         }
     }
 
@@ -164,7 +253,7 @@ public class EntityView {
     public static final int HEIGHT = 550;
 
     private JFrame frame;
-    private List<LabelFieldPanel> labelFieldPanels;
+    private List<LabelFieldInput> labelFieldInputs;
     private JButton addButton;
     private JButton cancelButton;
     private EntityModel<? extends Entity> model;
@@ -203,12 +292,12 @@ public class EntityView {
             hide();
         });
 
-        labelFieldPanels = new ArrayList<>();
+        labelFieldInputs = new ArrayList<>();
         for (EntityField entityField : model.getFields()) {
             if (!entityField.isEditable()) {
                 continue;
             }
-            labelFieldPanels.add(new LabelFieldPanel(entityField));
+            labelFieldInputs.add(createLabelFieldInput(entityField));
         }
 
         buildLayout();
@@ -226,15 +315,18 @@ public class EntityView {
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(0, 10, 10, 10);
-        c.anchor = GridBagConstraints.CENTER;
+        c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        for (int i = 0; i < this.labelFieldPanels.size(); i++) {
+        for (int i = 0; i < this.labelFieldInputs.size(); i++) {
             c.gridy = i;
             c.gridx = 0;
-            contentPanel.add(this.labelFieldPanels.get(i).label, c);
+            contentPanel.add(this.labelFieldInputs.get(i).label, c);
             c.gridx = 1;
-            contentPanel.add(this.labelFieldPanels.get(i).inputComponent, c);
+            JComponent inputComponent = this.labelFieldInputs.get(i).getInputComponent();
+            // HACK: textFields is excessively narrow when it's smaller than the displayed area.
+            inputComponent.setMinimumSize(inputComponent.getPreferredSize());
+            contentPanel.add(inputComponent, c);
         }
 
         List<EntityModel> entityModels = model.getTableModels();
@@ -252,14 +344,37 @@ public class EntityView {
         frame.add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    private LabelFieldInput createLabelFieldInput(EntityField entityField) {
+        switch (entityField.getType()) {
+            case String:
+                return new StringLabelFieldInput(entityField);
+            case Integer:
+                return new IntegerLabelFieldInput(entityField);
+            case Double:
+                return new DoubleLabelFieldInput(entityField);
+            case Boolean:
+                return new BooleanLabelFieldInput(entityField);
+            case Date:
+                return new DateLabelFieldInput(entityField);
+            case Material:
+            case RenderedService:
+            case Service:
+            case Street:
+            case Subscriber:
+                return new EntityLabelFieldInput(entityField);
+            default:
+                return new StringLabelFieldInput(entityField);
+        }
+    }
+
     public Entity getEntity() {
         Entity entity = this.entity;
         if (entity == null) {
             entity = this.model.createNewEntity();
         }
 
-        for (LabelFieldPanel labelFieldPanel : this.labelFieldPanels) {
-            labelFieldPanel.entityField.set(entity, labelFieldPanel.valueSupplier.get());
+        for (LabelFieldInput labelFieldInput : this.labelFieldInputs) {
+            labelFieldInput.entityField.set(entity, labelFieldInput.getValue());
         }
 
         return entity;
