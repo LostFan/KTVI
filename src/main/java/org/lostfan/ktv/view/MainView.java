@@ -5,6 +5,7 @@ import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 public class MainView {
@@ -35,6 +36,12 @@ public class MainView {
         menuBar.add(entityMenu);
         menuBar.add(documentMenu);
         menuBar.add(reportMenu);
+
+        JMenuItem exitMenuItem = new JMenuItem(getGuiString("menu.file.exit"));
+        exitMenuItem.addActionListener(e -> {
+            MainView.this.frame.dispatchEvent(new WindowEvent( MainView.this.frame, WindowEvent.WINDOW_CLOSING));
+        });
+        fileMenu.add(exitMenuItem);
 
         for (EntityModel entityModel : model.getEntityModels()) {
             JMenuItem entityMenuItem = new JMenuItem(getEntityString(entityModel.getEntityNameKey()));
