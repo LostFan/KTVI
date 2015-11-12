@@ -59,6 +59,12 @@ public class EntityTableView {
                 }
             }
         });
+        this.table.getSelectionModel().addListSelectionListener(e -> {
+            // "Delete" button is enabled if at least 1 row is selected
+            this.deleteButton.setEnabled(this.table.getSelectedRowCount() > 0);
+            // "Change" button is enabled if exactly 1 row is selected
+            this.changeButton.setEnabled(this.table.getSelectedRowCount() == 1);
+        });
 
         this.findButton = new JButton(getString("buttons.find"));
         this.findButton.addActionListener(e -> {
@@ -75,6 +81,7 @@ public class EntityTableView {
         });
 
         this.changeButton = new JButton(getString("buttons.changeSelected"));
+        this.changeButton.setEnabled(false);
         this.changeButton.addActionListener(e -> {
             int selectedRow = this.table.getSelectedRow();
             if (selectedRow != -1 && this.changeActionListener != null) {
@@ -83,6 +90,7 @@ public class EntityTableView {
         });
 
         this.deleteButton = new JButton(getString("buttons.delete"));
+        this.deleteButton.setEnabled(false);
         this.deleteButton.addActionListener(e -> {
             int[] selectedRows = this.table.getSelectedRows();
             if (selectedRows.length != 0 && confirmDeletion() && this.deleteActionListener != null) {
@@ -120,15 +128,6 @@ public class EntityTableView {
         rightPanelInner.add(this.deleteButton);
     }
 
-    public int getSelectedIndex() {
-        return this.table.getSelectedRow();
-    }
-
-    public int[] getSelectedIndexes() {
-        return this.table.getSelectedRows();
-    }
-
-
     public JPanel getContentPanel() {
         return this.contentPanel;
     }
@@ -145,7 +144,7 @@ public class EntityTableView {
                 optionType, messageType, null, selValues,
                 selValues[0]);
 
-        return result == 0 ? true : false;
+        return result == 0;
     }
 
     public void setModel(EntityModel<? extends Entity> model) {
