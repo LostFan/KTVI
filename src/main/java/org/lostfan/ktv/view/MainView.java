@@ -1,33 +1,41 @@
 package org.lostfan.ktv.view;
 
-import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.utils.ViewActionListener;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 public class MainView {
 
-    public interface EntityModelListener {
-        void entityChanged(EntityModel newModel);
+    public class MenuActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String name = ((JMenuItem) e.getSource()).getName();
+            if (MainView.this.menuActionListener != null) {
+                MainView.this.menuActionListener.actionPerformed(name);
+            }
+        }
     }
 
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 700;
 
     private JFrame frame;
-    private JMenuBar menuBar;
     private JPanel contentPanel;
-    private EntityModelListener entityModelListener;
+    private ViewActionListener menuActionListener;
 
     public MainView(MainModel model) {
         this.frame = new JFrame("KTV");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.menuBar = new JMenuBar();
-        this.frame.setJMenuBar(this.menuBar);
+        JMenuBar menuBar = new JMenuBar();
+        this.frame.setJMenuBar(menuBar);
         JMenu fileMenu = new JMenu(getGuiString("menu.file"));
         JMenu entityMenu = new JMenu(getGuiString("menu.entities"));
         JMenu documentMenu = new JMenu(getGuiString("menu.documents"));
@@ -38,31 +46,27 @@ public class MainView {
         menuBar.add(reportMenu);
 
         JMenuItem exitMenuItem = new JMenuItem(getGuiString("menu.file.exit"));
-        exitMenuItem.addActionListener(e -> {
-            MainView.this.frame.dispatchEvent(new WindowEvent( MainView.this.frame, WindowEvent.WINDOW_CLOSING));
-        });
+        exitMenuItem.addActionListener(e ->
+            MainView.this.frame.dispatchEvent(new WindowEvent( MainView.this.frame, WindowEvent.WINDOW_CLOSING)));
         fileMenu.add(exitMenuItem);
 
-        for (EntityModel entityModel : model.getEntityModels()) {
-            JMenuItem entityMenuItem = new JMenuItem(getEntityString(entityModel.getEntityNameKey()));
+        MenuActionListener menuActionListener = new MenuActionListener();
+        for (String code : model.getEntityItems()) {
+            JMenuItem entityMenuItem = new JMenuItem(getEntityString(code));
+            entityMenuItem.setName(code);
             entityMenu.add(entityMenuItem);
-            entityMenuItem.addActionListener(e -> {
-                if (entityModelListener != null)
-                    entityModelListener.entityChanged(entityModel);
-            });
-        }
-        for (EntityModel entityModel : model.getDocumentModels()) {
-            JMenuItem entityMenuItem = new JMenuItem(getEntityString(entityModel.getEntityNameKey()));
-            documentMenu.add(entityMenuItem);
-            entityMenuItem.addActionListener(e -> {
-                if (entityModelListener != null)
-                    entityModelListener.entityChanged(entityModel);
-            });
+            entityMenuItem.addActionListener(menuActionListener);
         }
 
+        for (String code : model.getDocumentItems()) {
+            JMenuItem entityMenuItem = new JMenuItem(getEntityString(code));
+            entityMenuItem.setName(code);
+            documentMenu.add(entityMenuItem);
+            entityMenuItem.addActionListener(menuActionListener);
+        }
 
         model.addObserver(args -> {
-            setContentPanel(model.getContentPanel());
+            frame.setTitle("KTV - " + getEntityString(model.getCurrentModel().getEntityNameKey()));
         });
 
         buildLayout();
@@ -78,15 +82,15 @@ public class MainView {
         this.frame.add(this.contentPanel);
     }
 
-    public void setContentPanel(JPanel panel) {
+    public void setTableView(EntityTableView view) {
         this.contentPanel.removeAll();
-        this.contentPanel.add(panel);
+        this.contentPanel.add(view.getContentPanel());
         this.frame.revalidate();
         this.frame.repaint();
     }
 
-    public void setEntityModelListener(EntityModelListener listener) {
-        this.entityModelListener = listener;
+    public void setMenuActionListener(ViewActionListener menuActionListener) {
+        this.menuActionListener = menuActionListener;
     }
 
     public String getEntityString(String key) {

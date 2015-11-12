@@ -11,28 +11,27 @@ public class MainController {
     private MainModel model;
 
     private EntityController entityController;
-    private EntityModel activeEntityModel;
     private EntityTableView tableView;
 
     public MainController(MainModel model, MainView view) {
         this.model = model;
         this.view = view;
 
-        this.view.setEntityModelListener(newModel -> {
-            if (activeEntityModel ==  newModel) {
-                return;
-            }
+        this.view.setMenuActionListener(args -> {
+            String code = (String) args;
+            model.setCurrentModel(code);
+        });
 
+        this.model.addObserver(args -> {
+            EntityModel newModel = (EntityModel) args;
             if (entityController == null) {
-                activeEntityModel = newModel;
                 tableView = new EntityTableView(newModel);
                 entityController = new EntityController(newModel, tableView);
-                model.setContentPanel(tableView.getContentPanel());
+                view.setTableView(tableView);
             } else {
-                activeEntityModel = newModel;
                 tableView.setModel(newModel);
                 entityController.setModel(newModel);
-                model.setContentPanel(tableView.getContentPanel());
+                view.setTableView(tableView);
             }
         });
     }

@@ -3,43 +3,60 @@ package org.lostfan.ktv.model;
 import org.lostfan.ktv.model.entity.*;
 import org.lostfan.ktv.utils.BaseObservable;
 
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MainModel extends BaseObservable {
 
-    private List<EntityModel> entityModels;
-    private List<EntityModel> documentModels;
-    private JPanel contentPanel;
+    private Map<String, EntityModel> entityModels;
+    private Map<String, EntityModel> documentModels;
+    private EntityModel currentModel;
 
     public MainModel() {
-        this.entityModels = new ArrayList<>();
-        this.documentModels = new ArrayList<>();
-        this.entityModels.add(new ServiceEntityModel());
-        this.entityModels.add(new SubscriberEntityModel());
-        this.entityModels.add(new MaterialEntityModel());
-        this.entityModels.add(new TariffEntityModel());
-        this.entityModels.add(new StreetEntityModel());
-        this.documentModels.add(new PaymentEntityModel());
-        this.documentModels.add(new RenderedServiceEntityModel());
-        this.documentModels.add(new MaterialConsumptionEntityModel());
+        this.entityModels = new LinkedHashMap<>();
+        this.documentModels = new LinkedHashMap<>();
+
+        EntityModel model = new ServiceEntityModel();
+        this.entityModels.put(model.getEntityNameKey(), model);
+        model = new ServiceEntityModel();
+        this.entityModels.put(model.getEntityNameKey(), model);
+        model = new SubscriberEntityModel();
+        this.entityModels.put(model.getEntityNameKey(), model);
+        model = new MaterialEntityModel();
+        this.entityModels.put(model.getEntityNameKey(), model);
+        model = new TariffEntityModel();
+        this.entityModels.put(model.getEntityNameKey(), model);
+        model = new StreetEntityModel();
+        this.entityModels.put(model.getEntityNameKey(), model);
+
+        model = new PaymentEntityModel();
+        this.documentModels.put(model.getEntityNameKey(), model);
+        model = new RenderedServiceEntityModel();
+        this.documentModels.put(model.getEntityNameKey(), model);
+        model = new MaterialConsumptionEntityModel();
+        this.documentModels.put(model.getEntityNameKey(), model);
     }
 
-    public JPanel getContentPanel() {
-        return this.contentPanel;
+    public EntityModel getCurrentModel() {
+        return this.currentModel;
     }
 
-    public void setContentPanel(JPanel contentPanel) {
-        this.contentPanel = contentPanel;
-        this.notifyObservers(null);
+    public void setCurrentModel(String code) {
+        EntityModel model = this.entityModels.get(code);
+        if (model == null) {
+            model = this.documentModels.get(code);
+        }
+
+        if (model != null) {
+            this.currentModel = model;
+            notifyObservers(model);
+        }
     }
 
-    public List<EntityModel> getEntityModels() {
-        return this.entityModels;
+    public Set<String> getEntityItems() {
+        return this.entityModels.keySet();
     }
 
-    public List<EntityModel> getDocumentModels() {
-        return this.documentModels;
+    public Set<String> getDocumentItems() {
+        return this.documentModels.keySet();
     }
 }
