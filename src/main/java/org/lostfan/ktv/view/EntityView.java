@@ -200,12 +200,11 @@ public class EntityView {
                 ((JTextField)((comboBox).getEditor().getEditorComponent())).setText((String) value);
             }
             this.panel = new JPanel(new BorderLayout());
-            this.panel.add(comboBox, BorderLayout.WEST);
+            this.panel.add(comboBox, BorderLayout.CENTER);
 
             // TODO: Move the following 2 buttons into the EntityComboBox component
             // and convert it to a JPanel that contains all these 3 components
             JButton tableButton = new JButton("...");
-            tableButton.setPreferredSize(new Dimension(20, 10));
             tableButton.addActionListener(e -> {
                 EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityField.getType());
                 if (entitySelectionView.getSelectedEntity() != null) {
@@ -215,10 +214,8 @@ public class EntityView {
                     EntityView.this.frame.repaint();
                 }
             });
-            this.panel.add(tableButton, BorderLayout.CENTER);
 
             JButton entityButton = new JButton();
-            entityButton.setPreferredSize(new Dimension(20, 10));
             URL url = EntitySearchView.class.getClassLoader().getResource("images/search.png");
             if(url != null) {
                 ImageIcon icon = new ImageIcon(url);
@@ -235,7 +232,10 @@ public class EntityView {
                 entityView.changeActionListener.actionPerformed(null);
             });
 
-            this.panel.add(entityButton, BorderLayout.EAST);
+            JPanel buttonPanel = new JPanel(new BorderLayout(0, 0));
+            buttonPanel.add(tableButton, BorderLayout.LINE_START);
+            buttonPanel.add(entityButton, BorderLayout.LINE_END);
+            this.panel.add(buttonPanel, BorderLayout.LINE_END);
         }
 
         @Override
