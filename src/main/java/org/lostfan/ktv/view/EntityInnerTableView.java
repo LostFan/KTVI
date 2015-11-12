@@ -34,6 +34,7 @@ public class EntityInnerTableView<T> {
     private JButton deleteButton;
     private JButton upButton;
     private JButton downButton;
+    private EntityInnerTableModel entityInnerTableModel;
 
     private ViewActionListener addActionListener;
 
@@ -44,7 +45,8 @@ public class EntityInnerTableView<T> {
     public EntityInnerTableView(EntityModel model, Object foreignId) {
         this.model = model;
 
-        this.table = new JTable(new EntityInnerTableModel(model, foreignId));
+        this.entityInnerTableModel = new EntityInnerTableModel(model, foreignId);
+        this.table = new JTable(this.entityInnerTableModel);
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         this.table.setAutoCreateRowSorter(true);
         this.table.setFillsViewportHeight(true);
@@ -52,15 +54,26 @@ public class EntityInnerTableView<T> {
 
         this.addButton = new JButton(getString("buttons.add"));
         this.addButton.addActionListener(e -> {
-            if (this.addActionListener != null) {
-                this.addActionListener.actionPerformed(null);
-                revalidate();
-            }
+            this.entityInnerTableModel.addRow();
+            revalidate();
         });
 
         this.addCopyButton = new JButton(getString("buttons.addCopy"));
-        this.restoreRowButton = new JButton(getString("buttons.stringBack"));
+        this.addCopyButton.addActionListener(e -> {
+            this.entityInnerTableModel.addRow(this.table.getSelectedRow());
+            revalidate();
+        });
+        this.restoreRowButton = new JButton(getString("buttons.restoreRows"));
+        this.restoreRowButton.addActionListener(e -> {
+            this.entityInnerTableModel.restoreRows();
+            revalidate();
+        });
+
         this.deleteButton = new JButton(getString("buttons.delete"));
+        this.deleteButton.addActionListener(e -> {
+            this.entityInnerTableModel.deleteRows(this.table.getSelectedRows());
+            revalidate();
+        });
 
         buildLayout();
 

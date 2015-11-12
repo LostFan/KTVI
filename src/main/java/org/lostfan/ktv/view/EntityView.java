@@ -356,14 +356,8 @@ public class EntityView {
                 return new BooleanLabelFieldInput(entityField);
             case Date:
                 return new DateLabelFieldInput(entityField);
-            case Material:
-            case RenderedService:
-            case Service:
-            case Street:
-            case Subscriber:
-                return new EntityLabelFieldInput(entityField);
             default:
-                return new StringLabelFieldInput(entityField);
+                return entityField.getType().isEntityClass() ? new EntityLabelFieldInput(entityField) : new StringLabelFieldInput(entityField);
         }
     }
 
