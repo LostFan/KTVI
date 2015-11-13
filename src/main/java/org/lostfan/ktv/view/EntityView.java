@@ -210,8 +210,8 @@ public class EntityView {
                 if (entitySelectionView.getSelectedEntity() != null) {
                     comboBox.setSelectedId(entitySelectionView.getSelectedEntity().getId());
                     ((JTextField) ((comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.getSelectedEntity().getName());
-                    EntityView.this.frame.invalidate();
-                    EntityView.this.frame.repaint();
+                    comboBox.invalidate();
+                    comboBox.repaint();
                 }
             });
 
@@ -225,10 +225,11 @@ public class EntityView {
             }
 
             entityButton.addActionListener(e -> {
-                EntityModel entityModel = EntityModelFactory.createForm(entityField.getType());
-                entityModel.addObserver(comboBox.getModelObserver());
-                EntityView entityView = new EntityView(entityModel, entityModel.getEntity(comboBox.getSelectedId()));
-                EntityOneController entityOneController = new EntityOneController(entityModel, entityView);
+//                EntityModel entityModel = EntityModelFactory.createForm(entityField.getType());
+                EntityView entityView = EntityModelFactory.createForm(entityField.getType(), comboBox.getSelectedId());
+//                entityView.addObserver(comboBox.getModelObserver());
+//                EntityView entityView = new EntityView(entityModel, entityModel.getEntity(comboBox.getSelectedId()));
+//                EntityOneController entityOneController = new EntityOneController(entityModel, entityView);
                 entityView.changeActionListener.actionPerformed(null);
             });
 
@@ -332,6 +333,7 @@ public class EntityView {
         List<EntityModel> entityModels = model.getTableModels();
         if(entityModels != null) {
             for (EntityModel entityModel : entityModels) {
+                entityModel.setParentModel(model);
                 EntityInnerTableView entityInnerTableView =
                         new EntityInnerTableView(entityModel, this.entity == null ? null : this.entity.getId());
                 frame.add(entityInnerTableView.getContentPanel(), BorderLayout.CENTER);

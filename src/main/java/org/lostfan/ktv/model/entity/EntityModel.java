@@ -22,6 +22,10 @@ public interface EntityModel<T extends Entity> extends Observable {
 
     List<EntityField> getFields();
 
+    List<EntityField> getEditableFields();
+
+    List<EntityField> getEditableFieldsWithoutParent();
+
     List<FieldSearchCriterion<T>> getSearchCriteria();
 
     void setSearchCriteria(List<FieldSearchCriterion<T>> criteria);
@@ -39,5 +43,9 @@ public interface EntityModel<T extends Entity> extends Observable {
     List<EntityModel> getTableModels();
 
     Validator<T> getValidator();
+
+    EntityModel getParentModel();
+
+    void setParentModel(EntityModel parentModel);
 
 }

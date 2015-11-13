@@ -49,7 +49,7 @@ public class EntityTableModel<T extends Entity> extends AbstractTableModel {
             return 0;
         }
         if( thisType.isEntityClass()) {
-            value =  ((Entity) thisType.getDAO().get((Integer) value)).getName();
+            value =  thisType.getDAO().get((Integer) value).getName();
         }
 
         return value;

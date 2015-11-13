@@ -4,13 +4,14 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 
+import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.view.EntityView;
 
 public class EntityActionTableCellEditor extends ActionTableCellEditor {
 
-    public EntityActionTableCellEditor(TableCellEditor editor){
-        super(editor);
+    public EntityActionTableCellEditor(TableCellEditor editor, EntityFieldTypes entityFieldTypes){
+        super(editor, entityFieldTypes);
     }
 
     protected void openEntityTableView(JTable table, int row, int column){
@@ -18,7 +19,7 @@ public class EntityActionTableCellEditor extends ActionTableCellEditor {
         JTextArea textArea = new JTextArea(10, 50);
         Object value = table.getValueAt(row, column);
         if(value!=null){
-            textArea.setText((String)value);
+            textArea.setText(value.toString());
             textArea.setCaretPosition(0);
         }
         int result = JOptionPane.showOptionDialog(table

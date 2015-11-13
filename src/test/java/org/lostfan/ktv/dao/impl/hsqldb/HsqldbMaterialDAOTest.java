@@ -199,8 +199,8 @@ public class HsqldbMaterialDAOTest {
         materialConsumption.setRenderedServiceId(1);
         materialConsumption.setMaterialId(1);
         materialConsumptionDAO.save(materialConsumption);
-        assertEquals(materialConsumptionDAO.getAll().get(3).getRenderedServiceId(),1);
-        assertEquals(materialConsumptionDAO.getAll().get(3).getMaterialId(), 1);
+        assertEquals(materialConsumptionDAO.getAll().get(3).getRenderedServiceId().intValue(),1);
+        assertEquals(materialConsumptionDAO.getAll().get(3).getMaterialId().intValue(), 1);
     }
 
     @Test
@@ -220,7 +220,7 @@ public class HsqldbMaterialDAOTest {
         MaterialConsumption materialConsumption = materialConsumptionDAO.get(1);
         materialConsumption.setMaterialId(2);
         materialConsumptionDAO.update(materialConsumption);
-        assertEquals(materialConsumptionDAO.get(1).getMaterialId(), 2);
+        assertEquals(materialConsumptionDAO.get(1).getMaterialId().intValue(), 2);
     }
 
     @Test
@@ -238,7 +238,7 @@ public class HsqldbMaterialDAOTest {
         MaterialConsumption materialConsumption = materialConsumptionDAO.get(1);
         materialConsumption.setMaterialId(2);
         materialConsumptionDAO.update(materialConsumption);
-        assertEquals(materialConsumptionDAO.get(1).getRenderedServiceId(), 1);
+        assertEquals(materialConsumptionDAO.get(1).getRenderedServiceId().intValue(), 1);
     }
 
     @Test

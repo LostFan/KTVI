@@ -9,9 +9,9 @@ public class MaterialConsumption implements Entity {
 
     private Integer id;
 
-    private int materialId;
+    private Integer materialId;
 
-    private int renderedServiceId;
+    private Integer renderedServiceId;
 
     private double amount;
 
@@ -23,19 +23,19 @@ public class MaterialConsumption implements Entity {
         this.id = id;
     }
 
-    public int getMaterialId() {
+    public Integer getMaterialId() {
         return materialId;
     }
 
-    public void setMaterialId(int materialId) {
+    public void setMaterialId(Integer materialId) {
         this.materialId = materialId;
     }
 
-    public int getRenderedServiceId() {
+    public Integer getRenderedServiceId() {
         return renderedServiceId;
     }
 
-    public void setRenderedServiceId(int renderedServiceId) {
+    public void setRenderedServiceId(Integer renderedServiceId) {
         this.renderedServiceId = renderedServiceId;
     }
 

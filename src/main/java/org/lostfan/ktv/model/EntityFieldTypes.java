@@ -28,6 +28,14 @@ public enum EntityFieldTypes {
         this.dao = dao;
     }
 
+    public static EntityFieldTypes getEntityClass(Class aClass) {
+        for (EntityFieldTypes o : EntityFieldTypes.class.getEnumConstants()) {
+            if(aClass == o.getClazz()) {
+                return o;
+            }
+        };
+        return null;
+    }
 
     public Class getClazz() {
         return this.clazz;

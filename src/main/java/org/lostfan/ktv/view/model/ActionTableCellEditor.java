@@ -1,13 +1,20 @@
 package org.lostfan.ktv.view.model;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.EventObject;
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableCellEditor;
+
+import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.utils.DefaultContextMenu;
+import org.lostfan.ktv.view.EntitySelectionView;
+import org.lostfan.ktv.view.EntityView;
+import org.lostfan.ktv.view.components.EntityComboBox;
+import org.lostfan.ktv.view.components.EntityComboBoxFactory;
+import org.lostfan.ktv.view.components.EntityModelFactory;
+import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
 /**
  * Created by Ihar_Niakhlebau on 30-Oct-15.
@@ -17,12 +24,16 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
     private TableCellEditor editor;
     private JButton viewTableEntitiesButton = new JButton();
     private JButton viewEntityButton = new JButton();
+    private EntityFieldTypes entityFieldTypes;
 
 
     protected JTable table;
     protected int row, column;
+    private EntityComboBox entityComboBox;
 
-    public ActionTableCellEditor(TableCellEditor editor){
+    public ActionTableCellEditor(TableCellEditor editor, EntityFieldTypes entityFieldTypes){
+
+        this.entityFieldTypes = entityFieldTypes;
         URL urlTableEntities = ActionTableCellEditor.class.getClassLoader().getResource("images/ellipsis.gif");
 
         if(urlTableEntities != null) {
@@ -43,8 +54,16 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
 
         this.editor = editor;
         viewTableEntitiesButton.addActionListener(e -> {
-            editor.cancelCellEditing();
-            openEntityTableView(table, row, column);
+
+            EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityFieldTypes);
+            if (entitySelectionView.getSelectedEntity() != null) {
+                this.entityComboBox.setSelectedId(entitySelectionView.getSelectedEntity().getId());
+                ((JTextField) (entityComboBox.getEditor().getEditorComponent())).setText(entitySelectionView.getSelectedEntity().getName());
+                this.entityComboBox.invalidate();
+                this.entityComboBox.repaint();
+            }
+            editor.stopCellEditing();
+
         });
 
         // ui-tweaking
@@ -54,7 +73,7 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
 
         viewEntityButton.addActionListener(e -> {
             editor.cancelCellEditing();
-            openEntityView(table, row, column);
+            EntityView entityView = EntityModelFactory.createForm(entityFieldTypes, this.entityComboBox.getSelectedId());
         });
 
         viewEntityButton.setFocusable(false);
@@ -65,7 +84,16 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
     public Component getTableCellEditorComponent(JTable table, Object value
             , boolean isSelected, int row, int column){
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(editor.getTableCellEditorComponent(table, value, isSelected, row, column));
+//        panel.add(editor.getTableCellEditorComponent(table, value, isSelected, row, column));
+        this.entityComboBox = EntityComboBoxFactory.createComboBox(entityFieldTypes);
+        panel.add( this.entityComboBox);
+        new DefaultContextMenu().add((JTextField)  this.entityComboBox.getEditor().getEditorComponent());
+        /**
+         * TODO: Edit id
+         */
+        this.entityComboBox.setSelectedId(1);
+        this.entityComboBox.getSelectedName();
+        ((JTextField)( this.entityComboBox.getEditor().getEditorComponent())).setText((String) value);
         JPanel panelButtons = new JPanel(new BorderLayout());
         panelButtons.add(viewTableEntitiesButton, BorderLayout.WEST);
         panelButtons.add(viewEntityButton, BorderLayout.EAST);
@@ -77,7 +105,7 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
     }
 
     public Object getCellEditorValue(){
-        return editor.getCellEditorValue();
+        return this.entityComboBox.getSelectedId();
     }
 
     public boolean isCellEditable(EventObject anEvent){

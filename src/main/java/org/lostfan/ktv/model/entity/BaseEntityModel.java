@@ -2,6 +2,7 @@ package org.lostfan.ktv.model.entity;
 
 import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.utils.BaseObservable;
 import org.lostfan.ktv.validation.ValidationResult;
@@ -17,6 +18,8 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     private List<FieldSearchCriterion<T>> searchCriteria;
 
     private List<T> entities;
+
+    private EntityModel parentModel;
 
     public BaseEntityModel() {
         this.searchCriteria = new ArrayList<>();
@@ -35,6 +38,16 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     @Override
     public List<EntityModel> getTableModels() {
         return null;
+    }
+
+    @Override
+    public List<EntityField> getEditableFields() {
+        return getFields().stream().filter(e -> e.isEditable()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EntityField> getEditableFieldsWithoutParent() {
+        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getClazz() != getParentModel().getEntityClass()).collect(Collectors.toList());
     }
 
     @Override
@@ -84,6 +97,16 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     }
 
     protected abstract EntityDAO<T> getDao();
+
+    @Override
+    public EntityModel getParentModel(){
+        return this.parentModel;
+    }
+
+    @Override
+    public void setParentModel(EntityModel parentModel) {
+        this.parentModel = parentModel;
+    }
 
     /**
      * Dummy Implementation

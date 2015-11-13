@@ -14,19 +14,19 @@ import javax.swing.table.DefaultTableModel;
 public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
 
     private class DeletedObject {
-        private List<List<Object>> list;
+        private List<T> list;
         private int [] indexes;
 
-        public DeletedObject(List<List<Object>> list, int[] indexes) {
+        public DeletedObject(List<T> list, int[] indexes) {
             this.list = list;
             this.indexes = indexes;
         }
 
-        public List<List<Object>> getList() {
+        public List<T> getList() {
             return list;
         }
 
-        public void setList(List<List<Object>> list) {
+        public void setList(List<T> list) {
             this.list = list;
         }
 
@@ -38,53 +38,34 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
             this.indexes = indexes;
         }
     }
+    
+    private static final String NUMBER_COLUMN_NAME = "number";
 
     private EntityModel<T> model;
     private int size = 0;
-    private List<List<Object>> list;
+    private List<T> list;
     private List<DeletedObject> deletedObjects;
-
-
-
-
+    private List<EntityField> entityFieldList;
+    
     public EntityInnerTableModel(EntityModel<T> model, Object foreignId) {
 
         this.model = model;
+        this.entityFieldList = this.model.getEditableFieldsWithoutParent();
+        this.entityFieldList.add(0, new EntityField(NUMBER_COLUMN_NAME, EntityFieldTypes.Integer, e -> null, (e1, e2) -> {}));
         list = new ArrayList<>();
         deletedObjects = new ArrayList<>();
         if(foreignId != null) {
             size = this.model.getListByForeignKey((Integer)foreignId).size();
         }
 
-        for (int i = 0; i < size ; i++) {
-
-            List innerList = new ArrayList<>();
-            list.add(innerList);
-            for (EntityField entityField : this.model.getFields()) {
-                Object value = entityField.get(this.model.getList().get(i));
-                EntityFieldTypes thisType = this.model.getFields().get(i).getType();
-                if (thisType.getClazz() == Integer.class && value ==null) {
-                    value = 0;
-                }
-                if (thisType.isEntityClass()) {
-                    value = thisType.getDAO().get((Integer) value).getName();
-                }
-                innerList.add(value);
-            }
+        for (T entity : this.model.getList()) {
+            list.add(entity);
         }
     }
 
     public void addRow() {
         this.size++;
-        list.add(createEmptyList());
-    }
-
-    private List<Object> createEmptyList() {
-        List list1 = new ArrayList<>();
-        for (int i = 0; i <  this.model.getFields().size(); i++) {
-            list1.add(null);
-        }
-        return list1;
+        list.add( model.createNewEntity());
     }
 
     public void addRow(Integer index) {
@@ -92,15 +73,20 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
             return;
         }
         this.size++;
-        list.add(new ArrayList<>(list.get(index)));
+        T newEntity = model.createNewEntity();
+
+        for (EntityField entityField : this.entityFieldList) {
+            entityField.set(newEntity, entityField.get(list.get(index)));
+        }
+        list.add(newEntity);
     }
 
     public void deleteRows(int[] indexes) {
         if(indexes.length == 0) {
             return;
         }
-
-        List<List<Object>> deletedList = new ArrayList<>();
+//
+        List<T> deletedList = new ArrayList<>();
         for (int i = 0; i <  indexes.length; i++) {
             deletedList.add(list.get(indexes[i]));
         }
@@ -119,7 +105,7 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
         }
         int lastIndex = deletedObjects.size() - 1;
         int [] deletedIndexes = deletedObjects.get(lastIndex).getIndexes();
-        List<List<Object>> deletedList = deletedObjects.get(lastIndex).getList();
+        List<T> deletedList = deletedObjects.get(lastIndex).getList();
         for (int i = 0; i < deletedIndexes.length; i++) {
             this.list.add(deletedIndexes[i], deletedList.get(i));
             this.size++;
@@ -135,32 +121,45 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
 
     @Override
     public int getColumnCount() {
-        return this.model.getFields().size();
+        return this.entityFieldList.size();
     }
 
     @Override
     public String getColumnName(int columnIndex) {
     return ResourceBundles.getEntityBundle().getString(
-            this.model.getFields().get(columnIndex).getTitleKey());
+            this.entityFieldList.get(columnIndex).getTitleKey());
 }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return this.model.getFields().get(columnIndex).getType().getClazz();
+            return this.entityFieldList.get(columnIndex).getType().getClazz();
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
+        if(this.entityFieldList.get(columnIndex).getTitleKey() == NUMBER_COLUMN_NAME) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
+        EntityFieldTypes thisType = this.entityFieldList.get(columnIndex).getType();
+        if(this.entityFieldList.get(columnIndex).getTitleKey() == NUMBER_COLUMN_NAME) {
+            return rowIndex + 1;
+        }
+        if (thisType.isEntityClass() && (Integer) this.model.getFields().get(columnIndex).get(list.get(rowIndex)) != null) {
+           return thisType.getDAO().get((Integer) this.model.getFields().get(columnIndex).get(list.get(rowIndex))).getName();
+        }
+        return this.entityFieldList.get(columnIndex).get(list.get(rowIndex));
 
-        return list.get(rowIndex).get(columnIndex);
     }
+
     @Override
     public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        list.get(rowIndex).set(columnIndex, value);
+        EntityFieldTypes thisType = this.entityFieldList.get(columnIndex).getType();
+        this.entityFieldList.get(columnIndex).set(list.get(rowIndex), value);
+
     }
 }
