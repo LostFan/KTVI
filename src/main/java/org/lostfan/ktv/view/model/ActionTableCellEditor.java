@@ -7,8 +7,10 @@ import javax.swing.*;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableCellEditor;
 
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.utils.DefaultContextMenu;
+import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.EntitySelectionView;
 import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.components.EntityComboBox;
@@ -25,6 +27,7 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
     private JButton viewTableEntitiesButton = new JButton();
     private JButton viewEntityButton = new JButton();
     private EntityFieldTypes entityFieldTypes;
+    private ViewActionListener changeActionListener;
 
 
     protected JTable table;
@@ -57,7 +60,7 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
 
             EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityFieldTypes);
             if (entitySelectionView.getSelectedEntity() != null) {
-                this.entityComboBox.setSelectedId(entitySelectionView.getSelectedEntity().getId());
+                this.entityComboBox.setSelectedEntity(entitySelectionView.getSelectedEntity());
                 ((JTextField) (entityComboBox.getEditor().getEditorComponent())).setText(entitySelectionView.getSelectedEntity().getName());
                 this.entityComboBox.invalidate();
                 this.entityComboBox.repaint();
@@ -73,7 +76,8 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
 
         viewEntityButton.addActionListener(e -> {
             editor.cancelCellEditing();
-            EntityView entityView = EntityModelFactory.createForm(entityFieldTypes, this.entityComboBox.getSelectedId());
+            EntityView entityView = EntityModelFactory.createForm(entityFieldTypes, this.entityComboBox.getSelectedEntity().getId());
+//            entityView.changeActionListener.actionPerformed(null);
         });
 
         viewEntityButton.setFocusable(false);
@@ -83,17 +87,16 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
 
     public Component getTableCellEditorComponent(JTable table, Object value
             , boolean isSelected, int row, int column){
+        Entity entity = (Entity) value;
         JPanel panel = new JPanel(new BorderLayout());
 //        panel.add(editor.getTableCellEditorComponent(table, value, isSelected, row, column));
         this.entityComboBox = EntityComboBoxFactory.createComboBox(entityFieldTypes);
-        panel.add( this.entityComboBox);
+        panel.add(this.entityComboBox);
         new DefaultContextMenu().add((JTextField)  this.entityComboBox.getEditor().getEditorComponent());
-        /**
-         * TODO: Edit id
-         */
-        this.entityComboBox.setSelectedId(1);
-        this.entityComboBox.getSelectedName();
-        ((JTextField)( this.entityComboBox.getEditor().getEditorComponent())).setText((String) value);
+        if(entity != null) {
+            this.entityComboBox.setSelectedEntity(entity);
+            ((JTextField) (this.entityComboBox.getEditor().getEditorComponent())).setText(entity.getName());
+        }
         JPanel panelButtons = new JPanel(new BorderLayout());
         panelButtons.add(viewTableEntitiesButton, BorderLayout.WEST);
         panelButtons.add(viewEntityButton, BorderLayout.EAST);
@@ -105,7 +108,7 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
     }
 
     public Object getCellEditorValue(){
-        return this.entityComboBox.getSelectedId();
+        return this.entityComboBox.getSelectedEntity();
     }
 
     public boolean isCellEditable(EventObject anEvent){

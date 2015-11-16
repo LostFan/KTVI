@@ -3,6 +3,7 @@ package org.lostfan.ktv.view.components;
 import java.awt.event.*;
 import javax.swing.*;
 
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.utils.Observer;
 
@@ -42,7 +43,7 @@ public class EntityComboBox extends JComboBox<String> {
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (!textField.getText().isEmpty() && entityComboBoxModel.getSelectedId() == null) {
+                if (!textField.getText().isEmpty() && entityComboBoxModel.getSelectedEntity() == null) {
                     textField.requestFocusInWindow();
                 }
             }
@@ -66,20 +67,24 @@ public class EntityComboBox extends JComboBox<String> {
         return textField.getText();
     }
 
-    public Integer getSelectedId() {
-        return entityComboBoxModel.getSelectedId();
+    public Entity getSelectedEntity() {
+        return entityComboBoxModel.getSelectedEntity();
+    }
+
+    public Object getSelectedItem() {
+        return entityComboBoxModel.getSelectedItem();
     }
 
     public JComboBox getJComboBox() {
         return this;
     }
 
-    public Object getSelectedName() {
-        return entityComboBoxModel.getSelectedNameById();
+    public void setSelectedId(int id){
+        entityComboBoxModel.setSelectedEntity(id);
     }
 
-    public void setSelectedId(int id){
-        entityComboBoxModel.setSelectedId(id);
+    public void setSelectedEntity(Entity id){
+        entityComboBoxModel.setSelectedEntity(id);
     }
 
 
@@ -103,16 +108,15 @@ public class EntityComboBox extends JComboBox<String> {
             public void run() {
                 if ((ke.getKeyCode() < 37 || ke.getKeyCode() > 40) && ke.getKeyCode() != 10) { //up, right, left, down and enter keys
                     comboFilter(textField.getText());
-                }
-
+                };
                 boolean popupVisible = true;
                 if (entityComboBoxModel.getSize() == 0) {
                     popupVisible = false;
-                } else if (entityComboBoxModel.getSelectedId() == null && ke.getKeyCode() == 10) {
+                } else if (entityComboBoxModel.getSelectedEntity() == null && ke.getKeyCode() == 10) {
 
                 }
                 if (ke.getKeyCode() == 10) {
-                    if (entityComboBoxModel.getSelectedId() == null) {
+                    if (entityComboBoxModel.getSelectedEntity() == null) {
                         popupVisible = true;
                         getJComboBox().setSelectedIndex(0);
 
@@ -151,8 +155,8 @@ public class EntityComboBox extends JComboBox<String> {
 
 
     private void rev() {
-        if(entityComboBoxModel.getSelectedId() != null) {
-            textField.setText(model.getEntity(entityComboBoxModel.getSelectedId()).getName());
+        if(entityComboBoxModel.getSelectedEntity() != null) {
+            textField.setText(entityComboBoxModel.getSelectedEntity().getName());
         }
         this.invalidate();
         this.repaint();

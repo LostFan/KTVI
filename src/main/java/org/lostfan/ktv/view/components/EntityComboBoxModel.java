@@ -26,9 +26,9 @@ public class EntityComboBoxModel implements ComboBoxModel<String> {
     private Object currentFormattedValue;
     private EntitySearcherModel model;
     /**
-     * ID of the selected entity.
+     * Selected entity.
      */
-    private Integer id;
+    private Entity entity;
     /**
      * Key - the formatted name of an entity
      * Value - an entity index in the model list
@@ -55,15 +55,15 @@ public class EntityComboBoxModel implements ComboBoxModel<String> {
     public void setNewModel(EntitySearcherModel model, String currentValue) {
         setModel(model);
         this.currentValue = currentValue;
-        if (id != null && !this.formattedNames.containsKey(formatName(currentValue, id))
+        if (this.entity != null && !this.formattedNames.containsKey(formatName(currentValue, this.entity.getId()))
                 && !this.formattedNames.containsKey(this.currentValue)) {
-            id = null;
+            this.entity = null;
             currentFormattedValue = null;
         }
     }
 
-    public Integer getSelectedId() {
-        return this.id;
+    public Entity getSelectedEntity() {
+        return this.entity;
     }
 
     /**
@@ -81,32 +81,22 @@ public class EntityComboBoxModel implements ComboBoxModel<String> {
         return String.valueOf(this.currentValue);
     }
 
-    /**
-     * Returns the value of the "name" field according to the current selected id.
-     */
-    public Object getSelectedNameById() {
-        if (id == null) {
-            return null;
-        }
-
-        for (FormattedEntity entity : entities) {
-            if (entity.entity.getId().equals(id)) {
-                return entity.entity.getName();
-            }
-        }
-
-        return null;
+    public void setSelectedEntity(int id){
+        this.entity = this.model.getEntity(id);
     }
 
-    public void setSelectedId(int id){
-        this.id = id;
+    public void setSelectedEntity(Entity entity){
+        this.entity = entity;
     }
 
 
     @Override
     public void setSelectedItem(Object anItem) {
         this.currentValue = anItem;
-
+        
+        if(this.entity!= null && this.currentValue.equals(this.entity.getName())) {
+            return;
+        }
         // anItem is a formatted name
         if(formattedNames.containsKey(anItem)) {
             this.currentFormattedValue = anItem;
@@ -118,10 +108,10 @@ public class EntityComboBoxModel implements ComboBoxModel<String> {
         }
 
         if(this.formattedNames.containsKey(this.currentValue)) {
-            id = this.entities.get(this.formattedNames.get(this.currentValue)).entity.getId();
-        } else if (id != null && !this.formattedNames.containsKey(this.currentFormattedValue)){
+            this.entity = this.entities.get(this.formattedNames.get(this.currentValue)).entity;
+        } else if (this.entity != null && !this.formattedNames.containsKey(this.currentFormattedValue)){
             this.currentFormattedValue = null;
-            id = null;
+            this.entity = null;
         }
     }
 

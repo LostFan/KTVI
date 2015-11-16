@@ -99,7 +99,6 @@ public class HsqldbPaymentDAO implements PaymentDAO {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"payment\" (\"subscriber_id\", \"service_id\", \"payment_type_id\", \"price\", \"date\") VALUES(?, ?, ?, ?, ?)");
             preparedStatement.setInt(1, payment.getSubscriberId());
-            System.out.println(payment.getServicePaymentId());
             preparedStatement.setInt(2, payment.getServicePaymentId());
             if( payment.getPaymentTypeId() != null) {
                 preparedStatement.setInt(3, payment.getPaymentTypeId());

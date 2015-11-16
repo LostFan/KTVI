@@ -149,8 +149,8 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
         if(this.entityFieldList.get(columnIndex).getTitleKey() == NUMBER_COLUMN_NAME) {
             return rowIndex + 1;
         }
-        if (thisType.isEntityClass() && (Integer) this.model.getFields().get(columnIndex).get(list.get(rowIndex)) != null) {
-           return thisType.getDAO().get((Integer) this.model.getFields().get(columnIndex).get(list.get(rowIndex))).getName();
+        if (thisType.isEntityClass() && this.model.getFields().get(columnIndex).get(list.get(rowIndex)) != null) {
+           return thisType.getDAO().get((Integer) this.model.getFields().get(columnIndex).get(list.get(rowIndex)));
         }
         return this.entityFieldList.get(columnIndex).get(list.get(rowIndex));
 
@@ -158,8 +158,15 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
 
     @Override
     public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        EntityFieldTypes thisType = this.entityFieldList.get(columnIndex).getType();
-        this.entityFieldList.get(columnIndex).set(list.get(rowIndex), value);
+        if(this.entityFieldList.get(columnIndex).getType().isEntityClass()) {
+            if(value != null) {
+                this.entityFieldList.get(columnIndex).set(list.get(rowIndex), ((Entity) value).getId());
+            } else {
+                this.entityFieldList.get(columnIndex).set(list.get(rowIndex), null);
+            }
+        } else {
+            this.entityFieldList.get(columnIndex).set(list.get(rowIndex), value);
+        }
 
     }
 }
