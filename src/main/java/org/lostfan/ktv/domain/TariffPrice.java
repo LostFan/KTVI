@@ -2,7 +2,7 @@ package org.lostfan.ktv.domain;
 
 import java.time.LocalDate;
 
-public class TariffPrice implements Entity {
+public class TariffPrice extends DefaultEntity {
 
     private Integer tariffId;
 

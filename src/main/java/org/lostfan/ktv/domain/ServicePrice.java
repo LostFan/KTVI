@@ -2,7 +2,7 @@ package org.lostfan.ktv.domain;
 
 import java.time.LocalDate;
 
-public class ServicePrice implements Entity {
+public class ServicePrice extends DefaultEntity {
 
     private Integer id;
 

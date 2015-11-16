@@ -1,6 +1,6 @@
 package org.lostfan.ktv.domain;
 
-public class Tariff implements Entity  {
+public class Tariff extends DefaultEntity  {
 
     private Integer id;
 

@@ -1,6 +1,6 @@
 package org.lostfan.ktv.domain;
 
-public class Street implements Entity {
+public class Street extends DefaultEntity {
 
     private Integer id;
 

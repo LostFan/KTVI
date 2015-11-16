@@ -5,7 +5,7 @@ import org.lostfan.ktv.model.SearchCriteria;
 /**
  * Created by Roman Savoskin on 21.08.2015.
  */
-public class MaterialConsumption implements Entity {
+public class MaterialConsumption extends DefaultEntity {
 
     private Integer id;
 

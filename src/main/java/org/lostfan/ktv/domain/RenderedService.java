@@ -3,7 +3,7 @@ package org.lostfan.ktv.domain;
 import java.time.LocalDate;
 import java.util.List;
 
-public class RenderedService implements Entity {
+public class RenderedService extends DefaultEntity {
 
     private Integer id;
 

@@ -1,8 +1,8 @@
 package org.lostfan.ktv.domain;
 
-public interface Entity {
+public abstract class Entity {
 
-    Integer getId();
+    public abstract Integer getId();
 
-    String getName();
+    public abstract String getName();
 }

@@ -1,6 +1,6 @@
 package org.lostfan.ktv.domain;
 
-public class Material implements Entity {
+public class Material extends DefaultEntity {
 
     private Integer id;
 

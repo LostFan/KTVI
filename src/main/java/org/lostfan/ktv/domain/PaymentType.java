@@ -3,7 +3,7 @@ package org.lostfan.ktv.domain;
 /**
  * Created by Ihar_Niakhlebau on 23-Sep-15.
  */
-public class PaymentType implements Entity {
+public class PaymentType extends DefaultEntity {
 
     private Integer id;
 
