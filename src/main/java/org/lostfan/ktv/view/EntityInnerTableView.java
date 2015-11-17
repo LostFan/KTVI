@@ -1,7 +1,6 @@
 package org.lostfan.ktv.view;
 
 import org.lostfan.ktv.controller.EntityInnerTableController;
-import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.Observer;
@@ -16,6 +15,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.util.List;
 
 public class EntityInnerTableView<T> {
 
@@ -148,6 +148,14 @@ public class EntityInnerTableView<T> {
         this.tableScrollPane.setViewportView(this.table);
 
         revalidate();
+    }
+
+    public List<T> getEntityList() {
+        return entityInnerTableModel.getEntityList();
+    }
+
+    public EntityModel getEntityModel() {
+        return model;
     }
 
     private void addStringActionTableCellEditorToColumns() {

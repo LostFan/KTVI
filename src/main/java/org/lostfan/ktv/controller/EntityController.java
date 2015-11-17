@@ -66,7 +66,11 @@ public class EntityController {
                     entityView.showErrors(result.getErrors());
                     return;
                 }
+                if(!isSaveInnerTable(entityView)) {
+                    return;
+                }
                 model.save(entity);
+                saveInnerTable(entityView);
                 entityView.hide();
             });
         }
@@ -85,12 +89,52 @@ public class EntityController {
                     entityView.showErrors(result.getErrors());
                     return;
                 }
+                if(!isSaveInnerTable(entityView)) {
+                    return;
+                }
                 model.save(entity);
+                saveInnerTable(entityView);
                 entityView.hide();
             });
         }
     }
+    private boolean isSaveInnerTable(EntityView entityView) {
+        List<EntityModel> entityModels = model.getTableModels();
+        if(entityModels == null) {
+            return true;
+        }
+        for (EntityModel entityModel : entityModels) {
+            List<Entity> entities = entityView.getTableEntities().get(entityModel);
+            for (Entity innerEntity : entities) {
+                ValidationResult innerResult = entityModel.getValidator().validate(innerEntity);
+                if (innerResult.hasErrors()) {
+                    entityView.showErrors(innerResult.getErrors());
+                    return false;
+                }
+            }
+        }
+        return true;
 
+    }
+
+    private void saveInnerTable(EntityView entityView) {
+        List<EntityModel> entityModels = model.getTableModels();
+        if(entityModels == null) {
+            return;
+        }
+        for (EntityModel entityModel : entityModels) {
+            List<Entity> entities = entityView.getTableEntities().get(entityModel);
+            List<Entity>  entitiesInModel = entityModel.getList();
+            for (Entity innerEntity : entitiesInModel) {
+                if(!entities.contains(innerEntity)) {
+                    entityModel.deleteEntityById(innerEntity.getId());
+                }
+            }
+            for (Entity innerEntity : entities) {
+                entityModel.save(innerEntity);
+            }
+        }
+    }
     private class DeleteActionListener implements ViewActionListener {
 
         @Override

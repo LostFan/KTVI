@@ -39,7 +39,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     }
 
     @Override
-    public List<Subscriber> getListByForeignKey(int foreignKey) {
+    public List<Subscriber> getListByForeignKey(Integer foreignKey) {
         return null;
     }
 

@@ -38,7 +38,7 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
             this.indexes = indexes;
         }
     }
-    
+
     private static final String NUMBER_COLUMN_NAME = "number";
 
     private EntityModel<T> model;
@@ -46,17 +46,19 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
     private List<T> list;
     private List<DeletedObject> deletedObjects;
     private List<EntityField> entityFieldList;
-    
+    private EntityField parentField;
+    private Object foreignId;
+
     public EntityInnerTableModel(EntityModel<T> model, Object foreignId) {
 
         this.model = model;
+        this.foreignId = foreignId;
         this.entityFieldList = this.model.getEditableFieldsWithoutParent();
+        this.parentField = this.model.getParentField();
         this.entityFieldList.add(0, new EntityField(NUMBER_COLUMN_NAME, EntityFieldTypes.Integer, e -> null, (e1, e2) -> {}));
         list = new ArrayList<>();
         deletedObjects = new ArrayList<>();
-        if(foreignId != null) {
-            size = this.model.getListByForeignKey((Integer)foreignId).size();
-        }
+        size = this.model.getListByForeignKey((Integer)foreignId).size();
 
         for (T entity : this.model.getList()) {
             list.add(entity);
@@ -168,5 +170,12 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
             this.entityFieldList.get(columnIndex).set(list.get(rowIndex), value);
         }
 
+    }
+
+    public List<T> getEntityList() {
+        for (T t : list) {
+            this.parentField.set(t, foreignId);
+        }
+        return list;
     }
 }

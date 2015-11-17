@@ -17,9 +17,11 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
 
     private List<FieldSearchCriterion<T>> searchCriteria;
 
-    private List<T> entities;
+    protected List<T> entities;
 
     private EntityModel parentModel;
+
+    protected List<EntityModel> entityTableModels;
 
     public BaseEntityModel() {
         this.searchCriteria = new ArrayList<>();
@@ -51,6 +53,11 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     }
 
     @Override
+    public EntityField getParentField() {
+        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getClazz() == getParentModel().getEntityClass()).collect(Collectors.toList()).get(0);
+    }
+
+    @Override
     public List<T> getList() {
         if (this.entities == null) {
             this.entities = getDao().getAll();
@@ -71,15 +78,28 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
         } else {
             getDao().update(entity);
         }
+//        for (EntityModel entityTableModel : entityTableModels) {
+//            List<Entity> en =  entityTableModel.getList();
+//            for (Entity entity1 : en) {
+//                ((BaseEntityModel) entityTableModel).getDao().save(entity1);
+//            }
+//        }
 
         updateEntitiesList();
     }
+
     @Override
     public void deleteEntityByRow(List<Integer> rowNumbers) {
         for (Integer rowNumber : rowNumbers) {
             int id = getList().get(rowNumber).getId();
             getDao().delete(id);
         }
+        updateEntitiesList();
+    }
+
+    @Override
+    public void deleteEntityById(Integer id) {
+        getDao().delete(id);
         updateEntitiesList();
     }
 

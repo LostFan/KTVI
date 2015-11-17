@@ -27,7 +27,7 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
     }
 
     @Override
-    public List<Service> getListByForeignKey(int foreignKey) {
+    public List<Service> getListByForeignKey(Integer foreignKey) {
         return null;
     }
 

@@ -41,7 +41,7 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
     }
 
     @Override
-    public List<Tariff> getListByForeignKey(int foreignKey) {
+    public List<Tariff> getListByForeignKey(Integer foreignKey) {
         return null;
     }
 

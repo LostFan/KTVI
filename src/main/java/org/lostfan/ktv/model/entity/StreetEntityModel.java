@@ -38,7 +38,7 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
     }
 
     @Override
-    public List<Street> getListByForeignKey(int foreignKey) {
+    public List<Street> getListByForeignKey(Integer foreignKey) {
         return null;
     }
 

@@ -184,7 +184,7 @@ public class HsqldbMaterialDAOTest {
     public void createNewMaterialConsumptionCorrectServiceCountTest() throws SQLException {
         insertStubData();
         MaterialConsumption materialConsumption = new MaterialConsumption();
-        materialConsumption.setAmount(1);
+        materialConsumption.setAmount(1D);
         materialConsumption.setRenderedServiceId(1);
         materialConsumption.setMaterialId(1);
         materialConsumptionDAO.save(materialConsumption);
@@ -195,7 +195,7 @@ public class HsqldbMaterialDAOTest {
     public void createNewMaterialConsumptionShouldMatchInsertedValuesTest() throws SQLException {
         insertStubData();
         MaterialConsumption materialConsumption = new MaterialConsumption();
-        materialConsumption.setAmount(1);
+        materialConsumption.setAmount(1D);
         materialConsumption.setRenderedServiceId(1);
         materialConsumption.setMaterialId(1);
         materialConsumptionDAO.save(materialConsumption);
@@ -207,7 +207,7 @@ public class HsqldbMaterialDAOTest {
     public void createNewMaterialConsumptionShouldHaveIncrementedIdTest() throws SQLException {
         insertStubData();
         MaterialConsumption materialConsumption = new MaterialConsumption();
-        materialConsumption.setAmount(1);
+        materialConsumption.setAmount(1D);
         materialConsumption.setRenderedServiceId(1);
         materialConsumption.setMaterialId(1);
         materialConsumptionDAO.save(materialConsumption);

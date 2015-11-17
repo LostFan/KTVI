@@ -12,7 +12,7 @@ public interface EntityModel<T extends Entity> extends Observable {
 
     List<T> getList();
 
-    List<T> getListByForeignKey(int foreignKey);
+    List<T> getListByForeignKey(Integer foreignKey);
 
     T getEntity(int id);
 
@@ -26,6 +26,8 @@ public interface EntityModel<T extends Entity> extends Observable {
 
     List<EntityField> getEditableFieldsWithoutParent();
 
+    EntityField getParentField();
+
     List<FieldSearchCriterion<T>> getSearchCriteria();
 
     void setSearchCriteria(List<FieldSearchCriterion<T>> criteria);
@@ -35,6 +37,8 @@ public interface EntityModel<T extends Entity> extends Observable {
     T createNewEntity();
 
     void deleteEntityByRow(List<Integer> rowNumbers);
+
+    void deleteEntityById(Integer id);
 
     List<EntityModel> getEntityModels();
 

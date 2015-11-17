@@ -1,6 +1,6 @@
 package org.lostfan.ktv.domain;
 
-public abstract class DefaultEntity extends Entity {
+public abstract class DefaultEntity implements Entity {
 
     public String toString() {
         return getName();

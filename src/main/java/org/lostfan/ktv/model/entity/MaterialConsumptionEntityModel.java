@@ -6,12 +6,18 @@ import java.util.List;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.domain.MaterialConsumption;
+import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.validation.MaterialConsumptionValidator;
+import org.lostfan.ktv.validation.Validator;
 
 public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialConsumption> {
 
     private List<EntityField> fields;
+
+    private Validator<MaterialConsumption> validator = new MaterialConsumptionValidator();
 
     public MaterialConsumptionEntityModel() {
         fields = new ArrayList<>();
@@ -42,8 +48,15 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
     }
 
     @Override
-    public List<MaterialConsumption> getListByForeignKey(int foreignKey) {
-        return getDao().getMaterialConsumptionsByRenderedServiceId(foreignKey);
+    public List<MaterialConsumption> getListByForeignKey(Integer foreignKey) {
+        if(foreignKey == null) {
+            entities = new ArrayList<>();
+            return entities;
+        }
+        if (this.getParentModel().getEntityClass() == RenderedService.class) {
+            entities = getDao().getMaterialConsumptionsByRenderedServiceId(foreignKey);
+        }
+        return entities;
     }
 
     @Override
@@ -59,6 +72,11 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
     @Override
     protected MaterialConsumptionDAO getDao() {
         return DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
+    }
+
+    @Override
+    public Validator<MaterialConsumption> getValidator() {
+        return this.validator;
     }
 
     @Override

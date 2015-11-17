@@ -41,7 +41,7 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
     }
 
     @Override
-    public List<Material> getListByForeignKey(int foreignKey) {
+    public List<Material> getListByForeignKey(Integer foreignKey) {
         return null;
     }
 

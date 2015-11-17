@@ -13,6 +13,7 @@ import org.lostfan.ktv.view.components.EntityComboBoxFactory;
 import org.lostfan.ktv.view.components.EntityModelFactory;
 import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
+import javax.lang.model.util.Types;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
@@ -196,7 +197,6 @@ public class EntityView {
 
                 Object value = entityField.get(EntityView.this.entity);
                 comboBox.setSelectedId((Integer) value);
-                System.out.println(comboBox.getSelectedEntity());
                 value = comboBox.getSelectedEntity().getName();
                 ((JTextField)((comboBox).getEditor().getEditorComponent())).setText((String) value);
             }
@@ -261,6 +261,7 @@ public class EntityView {
     private JButton addButton;
     private JButton cancelButton;
     private EntityModel<? extends Entity> model;
+    private List<EntityInnerTableView> entityInnerTableViewList;
 
     private ViewActionListener addActionListener;
     private ViewActionListener cancelActionListener;
@@ -334,11 +335,12 @@ public class EntityView {
         }
 
         List<EntityModel> entityModels = model.getTableModels();
+        entityInnerTableViewList = new ArrayList<>();
         if(entityModels != null) {
             for (EntityModel entityModel : entityModels) {
-                entityModel.setParentModel(model);
                 EntityInnerTableView entityInnerTableView =
                         new EntityInnerTableView(entityModel, this.entity == null ? null : this.entity.getId());
+                entityInnerTableViewList.add(entityInnerTableView);
                 frame.add(entityInnerTableView.getContentPanel(), BorderLayout.CENTER);
             }
         }
@@ -377,6 +379,23 @@ public class EntityView {
         }
 
         return entity;
+    }
+
+    public Map<EntityModel, List<Entity>> getTableEntities() {
+        Map<EntityModel, List<Entity>> lists = new HashMap<>();
+        for (EntityInnerTableView entityInnerTableView : entityInnerTableViewList) {
+            lists.put(entityInnerTableView.getEntityModel(),entityInnerTableView.getEntityList());
+        }
+//        Entity entity = this.entity;
+//        if (entity == null) {
+//            entity = this.model.createNewEntity();
+//        }
+//
+//        for (LabelFieldInput labelFieldInput : this.labelFieldInputs) {
+//            labelFieldInput.entityField.set(entity, labelFieldInput.getValue());
+//        }
+
+        return lists;
     }
 
     public void setAddActionListener(ViewActionListener addActionListener) {

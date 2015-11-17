@@ -93,7 +93,6 @@ public class EntityComboBoxModel implements ComboBoxModel<String> {
     @Override
     public void setSelectedItem(Object anItem) {
         this.currentValue = anItem;
-        
         if(this.entity!= null && this.currentValue.equals(this.entity.getName())) {
             return;
         }

@@ -13,7 +13,7 @@ public class MaterialConsumption extends DefaultEntity {
 
     private Integer renderedServiceId;
 
-    private double amount;
+    private Double amount;
 
     public Integer getId() {
         return id;
@@ -39,15 +39,18 @@ public class MaterialConsumption extends DefaultEntity {
         this.renderedServiceId = renderedServiceId;
     }
 
-    public double getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
     public String getName() {
-        return id.toString();
+        if(id != null) {
+            return id.toString();
+        }
+        return "";
     }
 }

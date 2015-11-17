@@ -43,7 +43,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     @Override
-    public List<RenderedService> getListByForeignKey(int foreignKey) {
+    public List<RenderedService> getListByForeignKey(Integer foreignKey) {
         return null;
     }
 
@@ -59,9 +59,13 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     @Override
     public List<EntityModel> getTableModels() {
-        List<EntityModel> entityModels = new ArrayList<>();
-        entityModels.add(new MaterialConsumptionEntityModel());
-        return entityModels;
+        if(this.entityTableModels == null) {
+            this.entityTableModels = new ArrayList<>();
+            EntityModel entityModel = new MaterialConsumptionEntityModel();
+            entityModel.setParentModel(this);
+            this.entityTableModels.add(entityModel);
+        }
+        return this.entityTableModels;
     }
 
     @Override
