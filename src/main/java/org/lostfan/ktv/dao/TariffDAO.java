@@ -14,9 +14,9 @@ public interface TariffDAO extends EntityDAO<Tariff> {
 
     List<Tariff> getTariffsByName(String name);
 
-    void save(Tariff tariff);
+    Tariff save(Tariff tariff);
 
-    void update(Tariff tariff);
+    Tariff update(Tariff tariff);
 
     void delete(int tariffId);
 

@@ -13,9 +13,9 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     Subscriber get(int id);
 
-    void save(Subscriber subscriber);
+    Subscriber save(Subscriber subscriber);
 
-    void update(Subscriber subscriber);
+    Subscriber update(Subscriber subscriber);
 
     void delete(int subscriberId);
 

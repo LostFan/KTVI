@@ -53,7 +53,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         return subscriber;
     }
 
-    public void save(Subscriber subscriber) {
+    public Subscriber save(Subscriber subscriber) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"subscriber\" (\"name\", \"account\", \"street_id\") VALUES(?, ?, ?)");
@@ -63,13 +63,18 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
                 preparedStatement.setInt(3, subscriber.getStreetId());
             }
             preparedStatement.executeUpdate();
-
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            Integer id = null;
+            resultSet.next();
+            subscriber.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return subscriber;
     }
 
-    public void update(Subscriber subscriber) {
+    public Subscriber update(Subscriber subscriber) {
         if(get(subscriber.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
@@ -94,6 +99,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         } else {
             throw new UnsupportedOperationException("Update nonexistent element");
         }
+        return subscriber;
     }
 
     public void delete(int subscriberId) {

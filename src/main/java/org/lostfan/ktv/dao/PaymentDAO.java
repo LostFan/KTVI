@@ -17,9 +17,9 @@ public interface PaymentDAO extends EntityDAO<Payment> {
 
     List<Payment> getPaymentsBySubscriberId(int subscriberId);
 
-    void save(Payment payment);
+    Payment save(Payment payment);
 
-    void update(Payment payment);
+    Payment update(Payment payment);
 
     void delete(int id);
 

@@ -49,19 +49,24 @@ public class HsqldbStreetDAO implements StreetDAO {
         return street;
     }
 
-    public void save(Street street) {
+    public Street save(Street street) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"street\" (\"name\") VALUES(?)");
             preparedStatement.setString(1, street.getName());
             preparedStatement.executeUpdate();
-
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            Integer id = null;
+            resultSet.next();
+            street.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return street;
     }
 
-    public void update(Street street) {
+    public Street update(Street street) {
         if(get(street.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
@@ -76,6 +81,7 @@ public class HsqldbStreetDAO implements StreetDAO {
         } else {
             throw new UnsupportedOperationException("Update nonexistent element");
         }
+        return street;
     }
 
     public void delete(int streetId) {

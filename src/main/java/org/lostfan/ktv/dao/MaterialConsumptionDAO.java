@@ -14,9 +14,9 @@ public interface MaterialConsumptionDAO extends EntityDAO<MaterialConsumption> {
 
     MaterialConsumption get(int id);
 
-    void save(MaterialConsumption materialConsumption);
+    MaterialConsumption save(MaterialConsumption materialConsumption);
 
-    void update(MaterialConsumption materialConsumption);
+    MaterialConsumption update(MaterialConsumption materialConsumption);
 
     void delete(int materialConsumptionId);
 

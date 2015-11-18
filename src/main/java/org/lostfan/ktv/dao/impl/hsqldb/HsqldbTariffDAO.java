@@ -73,7 +73,7 @@ public class HsqldbTariffDAO implements TariffDAO {
         return tariffs;
     }
 
-    public void save(Tariff tariff) {
+    public Tariff save(Tariff tariff) {
 
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
@@ -81,13 +81,18 @@ public class HsqldbTariffDAO implements TariffDAO {
             preparedStatement.setString(1, tariff.getName());
             preparedStatement.setString(2, tariff.getChannels());
             preparedStatement.executeUpdate();
-
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            Integer id = null;
+            resultSet.next();
+            tariff.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return tariff;
     }
 
-    public void update(Tariff tariff) {
+    public Tariff update(Tariff tariff) {
         if(get(tariff.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
@@ -103,6 +108,7 @@ public class HsqldbTariffDAO implements TariffDAO {
         } else {
             throw new UnsupportedOperationException("Update nonexistent element");
         }
+        return tariff;
     }
 
     public void delete(int tariffId) {

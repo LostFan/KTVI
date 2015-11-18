@@ -13,9 +13,9 @@ public interface EntityDAO<T extends Entity> {
 
     T get(int id);
 
-    void save(T t);
+    T save(T t);
 
-    void update(T t);
+    T update(T t);
 
     void delete(int id);
 

@@ -92,7 +92,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
-    public void save(RenderedService renderedService) {
+    public RenderedService save(RenderedService renderedService) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"rendered_service\" (\"subscriber_id\", \"service_id\", \"date\",  \"price\") VALUES(?, ?, ?, ?)");
@@ -101,13 +101,18 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             preparedStatement.setDate(3, Date.valueOf(renderedService.getDate()));
             preparedStatement.setInt(4, renderedService.getPrice());
             preparedStatement.executeUpdate();
-
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            Integer id = null;
+            resultSet.next();
+            renderedService.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return renderedService;
     }
 
-    public void update(RenderedService renderedService) {
+    public RenderedService update(RenderedService renderedService) {
         if(get(renderedService.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
@@ -125,6 +130,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         } else {
             throw new UnsupportedOperationException("Update nonexistent element");
         }
+        return renderedService;
     }
 
     public void delete(int id) {

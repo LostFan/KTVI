@@ -51,7 +51,7 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
         return materialConsumption;
     }
 
-    public void save(MaterialConsumption materialConsumption) {
+    public MaterialConsumption save(MaterialConsumption materialConsumption) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"material_consumption\" (\"material_id\", \"rendered_service_id\", \"amount\") VALUES(?, ?, ?)");
@@ -59,13 +59,19 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
             preparedStatement.setInt(2, materialConsumption.getRenderedServiceId());
             preparedStatement.setDouble(3, materialConsumption.getAmount());
             preparedStatement.executeUpdate();
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            Integer id = null;
+            resultSet.next();
+            materialConsumption.setId(resultSet.getInt(1));
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return materialConsumption;
     }
 
-    public void update(MaterialConsumption materialConsumption) {
+    public MaterialConsumption update(MaterialConsumption materialConsumption) {
         if(get(materialConsumption.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
@@ -82,6 +88,7 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
         } else {
             throw new UnsupportedOperationException("Update nonexistent element");
         }
+        return materialConsumption;
     }
 
     public void delete(int materialConsumptionId) {

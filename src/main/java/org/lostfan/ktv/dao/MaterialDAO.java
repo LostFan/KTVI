@@ -12,9 +12,9 @@ public interface MaterialDAO extends EntityDAO<Material> {
 
     Material get(int id);
 
-    void save(Material material);
+    Material save(Material material);
 
-    void update(Material material);
+    Material update(Material material);
 
     void delete(int id);
 

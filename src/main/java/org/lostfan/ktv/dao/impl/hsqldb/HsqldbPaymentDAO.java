@@ -94,7 +94,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         return payments;
     }
 
-    public void save(Payment payment) {
+    public Payment save(Payment payment) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"payment\" (\"subscriber_id\", \"service_id\", \"payment_type_id\", \"price\", \"date\") VALUES(?, ?, ?, ?, ?)");
@@ -106,13 +106,19 @@ public class HsqldbPaymentDAO implements PaymentDAO {
             preparedStatement.setInt(4, payment.getPrice());
             preparedStatement.setDate(5, Date.valueOf(payment.getDate()));
             preparedStatement.executeUpdate();
-
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            Integer id = null;
+            resultSet.next();
+            payment.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return payment;
+
     }
 
-    public void update(Payment payment) {
+    public Payment update(Payment payment) {
         if(get(payment.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
@@ -133,6 +139,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         } else {
             throw new UnsupportedOperationException("Update nonexistent element");
         }
+        return payment;
     }
 
     public void delete(int id) {
