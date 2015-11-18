@@ -15,9 +15,9 @@ public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
 
     List<RenderedService> getRenderedServicesBySubscriberId(int subscriberId);
 
-    RenderedService save(RenderedService renderedService);
+    void save(RenderedService renderedService);
 
-    RenderedService update(RenderedService renderedService);
+    void update(RenderedService renderedService);
 
     void delete(int id);
 

@@ -70,7 +70,7 @@ public class EntityController {
                     return;
                 }
                 model.save(entity);
-                saveInnerTable(entityView);
+                saveInnerTable(entityView, entity.getId());
                 entityView.hide();
             });
         }
@@ -93,11 +93,21 @@ public class EntityController {
                     return;
                 }
                 model.save(entity);
-                saveInnerTable(entityView);
+                saveInnerTable(entityView , entity.getId());
                 entityView.hide();
             });
         }
     }
+
+    private class DeleteActionListener implements ViewActionListener {
+
+        @Override
+        public void actionPerformed(Object args) {
+            List<Integer> selectedIndexes = (List<Integer>) args;
+            model.deleteEntityByRow(selectedIndexes);
+        }
+    }
+
     private boolean isSaveInnerTable(EntityView entityView) {
         List<EntityModel> entityModels = model.getTableModels();
         if(entityModels == null) {
@@ -114,10 +124,8 @@ public class EntityController {
             }
         }
         return true;
-
     }
-
-    private void saveInnerTable(EntityView entityView) {
+    private void saveInnerTable(EntityView entityView, Integer id) {
         List<EntityModel> entityModels = model.getTableModels();
         if(entityModels == null) {
             return;
@@ -131,16 +139,9 @@ public class EntityController {
                 }
             }
             for (Entity innerEntity : entities) {
+                entityModel.getParentField().set(innerEntity, id);
                 entityModel.save(innerEntity);
             }
-        }
-    }
-    private class DeleteActionListener implements ViewActionListener {
-
-        @Override
-        public void actionPerformed(Object args) {
-            List<Integer> selectedIndexes = (List<Integer>) args;
-            model.deleteEntityByRow(selectedIndexes);
         }
     }
 }

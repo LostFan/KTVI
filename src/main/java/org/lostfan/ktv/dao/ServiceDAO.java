@@ -12,9 +12,9 @@ public interface ServiceDAO extends EntityDAO<Service> {
 
     Service get(int id);
 
-    Service save(Service service);
+    void save(Service service);
 
-    Service update(Service service);
+    void update(Service service);
 
     void delete(int serviceId);
 

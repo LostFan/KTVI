@@ -51,7 +51,7 @@ public class HsqldbServiceDAO implements ServiceDAO {
 
 
 
-    public Service save(Service service) {
+    public void save(Service service) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"service\" (\"name\", \"additional\") VALUES(?, ?)");
@@ -60,17 +60,15 @@ public class HsqldbServiceDAO implements ServiceDAO {
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-            Integer id = null;
             resultSet.next();
             service.setId(resultSet.getInt(1));
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return service;
     }
 
-    public Service update(Service service) {
+    public void update(Service service) {
         if(get(service.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
@@ -86,7 +84,6 @@ public class HsqldbServiceDAO implements ServiceDAO {
         } else {
             throw new UnsupportedOperationException("Update nonexistent element");
         }
-        return service;
     }
 
     public void delete(int serviceId) {

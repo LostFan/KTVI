@@ -2,7 +2,6 @@ package org.lostfan.ktv.dao.impl.hsqldb;
 
 import org.lostfan.ktv.dao.MaterialDAO;
 import org.lostfan.ktv.domain.Material;
-import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.sql.Connection;
@@ -55,7 +54,7 @@ public class HsqldbMaterialDAO implements MaterialDAO {
     }
 
 
-    public Material save(Material material) {
+    public void save(Material material) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"material\" (\"name\", \"price\", \"unit\") VALUES(?, ?, ?)");
@@ -65,16 +64,14 @@ public class HsqldbMaterialDAO implements MaterialDAO {
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-            Integer id = null;
             resultSet.next();
             material.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return material;
     }
 
-    public Material update(Material material) {
+    public void update(Material material) {
         if (get(material.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
@@ -91,7 +88,6 @@ public class HsqldbMaterialDAO implements MaterialDAO {
         } else {
             throw new UnsupportedOperationException("Update nonexistent element");
         }
-        return material;
     }
 
     public void delete(int id) {

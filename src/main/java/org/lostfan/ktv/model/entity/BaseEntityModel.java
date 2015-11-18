@@ -78,13 +78,6 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
         } else {
             getDao().update(entity);
         }
-//        for (EntityModel entityTableModel : entityTableModels) {
-//            List<Entity> en =  entityTableModel.getList();
-//            for (Entity entity1 : en) {
-//                ((BaseEntityModel) entityTableModel).getDao().save(entity1);
-//            }
-//        }
-
         updateEntitiesList();
     }
 

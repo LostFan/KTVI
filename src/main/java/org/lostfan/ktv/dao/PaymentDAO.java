@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.domain.PaymentType;
-import org.lostfan.ktv.domain.Subscriber;
 
 public interface PaymentDAO extends EntityDAO<Payment> {
 
@@ -17,9 +16,9 @@ public interface PaymentDAO extends EntityDAO<Payment> {
 
     List<Payment> getPaymentsBySubscriberId(int subscriberId);
 
-    Payment save(Payment payment);
+    void save(Payment payment);
 
-    Payment update(Payment payment);
+    void update(Payment payment);
 
     void delete(int id);
 

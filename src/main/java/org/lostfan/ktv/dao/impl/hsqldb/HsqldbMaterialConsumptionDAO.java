@@ -1,8 +1,6 @@
 package org.lostfan.ktv.dao.impl.hsqldb;
 
 import org.lostfan.ktv.dao.MaterialConsumptionDAO;
-import org.lostfan.ktv.dao.MaterialDAO;
-import org.lostfan.ktv.domain.Material;
 import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.utils.ConnectionManager;
 
@@ -51,7 +49,7 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
         return materialConsumption;
     }
 
-    public MaterialConsumption save(MaterialConsumption materialConsumption) {
+    public void save(MaterialConsumption materialConsumption) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"material_consumption\" (\"material_id\", \"rendered_service_id\", \"amount\") VALUES(?, ?, ?)");
@@ -61,17 +59,15 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-            Integer id = null;
             resultSet.next();
             materialConsumption.setId(resultSet.getInt(1));
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return materialConsumption;
     }
 
-    public MaterialConsumption update(MaterialConsumption materialConsumption) {
+    public void update(MaterialConsumption materialConsumption) {
         if(get(materialConsumption.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
@@ -88,7 +84,6 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
         } else {
             throw new UnsupportedOperationException("Update nonexistent element");
         }
-        return materialConsumption;
     }
 
     public void delete(int materialConsumptionId) {

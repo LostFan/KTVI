@@ -12,9 +12,9 @@ public interface StreetDAO extends EntityDAO<Street> {
 
     Street get(int id);
 
-    Street save(Street subscriber);
+    void save(Street subscriber);
 
-    Street update(Street subscriber);
+    void update(Street subscriber);
 
     void delete(int subscriberId);
 

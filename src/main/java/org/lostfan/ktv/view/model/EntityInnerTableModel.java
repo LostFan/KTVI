@@ -173,9 +173,6 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
     }
 
     public List<T> getEntityList() {
-        for (T t : list) {
-            this.parentField.set(t, foreignId);
-        }
         return list;
     }
 }

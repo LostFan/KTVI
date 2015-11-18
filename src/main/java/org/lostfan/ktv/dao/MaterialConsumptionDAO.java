@@ -1,6 +1,5 @@
 package org.lostfan.ktv.dao;
 
-import org.lostfan.ktv.domain.Material;
 import org.lostfan.ktv.domain.MaterialConsumption;
 
 import java.util.List;
@@ -14,9 +13,9 @@ public interface MaterialConsumptionDAO extends EntityDAO<MaterialConsumption> {
 
     MaterialConsumption get(int id);
 
-    MaterialConsumption save(MaterialConsumption materialConsumption);
+    void save(MaterialConsumption materialConsumption);
 
-    MaterialConsumption update(MaterialConsumption materialConsumption);
+    void update(MaterialConsumption materialConsumption);
 
     void delete(int materialConsumptionId);
 
