@@ -15,7 +15,7 @@ import org.lostfan.ktv.view.EntitySelectionView;
 import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.components.EntityComboBox;
 import org.lostfan.ktv.view.components.EntityComboBoxFactory;
-import org.lostfan.ktv.view.components.EntityModelFactory;
+import org.lostfan.ktv.view.components.EntityViewFactory;
 import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
 /**
@@ -76,7 +76,7 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
 
         viewEntityButton.addActionListener(e -> {
             editor.cancelCellEditing();
-            EntityView entityView = EntityModelFactory.createForm(entityFieldTypes, this.entityComboBox.getSelectedEntity().getId());
+            EntityView entityView = EntityViewFactory.createForm(entityFieldTypes, this.entityComboBox.getSelectedEntity().getId());
 //            entityView.changeActionListener.actionPerformed(null);
         });
 

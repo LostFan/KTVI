@@ -10,10 +10,9 @@ import org.lostfan.ktv.utils.*;
 import org.lostfan.ktv.validation.Error;
 import org.lostfan.ktv.view.components.EntityComboBox;
 import org.lostfan.ktv.view.components.EntityComboBoxFactory;
-import org.lostfan.ktv.view.components.EntityModelFactory;
+import org.lostfan.ktv.view.components.EntityViewFactory;
 import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
-import javax.lang.model.util.Types;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
@@ -23,9 +22,9 @@ import java.util.List;
 
 public class EntityView {
 
-    private abstract class LabelFieldInput {
+    protected abstract class LabelFieldInput {
 
-        private JLabel label;
+        protected JLabel label;
 
         private EntityField entityField;
 
@@ -228,7 +227,7 @@ public class EntityView {
             entityButton.addActionListener(e -> {
 //                EntityModel entityModel = EntityModelFactory.createForm(entityField.getType());
                 if(comboBox.getSelectedEntity() != null) {
-                    EntityView entityView = EntityModelFactory.createForm(entityField.getType(), comboBox.getSelectedEntity().getId());
+                    EntityView entityView = EntityViewFactory.createForm(entityField.getType(), comboBox.getSelectedEntity().getId());
 //                entityView.addObserver(comboBox.getModelObserver());
 //                EntityView entityView = new EntityView(entityModel, entityModel.getEntity(comboBox.getSelectedEntity()));
 //                EntityOneController entityOneController = new EntityOneController(entityModel, entityView);
@@ -253,21 +252,21 @@ public class EntityView {
         }
     }
 
-    public static final int WIDTH = 450;
-    public static final int HEIGHT = 550;
+    protected static final int WIDTH = 450;
+    protected static final int HEIGHT = 550;
 
-    private JFrame frame;
-    private List<LabelFieldInput> labelFieldInputs;
-    private JButton addButton;
-    private JButton cancelButton;
-    private EntityModel<? extends Entity> model;
-    private List<EntityInnerTableView> entityInnerTableViewList;
+    protected JFrame frame;
+    protected List<LabelFieldInput> labelFieldInputs;
+    protected JButton addButton;
+    protected JButton cancelButton;
+    protected EntityModel<? extends Entity> model;
+//    private List<EntityInnerTableView> entityInnerTableViewList;
 
-    private ViewActionListener addActionListener;
-    private ViewActionListener cancelActionListener;
-    private ViewActionListener changeActionListener;
+    protected ViewActionListener addActionListener;
+    protected ViewActionListener cancelActionListener;
+    protected ViewActionListener changeActionListener;
 
-    private Entity entity;
+    protected Entity entity;
 
     public EntityView(EntityModel model) {
         this(model, null);
@@ -334,16 +333,16 @@ public class EntityView {
             contentPanel.add(inputComponent, c);
         }
 
-        List<EntityModel> entityModels = model.getTableModels();
-        entityInnerTableViewList = new ArrayList<>();
-        if(entityModels != null) {
-            for (EntityModel entityModel : entityModels) {
-                EntityInnerTableView entityInnerTableView =
-                        new EntityInnerTableView(entityModel, this.entity == null ? null : this.entity.getId());
-                entityInnerTableViewList.add(entityInnerTableView);
-                frame.add(entityInnerTableView.getContentPanel(), BorderLayout.CENTER);
-            }
-        }
+//        List<EntityModel> entityModels = model.getTableModels();
+//        entityInnerTableViewList = new ArrayList<>();
+//        if(entityModels != null) {
+//            for (EntityModel entityModel : entityModels) {
+//                EntityInnerTableView entityInnerTableView =
+//                        new EntityInnerTableView(entityModel, this.entity == null ? null : this.entity.getId());
+//                entityInnerTableViewList.add(entityInnerTableView);
+//                frame.add(entityInnerTableView.getContentPanel(), BorderLayout.CENTER);
+//            }
+//        }
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addButton);
@@ -383,9 +382,9 @@ public class EntityView {
 
     public Map<EntityModel, List<Entity>> getTableEntities() {
         Map<EntityModel, List<Entity>> lists = new HashMap<>();
-        for (EntityInnerTableView entityInnerTableView : entityInnerTableViewList) {
-            lists.put(entityInnerTableView.getEntityModel(),entityInnerTableView.getEntityList());
-        }
+//        for (EntityInnerTableView entityInnerTableView : entityInnerTableViewList) {
+//            lists.put(entityInnerTableView.getEntityModel(),entityInnerTableView.getEntityList());
+//        }
 //        Entity entity = this.entity;
 //        if (entity == null) {
 //            entity = this.model.createNewEntity();
@@ -421,6 +420,10 @@ public class EntityView {
 
     public void setChangeActionListener(ViewActionListener changeActionListener) {
         this.changeActionListener = changeActionListener;
+    }
+
+    public void addComponent(JComponent jComponent) {
+        frame.add(jComponent, BorderLayout.CENTER);
     }
 
     public void hide() {

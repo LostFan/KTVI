@@ -3,13 +3,19 @@ package org.lostfan.ktv.controller;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.entity.EntityModel;
+import org.lostfan.ktv.model.entity.EntityTableModel;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.view.EntityInnerTableView;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
+import org.lostfan.ktv.view.components.EntityViewFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EntityController {
 
@@ -66,11 +72,11 @@ public class EntityController {
                     entityView.showErrors(result.getErrors());
                     return;
                 }
-                if(!isSaveInnerTable(entityView)) {
-                    return;
-                }
+//                if(!isSaveInnerTable(entityView)) {
+//                    return;
+//                }
                 model.save(entity);
-                saveInnerTable(entityView, entity.getId());
+//                saveInnerTable(entityView, entity.getId());
                 entityView.hide();
             });
         }
@@ -81,19 +87,36 @@ public class EntityController {
         @Override
         public void actionPerformed(Object args) {
             int selectedIndex = (Integer) args;
-            EntityView entityView = new EntityView(model, (Entity) model.getList().get(selectedIndex));
+
+            EntityView entityView = new EntityView(model, ((Entity) model.getList().get(selectedIndex)));
+            Entity entity1 = (Entity) model.getList().get(selectedIndex);
+            Map<EntityModel, EntityInnerTableView> entityInnerTableViews = new HashMap<>();
+            if(EntityTableModel.class.isInstance(model)) {
+                for (EntityModel entityModel : ((EntityTableModel) model).getTableModels()) {
+                    EntityInnerTableView entityInnerTableView =
+                            new EntityInnerTableView(entityModel, entity1 == null ? null : entity1.getId());
+                    entityInnerTableViews.put(entityModel, entityInnerTableView);
+                    entityView.addComponent(entityInnerTableView.getContentPanel());
+                }
+            }
+
             entityView.setAddActionListener(args_ -> {
+
                 Entity entity = entityView.getEntity();
                 ValidationResult result = model.getValidator().validate(entity);
                 if (result.hasErrors()) {
                     entityView.showErrors(result.getErrors());
                     return;
                 }
-                if(!isSaveInnerTable(entityView)) {
+
+                if(!isSaveInnerTable(entityInnerTableViews, entityView)) {
                     return;
                 }
+
                 model.save(entity);
-                saveInnerTable(entityView , entity.getId());
+
+
+                saveInnerTable(entityInnerTableViews , entity.getId());
                 entityView.hide();
             });
         }
@@ -107,16 +130,13 @@ public class EntityController {
             model.deleteEntityByRow(selectedIndexes);
         }
     }
-
-    private boolean isSaveInnerTable(EntityView entityView) {
-        List<EntityModel> entityModels = model.getTableModels();
-        if(entityModels == null) {
+    private boolean isSaveInnerTable(Map<EntityModel, EntityInnerTableView> entityModelEntityInnerTableViewMap, EntityView entityView) {
+        if(entityModelEntityInnerTableViewMap.size() == 0) {
             return true;
         }
-        for (EntityModel entityModel : entityModels) {
-            List<Entity> entities = entityView.getTableEntities().get(entityModel);
-            for (Entity innerEntity : entities) {
-                ValidationResult innerResult = entityModel.getValidator().validate(innerEntity);
+        for (EntityModel entityModel : entityModelEntityInnerTableViewMap.keySet()) {
+            for (Object o : entityModelEntityInnerTableViewMap.get(entityModel).getEntityList()) {
+                ValidationResult innerResult = entityModel.getValidator().validate((Entity) o);
                 if (innerResult.hasErrors()) {
                     entityView.showErrors(innerResult.getErrors());
                     return false;
@@ -125,23 +145,63 @@ public class EntityController {
         }
         return true;
     }
-    private void saveInnerTable(EntityView entityView, Integer id) {
-        List<EntityModel> entityModels = model.getTableModels();
-        if(entityModels == null) {
+
+    private void saveInnerTable(Map<EntityModel, EntityInnerTableView> entityModelEntityInnerTableViewMap, Integer id) {
+
+        if(entityModelEntityInnerTableViewMap.size() == 0) {
             return;
         }
-        for (EntityModel entityModel : entityModels) {
-            List<Entity> entities = entityView.getTableEntities().get(entityModel);
+        for (EntityModel entityModel : entityModelEntityInnerTableViewMap.keySet()) {
             List<Entity>  entitiesInModel = entityModel.getList();
             for (Entity innerEntity : entitiesInModel) {
-                if(!entities.contains(innerEntity)) {
+                if(!entityModelEntityInnerTableViewMap.get(entityModel).getEntityList().contains(innerEntity)) {
                     entityModel.deleteEntityById(innerEntity.getId());
                 }
             }
-            for (Entity innerEntity : entities) {
-                entityModel.getParentField().set(innerEntity, id);
-                entityModel.save(innerEntity);
+            for (Object o : entityModelEntityInnerTableViewMap.get(entityModel).getEntityList()) {
+                entityModel.getParentField().set((Entity)o, id);
+                entityModel.save((Entity)o);
             }
         }
     }
+
+
+
+
+//    private boolean isSaveInnerTable(EntityView entityView) {
+//        List<EntityModel> entityModels = model.getTableModels();
+//        if(entityModels == null) {
+//            return true;
+//        }
+//        for (EntityModel entityModel : entityModels) {
+//            List<Entity> entities = entityView.getTableEntities().get(entityModel);
+//            for (Entity innerEntity : entities) {
+//                ValidationResult innerResult = entityModel.getValidator().validate(innerEntity);
+//                if (innerResult.hasErrors()) {
+//                    entityView.showErrors(innerResult.getErrors());
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
+//    private void saveInnerTable(EntityView entityView, Integer id) {
+//        List<EntityModel> entityModels = model.getTableModels();
+//        if(entityModels == null) {
+//            return;
+//        }
+//        for (EntityModel entityModel : entityModels) {
+//            List<Entity> entities = entityView.getTableEntities().get(entityModel);
+//            List<Entity>  entitiesInModel = entityModel.getList();
+//            for (Entity innerEntity : entitiesInModel) {
+//                if(!entities.contains(innerEntity)) {
+//                    entityModel.deleteEntityById(innerEntity.getId());
+//                }
+//            }
+//            for (Entity innerEntity : entities) {
+//                entityModel.getParentField().set(innerEntity, id);
+//                entityModel.save(innerEntity);
+//            }
+//        }
+//    }
 }

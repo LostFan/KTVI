@@ -5,6 +5,7 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.entity.BaseEntityModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.EntityModel;
+import org.lostfan.ktv.model.entity.EntityTableModel;
 import org.lostfan.ktv.model.entity.MaterialEntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.model.entity.ServiceEntityModel;
@@ -12,7 +13,7 @@ import org.lostfan.ktv.model.entity.StreetEntityModel;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
 import org.lostfan.ktv.view.EntityView;
 
-public class EntityModelFactory {
+public class EntityViewFactory {
 
     public static EntityView createForm(EntityFieldTypes type) {
         BaseEntityModel model = null;

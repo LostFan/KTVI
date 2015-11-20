@@ -9,7 +9,7 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService> {
+public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService> implements EntityTableModel {
 
     private List<EntityField> fields;
 

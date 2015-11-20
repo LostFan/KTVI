@@ -38,11 +38,6 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     }
 
     @Override
-    public List<EntityModel> getTableModels() {
-        return null;
-    }
-
-    @Override
     public List<EntityField> getEditableFields() {
         return getFields().stream().filter(e -> e.isEditable()).collect(Collectors.toList());
     }

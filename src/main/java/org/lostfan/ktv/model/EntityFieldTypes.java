@@ -16,6 +16,7 @@ public enum EntityFieldTypes {
     Service(org.lostfan.ktv.domain.Service.class, true, DAOFactory.getDefaultDAOFactory().getServiceDAO()),
     Street(org.lostfan.ktv.domain.Street.class, true, DAOFactory.getDefaultDAOFactory().getStreetDAO()),
     Material(org.lostfan.ktv.domain.Material.class, true, DAOFactory.getDefaultDAOFactory().getMaterialDAO()),
+    Payment(org.lostfan.ktv.domain.Payment.class, true, DAOFactory.getDefaultDAOFactory().getPaymentDAO()),
     RenderedService(org.lostfan.ktv.domain.RenderedService.class, true, DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO());
 
     private Class clazz;

@@ -44,7 +44,7 @@ public interface EntityModel<T extends Entity> extends Observable {
 
     Class getEntityClass();
 
-    List<EntityModel> getTableModels();
+//    List<EntityModel> getTableModels();
 
     Validator<T> getValidator();
 
