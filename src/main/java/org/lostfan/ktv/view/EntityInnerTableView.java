@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view;
 
 import org.lostfan.ktv.controller.EntityInnerTableController;
+import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.Observer;
@@ -43,11 +44,8 @@ public class EntityInnerTableView<T> {
 
     private EntityModel model;
 
-    private Class parentClass;
-
     public EntityInnerTableView(EntityModel model, Object foreignId) {
         this.model = model;
-        this.parentClass = parentClass;
 
         this.entityInnerTableModel = new EntityInnerTableModel(model, foreignId);
         this.table = new JTable(this.entityInnerTableModel);

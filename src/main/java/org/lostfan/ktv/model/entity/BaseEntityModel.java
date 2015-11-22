@@ -4,11 +4,13 @@ import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.FieldSearchCriterion;
+import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.utils.BaseObservable;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.validation.Validator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -62,8 +64,18 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     }
 
     @Override
+    public List<FullEntityField> getFullFields() {
+        return Collections.emptyList();
+    }
+
+    @Override
     public T getEntity(int id) {
         return getDao().get(id);
+    }
+
+    @Override
+    public T getFullEntity(int id) {
+        return getEntity(id);
     }
 
     @Override

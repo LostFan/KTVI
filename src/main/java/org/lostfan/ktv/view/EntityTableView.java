@@ -85,7 +85,8 @@ public class EntityTableView {
         this.changeButton.addActionListener(e -> {
             int selectedRow = this.table.getSelectedRow();
             if (selectedRow != -1 && this.changeActionListener != null) {
-                this.changeActionListener.actionPerformed(this.table.convertRowIndexToModel(selectedRow));
+                int actualIndex = this.table.convertRowIndexToModel(selectedRow);
+                this.changeActionListener.actionPerformed(((Entity)this.model.getList().get(actualIndex)).getId());
             }
         });
 

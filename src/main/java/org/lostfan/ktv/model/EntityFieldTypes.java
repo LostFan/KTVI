@@ -1,6 +1,7 @@
 package org.lostfan.ktv.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
@@ -17,7 +18,8 @@ public enum EntityFieldTypes {
     Street(org.lostfan.ktv.domain.Street.class, true, DAOFactory.getDefaultDAOFactory().getStreetDAO()),
     Material(org.lostfan.ktv.domain.Material.class, true, DAOFactory.getDefaultDAOFactory().getMaterialDAO()),
     Payment(org.lostfan.ktv.domain.Payment.class, true, DAOFactory.getDefaultDAOFactory().getPaymentDAO()),
-    RenderedService(org.lostfan.ktv.domain.RenderedService.class, true, DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO());
+    RenderedService(org.lostfan.ktv.domain.RenderedService.class, true, DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO()),
+    List(java.util.List.class, true, null);
 
     private Class clazz;
     private boolean entityClass;

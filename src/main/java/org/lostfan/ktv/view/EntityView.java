@@ -4,6 +4,7 @@ import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.*;
@@ -273,6 +274,7 @@ public class EntityView {
     }
 
     public <E extends Entity> EntityView(EntityModel<E> model, Entity entity) {
+        System.out.println(((MaterialConsumption)((List)model.getFullFields().get(0).get(entity)).get(0)).getAmount());
         this.entity = entity;
         this.model = model;
 
@@ -422,8 +424,8 @@ public class EntityView {
         this.changeActionListener = changeActionListener;
     }
 
-    public void addComponent(JComponent jComponent) {
-        frame.add(jComponent, BorderLayout.CENTER);
+    public void addInnerTable(EntityInnerTableView innerTableView) {
+        frame.add(innerTableView.getContentPanel(), BorderLayout.CENTER);
     }
 
     public void hide() {

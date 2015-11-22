@@ -28,7 +28,6 @@ public class EntityController {
         view.setAddActionListener(new AddActionListener());
         view.setChangeActionListener(new ChangeActionListener());
         view.setDeleteActionListener(new DeleteActionListener());
-
     }
 
     public void setModel(EntityModel model) {
@@ -86,24 +85,24 @@ public class EntityController {
 
         @Override
         public void actionPerformed(Object args) {
-            int selectedIndex = (Integer) args;
+            int selectedId = (Integer) args;
 
-            EntityView entityView = new EntityView(model, ((Entity) model.getList().get(selectedIndex)));
-            Entity entity1 = (Entity) model.getList().get(selectedIndex);
+            Entity entity = model.getFullEntity(selectedId);
+            EntityView entityView = new EntityView(model, entity);
             Map<EntityModel, EntityInnerTableView> entityInnerTableViews = new HashMap<>();
             if(EntityTableModel.class.isInstance(model)) {
                 for (EntityModel entityModel : ((EntityTableModel) model).getTableModels()) {
                     EntityInnerTableView entityInnerTableView =
-                            new EntityInnerTableView(entityModel, entity1 == null ? null : entity1.getId());
+                            new EntityInnerTableView(entityModel, entity == null ? null : entity.getId());
                     entityInnerTableViews.put(entityModel, entityInnerTableView);
-                    entityView.addComponent(entityInnerTableView.getContentPanel());
+                    entityView.addInnerTable(entityInnerTableView);
                 }
             }
 
             entityView.setAddActionListener(args_ -> {
 
-                Entity entity = entityView.getEntity();
-                ValidationResult result = model.getValidator().validate(entity);
+                Entity entity1 = entityView.getEntity();
+                ValidationResult result = model.getValidator().validate(entity1);
                 if (result.hasErrors()) {
                     entityView.showErrors(result.getErrors());
                     return;
@@ -113,10 +112,10 @@ public class EntityController {
                     return;
                 }
 
-                model.save(entity);
+                model.save(entity1);
 
 
-                saveInnerTable(entityInnerTableViews , entity.getId());
+                saveInnerTable(entityInnerTableViews , entity1.getId());
                 entityView.hide();
             });
         }
@@ -153,6 +152,7 @@ public class EntityController {
         }
         for (EntityModel entityModel : entityModelEntityInnerTableViewMap.keySet()) {
             List<Entity>  entitiesInModel = entityModel.getList();
+            System.out.println(entitiesInModel.size());
             for (Entity innerEntity : entitiesInModel) {
                 if(!entityModelEntityInnerTableViewMap.get(entityModel).getEntityList().contains(innerEntity)) {
                     entityModel.deleteEntityById(innerEntity.getId());

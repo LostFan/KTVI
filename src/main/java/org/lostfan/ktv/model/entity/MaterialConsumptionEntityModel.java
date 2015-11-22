@@ -49,14 +49,15 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
 
     @Override
     public List<MaterialConsumption> getListByForeignKey(Integer foreignKey) {
-        if(foreignKey == null) {
-            entities = new ArrayList<>();
-            return entities;
-        }
-        if (this.getParentModel().getEntityClass() == RenderedService.class) {
-            entities = getDao().getMaterialConsumptionsByRenderedServiceId(foreignKey);
-        }
-        return entities;
+//        if(foreignKey == null) {
+//            entities = new ArrayList<>();
+//            return entities;
+//        }
+//        if (this.getParentModel().getEntityClass() == RenderedService.class) {
+//            entities = getDao().getMaterialConsumptionsByRenderedServiceId(foreignKey);
+//        }
+//        return entities;
+        return getDao().getMaterialConsumptionsByRenderedServiceId(foreignKey);
     }
 
     @Override
