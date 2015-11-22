@@ -9,6 +9,10 @@ public class RenderedServiceTransformer implements EntityTransformer<RenderedSer
     public FullRenderedService transformTo(RenderedService entity) {
         FullRenderedService dto = new FullRenderedService();
         dto.setId(entity.getId());
+        dto.setDate(entity.getDate());
+        dto.setPrice(entity.getPrice());
+        dto.setSubscriberId(entity.getSubscriberId());
+        dto.setServiceId(entity.getServiceId());
         return dto;
     }
 
@@ -16,6 +20,11 @@ public class RenderedServiceTransformer implements EntityTransformer<RenderedSer
     public RenderedService transformFrom(FullRenderedService dto) {
         RenderedService entity = new RenderedService();
         entity.setId(dto.getId());
+        entity.setId(dto.getId());
+        entity.setDate(dto.getDate());
+        entity.setPrice(dto.getPrice());
+        entity.setSubscriberId(dto.getSubscriberId());
+        entity.setServiceId(dto.getServiceId());
         return entity;
     }
 }

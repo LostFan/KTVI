@@ -274,7 +274,7 @@ public class EntityView {
     }
 
     public <E extends Entity> EntityView(EntityModel<E> model, Entity entity) {
-        System.out.println(((MaterialConsumption)((List)model.getFullFields().get(0).get(entity)).get(0)).getAmount());
+        //System.out.println(((MaterialConsumption)((List)model.getFullFields().get(0).get(entity)).get(0)).getAmount());
         this.entity = entity;
         this.model = model;
 

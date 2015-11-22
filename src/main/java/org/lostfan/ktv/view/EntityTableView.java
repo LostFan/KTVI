@@ -55,7 +55,8 @@ public class EntityTableView {
                 EntityTableView view = EntityTableView.this;
                 // Dbl Click at the table row
                 if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e) && view.changeActionListener != null) {
-                    view.changeActionListener.actionPerformed(EntityTableView.this.table.convertRowIndexToModel(view.table.getSelectedRow()));
+                    int actualIndex = EntityTableView.this.table.convertRowIndexToModel(view.table.getSelectedRow());
+                    view.changeActionListener.actionPerformed(((Entity)EntityTableView.this.model.getList().get(actualIndex)).getId());
                 }
             }
         });
