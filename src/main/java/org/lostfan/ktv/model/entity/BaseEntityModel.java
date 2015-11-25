@@ -5,6 +5,7 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FullEntityField;
+import org.lostfan.ktv.model.transform.EntityTransformer;
 import org.lostfan.ktv.utils.BaseObservable;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.validation.Validator;
@@ -12,6 +13,7 @@ import org.lostfan.ktv.validation.Validator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,16 +41,16 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
         updateEntitiesList();
     }
 
-    @Override
-    public List<EntityField> getEditableFields() {
-        return getFields().stream().filter(e -> e.isEditable()).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<EntityField> getEditableFields() {
+//        return getFields().stream().filter(e -> e.isEditable()).collect(Collectors.toList());
+//    }
 
-    @Override
-    public List<EntityField> getEditableFieldsWithoutParent() {
-        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getClazz() != getParentModel().getEntityClass()).collect(Collectors.toList());
-    }
-
+//    @Override
+//    public List<EntityField> getEditableFieldsWithoutParent() {
+//        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getClazz() != getParentModel().getEntityClass()).collect(Collectors.toList());
+//    }
+//
     @Override
     public EntityField getParentField() {
         return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getClazz() == getParentModel().getEntityClass()).collect(Collectors.toList()).get(0);
@@ -126,6 +128,11 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     @Override
     public void setParentModel(EntityModel parentModel) {
         this.parentModel = parentModel;
+    }
+
+    @Override
+    public T buildDTO(T entity, Map<String, List<Entity>> map) {
+        return entity;
     }
 
     /**

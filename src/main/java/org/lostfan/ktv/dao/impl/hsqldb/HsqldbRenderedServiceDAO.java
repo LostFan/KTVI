@@ -1,7 +1,11 @@
 package org.lostfan.ktv.dao.impl.hsqldb;
 
+import org.lostfan.ktv.dao.DAOFactory;
+import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.dao.RenderedServiceDAO;
+import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.model.dto.FullRenderedService;
 import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.sql.Connection;
@@ -15,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
+    
+    private MaterialConsumptionDAO materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
 
     private Connection getConnection() {
         return ConnectionManager.getManager().getConnection();
@@ -107,6 +113,61 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             renderedService.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void saveDTO(FullRenderedService fullRenderedService) {
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "INSERT INTO \"rendered_service\" (\"subscriber_id\", \"service_id\", \"date\",  \"price\") VALUES(?, ?, ?, ?)");
+            preparedStatement.setInt(1, fullRenderedService.getSubscriberId());
+            preparedStatement.setInt(2, fullRenderedService.getServiceId());
+            preparedStatement.setDate(3, Date.valueOf(fullRenderedService.getDate()));
+            preparedStatement.setInt(4, fullRenderedService.getPrice());
+            preparedStatement.executeUpdate();
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            resultSet.next();
+            fullRenderedService.setId(resultSet.getInt(1));
+            for (MaterialConsumption materialConsumption : fullRenderedService.getMaterialConsumption()) {
+                materialConsumption.setRenderedServiceId(fullRenderedService.getId());
+                materialConsumptionDAO.save(materialConsumption);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void updateDTO(FullRenderedService fullRenderedService) {
+        if(get(fullRenderedService.getId()) != null) {
+            try {
+                PreparedStatement preparedStatement = getConnection().prepareStatement(
+                        "UPDATE \"rendered_service\" set \"subscriber_id\" = ?, \"service_id\" = ?, \"date\" = ?, \"price\" = ? where \"id\" = ?");
+                preparedStatement.setInt(1, fullRenderedService.getSubscriberId());
+                preparedStatement.setInt(2, fullRenderedService.getServiceId());
+                preparedStatement.setDate(3, Date.valueOf(fullRenderedService.getDate()));
+                preparedStatement.setInt(4, fullRenderedService.getPrice());
+                preparedStatement.setInt(5, fullRenderedService.getId());
+                preparedStatement.executeUpdate();
+                List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(fullRenderedService.getId());
+                for (MaterialConsumption materialConsumption : materialConsumptionList) {
+                    if(!fullRenderedService.getMaterialConsumption().contains(materialConsumption)) {
+                        materialConsumptionDAO.delete(materialConsumption.getId());
+                    }
+                }
+                for (MaterialConsumption materialConsumption : fullRenderedService.getMaterialConsumption()) {
+                    if(materialConsumption.getId() != null) {
+                        materialConsumptionDAO.update(materialConsumption);
+                    } else {
+                        materialConsumption.setRenderedServiceId(fullRenderedService.getId());
+                        materialConsumptionDAO.save(materialConsumption);
+                    }
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 

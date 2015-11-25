@@ -1,8 +1,10 @@
 package org.lostfan.ktv.view;
 
 import org.lostfan.ktv.controller.EntityInnerTableController;
-import org.lostfan.ktv.domain.Subscriber;
+import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
@@ -42,12 +44,12 @@ public class EntityInnerTableView<T> {
 
     private ModelObserver modelObserver;
 
-    private EntityModel model;
+//    private EntityModel model;
 
-    public EntityInnerTableView(EntityModel model, Object foreignId) {
-        this.model = model;
+    public EntityInnerTableView(FullEntityField fullEntityField, List<Entity> list) {
+//        this.model = model;
 
-        this.entityInnerTableModel = new EntityInnerTableModel(model, foreignId);
+        this.entityInnerTableModel = new EntityInnerTableModel(fullEntityField, list);
         this.table = new JTable(this.entityInnerTableModel);
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         this.table.setAutoCreateRowSorter(false);
@@ -79,13 +81,13 @@ public class EntityInnerTableView<T> {
 
         buildLayout();
 
-        this.modelObserver = new ModelObserver();
-
-        model.addObserver(this.modelObserver);
+//        this.modelObserver = new ModelObserver();
+//
+//        model.addObserver(this.modelObserver);
     }
 
     private void buildLayout() {
-        new EntityInnerTableController(model, this);
+//        new EntityInnerTableController(model, this);
         this.contentPanel = new JPanel(new BorderLayout(10, 10));
 
         // ID column values should be aligned to the left;
@@ -122,39 +124,39 @@ public class EntityInnerTableView<T> {
         return this.contentPanel;
     }
 
-    public boolean isConfirm() {
-        int optionType = JOptionPane.OK_CANCEL_OPTION;
-        int messageType = JOptionPane.QUESTION_MESSAGE;
-        Object[] selValues = {ResourceBundles.getGuiBundle().getString("buttons.yes"),
-                ResourceBundles.getGuiBundle().getString("buttons.cancel") };
-        String message = ResourceBundles.getGuiBundle().getString("window.delete") + " : "
-                + ResourceBundles.getEntityBundle().getString(model.getEntityNameKey());
-        int result = JOptionPane.showOptionDialog(null,
-                ResourceBundles.getGuiBundle().getString("message.deleteQuestion"), message,
-                optionType, messageType, null, selValues,
-                selValues[0]);
+//    public boolean isConfirm() {
+//        int optionType = JOptionPane.OK_CANCEL_OPTION;
+//        int messageType = JOptionPane.QUESTION_MESSAGE;
+//        Object[] selValues = {ResourceBundles.getGuiBundle().getString("buttons.yes"),
+//                ResourceBundles.getGuiBundle().getString("buttons.cancel") };
+//        String message = ResourceBundles.getGuiBundle().getString("window.delete") + " : "
+//                + ResourceBundles.getEntityBundle().getString(model.getEntityNameKey());
+//        int result = JOptionPane.showOptionDialog(null,
+//                ResourceBundles.getGuiBundle().getString("message.deleteQuestion"), message,
+//                optionType, messageType, null, selValues,
+//                selValues[0]);
+//
+//        return result == 0 ? true : false;
+//    }
+//
+//    public void setModel(EntityModel model) {
+//        this.model.removeObserver(modelObserver);
+//        this.model = model;
+//        model.addObserver(this.modelObserver);
+//
+//        this.table.setModel(new EntityTableModel(model));
+//        this.tableScrollPane.setViewportView(this.table);
+//
+//        revalidate();
+//    }
 
-        return result == 0 ? true : false;
-    }
-
-    public void setModel(EntityModel model) {
-        this.model.removeObserver(modelObserver);
-        this.model = model;
-        model.addObserver(this.modelObserver);
-
-        this.table.setModel(new EntityTableModel(model));
-        this.tableScrollPane.setViewportView(this.table);
-
-        revalidate();
-    }
-
-    public List<T> getEntityList() {
+    public List<Entity> getEntityList() {
         return entityInnerTableModel.getEntityList();
     }
 
-    public EntityModel getEntityModel() {
-        return model;
-    }
+//    public EntityModel getEntityModel() {
+//        return model;
+//    }
 
     private void addStringActionTableCellEditorToColumns() {
         JTextField textField = new JTextField();

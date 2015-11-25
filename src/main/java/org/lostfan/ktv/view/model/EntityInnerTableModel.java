@@ -2,31 +2,33 @@ package org.lostfan.ktv.view.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.table.DefaultTableModel;
 
-public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
+public class EntityInnerTableModel extends DefaultTableModel {
 
     private class DeletedObject {
-        private List<T> list;
+        private List<Entity> list;
         private int [] indexes;
 
-        public DeletedObject(List<T> list, int[] indexes) {
+        public DeletedObject(List<Entity> list, int[] indexes) {
             this.list = list;
             this.indexes = indexes;
         }
 
-        public List<T> getList() {
+        public List<Entity> getList() {
             return list;
         }
 
-        public void setList(List<T> list) {
+        public void setList(List<Entity> list) {
             this.list = list;
         }
 
@@ -41,33 +43,34 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
 
     private static final String NUMBER_COLUMN_NAME = "number";
 
-    private EntityModel<T> model;
+//    private EntityModel<T> model;
     private int size = 0;
-    private List<T> list;
+    private List<Entity> list;
     private List<DeletedObject> deletedObjects;
     private List<EntityField> entityFieldList;
-    private EntityField parentField;
+    private FullEntityField fullEntityField;
     private Object foreignId;
 
-    public EntityInnerTableModel(EntityModel<T> model, Object foreignId) {
+    public EntityInnerTableModel(FullEntityField fullEntityField, List<Entity> list) {
 
-        this.model = model;
+//        this.model = model;
         this.foreignId = foreignId;
-        this.entityFieldList = this.model.getEditableFieldsWithoutParent();
-        this.parentField = this.model.getParentField();
+        this.fullEntityField = fullEntityField;
+        this.entityFieldList = fullEntityField.getEntityFields().stream().collect(Collectors.toList());
+//        this.parentField = this.model.getParentField();
         this.entityFieldList.add(0, new EntityField(NUMBER_COLUMN_NAME, EntityFieldTypes.Integer, e -> null, (e1, e2) -> {}));
-        list = new ArrayList<>();
+        this.list = new ArrayList<>();
         deletedObjects = new ArrayList<>();
-        size = this.model.getListByForeignKey((Integer)foreignId).size();
+        size = list.size();
 
-        for (T entity : this.model.getList()) {
-            list.add(entity);
+        for (Entity entity : list) {
+            this.list.add(entity);
         }
     }
 
     public void addRow() {
         this.size++;
-        list.add( model.createNewEntity());
+        list.add( this.fullEntityField.createEntity());
     }
 
     public void addRow(Integer index) {
@@ -75,7 +78,7 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
             return;
         }
         this.size++;
-        T newEntity = model.createNewEntity();
+        Entity newEntity = this.fullEntityField.createEntity();
 
         for (EntityField entityField : this.entityFieldList) {
             entityField.set(newEntity, entityField.get(list.get(index)));
@@ -88,7 +91,7 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
             return;
         }
 //
-        List<T> deletedList = new ArrayList<>();
+        List<Entity> deletedList = new ArrayList<>();
         for (int i = 0; i <  indexes.length; i++) {
             deletedList.add(list.get(indexes[i]));
         }
@@ -107,7 +110,7 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
         }
         int lastIndex = deletedObjects.size() - 1;
         int [] deletedIndexes = deletedObjects.get(lastIndex).getIndexes();
-        List<T> deletedList = deletedObjects.get(lastIndex).getList();
+        List<Entity> deletedList = deletedObjects.get(lastIndex).getList();
         for (int i = 0; i < deletedIndexes.length; i++) {
             this.list.add(deletedIndexes[i], deletedList.get(i));
             this.size++;
@@ -151,8 +154,8 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
         if(this.entityFieldList.get(columnIndex).getTitleKey() == NUMBER_COLUMN_NAME) {
             return rowIndex + 1;
         }
-        if (thisType.isEntityClass() && this.model.getFields().get(columnIndex).get(list.get(rowIndex)) != null) {
-           return thisType.getDAO().get((Integer) this.model.getFields().get(columnIndex).get(list.get(rowIndex)));
+        if (thisType.isEntityClass() && this.entityFieldList.get(columnIndex).get(list.get(rowIndex)) != null) {
+           return thisType.getDAO().get((Integer) this.entityFieldList.get(columnIndex).get(list.get(rowIndex)));
         }
         return this.entityFieldList.get(columnIndex).get(list.get(rowIndex));
 
@@ -172,7 +175,7 @@ public class EntityInnerTableModel<T extends Entity> extends DefaultTableModel {
 
     }
 
-    public List<T> getEntityList() {
+    public List<Entity> getEntityList() {
         return list;
     }
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.model.dto.FullRenderedService;
 
 public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
 
@@ -17,7 +18,11 @@ public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
 
     void save(RenderedService renderedService);
 
+    void saveDTO(FullRenderedService fullRenderedService);
+
     void update(RenderedService renderedService);
+
+    void updateDTO(FullRenderedService fullRenderedService);
 
     void delete(int id);
 

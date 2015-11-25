@@ -4,7 +4,6 @@ import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.*;
@@ -261,7 +260,7 @@ public class EntityView {
     protected JButton addButton;
     protected JButton cancelButton;
     protected EntityModel<? extends Entity> model;
-//    private List<EntityInnerTableView> entityInnerTableViewList;
+    private Map<String, List<Entity>> entityInnerTableValues;
 
     protected ViewActionListener addActionListener;
     protected ViewActionListener cancelActionListener;
@@ -273,8 +272,10 @@ public class EntityView {
         this(model, null);
     }
 
-    public <E extends Entity> EntityView(EntityModel<E> model, Entity entity) {
-        //System.out.println(((MaterialConsumption)((List)model.getFullFields().get(0).get(entity)).get(0)).getAmount());
+    public <E extends Entity> EntityView(EntityModel<Entity> model, Entity entity) {
+//        System.out.println(((MaterialConsumption)((List)model.getFullFields().get(0).get(entity)).get(0)).getAmount());
+
+
         this.entity = entity;
         this.model = model;
 
@@ -283,10 +284,13 @@ public class EntityView {
         this.frame.setSize(new Dimension(WIDTH, HEIGHT));
         this.frame.setLocationRelativeTo(null);
 
+
+
         this.addButton = new JButton(getString(entity == null ? "buttons.add" : "buttons.change"));
         this.addButton.addActionListener(e -> {
+
             if (this.addActionListener != null) {
-                this.addActionListener.actionPerformed(null);
+                this.addActionListener.actionPerformed(model.buildDTO(getEntity(), entityInnerTableValues));
             }
         });
 
@@ -307,6 +311,15 @@ public class EntityView {
         }
 
         buildLayout();
+
+        this.entityInnerTableValues = new HashMap<>();
+        for (FullEntityField fullEntityField : model.getFullFields()) {
+            List<Entity> list = (List<Entity>) fullEntityField.get(entity);
+//                System.out.println(((MaterialConsumption)((List)model.getFullFields().get(0).get(entity)).get(0)).getAmount());
+            EntityInnerTableView entityInnerTableView = new EntityInnerTableView(fullEntityField, list);
+            this.entityInnerTableValues.put(fullEntityField.getTitleKey(), entityInnerTableView.getEntityList());
+            this.addInnerTable(entityInnerTableView);
+        }
 
         frame.setVisible(true);
     }

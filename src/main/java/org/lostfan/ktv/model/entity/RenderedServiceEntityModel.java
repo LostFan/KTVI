@@ -2,15 +2,20 @@ package org.lostfan.ktv.model.entity;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
+import org.lostfan.ktv.dao.RenderedServiceDAO;
+import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.dto.FullRenderedService;
+import org.lostfan.ktv.model.transform.EntityTransformer;
 import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService> implements EntityTableModel {
@@ -30,8 +35,9 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
 
         this.fullFields = new ArrayList<>();
-        FullEntityField materialConsumptionField = new FullEntityField("materialConsumption", EntityFieldTypes.List, FullRenderedService::getMaterialConsumption, FullRenderedService::setMaterialConsumption);
-        materialConsumptionField.setEntityFields(EntityModelHolder.getMaterialConsumptionEntityModel().getFields().stream().filter(e -> !e.getTitleKey().equals("renderedService")).collect(Collectors.toList()));
+
+        FullEntityField materialConsumptionField = new FullEntityField("materialConsumption", EntityFieldTypes.MaterialConsumption, FullRenderedService::getMaterialConsumption, FullRenderedService::setMaterialConsumption, MaterialConsumption::new);
+        materialConsumptionField.setEntityFields(EntityModelHolder.getMaterialConsumptionEntityModel().getFields().stream().filter(e -> !e.getTitleKey().equals("renderedService")).filter(e -> !e.getTitleKey().equals("materialConsumption.id")).collect(Collectors.toList()));
         this.fullFields.add(materialConsumptionField);
     }
 
@@ -92,6 +98,24 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     @Override
+    public void save(RenderedService entity) {
+        if (entity.getId() == null) {
+            if(entity instanceof FullRenderedService)  {
+                DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().saveDTO((FullRenderedService) entity);
+            } else {
+                getDao().save(entity);
+            }
+        } else {
+            if(entity instanceof FullRenderedService) {
+                DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().updateDTO((FullRenderedService) entity);
+            } else {
+                getDao().update(entity);
+            }
+        }
+        updateEntitiesList();
+    }
+
+    @Override
     protected EntityDAO<RenderedService> getDao() {
         return DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO();
     }
@@ -99,5 +123,10 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     @Override
     public RenderedService createNewEntity() {
         return new RenderedService();
+    }
+
+    @Override
+    public FullRenderedService buildDTO(RenderedService service, Map<String, List<Entity>> map) {
+        return transformer.transformTo(service, map);
     }
 }

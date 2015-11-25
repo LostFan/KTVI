@@ -4,10 +4,12 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FullEntityField;
+import org.lostfan.ktv.model.transform.EntityTransformer;
 import org.lostfan.ktv.utils.Observable;
 import org.lostfan.ktv.validation.Validator;
 
 import java.util.List;
+import java.util.Map;
 
 public interface EntityModel<T extends Entity> extends Observable {
 
@@ -27,10 +29,10 @@ public interface EntityModel<T extends Entity> extends Observable {
 
     List<FullEntityField> getFullFields();
 
-    List<EntityField> getEditableFields();
-
-    List<EntityField> getEditableFieldsWithoutParent();
-
+//    List<EntityField> getEditableFields();
+//
+//    List<EntityField> getEditableFieldsWithoutParent();
+//
     EntityField getParentField();
 
     List<FieldSearchCriterion<T>> getSearchCriteria();
@@ -56,5 +58,7 @@ public interface EntityModel<T extends Entity> extends Observable {
     EntityModel getParentModel();
 
     void setParentModel(EntityModel parentModel);
+
+    T buildDTO(T entity, Map<String, List<Entity>> map);
 
 }
