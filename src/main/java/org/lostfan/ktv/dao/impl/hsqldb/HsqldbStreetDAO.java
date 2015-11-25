@@ -39,8 +39,9 @@ public class HsqldbStreetDAO implements StreetDAO {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
-            rs.next();
-            street = constructEntity(rs);
+            if (rs.next()) {
+                street = constructEntity(rs);
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -57,8 +58,9 @@ public class HsqldbStreetDAO implements StreetDAO {
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-            resultSet.next();
-            street.setId(resultSet.getInt(1));
+            if (resultSet.next()) {
+                street.setId(resultSet.getInt(1));
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

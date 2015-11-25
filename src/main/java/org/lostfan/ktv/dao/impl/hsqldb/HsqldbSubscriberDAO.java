@@ -56,12 +56,17 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     public void save(Subscriber subscriber) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"subscriber\" (\"name\", \"account\", \"street_id\") VALUES(?, ?, ?)");
+                    "INSERT INTO \"subscriber\" (\"name\", \"account\", \"street_id\", \"balance\", \"connected\") " +
+                            "VALUES(?, ?, ?, ?, ?)");
             preparedStatement.setString(1, subscriber.getName());
             preparedStatement.setString(2, subscriber.getAccount());
             if(subscriber.getStreetId() != null) {
                 preparedStatement.setInt(3, subscriber.getStreetId());
+            } else {
+                preparedStatement.setNull(3, Types.INTEGER);
             }
+            preparedStatement.setInt(4, subscriber.getBalance());
+            preparedStatement.setBoolean(5, subscriber.isConnected());
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
