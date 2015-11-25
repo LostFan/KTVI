@@ -114,52 +114,6 @@ public class FieldSearchCriterion<E extends Entity> {
         return e -> true;
     }
 
-//    private Predicate<E> buildServicePredicate() {
-//        ServiceDAO dao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
-//        SearchCriteria.Service cr = (SearchCriteria.Service) this.criterion;
-//        if (cr == SearchCriteria.Service.Equals) {
-//            return e -> {
-//                Service service = dao.get((Integer) this.entityField.get(e));
-//                return service.getName().equalsIgnoreCase((String) value);
-//            };
-//        } else if (cr == SearchCriteria.Service.Contains) {
-//            return e -> {
-//                Service service = dao.get((Integer) this.entityField.get(e));
-//                return service.getName().toLowerCase().contains(((String) value).toLowerCase());
-//            };
-//        } else if (cr == SearchCriteria.Service.NotContains) {
-//            return e -> {
-//                Service service = dao.get((Integer) this.entityField.get(e));
-//                return !service.getName().toLowerCase().contains(((String) value).toLowerCase());
-//            };
-//        }
-//
-//        return e -> true;
-//    }
-//
-//    private Predicate<E> buildSubscriberPredicate() {
-//        SubscriberDAO dao = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
-//        SearchCriteria.Subscriber cr = (SearchCriteria.Subscriber) this.criterion;
-//        if (cr == SearchCriteria.Subscriber.Equals) {
-//            return e -> {
-//                Subscriber subscriber = dao.get((Integer) this.entityField.get(e));
-//                return subscriber.getName().equalsIgnoreCase((String) value) || subscriber.getAccount().equalsIgnoreCase((String) value);
-//            };
-//        } else if (cr == SearchCriteria.Subscriber.Contains) {
-//            return e -> {
-//                Subscriber subscriber = dao.get((Integer) this.entityField.get(e));
-//                return subscriber.getName().toLowerCase().contains(((String) value).toLowerCase()) || subscriber.getAccount().toLowerCase().contains(((String) value).toLowerCase());
-//            };
-//        } else if (cr == SearchCriteria.Subscriber.NotContains) {
-//            return e -> {
-//                Subscriber subscriber = dao.get((Integer) this.entityField.get(e));
-//                return !(subscriber.getName().toLowerCase().contains(((String) value).toLowerCase()) || subscriber.getAccount().toLowerCase().contains(((String) value).toLowerCase()));
-//            };
-//        }
-//
-//        return e -> true;
-//    }
-
     private Predicate<E> buildEntityPredicate() {
         SearchCriteria.Entity cr = (SearchCriteria.Entity) this.criterion;
         if (cr == SearchCriteria.Entity.Equals) {

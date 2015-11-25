@@ -91,40 +91,6 @@ public class SearchCriteria {
         }
     }
 
-//    public static class Service extends SearchCriteria {
-//
-//        static {
-//            criteria.put(EntityFieldTypes.Service, new ArrayList<>());
-//        }
-//
-//        private static void init() { }
-//
-//        public static final Service Equals = new Service(EntityFieldTypes.Service, "criteria.string.equals");
-//        public static final Service Contains = new Service(EntityFieldTypes.Service, "criteria.string.contains");
-//        public static final Service NotContains = new Service(EntityFieldTypes.Service, "criteria.string.notcontains");
-//
-//        private Service(EntityFieldTypes type, java.lang.String title) {
-//            super(type, title);
-//        }
-//    }
-//
-//    public static class Subscriber extends SearchCriteria {
-//
-//        static {
-//            criteria.put(EntityFieldTypes.Subscriber, new ArrayList<>());
-//        }
-//
-//        private static void init() { }
-//
-//        public static final Subscriber Equals = new Subscriber(EntityFieldTypes.Subscriber, "criteria.string.equals");
-//        public static final Subscriber Contains = new Subscriber(EntityFieldTypes.Subscriber, "criteria.string.contains");
-//        public static final Subscriber NotContains = new Subscriber(EntityFieldTypes.Subscriber, "criteria.string.notcontains");
-//
-//        private Subscriber(EntityFieldTypes type, java.lang.String title) {
-//            super(type, title);
-//        }
-//    }
-
     public static class Entity extends SearchCriteria {
 
         static {
@@ -151,8 +117,6 @@ public class SearchCriteria {
         Integer.init();
         Boolean.init();
         Date.init();
-//        Service.init();
-//        Subscriber.init();
         Entity.init();
     }
 

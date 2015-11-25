@@ -91,23 +91,6 @@ public class EntityController {
             Entity entity = model.getFullEntity(selectedId);
             EntityView entityView = new EntityView(model, entity);
             List<EntityInnerTableView> entityInnerTableViews = new ArrayList<>();
-//            Map<EntityModel, EntityInnerTableView> entityInnerTableViews = new HashMap<>();
-//            List<FullEntityField> fullEntityFields = model.getFullFields();
-//            for (FullEntityField fullEntityField : fullEntityFields) {
-//                List<Entity> list = (List<Entity>) fullEntityField.get(entity);
-////                System.out.println(((MaterialConsumption)((List)model.getFullFields().get(0).get(entity)).get(0)).getAmount());
-//                EntityInnerTableView entityInnerTableView = new EntityInnerTableView(fullEntityField, list);
-//                entityInnerTableViews.add(entityInnerTableView);
-//                entityView.addInnerTable(entityInnerTableView);
-//            }
-//            if(EntityTableModel.class.isInstance(model)) {
-//                for (EntityModel entityModel : ((EntityTableModel) model).getTableModels()) {
-//                    EntityInnerTableView entityInnerTableView =
-//                            new EntityInnerTableView(entityModel, entity == null ? null : entity.getId());
-//                    entityInnerTableViews.put(entityModel, entityInnerTableView);
-//                    entityView.addInnerTable(entityInnerTableView);
-//                }
-//            }
 
             entityView.setAddActionListener(args_ -> {
                 Entity entity1 = (Entity) args_;
@@ -120,11 +103,7 @@ public class EntityController {
                 if(!isSaveInnerTable(entityInnerTableViews, entityView)) {
                     return;
                 }
-
                 model.save(entity1);
-
-
-//                saveInnerTable(entityInnerTableViews , entity1.getId());
                 entityView.hide();
             });
         }
@@ -154,21 +133,6 @@ public class EntityController {
 //        }
         return true;
     }
-//    private boolean isSaveInnerTable(Map<EntityModel, EntityInnerTableView> entityModelEntityInnerTableViewMap, EntityView entityView) {
-//        if(entityModelEntityInnerTableViewMap.size() == 0) {
-//            return true;
-//        }
-//        for (EntityModel entityModel : entityModelEntityInnerTableViewMap.keySet()) {
-//            for (Object o : entityModelEntityInnerTableViewMap.get(entityModel).getEntityList()) {
-//                ValidationResult innerResult = entityModel.getValidator().validate((Entity) o);
-//                if (innerResult.hasErrors()) {
-//                    entityView.showErrors(innerResult.getErrors());
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
 
     private void saveInnerTable(Map<EntityModel, EntityInnerTableView> entityModelEntityInnerTableViewMap, Integer id) {
 
@@ -189,44 +153,4 @@ public class EntityController {
             }
         }
     }
-
-
-
-
-//    private boolean isSaveInnerTable(EntityView entityView) {
-//        List<EntityModel> entityModels = model.getTableModels();
-//        if(entityModels == null) {
-//            return true;
-//        }
-//        for (EntityModel entityModel : entityModels) {
-//            List<Entity> entities = entityView.getTableEntities().get(entityModel);
-//            for (Entity innerEntity : entities) {
-//                ValidationResult innerResult = entityModel.getValidator().validate(innerEntity);
-//                if (innerResult.hasErrors()) {
-//                    entityView.showErrors(innerResult.getErrors());
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
-//    private void saveInnerTable(EntityView entityView, Integer id) {
-//        List<EntityModel> entityModels = model.getTableModels();
-//        if(entityModels == null) {
-//            return;
-//        }
-//        for (EntityModel entityModel : entityModels) {
-//            List<Entity> entities = entityView.getTableEntities().get(entityModel);
-//            List<Entity>  entitiesInModel = entityModel.getList();
-//            for (Entity innerEntity : entitiesInModel) {
-//                if(!entities.contains(innerEntity)) {
-//                    entityModel.deleteEntityById(innerEntity.getId());
-//                }
-//            }
-//            for (Entity innerEntity : entities) {
-//                entityModel.getParentField().set(innerEntity, id);
-//                entityModel.save(innerEntity);
-//            }
-//        }
-//    }
 }
