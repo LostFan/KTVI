@@ -18,11 +18,7 @@ public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
 
     void save(RenderedService renderedService);
 
-    void saveDTO(FullRenderedService fullRenderedService);
-
     void update(RenderedService renderedService);
-
-    void updateDTO(FullRenderedService fullRenderedService);
 
     void delete(int id);
 

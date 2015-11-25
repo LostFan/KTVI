@@ -2,6 +2,7 @@ package org.lostfan.ktv.model.entity;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
+import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.dao.RenderedServiceDAO;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.MaterialConsumption;
@@ -25,6 +26,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     private List<FullEntityField> fullFields;
 
     private RenderedServiceTransformer transformer = new RenderedServiceTransformer();
+    private MaterialConsumptionDAO materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
 
     public RenderedServiceEntityModel() {
         this.fields = new ArrayList<>();
@@ -100,16 +102,32 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     @Override
     public void save(RenderedService entity) {
         if (entity.getId() == null) {
+            getDao().save(entity);
             if(entity instanceof FullRenderedService)  {
-                DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().saveDTO((FullRenderedService) entity);
-            } else {
-                getDao().save(entity);
+                FullRenderedService fullRenderedService = (FullRenderedService) entity;
+                for (MaterialConsumption materialConsumption : fullRenderedService.getMaterialConsumption()) {
+                    materialConsumption.setRenderedServiceId(fullRenderedService.getId());
+                    materialConsumptionDAO.save(materialConsumption);
+                }
             }
         } else {
+            getDao().update(entity);
             if(entity instanceof FullRenderedService) {
-                DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().updateDTO((FullRenderedService) entity);
-            } else {
-                getDao().update(entity);
+                FullRenderedService fullRenderedService = (FullRenderedService) entity;
+                List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(fullRenderedService.getId());
+                for (MaterialConsumption materialConsumption : materialConsumptionList) {
+                    if(!fullRenderedService.getMaterialConsumption().contains(materialConsumption)) {
+                        materialConsumptionDAO.delete(materialConsumption.getId());
+                    }
+                }
+                for (MaterialConsumption materialConsumption : fullRenderedService.getMaterialConsumption()) {
+                    if(materialConsumption.getId() != null) {
+                        materialConsumptionDAO.update(materialConsumption);
+                    } else {
+                        materialConsumption.setRenderedServiceId(fullRenderedService.getId());
+                        materialConsumptionDAO.save(materialConsumption);
+                    }
+                }
             }
         }
         updateEntitiesList();
