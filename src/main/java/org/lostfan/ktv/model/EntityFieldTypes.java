@@ -20,27 +20,27 @@ public enum EntityFieldTypes {
     RenderedService(org.lostfan.ktv.domain.RenderedService.class, true, DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO()),
     MaterialConsumption(org.lostfan.ktv.domain.MaterialConsumption.class, true, null);
 
-    private Class clazz;
+    private Class valueClass;
     private boolean entityClass;
     private EntityDAO dao;
 
-    EntityFieldTypes(Class clazz, boolean entityClass, EntityDAO dao) {
-        this.clazz = clazz;
+    EntityFieldTypes(Class valueClass, boolean entityClass, EntityDAO dao) {
+        this.valueClass = valueClass;
         this.entityClass = entityClass;
         this.dao = dao;
     }
 
     public static EntityFieldTypes getEntityClass(Class aClass) {
         for (EntityFieldTypes o : EntityFieldTypes.class.getEnumConstants()) {
-            if(aClass == o.getClazz()) {
+            if(aClass == o.getValueClass()) {
                 return o;
             }
-        };
+        }
         return null;
     }
 
-    public Class getClazz() {
-        return this.clazz;
+    public Class getValueClass() {
+        return this.valueClass;
     }
 
     public boolean isEntityClass() {

@@ -157,7 +157,7 @@ public class EntitySelectionView<T> {
                 optionType, messageType, null, selValues,
                 selValues[0]);
 
-        return result == 0 ? true : false;
+        return result == 0;
     }
 
     public void setModel(BaseEntityModel model) {

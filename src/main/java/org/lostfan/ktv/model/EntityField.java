@@ -1,7 +1,6 @@
 package org.lostfan.ktv.model;
 
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.domain.Subscriber;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;

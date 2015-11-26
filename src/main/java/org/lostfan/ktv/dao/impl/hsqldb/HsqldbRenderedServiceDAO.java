@@ -1,11 +1,7 @@
 package org.lostfan.ktv.dao.impl.hsqldb;
 
-import org.lostfan.ktv.dao.DAOFactory;
-import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.dao.RenderedServiceDAO;
-import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
-import org.lostfan.ktv.model.dto.FullRenderedService;
 import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.sql.Connection;

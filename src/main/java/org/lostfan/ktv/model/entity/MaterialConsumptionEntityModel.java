@@ -6,10 +6,9 @@ import java.util.List;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.domain.MaterialConsumption;
-import org.lostfan.ktv.domain.RenderedService;
-import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.validation.MaterialConsumptionValidator;
 import org.lostfan.ktv.validation.Validator;
 
@@ -32,8 +31,8 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
     @Override
     public List<EntityModel> getEntityModels() {
         List<EntityModel> entityModels = new ArrayList<>();
-        entityModels.add(new ServiceEntityModel());
-        entityModels.add(new SubscriberEntityModel());
+        entityModels.add(MainModel.getServiceEntityModel());
+        entityModels.add(MainModel.getSubscriberEntityModel());
         return entityModels;
     }
 

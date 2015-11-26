@@ -1,7 +1,6 @@
 package org.lostfan.ktv.validation;
 
 import org.lostfan.ktv.domain.MaterialConsumption;
-import org.lostfan.ktv.domain.Subscriber;
 
 public class MaterialConsumptionValidator implements Validator<MaterialConsumption> {
 

@@ -5,7 +5,6 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FullEntityField;
-import org.lostfan.ktv.model.transform.EntityTransformer;
 import org.lostfan.ktv.utils.BaseObservable;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.validation.Validator;
@@ -48,12 +47,12 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
 
 //    @Override
 //    public List<EntityField> getEditableFieldsWithoutParent() {
-//        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getClazz() != getParentModel().getEntityClass()).collect(Collectors.toList());
+//        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getValueClass() != getParentModel().getEntityClass()).collect(Collectors.toList());
 //    }
 //
     @Override
     public EntityField getParentField() {
-        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getClazz() == getParentModel().getEntityClass()).collect(Collectors.toList()).get(0);
+        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getValueClass() == getParentModel().getEntityClass()).collect(Collectors.toList()).get(0);
     }
 
     @Override

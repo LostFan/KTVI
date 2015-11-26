@@ -4,7 +4,6 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FullEntityField;
-import org.lostfan.ktv.model.transform.EntityTransformer;
 import org.lostfan.ktv.utils.Observable;
 import org.lostfan.ktv.validation.Validator;
 

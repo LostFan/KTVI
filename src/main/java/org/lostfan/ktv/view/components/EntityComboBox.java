@@ -108,7 +108,7 @@ public class EntityComboBox extends JComboBox<String> {
             public void run() {
                 if ((ke.getKeyCode() < 37 || ke.getKeyCode() > 40) && ke.getKeyCode() != 10) { //up, right, left, down and enter keys
                     comboFilter(textField.getText());
-                };
+                }
                 boolean popupVisible = true;
                 if (entityComboBoxModel.getSize() == 0) {
                     popupVisible = false;
@@ -139,10 +139,7 @@ public class EntityComboBox extends JComboBox<String> {
     }
 
     public boolean isReloadComboBoxData(KeyEvent ke) {
-        if(ke.getKeyCode() >= 37 && ke.getKeyCode() <= 40) {
-            return false;
-        }
-        return true;
+        return !(ke.getKeyCode() >= 37 && ke.getKeyCode() <= 40);
     }
 
     public boolean isReloadComboBoxData() {

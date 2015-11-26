@@ -1,17 +1,13 @@
 package org.lostfan.ktv.view;
 
-import org.lostfan.ktv.controller.EntityInnerTableController;
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FullEntityField;
-import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.model.EntityActionTableCellEditor;
 import org.lostfan.ktv.view.model.EntityInnerTableModel;
-import org.lostfan.ktv.view.model.EntityTableModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

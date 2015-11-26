@@ -4,11 +4,9 @@ import java.util.List;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
-import org.lostfan.ktv.dao.MaterialDAO;
 import org.lostfan.ktv.domain.Material;
 
 public class MaterialSearcherModel extends EntitySearcherModel<Material> {
-
 
     public MaterialSearcherModel() {
     }

@@ -2,19 +2,15 @@ package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FieldSearchCriterion;
-import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.entity.EntityModel;
-import org.lostfan.ktv.model.entity.EntityTableModel;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.EntityInnerTableView;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
-import org.lostfan.ktv.view.components.EntityViewFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

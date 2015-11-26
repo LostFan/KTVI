@@ -8,6 +8,7 @@ import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.MainModel;
 
 public class PaymentEntityModel extends BaseEntityModel<Payment> {
 
@@ -27,8 +28,8 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     @Override
     public List<EntityModel> getEntityModels() {
         List<EntityModel> entityModels = new ArrayList<>();
-        entityModels.add(new ServiceEntityModel());
-        entityModels.add(new SubscriberEntityModel());
+        entityModels.add(MainModel.getServiceEntityModel());
+        entityModels.add(MainModel.getSubscriberEntityModel());
         return entityModels;
     }
 

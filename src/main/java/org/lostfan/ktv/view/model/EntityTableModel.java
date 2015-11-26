@@ -33,7 +33,7 @@ public class EntityTableModel<T extends Entity> extends AbstractTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return this.model.getFields().get(columnIndex).getType().getClazz();
+        return this.model.getFields().get(columnIndex).getType().getValueClass();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class EntityTableModel<T extends Entity> extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object value = this.model.getFields().get(columnIndex).get(this.model.getList().get(rowIndex));
         EntityFieldTypes thisType = this.model.getFields().get(columnIndex).getType();
-        if(thisType.getClazz() == Integer.class && value ==null) {
+        if(thisType.getValueClass() == Integer.class && value ==null) {
             return 0;
         }
         if( thisType.isEntityClass()) {

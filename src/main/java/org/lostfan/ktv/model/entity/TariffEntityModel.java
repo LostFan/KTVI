@@ -8,6 +8,7 @@ import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.MainModel;
 
 public class TariffEntityModel extends BaseEntityModel<Tariff> {
 
@@ -25,8 +26,8 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
     @Override
     public List<EntityModel> getEntityModels() {
         List<EntityModel> entityModels = new ArrayList<>();
-        entityModels.add(new ServiceEntityModel());
-        entityModels.add(new SubscriberEntityModel());
+        entityModels.add(MainModel.getServiceEntityModel());
+        entityModels.add(MainModel.getSubscriberEntityModel());
         return entityModels;
     }
 

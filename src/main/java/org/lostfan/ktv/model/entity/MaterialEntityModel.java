@@ -7,6 +7,7 @@ import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.domain.Material;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.MainModel;
 
 public class MaterialEntityModel extends BaseEntityModel<Material> {
 
@@ -25,8 +26,8 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
     @Override
     public List<EntityModel> getEntityModels() {
         List<EntityModel> entityModels = new ArrayList<>();
-        entityModels.add(new ServiceEntityModel());
-        entityModels.add(new SubscriberEntityModel());
+        entityModels.add(MainModel.getServiceEntityModel());
+        entityModels.add(MainModel.getSubscriberEntityModel());
         return entityModels;
     }
 

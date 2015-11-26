@@ -7,33 +7,107 @@ import java.util.*;
 
 public class MainModel extends BaseObservable {
 
-    private Map<String, EntityModel> entityModels;
-    private Map<String, EntityModel> documentModels;
+    private static Map<String, EntityModel> nameEntityModels;
+    private static Map<Class, EntityModel> classEntityModels;
+
+    private static MaterialConsumptionEntityModel materialConsumptionEntityModel;
+    private static MaterialEntityModel materialEntityModel;
+    private static PaymentEntityModel paymentEntityModel;
+    private static RenderedServiceEntityModel renderedServiceEntityModel;
+    private static ServiceEntityModel serviceEntityModel;
+    private static StreetEntityModel streetEntityModel;
+    private static SubscriberEntityModel subscriberEntityModel;
+    private static TariffEntityModel tariffEntityModel;
+
+    static {
+
+        materialConsumptionEntityModel = new MaterialConsumptionEntityModel();
+        materialEntityModel = new MaterialEntityModel();
+        paymentEntityModel = new PaymentEntityModel();
+        renderedServiceEntityModel = new RenderedServiceEntityModel();
+        serviceEntityModel = new ServiceEntityModel();
+        streetEntityModel = new StreetEntityModel();
+        subscriberEntityModel = new SubscriberEntityModel();
+        tariffEntityModel = new TariffEntityModel();
+
+        nameEntityModels = new HashMap<>();
+        nameEntityModels.put(materialConsumptionEntityModel.getEntityNameKey(), materialConsumptionEntityModel);
+        nameEntityModels.put(materialEntityModel.getEntityNameKey(), materialEntityModel);
+        nameEntityModels.put(paymentEntityModel.getEntityNameKey(), paymentEntityModel);
+        nameEntityModels.put(renderedServiceEntityModel.getEntityNameKey(), renderedServiceEntityModel);
+        nameEntityModels.put(serviceEntityModel.getEntityNameKey(), serviceEntityModel);
+        nameEntityModels.put(streetEntityModel.getEntityNameKey(), streetEntityModel);
+        nameEntityModels.put(subscriberEntityModel.getEntityNameKey(), subscriberEntityModel);
+        nameEntityModels.put(tariffEntityModel.getEntityNameKey(), tariffEntityModel);
+
+        classEntityModels = new HashMap<>();
+        classEntityModels.put(materialConsumptionEntityModel.getEntityClass(), materialConsumptionEntityModel);
+        classEntityModels.put(materialEntityModel.getEntityClass(), materialEntityModel);
+        classEntityModels.put(paymentEntityModel.getEntityClass(), paymentEntityModel);
+        classEntityModels.put(renderedServiceEntityModel.getEntityClass(), renderedServiceEntityModel);
+        classEntityModels.put(serviceEntityModel.getEntityClass(), serviceEntityModel);
+        classEntityModels.put(streetEntityModel.getEntityClass(), streetEntityModel);
+        classEntityModels.put(subscriberEntityModel.getEntityClass(), subscriberEntityModel);
+        classEntityModels.put(tariffEntityModel.getEntityClass(), tariffEntityModel);
+    }
+
+    public static EntityModel getEntityModel(String entityName) {
+        return nameEntityModels.get(entityName);
+    }
+
+    public static EntityModel getEntityModel(Class entityClass) {
+        return classEntityModels.get(entityClass);
+    }
+
+    public static MaterialConsumptionEntityModel getMaterialConsumptionEntityModel() {
+        return materialConsumptionEntityModel;
+    }
+
+    public static MaterialEntityModel getMaterialEntityModel() {
+        return materialEntityModel;
+    }
+
+    public static PaymentEntityModel getPaymentEntityModel() {
+        return paymentEntityModel;
+    }
+
+    public static RenderedServiceEntityModel getRenderedServiceEntityModel() {
+        return renderedServiceEntityModel;
+    }
+
+    public static ServiceEntityModel getServiceEntityModel() {
+        return serviceEntityModel;
+    }
+
+    public static StreetEntityModel getStreetEntityModel() {
+        return streetEntityModel;
+    }
+
+    public static SubscriberEntityModel getSubscriberEntityModel() {
+        return subscriberEntityModel;
+    }
+
+    public static TariffEntityModel getTariffEntityModel() {
+        return tariffEntityModel;
+    }
+
+    private List<String> entityModelNames;
+    private List<String> documentModelNames;
     private EntityModel currentModel;
 
     public MainModel() {
-        this.entityModels = new LinkedHashMap<>();
-        this.documentModels = new LinkedHashMap<>();
+        this.entityModelNames = new ArrayList<>();
+        this.documentModelNames = new ArrayList<>();
 
-        EntityModel model = new ServiceEntityModel();
-        this.entityModels.put(model.getEntityNameKey(), model);
-        model = new ServiceEntityModel();
-        this.entityModels.put(model.getEntityNameKey(), model);
-        model = new SubscriberEntityModel();
-        this.entityModels.put(model.getEntityNameKey(), model);
-        model = new MaterialEntityModel();
-        this.entityModels.put(model.getEntityNameKey(), model);
-        model = new TariffEntityModel();
-        this.entityModels.put(model.getEntityNameKey(), model);
-        model = new StreetEntityModel();
-        this.entityModels.put(model.getEntityNameKey(), model);
+        this.entityModelNames.add(getServiceEntityModel().getEntityNameKey());
+        this.entityModelNames.add(getSubscriberEntityModel().getEntityNameKey());
+        this.entityModelNames.add(getMaterialEntityModel().getEntityNameKey());
+        this.entityModelNames.add(getTariffEntityModel().getEntityNameKey());
+        this.entityModelNames.add(getStreetEntityModel().getEntityNameKey());
 
-        model = new PaymentEntityModel();
-        this.documentModels.put(model.getEntityNameKey(), model);
-        model = new RenderedServiceEntityModel();
-        this.documentModels.put(model.getEntityNameKey(), model);
-        model = new MaterialConsumptionEntityModel();
-        this.documentModels.put(model.getEntityNameKey(), model);
+        this.documentModelNames.add(getPaymentEntityModel().getEntityNameKey());
+        this.documentModelNames.add(getRenderedServiceEntityModel().getEntityNameKey());
+        this.documentModelNames.add(getMaterialConsumptionEntityModel().getEntityNameKey());
     }
 
     public EntityModel getCurrentModel() {
@@ -41,10 +115,7 @@ public class MainModel extends BaseObservable {
     }
 
     public void setCurrentModel(String code) {
-        EntityModel model = this.entityModels.get(code);
-        if (model == null) {
-            model = this.documentModels.get(code);
-        }
+        EntityModel model = getEntityModel(code);
 
         if (model != null) {
             this.currentModel = model;
@@ -52,11 +123,11 @@ public class MainModel extends BaseObservable {
         }
     }
 
-    public Set<String> getEntityItems() {
-        return this.entityModels.keySet();
+    public List<String> getEntityItems() {
+        return this.entityModelNames;
     }
 
-    public Set<String> getDocumentItems() {
-        return this.documentModels.keySet();
+    public List<String> getDocumentItems() {
+        return this.documentModelNames;
     }
 }

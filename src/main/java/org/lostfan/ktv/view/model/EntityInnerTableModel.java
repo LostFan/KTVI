@@ -8,7 +8,6 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FullEntityField;
-import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 import javax.swing.table.DefaultTableModel;
@@ -137,15 +136,12 @@ public class EntityInnerTableModel extends DefaultTableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-            return this.entityFieldList.get(columnIndex).getType().getClazz();
+            return this.entityFieldList.get(columnIndex).getType().getValueClass();
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        if(this.entityFieldList.get(columnIndex).getTitleKey() == NUMBER_COLUMN_NAME) {
-            return false;
-        }
-        return true;
+        return this.entityFieldList.get(columnIndex).getTitleKey() != NUMBER_COLUMN_NAME;
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.lostfan.ktv.domain.RenderedService;
-import org.lostfan.ktv.model.dto.FullRenderedService;
 
 public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
 

@@ -37,7 +37,7 @@ public class EntitySelectionModel<T extends Entity> implements TableModel {
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return this.model.getFields().get(columnIndex).getType().getClazz();
+        return this.model.getFields().get(columnIndex).getType().getValueClass();
     }
 
     @Override
@@ -49,11 +49,11 @@ public class EntitySelectionModel<T extends Entity> implements TableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object value = this.model.getFields().get(columnIndex).get(this.model.getList().get(rowIndex));
         EntityFieldTypes thisType = this.model.getFields().get(columnIndex).getType();
-        if (thisType.getClazz() == Integer.class && value ==null) {
+        if (thisType.getValueClass() == Integer.class && value ==null) {
             return 0;
         }
         if (thisType.isEntityClass()) {
-            value = ((Entity) thisType.getDAO().get((Integer) value)).getName();
+            value = thisType.getDAO().get((Integer) value).getName();
         }
 
         return value;

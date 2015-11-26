@@ -34,29 +34,25 @@ public class EntityComboBoxController {
 
         @Override
         public void keyReleased(KeyEvent ke) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
+            SwingUtilities.invokeLater(() -> {
                     if(view.isReloadComboBoxData(ke)) {
                         model.setSearchQuery(view.getText());
                     }
                     view.keyClick(ke);
-                }
-            });
+                });
         }
     }
 
     private class ComboBoxActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
+            SwingUtilities.invokeLater(() -> {
                     view.editTextFieldText();
                     if(view.isReloadComboBoxData()) {
                         model.setSearchQuery(view.getText());
                         view.comboFilter(view.getText());
                     }
-                }
-            });
+                });
 
         }
     }

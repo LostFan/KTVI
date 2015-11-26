@@ -13,7 +13,7 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
 
     private List<EntityField> fields;
 
-    public StreetEntityModel() {;
+    public StreetEntityModel() {
         fields = new ArrayList<>();
 
         this.fields = new ArrayList<>();
