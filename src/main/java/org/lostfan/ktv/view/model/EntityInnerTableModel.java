@@ -52,12 +52,9 @@ public class EntityInnerTableModel extends DefaultTableModel {
 
     public EntityInnerTableModel(FullEntityField fullEntityField, List<Entity> list) {
 
-//        this.model = model;
-        this.foreignId = foreignId;
         this.fullEntityField = fullEntityField;
-        this.entityFieldList = fullEntityField.getEntityFields().stream().collect(Collectors.toList());
-//        this.parentField = this.model.getParentField();
-        this.entityFieldList.add(0, new EntityField(NUMBER_COLUMN_NAME, EntityFieldTypes.Integer, e -> null, (e1, e2) -> {}));
+        this.entityFieldList = new ArrayList<>(fullEntityField.getEntityFields());
+
         this.list = new ArrayList<>();
         deletedObjects = new ArrayList<>();
         size = list.size();
@@ -125,48 +122,56 @@ public class EntityInnerTableModel extends DefaultTableModel {
 
     @Override
     public int getColumnCount() {
-        return this.entityFieldList.size();
+        return this.entityFieldList.size() + 1;
     }
 
     @Override
     public String getColumnName(int columnIndex) {
+        if(columnIndex == 0) {
+            return ResourceBundles.getGuiBundle().getString(
+                    NUMBER_COLUMN_NAME);
+        }
     return ResourceBundles.getEntityBundle().getString(
-            this.entityFieldList.get(columnIndex).getTitleKey());
+            this.entityFieldList.get(columnIndex - 1).getTitleKey());
 }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-            return this.entityFieldList.get(columnIndex).getType().getValueClass();
+        if(columnIndex == 0) {
+            return Integer.class;
+        }
+        return this.entityFieldList.get(columnIndex - 1).getType().getValueClass();
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return this.entityFieldList.get(columnIndex).getTitleKey() != NUMBER_COLUMN_NAME;
+        return columnIndex != 0;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        EntityFieldTypes thisType = this.entityFieldList.get(columnIndex).getType();
-        if(this.entityFieldList.get(columnIndex).getTitleKey() == NUMBER_COLUMN_NAME) {
+
+        if(columnIndex == 0) {
             return rowIndex + 1;
         }
-        if (thisType.isEntityClass() && this.entityFieldList.get(columnIndex).get(list.get(rowIndex)) != null) {
-           return thisType.getDAO().get((Integer) this.entityFieldList.get(columnIndex).get(list.get(rowIndex)));
+        EntityFieldTypes thisType = this.entityFieldList.get(columnIndex - 1).getType();
+        if (thisType.isEntityClass() && this.entityFieldList.get(columnIndex - 1).get(list.get(rowIndex)) != null) {
+           return thisType.getDAO().get((Integer) this.entityFieldList.get(columnIndex - 1).get(list.get(rowIndex)));
         }
-        return this.entityFieldList.get(columnIndex).get(list.get(rowIndex));
+        return this.entityFieldList.get(columnIndex - 1).get(list.get(rowIndex));
 
     }
 
     @Override
     public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        if(this.entityFieldList.get(columnIndex).getType().isEntityClass()) {
+        if(this.entityFieldList.get(columnIndex - 1).getType().isEntityClass()) {
             if(value != null) {
-                this.entityFieldList.get(columnIndex).set(list.get(rowIndex), ((Entity) value).getId());
+                this.entityFieldList.get(columnIndex - 1).set(list.get(rowIndex), ((Entity) value).getId());
             } else {
-                this.entityFieldList.get(columnIndex).set(list.get(rowIndex), null);
+                this.entityFieldList.get(columnIndex - 1).set(list.get(rowIndex), null);
             }
         } else {
-            this.entityFieldList.get(columnIndex).set(list.get(rowIndex), value);
+            this.entityFieldList.get(columnIndex - 1).set(list.get(rowIndex), value);
         }
 
     }
