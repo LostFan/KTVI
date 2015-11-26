@@ -129,24 +129,4 @@ public class EntityController {
 //        }
         return true;
     }
-
-    private void saveInnerTable(Map<EntityModel, EntityInnerTableView> entityModelEntityInnerTableViewMap, Integer id) {
-
-        if(entityModelEntityInnerTableViewMap.size() == 0) {
-            return;
-        }
-        for (EntityModel entityModel : entityModelEntityInnerTableViewMap.keySet()) {
-            List<Entity>  entitiesInModel = entityModel.getList();
-            System.out.println(entitiesInModel.size());
-            for (Entity innerEntity : entitiesInModel) {
-                if(!entityModelEntityInnerTableViewMap.get(entityModel).getEntityList().contains(innerEntity)) {
-                    entityModel.deleteEntityById(innerEntity.getId());
-                }
-            }
-            for (Object o : entityModelEntityInnerTableViewMap.get(entityModel).getEntityList()) {
-                entityModel.getParentField().set((Entity)o, id);
-                entityModel.save((Entity)o);
-            }
-        }
-    }
 }

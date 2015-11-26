@@ -50,10 +50,6 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
 //        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getValueClass() != getParentModel().getEntityClass()).collect(Collectors.toList());
 //    }
 //
-    @Override
-    public EntityField getParentField() {
-        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getValueClass() == getParentModel().getEntityClass()).collect(Collectors.toList()).get(0);
-    }
 
     @Override
     public List<T> getList() {
@@ -118,16 +114,6 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     }
 
     protected abstract EntityDAO<T> getDao();
-
-    @Override
-    public EntityModel getParentModel(){
-        return this.parentModel;
-    }
-
-    @Override
-    public void setParentModel(EntityModel parentModel) {
-        this.parentModel = parentModel;
-    }
 
     @Override
     public T buildDTO(T entity, Map<String, List<Entity>> map) {

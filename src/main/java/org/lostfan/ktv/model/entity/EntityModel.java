@@ -28,12 +28,6 @@ public interface EntityModel<T extends Entity> extends Observable {
 
     List<FullEntityField> getFullFields();
 
-//    List<EntityField> getEditableFields();
-//
-//    List<EntityField> getEditableFieldsWithoutParent();
-//
-    EntityField getParentField();
-
     List<FieldSearchCriterion<T>> getSearchCriteria();
 
     void setSearchCriteria(List<FieldSearchCriterion<T>> criteria);
@@ -50,13 +44,7 @@ public interface EntityModel<T extends Entity> extends Observable {
 
     Class getEntityClass();
 
-//    List<EntityModel> getTableModels();
-
     Validator<T> getValidator();
-
-    EntityModel getParentModel();
-
-    void setParentModel(EntityModel parentModel);
 
     T buildDTO(T entity, Map<String, List<Entity>> map);
 

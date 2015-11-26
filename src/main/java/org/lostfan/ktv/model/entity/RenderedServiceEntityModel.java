@@ -92,7 +92,6 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         if(this.entityTableModels == null) {
             this.entityTableModels = new ArrayList<>();
             EntityModel entityModel = MainModel.getMaterialConsumptionEntityModel();
-            entityModel.setParentModel(this);
             this.entityTableModels.add(entityModel);
         }
         return this.entityTableModels;
