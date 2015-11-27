@@ -5,8 +5,7 @@ import org.lostfan.ktv.domain.MaterialConsumption;
 public class MaterialConsumptionValidator implements Validator<MaterialConsumption> {
 
     @Override
-    public ValidationResult validate(MaterialConsumption entity) {
-        ValidationResult result = ValidationResult.createEmpty();
+    public ValidationResult validate(MaterialConsumption entity, ValidationResult result) {
 
         if (entity.getMaterialId() == null || entity.getMaterialId().toString().length() == 0) {
             result.addError("empty", "material");

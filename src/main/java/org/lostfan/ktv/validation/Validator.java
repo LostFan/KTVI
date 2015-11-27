@@ -4,5 +4,9 @@ import org.lostfan.ktv.domain.Entity;
 
 public interface Validator<E extends Entity> {
 
-    ValidationResult validate(E entity);
+    default ValidationResult validate(E entity) {
+        return validate(entity, ValidationResult.createEmpty());
+    }
+
+    ValidationResult validate(E entity, ValidationResult result);
 }

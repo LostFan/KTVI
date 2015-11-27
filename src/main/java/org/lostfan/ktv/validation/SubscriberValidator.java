@@ -5,8 +5,7 @@ import org.lostfan.ktv.domain.Subscriber;
 public class SubscriberValidator implements Validator<Subscriber> {
 
     @Override
-    public ValidationResult validate(Subscriber entity) {
-        ValidationResult result = ValidationResult.createEmpty();
+    public ValidationResult validate(Subscriber entity, ValidationResult result) {
 
         if (entity.getName() == null || entity.getName().length() == 0) {
             result.addError("empty", "subscriber.name");

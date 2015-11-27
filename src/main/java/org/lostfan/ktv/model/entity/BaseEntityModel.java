@@ -127,6 +127,6 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
      */
     @Override
     public Validator<T> getValidator() {
-        return entity -> ValidationResult.createEmpty();
+        return (entity, result) -> result;
     }
 }
