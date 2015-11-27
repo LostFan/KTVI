@@ -6,6 +6,8 @@ import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.domain.SubscriberTariff;
+import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FullEntityField;
@@ -25,6 +27,8 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     private List<EntityField> fields;
 
+    private List<EntityField> tariffFields;
+
     private List<FullEntityField> fullFields;
 
     private Validator<RenderedService> validator = new RenderedServiceValidator();
@@ -34,11 +38,17 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     public RenderedServiceEntityModel() {
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false));
+        EntityField serviceEntityField= new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false);
+        this.fields.add(serviceEntityField);
         this.fields.add(new EntityField("renderedService.date", EntityFieldTypes.Date, RenderedService::getDate, RenderedService::setDate));
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberId, RenderedService::setSubscriberId));
         this.fields.add(new EntityField("service", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId));
         this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
+
+        this.tariffFields = new ArrayList<>();
+        this.tariffFields.add(new EntityField("tariff.id", EntityFieldTypes.Integer, SubscriberTariff::getId, SubscriberTariff::setId, false));
+        this.tariffFields.add(new EntityField("tariff", EntityFieldTypes.Tariff, SubscriberTariff::getTariffId, SubscriberTariff::setTariffId));
+//        this.tariffFields.add(serviceEntityField);
 
         this.fullFields = new ArrayList<>();
 
@@ -72,6 +82,10 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         return this.fields;
     }
 
+    public List<EntityField> getTariffFields() {
+        return this.tariffFields;
+    }
+
     @Override
     public List<FullEntityField> getFullFields() {
         return this.fullFields;
@@ -101,20 +115,6 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
         return this.entityTableModels;
     }
-
-//    if(entityInnerTableViews.size() == 0) {
-//        return true;
-//    }
-////        for (EntityModel entityModel : entityInnerTableViews) {
-////            for (Object o : entityInnerTableViews.get(entityModel).getEntityList()) {
-////                ValidationResult innerResult = entityModel.getValidator().validate((Entity) o);
-////                if (innerResult.hasErrors()) {
-////                    entityView.showErrors(innerResult.getErrors());
-////                    return false;
-////                }
-////            }
-////        }
-//    return true;
 
     @Override
     public ValidationResult save(RenderedService entity) {

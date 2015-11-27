@@ -239,7 +239,7 @@ public class HsqldbTariffDAO implements TariffDAO {
     public List<Tariff> getAllContainsInName(String str) {
         List<Tariff> tariffs = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where LOWER(\"id\") LIKE ?");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"tariff\" where LOWER(\"name\") LIKE ?");
             preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {

@@ -19,6 +19,10 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
         this.fields.add(new EntityField("service.id", EntityFieldTypes.Integer, Service::getId, Service::setId, false));
         this.fields.add(new EntityField("service.name", EntityFieldTypes.String, Service::getName, Service::setName));
         this.fields.add(new EntityField("service.additional", EntityFieldTypes.Boolean, Service::isAdditionalService, Service::setAdditionalService));
+        this.fields.add(new EntityField("service.change_tariff", EntityFieldTypes.Boolean, Service::isChangeTariff, Service::setChangeTariff));
+        this.fields.add(new EntityField("service.consume_materials", EntityFieldTypes.Boolean, Service::isConsumeMaterials, Service::setConsumeMaterials));
+        this.fields.add(new EntityField("service.connection_service", EntityFieldTypes.Boolean, Service::isConnectionService, Service::setConnectionService));
+        this.fields.add(new EntityField("service.disconnection_service", EntityFieldTypes.Boolean, Service::isDisconnectionService, Service::setDisconnectionService));
     }
 
     @Override

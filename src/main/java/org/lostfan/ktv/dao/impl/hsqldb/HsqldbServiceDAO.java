@@ -54,9 +54,14 @@ public class HsqldbServiceDAO implements ServiceDAO {
     public void save(Service service) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"service\" (\"name\", \"additional\") VALUES(?, ?)");
+                    "INSERT INTO \"service\" (\"name\", \"additional\", \"consume_materials\"" +
+                            ", \"change_tariff\", \"connection_service\", \"disconnection_service\") VALUES(?, ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, service.getName());
             preparedStatement.setBoolean(2, service.isAdditionalService());
+            preparedStatement.setBoolean(3, service.isConsumeMaterials());
+            preparedStatement.setBoolean(4, service.isChangeTariff());
+            preparedStatement.setBoolean(5, service.isConnectionService());
+            preparedStatement.setBoolean(6, service.isDisconnectionService());
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
@@ -72,10 +77,15 @@ public class HsqldbServiceDAO implements ServiceDAO {
         if(get(service.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"service\" set \"name\" = ?, \"additional\" = ? where \"id\" = ?");
+                        "UPDATE \"service\" set \"name\" = ?, \"additional\" = ?, \"consume_materials\" = ?, " +
+                                " \"change_tariff\" = ?, \"connection_service\" = ?, \"disconnection_service\" = ? where \"id\" = ?");
                 preparedStatement.setString(1, service.getName());
                 preparedStatement.setBoolean(2, service.isAdditionalService());
-                preparedStatement.setInt(3, service.getId());
+                preparedStatement.setBoolean(3, service.isConsumeMaterials());
+                preparedStatement.setBoolean(4, service.isChangeTariff());
+                preparedStatement.setBoolean(5, service.isConnectionService());
+                preparedStatement.setBoolean(6, service.isDisconnectionService());
+                preparedStatement.setInt(7, service.getId());
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
@@ -190,6 +200,10 @@ public class HsqldbServiceDAO implements ServiceDAO {
         service.setId(rs.getInt("id"));
         service.setName(rs.getString("name"));
         service.setAdditionalService(rs.getBoolean("additional"));
+        service.setChangeTariff(rs.getBoolean("change_tariff"));
+        service.setConsumeMaterials(rs.getBoolean("consume_materials"));
+        service.setConnectionService(rs.getBoolean("connection_service"));
+        service.setDisconnectionService(rs.getBoolean("disconnection_service"));
         return service;
     }
 }

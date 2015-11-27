@@ -1,7 +1,5 @@
 package org.lostfan.ktv.domain;
 
-import java.util.List;
-
 public class Service extends DefaultEntity  {
 
     private Integer id;
@@ -10,7 +8,13 @@ public class Service extends DefaultEntity  {
 
     private boolean additionalService;
 
-    private List<ServicePrice> servicePrices;
+    private boolean isConsumeMaterials;
+
+    private boolean isChangeTariff;
+
+    private boolean isConnectionService;
+
+    private boolean isDisconnectionService;
 
     public String getName() {
         return name;
@@ -28,17 +32,41 @@ public class Service extends DefaultEntity  {
         this.additionalService = additionalService;
     }
 
-    public List<ServicePrice> getServicePrices() {
-        return servicePrices;
-    }
-
-    public void setServicePrices(List<ServicePrice> servicePrices) {
-        this.servicePrices = servicePrices;
-    }
-
     public Integer getId() {return id;}
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public boolean isConsumeMaterials() {
+        return isConsumeMaterials;
+    }
+
+    public void setConsumeMaterials(boolean consumeMaterials) {
+        isConsumeMaterials = consumeMaterials;
+    }
+
+    public boolean isChangeTariff() {
+        return isChangeTariff;
+    }
+
+    public void setChangeTariff(boolean changeTariff) {
+        isChangeTariff = changeTariff;
+    }
+
+    public boolean isConnectionService() {
+        return isConnectionService;
+    }
+
+    public void setConnectionService(boolean connectionService) {
+        isConnectionService = connectionService;
+    }
+
+    public boolean isDisconnectionService() {
+        return isDisconnectionService;
+    }
+
+    public void setDisconnectionService(boolean disconnectionService) {
+        isDisconnectionService = disconnectionService;
     }
 }

@@ -42,6 +42,10 @@ public class EntityView {
          * Returns the current value of the component
          */
         public abstract Object getValue();
+
+        protected EntityField getEntityField() {
+            return this.entityField;
+        }
     }
 
     private class StringLabelFieldInput extends LabelFieldInput {
@@ -182,17 +186,17 @@ public class EntityView {
         }
     }
 
-    private class EntityLabelFieldInput extends LabelFieldInput {
+    protected class EntityLabelFieldInput extends LabelFieldInput {
 
         private EntityComboBox comboBox;
         private JPanel panel;
 
-        public EntityLabelFieldInput(EntityField entityField) {
+        public EntityLabelFieldInput(EntityField entityField, Entity entity) {
             super(entityField);
             this.comboBox = EntityComboBoxFactory.createComboBox(entityField.getType());
             new DefaultContextMenu().add((JTextField) comboBox.getEditor().getEditorComponent());
             comboBox.setEditable(true);
-            if (EntityView.this.entity != null) {
+            if (entity != null) {
 
                 Object value = entityField.get(EntityView.this.entity);
                 comboBox.setSelectedId((Integer) value);
@@ -259,6 +263,8 @@ public class EntityView {
     protected List<LabelFieldInput> labelFieldInputs;
     protected JButton addButton;
     protected JButton cancelButton;
+    protected JPanel contentPanel;
+
     protected EntityModel<? extends Entity> model;
     private Map<String, List<Entity>> entityInnerTableValues;
 
@@ -327,8 +333,8 @@ public class EntityView {
         frame.setLayout(new BorderLayout(10, 10));
         frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        JPanel contentPanel = new JPanel(new GridBagLayout());
-        frame.add(contentPanel, BorderLayout.PAGE_START);
+        this.contentPanel = new JPanel(new GridBagLayout());
+        frame.add(this.contentPanel, BorderLayout.PAGE_START);
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(0, 10, 10, 10);
@@ -338,12 +344,12 @@ public class EntityView {
         for (int i = 0; i < this.labelFieldInputs.size(); i++) {
             c.gridy = i;
             c.gridx = 0;
-            contentPanel.add(this.labelFieldInputs.get(i).label, c);
+            this.contentPanel.add(this.labelFieldInputs.get(i).label, c);
             c.gridx = 1;
             JComponent inputComponent = this.labelFieldInputs.get(i).getInputComponent();
             // HACK: textFields is excessively narrow when it's smaller than the displayed area.
             inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-            contentPanel.add(inputComponent, c);
+            this.contentPanel.add(inputComponent, c);
         }
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -365,7 +371,24 @@ public class EntityView {
             case Date:
                 return new DateLabelFieldInput(entityField);
             default:
-                return entityField.getType().isEntityClass() ? new EntityLabelFieldInput(entityField) : new StringLabelFieldInput(entityField);
+                return entityField.getType().isEntityClass() ? new EntityLabelFieldInput(entityField , this.entity) : new StringLabelFieldInput(entityField);
+        }
+    }
+
+    protected LabelFieldInput createLabelFieldInput(EntityField entityField, Entity entity) {
+        switch (entityField.getType()) {
+            case String:
+                return new StringLabelFieldInput(entityField);
+            case Integer:
+                return new IntegerLabelFieldInput(entityField);
+            case Double:
+                return new DoubleLabelFieldInput(entityField);
+            case Boolean:
+                return new BooleanLabelFieldInput(entityField);
+            case Date:
+                return new DateLabelFieldInput(entityField);
+            default:
+                return entityField.getType().isEntityClass() ? new EntityLabelFieldInput(entityField , entity) : new StringLabelFieldInput(entityField);
         }
     }
 

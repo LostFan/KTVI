@@ -23,6 +23,9 @@ public class EntityComboBoxFactory {
             case RenderedService:
                 model = new RenderedServiceSearcherModel();
                 break;
+            case Tariff:
+                model = new TariffSearcherModel();
+                break;
             default:
                 throw new IllegalArgumentException("Wrong type: " + type.toString());
         }

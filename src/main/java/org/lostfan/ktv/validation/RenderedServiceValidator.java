@@ -3,13 +3,6 @@ package org.lostfan.ktv.validation;
 import org.lostfan.ktv.domain.RenderedService;
 
 public class RenderedServiceValidator implements Validator<RenderedService> {
-//
-//    @Override
-//    public ValidationResult validate(RenderedService entity) {
-//        ValidationResult result = ValidationResult.createEmpty();
-//
-//
-//    }
 
     @Override
     public ValidationResult validate(RenderedService entity, ValidationResult result) {

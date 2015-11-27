@@ -61,7 +61,7 @@ public class EntityController {
 
         @Override
         public void actionPerformed(Object args) {
-            EntityView entityView = new EntityView(model);
+            EntityView entityView = EntityViewFactory.createForm(model);
             entityView.setAddActionListener(args_ -> {
                 Entity entity = (Entity) args_;
                 ValidationResult result = model.save(entity);
@@ -82,7 +82,7 @@ public class EntityController {
             int selectedId = (Integer) args;
 
             Entity entity = model.getFullEntity(selectedId);
-            EntityView entityView = new EntityView(model, entity);
+            EntityView entityView = EntityViewFactory.createForm(model, entity);
 
             entityView.setAddActionListener(args_ -> {
                 Entity entity1 = (Entity) args_;

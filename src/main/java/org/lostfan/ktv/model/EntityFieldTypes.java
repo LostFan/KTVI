@@ -17,6 +17,7 @@ public enum EntityFieldTypes {
     Street(org.lostfan.ktv.domain.Street.class, true, DAOFactory.getDefaultDAOFactory().getStreetDAO()),
     Material(org.lostfan.ktv.domain.Material.class, true, DAOFactory.getDefaultDAOFactory().getMaterialDAO()),
     Payment(org.lostfan.ktv.domain.Payment.class, true, DAOFactory.getDefaultDAOFactory().getPaymentDAO()),
+    Tariff(org.lostfan.ktv.domain.Tariff.class, true, DAOFactory.getDefaultDAOFactory().getTariffDAO()),
     RenderedService(org.lostfan.ktv.domain.RenderedService.class, true, DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO()),
     MaterialConsumption(org.lostfan.ktv.domain.MaterialConsumption.class, true, null);
 
