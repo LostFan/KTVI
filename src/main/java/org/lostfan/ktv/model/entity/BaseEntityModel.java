@@ -76,13 +76,18 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     }
 
     @Override
-    public void save(T entity) {
+    public ValidationResult save(T entity) {
+        ValidationResult result = this.getValidator().validate(entity);
+        if (result.hasErrors()) {
+            return result;
+        }
         if (entity.getId() == null) {
             getDao().save(entity);
         } else {
             getDao().update(entity);
         }
         updateEntitiesList();
+        return result;
     }
 
     @Override

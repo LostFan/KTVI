@@ -83,8 +83,8 @@ public class HsqldbRenderedServiceDAOTest {
         renderedService.setSubscriberId(3);
         renderedService.setDate(LocalDate.of(2015, 11, 11));
         renderedServiceDao.save(renderedService);
-        assertEquals(renderedServiceDao.getAll().get(3).getServiceId(), 1);
-        assertEquals(renderedServiceDao.getAll().get(3).getSubscriberId(), 3);
+        assertEquals(renderedServiceDao.getAll().get(3).getServiceId().intValue(), 1);
+        assertEquals(renderedServiceDao.getAll().get(3).getSubscriberId().intValue(), 3);
         assertEquals(renderedServiceDao.getAll().get(3).getDate(), LocalDate.of(2015, 11, 11));
     }
 
@@ -105,7 +105,7 @@ public class HsqldbRenderedServiceDAOTest {
         RenderedService renderedService = renderedServiceDao.get(1);
         renderedService.setServiceId(2);
         renderedServiceDao.update(renderedService);
-        assertEquals(renderedServiceDao.get(1).getServiceId(), 2);
+        assertEquals(renderedServiceDao.get(1).getServiceId().intValue(), 2);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class HsqldbRenderedServiceDAOTest {
         RenderedService renderedService = renderedServiceDao.get(1);
         renderedService.setServiceId(2);
         renderedServiceDao.update(renderedService);
-        assertEquals(renderedServiceDao.get(1).getSubscriberId(), 1);
+        assertEquals(renderedServiceDao.get(1).getSubscriberId().intValue(), 1);
     }
 
     @Test
@@ -152,8 +152,8 @@ public class HsqldbRenderedServiceDAOTest {
     @Test
     public void getAllRenderedServicesBySubscriberIdShouldReturnsCorrectDataTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getRenderedServicesBySubscriberId(1).get(0).getServiceId(), 1);
-        assertEquals(renderedServiceDao.getRenderedServicesBySubscriberId(2).get(0).getServiceId(), 3);
+        assertEquals(renderedServiceDao.getRenderedServicesBySubscriberId(1).get(0).getServiceId().intValue(), 1);
+        assertEquals(renderedServiceDao.getRenderedServicesBySubscriberId(2).get(0).getServiceId().intValue(), 3);
     }
 
     @Test
@@ -167,8 +167,8 @@ public class HsqldbRenderedServiceDAOTest {
     @Test
     public void getAllRenderedServicesByDateShouldReturnsCorrectDataTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getRenderedServicesByDate(LocalDate.of(2015, 6, 27)).get(0).getServiceId(), 2);
-        assertEquals(renderedServiceDao.getRenderedServicesByDate(LocalDate.of(2015, 6, 27)).get(0).getSubscriberId(), 1);
+        assertEquals(renderedServiceDao.getRenderedServicesByDate(LocalDate.of(2015, 6, 27)).get(0).getServiceId().intValue(), 2);
+        assertEquals(renderedServiceDao.getRenderedServicesByDate(LocalDate.of(2015, 6, 27)).get(0).getSubscriberId().intValue(), 1);
     }
 
     private void insertStubDataServices() throws SQLException {

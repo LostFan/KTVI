@@ -12,6 +12,9 @@ import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.dto.FullRenderedService;
 import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
+import org.lostfan.ktv.validation.RenderedServiceValidator;
+import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.validation.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,8 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     private List<EntityField> fields;
 
     private List<FullEntityField> fullFields;
+
+    private Validator<RenderedService> validator = new RenderedServiceValidator();
 
     private RenderedServiceTransformer transformer = new RenderedServiceTransformer();
     private MaterialConsumptionDAO materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
@@ -97,10 +102,37 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         return this.entityTableModels;
     }
 
+//    if(entityInnerTableViews.size() == 0) {
+//        return true;
+//    }
+////        for (EntityModel entityModel : entityInnerTableViews) {
+////            for (Object o : entityInnerTableViews.get(entityModel).getEntityList()) {
+////                ValidationResult innerResult = entityModel.getValidator().validate((Entity) o);
+////                if (innerResult.hasErrors()) {
+////                    entityView.showErrors(innerResult.getErrors());
+////                    return false;
+////                }
+////            }
+////        }
+//    return true;
+
     @Override
-    public void save(RenderedService entity) {
+    public ValidationResult save(RenderedService entity) {
+        ValidationResult result = this.getValidator().validate(entity);
+        if(entity instanceof FullRenderedService) {
+            FullRenderedService fullRenderedService = (FullRenderedService) entity;
+            for (MaterialConsumption materialConsumption : fullRenderedService.getMaterialConsumption()) {
+                result = MainModel.getMaterialConsumptionEntityModel().getValidator().validate(materialConsumption, result);
+            }
+        }
+        if (result.hasErrors()) {
+            return result;
+        }
         if (entity.getId() == null) {
             getDao().save(entity);
+            if(entity instanceof FullRenderedService)  {
+
+            }
             if(entity instanceof FullRenderedService)  {
                 FullRenderedService fullRenderedService = (FullRenderedService) entity;
                 for (MaterialConsumption materialConsumption : fullRenderedService.getMaterialConsumption()) {
@@ -113,6 +145,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             if(entity instanceof FullRenderedService) {
                 FullRenderedService fullRenderedService = (FullRenderedService) entity;
                 List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(fullRenderedService.getId());
+
                 for (MaterialConsumption materialConsumption : materialConsumptionList) {
                     if(!fullRenderedService.getMaterialConsumption().contains(materialConsumption)) {
                         materialConsumptionDAO.delete(materialConsumption.getId());
@@ -129,6 +162,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             }
         }
         updateEntitiesList();
+        return result;
     }
 
     @Override
@@ -139,6 +173,11 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     @Override
     public RenderedService createNewEntity() {
         return new RenderedService();
+    }
+
+    @Override
+    public Validator<RenderedService> getValidator() {
+        return this.validator;
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.lostfan.ktv.view.EntityInnerTableView;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
+import org.lostfan.ktv.view.components.EntityViewFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,17 +63,13 @@ public class EntityController {
         public void actionPerformed(Object args) {
             EntityView entityView = new EntityView(model);
             entityView.setAddActionListener(args_ -> {
-                Entity entity = entityView.getEntity();
-                ValidationResult result = model.getValidator().validate(entity);
+                Entity entity = (Entity) args_;
+                ValidationResult result = model.save(entity);
                 if (result.hasErrors()) {
                     entityView.showErrors(result.getErrors());
                     return;
                 }
-//                if(!isSaveInnerTable(entityView)) {
-//                    return;
-//                }
                 model.save(entity);
-//                saveInnerTable(entityView, entity.getId());
                 entityView.hide();
             });
         }
@@ -86,20 +83,14 @@ public class EntityController {
 
             Entity entity = model.getFullEntity(selectedId);
             EntityView entityView = new EntityView(model, entity);
-            List<EntityInnerTableView> entityInnerTableViews = new ArrayList<>();
 
             entityView.setAddActionListener(args_ -> {
                 Entity entity1 = (Entity) args_;
-                ValidationResult result = model.getValidator().validate(entity1);
+                ValidationResult result = model.save(entity1);
                 if (result.hasErrors()) {
                     entityView.showErrors(result.getErrors());
                     return;
                 }
-
-                if(!isSaveInnerTable(entityInnerTableViews, entityView)) {
-                    return;
-                }
-                model.save(entity1);
                 entityView.hide();
             });
         }
@@ -114,19 +105,4 @@ public class EntityController {
         }
     }
 
-    private boolean isSaveInnerTable(List<EntityInnerTableView> entityInnerTableViews, EntityView entityView) {
-        if(entityInnerTableViews.size() == 0) {
-            return true;
-        }
-//        for (EntityModel entityModel : entityInnerTableViews) {
-//            for (Object o : entityInnerTableViews.get(entityModel).getEntityList()) {
-//                ValidationResult innerResult = entityModel.getValidator().validate((Entity) o);
-//                if (innerResult.hasErrors()) {
-//                    entityView.showErrors(innerResult.getErrors());
-//                    return false;
-//                }
-//            }
-//        }
-        return true;
-    }
 }

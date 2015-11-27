@@ -6,13 +6,13 @@ public class RenderedService extends DefaultEntity {
 
     private Integer id;
 
-    private int subscriberId;
+    private Integer subscriberId;
 
-    private int serviceId;
+    private Integer serviceId;
 
     private LocalDate date;
 
-    private int price;
+    private Integer price;
 
     public Integer getId() {
         return id;
@@ -22,19 +22,19 @@ public class RenderedService extends DefaultEntity {
         this.id = id;
     }
 
-    public int getSubscriberId() {
+    public Integer getSubscriberId() {
         return subscriberId;
     }
 
-    public void setSubscriberId(int subscriberId) {
+    public void setSubscriberId(Integer subscriberId) {
         this.subscriberId = subscriberId;
     }
 
-    public int getServiceId() {
+    public Integer getServiceId() {
         return serviceId;
     }
 
-    public void setServiceId(int serviceId) {
+    public void setServiceId(Integer serviceId) {
         this.serviceId = serviceId;
     }
 
@@ -46,11 +46,11 @@ public class RenderedService extends DefaultEntity {
         this.date = date;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
