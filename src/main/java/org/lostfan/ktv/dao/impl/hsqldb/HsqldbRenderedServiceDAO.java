@@ -95,11 +95,15 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
     public void save(RenderedService renderedService) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"rendered_service\" (\"subscriber_id\", \"service_id\", \"date\",  \"price\") VALUES(?, ?, ?, ?)");
-            preparedStatement.setInt(1, renderedService.getSubscriberId());
-            preparedStatement.setInt(2, renderedService.getServiceId());
-            preparedStatement.setDate(3, Date.valueOf(renderedService.getDate()));
-            preparedStatement.setInt(4, renderedService.getPrice());
+                    "INSERT INTO \"rendered_service\" (\"id\", \"subscriber_id\", \"service_id\", \"date\",  \"price\")" +
+                            " VALUES(?, ?, ?, ?, ?)");
+            if (renderedService.getId() != null) {
+                preparedStatement.setInt(1, renderedService.getId());
+            }
+            preparedStatement.setInt(2, renderedService.getSubscriberId());
+            preparedStatement.setInt(3, renderedService.getServiceId());
+            preparedStatement.setDate(4, Date.valueOf(renderedService.getDate()));
+            preparedStatement.setInt(5, renderedService.getPrice());
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");

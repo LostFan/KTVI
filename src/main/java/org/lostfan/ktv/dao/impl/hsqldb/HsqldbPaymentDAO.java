@@ -97,14 +97,18 @@ public class HsqldbPaymentDAO implements PaymentDAO {
     public void save(Payment payment) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"payment\" (\"subscriber_id\", \"service_id\", \"payment_type_id\", \"price\", \"date\") VALUES(?, ?, ?, ?, ?)");
-            preparedStatement.setInt(1, payment.getSubscriberId());
-            preparedStatement.setInt(2, payment.getServicePaymentId());
-            if( payment.getPaymentTypeId() != null) {
-                preparedStatement.setInt(3, payment.getPaymentTypeId());
+                    "INSERT INTO \"payment\" (\"id\", \"subscriber_id\", \"service_id\", \"payment_type_id\", \"price\", \"date\")" +
+                            " VALUES(?, ?, ?, ?, ?, ?)");
+            if (payment.getId() != null) {
+                preparedStatement.setInt(1, payment.getId());
             }
-            preparedStatement.setInt(4, payment.getPrice());
-            preparedStatement.setDate(5, Date.valueOf(payment.getDate()));
+            preparedStatement.setInt(2, payment.getSubscriberId());
+            preparedStatement.setInt(3, payment.getServicePaymentId());
+            if( payment.getPaymentTypeId() != null) {
+                preparedStatement.setInt(4, payment.getPaymentTypeId());
+            }
+            preparedStatement.setInt(5, payment.getPrice());
+            preparedStatement.setDate(6, Date.valueOf(payment.getDate()));
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");

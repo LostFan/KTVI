@@ -53,8 +53,11 @@ public class HsqldbStreetDAO implements StreetDAO {
     public void save(Street street) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"street\" (\"name\") VALUES(?)");
-            preparedStatement.setString(1, street.getName());
+                    "INSERT INTO \"street\" (\"id\", \"name\") VALUES(?, ?)");
+            if (street.getId() != null) {
+                preparedStatement.setInt(1, street.getId());
+            }
+            preparedStatement.setString(2, street.getName());
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");

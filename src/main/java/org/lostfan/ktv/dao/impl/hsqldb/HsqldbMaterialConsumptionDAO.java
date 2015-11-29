@@ -52,10 +52,14 @@ public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
     public void save(MaterialConsumption materialConsumption) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"material_consumption\" (\"material_id\", \"rendered_service_id\", \"amount\") VALUES(?, ?, ?)");
-            preparedStatement.setInt(1, materialConsumption.getMaterialId());
-            preparedStatement.setInt(2, materialConsumption.getRenderedServiceId());
-            preparedStatement.setDouble(3, materialConsumption.getAmount());
+                    "INSERT INTO \"material_consumption\" (\"id\", \"material_id\", \"rendered_service_id\", \"amount\")" +
+                            " VALUES(?, ?, ?, ?)");
+            if (materialConsumption.getId() != null) {
+                preparedStatement.setInt(1, materialConsumption.getId());
+            }
+            preparedStatement.setInt(2, materialConsumption.getMaterialId());
+            preparedStatement.setInt(3, materialConsumption.getRenderedServiceId());
+            preparedStatement.setDouble(4, materialConsumption.getAmount());
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");

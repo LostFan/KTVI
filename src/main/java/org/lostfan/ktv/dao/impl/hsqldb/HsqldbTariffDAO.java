@@ -74,12 +74,14 @@ public class HsqldbTariffDAO implements TariffDAO {
     }
 
     public void save(Tariff tariff) {
-
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"tariff\" (\"name\", \"channels\") VALUES(?, ?)");
-            preparedStatement.setString(1, tariff.getName());
-            preparedStatement.setString(2, tariff.getChannels());
+                    "INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\") VALUES(?, ?, ?)");
+            if (tariff.getId() != null) {
+                preparedStatement.setInt(1, tariff.getId());
+            }
+            preparedStatement.setString(2, tariff.getName());
+            preparedStatement.setString(3, tariff.getChannels());
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");

@@ -57,10 +57,13 @@ public class HsqldbMaterialDAO implements MaterialDAO {
     public void save(Material material) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"material\" (\"name\", \"price\", \"unit\") VALUES(?, ?, ?)");
-            preparedStatement.setString(1, material.getName());
-            preparedStatement.setInt(2, material.getPrice());
-            preparedStatement.setString(3, material.getUnit());
+                    "INSERT INTO \"material\" (\"id\", \"name\", \"price\", \"unit\") VALUES(?, ?, ?, ?)");
+            if (material.getId() != null) {
+                preparedStatement.setInt(1, material.getId());
+            }
+            preparedStatement.setString(2, material.getName());
+            preparedStatement.setInt(3, material.getPrice());
+            preparedStatement.setString(4, material.getUnit());
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
