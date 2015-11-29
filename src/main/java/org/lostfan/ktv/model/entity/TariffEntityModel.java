@@ -20,6 +20,7 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("tariff.id", EntityFieldTypes.Integer, Tariff::getId, Tariff::setId, false));
         this.fields.add(new EntityField("tariff.name", EntityFieldTypes.String, Tariff::getName, Tariff::setName));
+        this.fields.add(new EntityField("tariff.digital", EntityFieldTypes.Boolean, Tariff::isDigital, Tariff::setDigital));
         this.fields.add(new EntityField("tariff.channels", EntityFieldTypes.String, Tariff::getChannels, Tariff::setChannels));
     }
 

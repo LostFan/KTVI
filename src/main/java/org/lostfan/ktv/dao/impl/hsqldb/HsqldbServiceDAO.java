@@ -115,6 +115,21 @@ public class HsqldbServiceDAO implements ServiceDAO {
         }
     }
 
+    @Override
+    public void savePrice(ServicePrice servicePrice) {
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "INSERT INTO \"service_price\" (\"service_id\", \"date\", \"price\") VALUES(?, ?, ?)");
+            preparedStatement.setInt(1, servicePrice.getServiceId());
+            preparedStatement.setDate(2, Date.valueOf(servicePrice.getDate()));
+            preparedStatement.setInt(3, servicePrice.getPrice());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public int getPriceByDate(int serviceId, LocalDate date) {
         if(get(serviceId) != null) {
             int price = 0;

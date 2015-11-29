@@ -76,12 +76,13 @@ public class HsqldbTariffDAO implements TariffDAO {
     public void save(Tariff tariff) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\") VALUES(?, ?, ?)");
+                    "INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\", \"digital\") VALUES(?, ?, ?, ?)");
             if (tariff.getId() != null) {
                 preparedStatement.setInt(1, tariff.getId());
             }
             preparedStatement.setString(2, tariff.getName());
             preparedStatement.setString(3, tariff.getChannels());
+            preparedStatement.setBoolean(4, tariff.isDigital());
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
@@ -96,10 +97,11 @@ public class HsqldbTariffDAO implements TariffDAO {
         if(get(tariff.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"tariff\" set \"name\" = ?, \"channels\" = ? where \"id\" = ?");
+                        "UPDATE \"tariff\" set \"name\" = ?, \"channels\" = ?, \"digital\" = ? where \"id\" = ?");
                 preparedStatement.setString(1, tariff.getName());
                 preparedStatement.setString(2, tariff.getChannels());
-                preparedStatement.setInt(3, tariff.getId());
+                preparedStatement.setBoolean(3, tariff.isDigital());
+                preparedStatement.setInt(4, tariff.getId());
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
@@ -259,6 +261,7 @@ public class HsqldbTariffDAO implements TariffDAO {
         Tariff tariff = new Tariff();
         tariff.setId(rs.getInt("id"));
         tariff.setName(rs.getString("name"));
+        tariff.setDigital(rs.getBoolean("digital"));
         tariff.setChannels(rs.getString("channels"));
         return tariff;
     }

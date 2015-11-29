@@ -25,9 +25,9 @@ INSERT INTO "service_price" ("service_id", "date", "price") VALUES(6, '2015-01-0
 INSERT INTO "service_price" ("service_id", "date", "price") VALUES(6, '2015-03-01', 25000);
 INSERT INTO "service_price" ("service_id", "date", "price") VALUES(7, '2015-01-01', 15000);
 
-INSERT INTO "tariff" ("id", "name", "channels") VALUES(1, 'Базовый', '10');
-INSERT INTO "tariff" ("id", "name", "channels") VALUES(2, 'Дополнительный', '20');
-INSERT INTO "tariff" ("id", "name", "channels") VALUES(3, 'Расширенный', '40');
+INSERT INTO "tariff" ("id", "name", "digital", "channels") VALUES(1, 'Базовый', TRUE, '10');
+INSERT INTO "tariff" ("id", "name", "digital", "channels") VALUES(2, 'Дополнительный', FALSE, '20');
+INSERT INTO "tariff" ("id", "name", "digital", "channels") VALUES(3, 'Расширенный', TRUE, '40');
 
 INSERT INTO "tariff_price" ("tariff_id", "date", "price") VALUES(1, '2015-01-01', 20000);
 INSERT INTO "tariff_price" ("tariff_id", "date", "price") VALUES(1, '2015-05-01', 25000);

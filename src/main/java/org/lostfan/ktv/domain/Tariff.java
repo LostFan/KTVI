@@ -6,6 +6,8 @@ public class Tariff extends DefaultEntity  {
 
     private String name;
 
+    private Boolean digital;
+
     private String channels;
 
     public String getName() {
@@ -14,6 +16,14 @@ public class Tariff extends DefaultEntity  {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean isDigital() {
+        return digital;
+    }
+
+    public void setDigital(Boolean digital) {
+        this.digital = digital;
     }
 
     public String getChannels() {
