@@ -10,7 +10,7 @@ public class Payment extends DefaultEntity {
 
     private Integer servicePaymentId;
 
-    private int subscriberId;
+    private int subscriberAccount;
 
     private int price;
 
@@ -32,12 +32,12 @@ public class Payment extends DefaultEntity {
         this.servicePaymentId = servicePaymentId;
     }
 
-    public int getSubscriberId() {
-        return subscriberId;
+    public int getSubscriberAccount() {
+        return subscriberAccount;
     }
 
-    public void setSubscriberId(int subscriberId) {
-        this.subscriberId = subscriberId;
+    public void setSubscriberAccount(int subscriberAccount) {
+        this.subscriberAccount = subscriberAccount;
     }
 
     public int getPrice() {

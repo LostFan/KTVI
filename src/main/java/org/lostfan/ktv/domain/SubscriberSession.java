@@ -6,7 +6,7 @@ public class SubscriberSession extends DefaultEntity {
 
     private Integer id;
 
-    private int subscriberId;
+    private int subscriberAccount;
 
     private LocalDate connectionDate;
 
@@ -36,12 +36,12 @@ public class SubscriberSession extends DefaultEntity {
         this.disconnectionDate = disconnectionDate;
     }
 
-    public int getSubscriberId() {
-        return subscriberId;
+    public int getSubscriberAccount() {
+        return subscriberAccount;
     }
 
-    public void setSubscriberId(int subscriberId) {
-        this.subscriberId = subscriberId;
+    public void setSubscriberAccount(int subscriberAccount) {
+        this.subscriberAccount = subscriberAccount;
     }
 
     @Override

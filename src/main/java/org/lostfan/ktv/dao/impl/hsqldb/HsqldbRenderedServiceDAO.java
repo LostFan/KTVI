@@ -100,7 +100,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             if (renderedService.getId() != null) {
                 preparedStatement.setInt(1, renderedService.getId());
             }
-            preparedStatement.setInt(2, renderedService.getSubscriberId());
+            preparedStatement.setInt(2, renderedService.getSubscriberAccount());
             preparedStatement.setInt(3, renderedService.getServiceId());
             preparedStatement.setDate(4, Date.valueOf(renderedService.getDate()));
             preparedStatement.setInt(5, renderedService.getPrice());
@@ -119,7 +119,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"rendered_service\" set \"subscriber_id\" = ?, \"service_id\" = ?, \"date\" = ?, \"price\" = ? where \"id\" = ?");
-                preparedStatement.setInt(1, renderedService.getSubscriberId());
+                preparedStatement.setInt(1, renderedService.getSubscriberAccount());
                 preparedStatement.setInt(2, renderedService.getServiceId());
                 preparedStatement.setDate(3, Date.valueOf(renderedService.getDate()));
                 preparedStatement.setInt(4, renderedService.getPrice());
@@ -172,7 +172,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         RenderedService renderedService = new RenderedService();
         renderedService.setId(rs.getInt("id"));
         renderedService.setServiceId(rs.getInt("service_id"));
-        renderedService.setSubscriberId(rs.getInt("subscriber_id"));
+        renderedService.setSubscriberAccount(rs.getInt("subscriber_id"));
         renderedService.setPrice(rs.getInt("price"));
         renderedService.setDate(rs.getDate("date").toLocalDate());
         return renderedService;

@@ -37,7 +37,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     public Subscriber get(int id) {
         Subscriber subscriber = null;
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber\" where \"id\" = ?");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber\" where \"account\" = ?");
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -56,20 +56,29 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     public void save(Subscriber subscriber) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"subscriber\" (\"id\", \"name\", \"account\", \"street_id\", \"balance\", \"connected\") " +
-                            "VALUES(?, ?, ?, ?, ?, ?)");
-            if (subscriber.getId() != null) {
-                preparedStatement.setInt(1, subscriber.getId());
-            }
+                    "INSERT INTO \"subscriber\" (\"account\", \"name\", \"street_id\", \"balance\"," +
+                            " \"connected\", \"house\", \"building\", \"postcode\", \"phone\"," +
+                            " \"passport_number\", \"passport_authority\", \"passport_date\") " +
+                            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+            preparedStatement.setInt(1, subscriber.getAccount());
             preparedStatement.setString(2, subscriber.getName());
-            preparedStatement.setString(3, subscriber.getAccount());
             if(subscriber.getStreetId() != null) {
-                preparedStatement.setInt(4, subscriber.getStreetId());
+                preparedStatement.setInt(3, subscriber.getStreetId());
             } else {
-                preparedStatement.setNull(4, Types.INTEGER);
+                preparedStatement.setNull(3, Types.INTEGER);
             }
-            preparedStatement.setInt(5, subscriber.getBalance());
-            preparedStatement.setBoolean(6, subscriber.isConnected());
+            preparedStatement.setInt(4, subscriber.getBalance());
+            preparedStatement.setBoolean(5, subscriber.isConnected());
+            preparedStatement.setString(6, subscriber.getHouse());
+            preparedStatement.setString(7, subscriber.getBuilding());
+            preparedStatement.setString(8, subscriber.getPostcode());
+            preparedStatement.setString(9, subscriber.getPhone());
+            preparedStatement.setString(10, subscriber.getPassportNumber());
+            preparedStatement.setString(11, subscriber.getPassportAuthority());
+            if (subscriber.getPassportDate() != null) {
+                preparedStatement.setDate(12, Date.valueOf(subscriber.getPassportDate()));
+            }
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
@@ -86,40 +95,52 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"subscriber\" set " +
                                 "\"name\" = ?, " +
-                                "\"account\" = ?, " +
                                 "\"street_id\" = ?, " +
                                 "\"balance\" = ?, " +
-                                "\"connected\" = ? " +
-                                "where \"id\" = ?");
+                                "\"connected\" = ?, " +
+                                "\"house\" = ?, " +
+                                "\"building\" = ?, " +
+                                "\"postcode\" = ?, " +
+                                "\"phone\" = ?, " +
+                                "\"passport_number\" = ?, " +
+                                "\"passport_authority\" = ?, " +
+                                "\"passport_date\" = ? " +
+                                "where \"account\" = ?");
                 preparedStatement.setString(1, subscriber.getName());
-                preparedStatement.setString(2, subscriber.getAccount());
-                preparedStatement.setInt(3, subscriber.getStreetId());
-                preparedStatement.setInt(4, subscriber.getBalance());
-                preparedStatement.setBoolean(5, subscriber.isConnected());
-                preparedStatement.setInt(6, subscriber.getId());
+                preparedStatement.setInt(2, subscriber.getStreetId());
+                preparedStatement.setInt(3, subscriber.getBalance());
+                preparedStatement.setBoolean(4, subscriber.isConnected());
+                preparedStatement.setString(5, subscriber.getHouse());
+                preparedStatement.setString(6, subscriber.getBuilding());
+                preparedStatement.setString(7, subscriber.getPostcode());
+                preparedStatement.setString(8, subscriber.getPhone());
+                preparedStatement.setString(9, subscriber.getPassportNumber());
+                preparedStatement.setString(10, subscriber.getPassportAuthority());
+                preparedStatement.setDate(11, Date.valueOf(subscriber.getPassportDate()));
+                preparedStatement.setInt(12, subscriber.getAccount());
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
+            throw new IllegalArgumentException("Update nonexistent element");
         }
     }
 
-    public void delete(int subscriberId) {
-        if(get(subscriberId) != null) {
+    public void delete(int subscriberAccount) {
+        if(get(subscriberAccount) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "DELETE FROM  \"subscriber\" where \"id\" = ?");
-                preparedStatement.setInt(1, subscriberId);
+                        "DELETE FROM  \"subscriber\" where \"account\" = ?");
+                preparedStatement.setInt(1, subscriberAccount);
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         } else {
-            throw new UnsupportedOperationException("Delete nonexistent element");
+            throw new IllegalArgumentException("Delete nonexistent element");
         }
     }
 
@@ -127,13 +148,13 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public Integer getTariffIdByDate(int subscriberId, LocalDate date) {
-        if(get(subscriberId) != null) {
+    public Integer getTariffIdByDate(int subscriberAccount, LocalDate date) {
+        if(get(subscriberAccount) != null) {
             Integer tariffId = null;
             try {
-                PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"subscriber_tariff\" where \"subscriber_id\" = ? AND \"connection_date\" <= ?" +
+                PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"subscriber_tariff\" where \"subscriber_account\" = ? AND \"connection_date\" <= ?" +
                         " AND (\"disconnection_date\" IS NULL OR \"disconnection_date\" > ?) ORDER BY \"connection_date\" DESC");
-                preparedStatement.setInt(1, subscriberId);
+                preparedStatement.setInt(1, subscriberAccount);
                 preparedStatement.setDate(2, Date.valueOf(date));
                 preparedStatement.setDate(3, Date.valueOf(date));
                 ResultSet rs = preparedStatement.executeQuery();
@@ -145,17 +166,17 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             }
             return tariffId;
         } else {
-            throw new UnsupportedOperationException("Subscriber not exist");
+            throw new IllegalArgumentException("Subscriber not exist");
         }
     }
 
-    public Integer getSessionIdByDate(int subscriberId, LocalDate date) {
-        if(get(subscriberId) != null) {
+    public Integer getSessionIdByDate(int subscriberAccount, LocalDate date) {
+        if(get(subscriberAccount) != null) {
             Integer sessionId = null;
             try {
-                PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"subscriber_session\" where \"subscriber_id\" = ? AND \"connection_date\" <= ?" +
+                PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"subscriber_session\" where \"subscriber_account\" = ? AND \"connection_date\" <= ?" +
                         " AND (\"disconnection_date\" IS NULL OR \"disconnection_date\" > ?) ORDER BY \"connection_date\" DESC");
-                preparedStatement.setInt(1, subscriberId);
+                preparedStatement.setInt(1, subscriberAccount);
                 preparedStatement.setDate(2, Date.valueOf(date));
                 preparedStatement.setDate(3, Date.valueOf(date));
                 ResultSet rs = preparedStatement.executeQuery();
@@ -167,20 +188,20 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             }
             return sessionId;
         } else {
-            throw new UnsupportedOperationException("Subscriber not exist");
+            throw new IllegalArgumentException("Subscriber not exist");
         }
     }
 
-    public List<SubscriberSession> getSubscriberSessions(int subscriberId) {
+    public List<SubscriberSession> getSubscriberSessions(int subscriberAccount) {
         List<SubscriberSession> subscriberSessions = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber_session\" where \"subscriber_id\" = ?");
-            preparedStatement.setInt(1, subscriberId);
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber_session\" where \"subscriber_account\" = ?");
+            preparedStatement.setInt(1, subscriberAccount);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 SubscriberSession subscriberSession = new SubscriberSession();
                 subscriberSession.setId(rs.getInt("id"));
-                subscriberSession.setSubscriberId(rs.getInt("subscriber_id"));
+                subscriberSession.setSubscriberAccount(rs.getInt("subscriber_account"));
                 subscriberSession.setConnectionDate(rs.getDate("connection_date").toLocalDate());
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberSession.setDisconnectionDate(rs.getDate("disconnection_date").toLocalDate());
@@ -195,16 +216,16 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         return subscriberSessions;
     }
 
-    public List<SubscriberTariff> getSubscriberTariffs(int subscriberId) {
+    public List<SubscriberTariff> getSubscriberTariffs(int subscriberAccount) {
         List<SubscriberTariff> subscriberTariffs = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber_tariff\" where \"subscriber_id\" = ?");
-            preparedStatement.setInt(1, subscriberId);
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber_tariff\" where \"subscriber_account\" = ?");
+            preparedStatement.setInt(1, subscriberAccount);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 SubscriberTariff subscriberTariff = new SubscriberTariff();
                 subscriberTariff.setId(rs.getInt("id"));
-                subscriberTariff.setSubscriberId(rs.getInt("subscriber_id"));
+                subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
                 subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
@@ -229,7 +250,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             while (rs.next()) {
                 subscriberSession = new SubscriberSession();
                 subscriberSession.setId(rs.getInt("id"));
-                subscriberSession.setSubscriberId(rs.getInt("subscriber_id"));
+                subscriberSession.setSubscriberAccount(rs.getInt("subscriber_account"));
                 subscriberSession.setConnectionDate(rs.getDate("connection_date").toLocalDate());
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberSession.setDisconnectionDate(rs.getDate("disconnection_date").toLocalDate());
@@ -247,8 +268,8 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     public void saveSubscriberSession(SubscriberSession subscriberSession) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"subscriber_session\" (\"subscriber_id\", \"connection_date\", \"disconnection_date\") VALUES(?, ?, ?)");
-            preparedStatement.setInt(1, subscriberSession.getSubscriberId());
+                    "INSERT INTO \"subscriber_session\" (\"subscriber_account\", \"connection_date\", \"disconnection_date\") VALUES(?, ?, ?)");
+            preparedStatement.setInt(1, subscriberSession.getSubscriberAccount());
             preparedStatement.setDate(2, Date.valueOf(subscriberSession.getConnectionDate()));
             if (subscriberSession.getDisconnectionDate() != null) {
                 preparedStatement.setDate(3, Date.valueOf(subscriberSession.getDisconnectionDate()));
@@ -266,8 +287,8 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         if(getSubscriberSession(subscriberSession.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"subscriber_session\" set \"subscriber_id\" = ?, \"connection_date\" = ?, \"disconnection_date\" = ?  where \"id\" = ?");
-                preparedStatement.setInt(1, subscriberSession.getSubscriberId());
+                        "UPDATE \"subscriber_session\" set \"subscriber_account\" = ?, \"connection_date\" = ?, \"disconnection_date\" = ?  where \"id\" = ?");
+                preparedStatement.setInt(1, subscriberSession.getSubscriberAccount());
                 preparedStatement.setDate(2, Date.valueOf(subscriberSession.getConnectionDate()));
                 if (subscriberSession.getDisconnectionDate() != null) {
                     preparedStatement.setDate(3, Date.valueOf(subscriberSession.getDisconnectionDate()));
@@ -295,7 +316,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             while (rs.next()) {
                 subscriberTariff = new SubscriberTariff();
                 subscriberTariff.setId(rs.getInt("id"));
-                subscriberTariff.setSubscriberId(rs.getInt("subscriber_id"));
+                subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
                 subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
@@ -313,8 +334,8 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     public void saveSubscriberTariff(SubscriberTariff subscriberTariff) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"subscriber_tariff\" (\"subscriber_id\", \"connection_date\", \"disconnection_date\", \"tariff_id\") VALUES(?, ?, ?, ?)");
-            preparedStatement.setInt(1, subscriberTariff.getSubscriberId());
+                    "INSERT INTO \"subscriber_tariff\" (\"subscriber_account\", \"connection_date\", \"disconnection_date\", \"tariff_id\") VALUES(?, ?, ?, ?)");
+            preparedStatement.setInt(1, subscriberTariff.getSubscriberAccount());
             preparedStatement.setDate(2, Date.valueOf(subscriberTariff.getConnectTariff()));
             if (subscriberTariff.getDisconnectTariff() != null) {
                 preparedStatement.setDate(3, Date.valueOf(subscriberTariff.getDisconnectTariff()));
@@ -333,8 +354,8 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         if(getSubscriberTariff(subscriberTariff.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"subscriber_tariff\" set \"subscriber_id\" = ?, \"connection_date\" = ?, \"disconnection_date\" = ?, \"tariff_id\" = ?  where \"id\" = ?");
-                preparedStatement.setInt(1, subscriberTariff.getSubscriberId());
+                        "UPDATE \"subscriber_tariff\" set \"subscriber_account\" = ?, \"connection_date\" = ?, \"disconnection_date\" = ?, \"tariff_id\" = ?  where \"id\" = ?");
+                preparedStatement.setInt(1, subscriberTariff.getSubscriberAccount());
                 preparedStatement.setDate(2, Date.valueOf(subscriberTariff.getConnectTariff()));
                 if (subscriberTariff.getDisconnectTariff() != null) {
                     preparedStatement.setDate(3, Date.valueOf(subscriberTariff.getDisconnectTariff()));
@@ -409,12 +430,21 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
 
     private Subscriber constructEntity(ResultSet rs) throws SQLException{
         Subscriber subscriber = new Subscriber();
-        subscriber.setId(rs.getInt("id"));
+        subscriber.setAccount(rs.getInt("account"));
         subscriber.setName(rs.getString("name"));
-        subscriber.setAccount(rs.getString("account"));
         subscriber.setStreetId(rs.getInt("street_id"));
         subscriber.setBalance(rs.getInt("balance"));
         subscriber.setConnected(rs.getBoolean("connected"));
+        subscriber.setHouse(rs.getString("house"));
+        subscriber.setBuilding(rs.getString("building"));
+        subscriber.setPostcode(rs.getString("postcode"));
+        subscriber.setPhone(rs.getString("phone"));
+        subscriber.setPassportNumber(rs.getString("passport_number"));
+        subscriber.setPassportAuthority(rs.getString("passport_authority"));
+        Date passportDate = rs.getDate("passport_date");
+        if (passportDate != null) {
+            subscriber.setPassportDate(passportDate.toLocalDate());
+        }
         return subscriber;
     }
 }

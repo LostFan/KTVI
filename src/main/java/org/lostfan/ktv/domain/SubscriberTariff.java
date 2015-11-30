@@ -6,7 +6,7 @@ public class SubscriberTariff extends DefaultEntity{
 
     private Integer id;
 
-    private Integer subscriberId;
+    private Integer subscriberAccount;
 
     private Integer tariffId;
 
@@ -22,12 +22,12 @@ public class SubscriberTariff extends DefaultEntity{
         this.id = id;
     }
 
-    public Integer getSubscriberId() {
-        return subscriberId;
+    public Integer getSubscriberAccount() {
+        return subscriberAccount;
     }
 
-    public void setSubscriberId(Integer subscriberId) {
-        this.subscriberId = subscriberId;
+    public void setSubscriberAccount(Integer subscriberAccount) {
+        this.subscriberAccount = subscriberAccount;
     }
 
     public Integer getTariffId() {

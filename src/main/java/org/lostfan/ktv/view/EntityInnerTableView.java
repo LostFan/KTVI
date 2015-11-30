@@ -51,7 +51,6 @@ public class EntityInnerTableView<T> {
         this.table.setAutoCreateRowSorter(false);
         this.table.setFillsViewportHeight(true);
 
-
         this.addButton = new JButton(getString("buttons.add"));
         this.addButton.addActionListener(e -> {
             this.entityInnerTableModel.addRow();

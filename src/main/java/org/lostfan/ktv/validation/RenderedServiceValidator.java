@@ -18,7 +18,7 @@ public class RenderedServiceValidator implements Validator<RenderedService> {
             result.addError("empty", "service");
         }
 
-        if (entity.getSubscriberId() == null) {
+        if (entity.getSubscriberAccount() == null) {
             result.addError("empty", "subscriber");
         }
 

@@ -102,7 +102,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
             if (payment.getId() != null) {
                 preparedStatement.setInt(1, payment.getId());
             }
-            preparedStatement.setInt(2, payment.getSubscriberId());
+            preparedStatement.setInt(2, payment.getSubscriberAccount());
             preparedStatement.setInt(3, payment.getServicePaymentId());
             if( payment.getPaymentTypeId() != null) {
                 preparedStatement.setInt(4, payment.getPaymentTypeId());
@@ -124,7 +124,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"payment\" set \"subscriber_id\" = ?, \"service_id\" = ?, \"payment_type_id\" = ?, \"price\" = ?, \"date\" = ? where \"id\" = ?");
-                preparedStatement.setInt(1, payment.getSubscriberId());
+                preparedStatement.setInt(1, payment.getSubscriberAccount());
                 preparedStatement.setInt(2, payment.getServicePaymentId());
                 if( payment.getPaymentTypeId() != null) {
                     preparedStatement.setInt(3, payment.getPaymentTypeId());
@@ -267,7 +267,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         payment.setPrice(rs.getInt("price"));
         payment.setDate(rs.getDate("date").toLocalDate());
         payment.setPaymentTypeId(rs.getInt("payment_type_id"));
-        payment.setSubscriberId(rs.getInt("subscriber_id"));
+        payment.setSubscriberAccount(rs.getInt("subscriber_id"));
         payment.setServicePaymentId(rs.getInt("service_id"));
         return payment;
     }

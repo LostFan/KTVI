@@ -17,7 +17,7 @@ public class RenderedServiceTransformer implements EntityTransformer<RenderedSer
         dto.setId(entity.getId());
         dto.setDate(entity.getDate());
         dto.setPrice(entity.getPrice());
-        dto.setSubscriberId(entity.getSubscriberId());
+        dto.setSubscriberAccount(entity.getSubscriberAccount());
         dto.setServiceId(entity.getServiceId());
         return dto;
     }
@@ -36,7 +36,7 @@ public class RenderedServiceTransformer implements EntityTransformer<RenderedSer
         entity.setId(dto.getId());
         entity.setDate(dto.getDate());
         entity.setPrice(dto.getPrice());
-        entity.setSubscriberId(dto.getSubscriberId());
+        entity.setSubscriberAccount(dto.getSubscriberAccount());
         entity.setServiceId(dto.getServiceId());
         return entity;
     }

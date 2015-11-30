@@ -70,7 +70,7 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataSubscribers();
         Subscriber subscriber = new Subscriber();
         subscriber.setName("Jayme");
-        subscriber.setAccount("700500");
+        subscriber.setAccount(700500);
         subscriberDao.save(subscriber);
         assertEquals(subscriberDao.getAll().get(3).getId().intValue(), 4);
     }
@@ -80,7 +80,7 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataSubscribers();
         Subscriber subscriber = new Subscriber();
         subscriber.setName("Robb");
-        subscriber.setAccount("700453");
+        subscriber.setAccount(700453);
         subscriberDao.save(subscriber);
         assertEquals(subscriberDao.getAll().size(), 4);
     }
@@ -90,10 +90,10 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataSubscribers();
         Subscriber subscriber = new Subscriber();
         subscriber.setName("Sansa");
-        subscriber.setAccount("700989");
+        subscriber.setAccount(700989);
         subscriberDao.save(subscriber);
         assertEquals(subscriberDao.getAll().get(3).getName(), "Sansa");
-        assertEquals(subscriberDao.getAll().get(3).getAccount(), "700989");
+        assertEquals(subscriberDao.getAll().get(3).getAccount(), Integer.valueOf(700989));
     }
 
     @Test
@@ -109,7 +109,7 @@ public class HsqldbSubscriberDAOTest {
     public void updateExistingSubscriberByIdCorrectSubscriberCountTest() throws SQLException {
         insertStubDataSubscribers();
         Subscriber subscriber = subscriberDao.get(1);
-        subscriber.setAccount("700736");
+        subscriber.setAccount(700736);
         subscriber.setName("No one");
         subscriberDao.update(subscriber);
         assertEquals(subscriberDao.getAll().size(), 3);
@@ -119,7 +119,7 @@ public class HsqldbSubscriberDAOTest {
     public void updateExistingSubscriberByIdShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubDataSubscribers();
         Subscriber subscriber = subscriberDao.get(1);
-        subscriber.setAccount("700344");
+        subscriber.setAccount(700344);
         subscriberDao.update(subscriber);
         assertEquals(subscriberDao.get(1).getName(), "Arya");
     }
@@ -204,7 +204,7 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataSessions();
 
         SubscriberSession subscriberSession = new SubscriberSession();
-        subscriberSession.setSubscriberId(1);
+        subscriberSession.setSubscriberAccount(1);
         subscriberSession.setConnectionDate(LocalDate.of(2015, 11, 12));
         subscriberDao.saveSubscriberSession(subscriberSession);
         assertEquals(subscriberDao.getSubscriberSessions(1).get(2).getId().intValue(), 3);
@@ -216,7 +216,7 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataSessions();
 
         SubscriberSession subscriberSession = new SubscriberSession();
-        subscriberSession.setSubscriberId(1);
+        subscriberSession.setSubscriberAccount(1);
         subscriberSession.setConnectionDate(LocalDate.of(2015, 11, 12));
         subscriberDao.saveSubscriberSession(subscriberSession);
         assertEquals(subscriberDao.getSubscriberSessions(1).size(), 3);
@@ -228,7 +228,7 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataSessions();
 
         SubscriberSession subscriberSession = new SubscriberSession();
-        subscriberSession.setSubscriberId(1);
+        subscriberSession.setSubscriberAccount(1);
         subscriberSession.setConnectionDate(LocalDate.of(2015, 11, 12));
         subscriberDao.saveSubscriberSession(subscriberSession);
         assertEquals(subscriberDao.getSubscriberSessions(1).get(2).getConnectionDate(), LocalDate.of(2015, 11, 12));
@@ -271,7 +271,7 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataTariffs();
 
         SubscriberTariff subscriberTariff = new SubscriberTariff();
-        subscriberTariff.setSubscriberId(1);
+        subscriberTariff.setSubscriberAccount(1);
         subscriberTariff.setTariffId(1);
         subscriberTariff.setConnectTariff(LocalDate.of(2015, 11, 12));
         subscriberDao.saveSubscriberTariff(subscriberTariff);
@@ -284,7 +284,7 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataTariffs();
 
         SubscriberTariff subscriberTariff = new SubscriberTariff();
-        subscriberTariff.setSubscriberId(1);
+        subscriberTariff.setSubscriberAccount(1);
         subscriberTariff.setConnectTariff(LocalDate.of(2015, 11, 12));
         subscriberTariff.setTariffId(1);
         subscriberDao.saveSubscriberTariff(subscriberTariff);
@@ -297,7 +297,7 @@ public class HsqldbSubscriberDAOTest {
         insertStubDataTariffs();
 
         SubscriberTariff subscriberTariff = new SubscriberTariff();
-        subscriberTariff.setSubscriberId(1);
+        subscriberTariff.setSubscriberAccount(1);
         subscriberTariff.setConnectTariff(LocalDate.of(2015, 11, 12));
         subscriberTariff.setTariffId(1);
         subscriberDao.saveSubscriberTariff(subscriberTariff);

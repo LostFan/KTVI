@@ -20,8 +20,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     public SubscriberEntityModel() {
 
         this.fields = new ArrayList<>();
-        this.fields.add(new EntityField("subscriber.id", EntityFieldTypes.Integer, Subscriber::getId, Subscriber::setId, false));
-        this.fields.add(new EntityField("subscriber.account", EntityFieldTypes.String, Subscriber::getAccount, Subscriber::setAccount));
+        this.fields.add(new EntityField("subscriber.account", EntityFieldTypes.Integer, Subscriber::getAccount, Subscriber::setAccount));
         this.fields.add(new EntityField("subscriber.name", EntityFieldTypes.String, Subscriber::getName, Subscriber::setName));
         this.fields.add(new EntityField("subscriber.street_id", EntityFieldTypes.Street, Subscriber::getStreetId, Subscriber::setStreetId));
         this.fields.add(new EntityField("subscriber.balance", EntityFieldTypes.Integer, Subscriber::getBalance, Subscriber::setBalance));

@@ -1,11 +1,11 @@
 package org.lostfan.ktv.domain;
 
 
+import java.time.LocalDate;
+
 public class Subscriber extends DefaultEntity {
 
-    private Integer id;
-
-    private String account;
+    private Integer account;
 
     private String name;
 
@@ -15,12 +15,34 @@ public class Subscriber extends DefaultEntity {
 
     private Integer streetId;
 
+    private String house;
+
+    private String building;
+
+    private String postcode;
+
+    private String phone;
+
+    private String passportNumber;
+
+    private String passportAuthority;
+
+    private LocalDate passportDate;
+
     public Integer getId() {
-        return id;
+        return account;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.account = id;
+    }
+
+    public void setAccount(Integer account) {
+        this.account = account;
+    }
+
+    public Integer getAccount() {
+        return account;
     }
 
     public String getName() {
@@ -47,19 +69,67 @@ public class Subscriber extends DefaultEntity {
         this.connected = connected;
     }
 
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
-    }
-
     public Integer getStreetId() {
         return streetId;
     }
 
     public void setStreetId(Integer streetId) {
         this.streetId = streetId;
+    }
+
+    public String getHouse() {
+        return house;
+    }
+
+    public void setHouse(String house) {
+        this.house = house;
+    }
+
+    public String getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(String building) {
+        this.building = building;
+    }
+
+    public String getPostcode() {
+        return postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPassportNumber() {
+        return passportNumber;
+    }
+
+    public void setPassportNumber(String passportNumber) {
+        this.passportNumber = passportNumber;
+    }
+
+    public String getPassportAuthority() {
+        return passportAuthority;
+    }
+
+    public void setPassportAuthority(String passportAuthority) {
+        this.passportAuthority = passportAuthority;
+    }
+
+    public LocalDate getPassportDate() {
+        return passportDate;
+    }
+
+    public void setPassportDate(LocalDate passportDate) {
+        this.passportDate = passportDate;
     }
 }

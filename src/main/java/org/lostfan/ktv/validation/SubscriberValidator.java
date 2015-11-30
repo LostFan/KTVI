@@ -15,7 +15,7 @@ public class SubscriberValidator implements Validator<Subscriber> {
             result.addError("empty", "subscriber.street_id");
         }
 
-        if (entity.getAccount() == null || entity.getAccount().length() == 0) {
+        if (entity.getAccount() == null || entity.getAccount() == 0) {
             result.addError("empty", "subscriber.account");
         }
 
