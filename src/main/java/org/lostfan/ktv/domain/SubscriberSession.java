@@ -12,6 +12,8 @@ public class SubscriberSession extends DefaultEntity {
 
     private LocalDate disconnectionDate;
 
+    private Integer disconnectionReasonId;
+
     public Integer getId() {
         return id;
     }
@@ -34,6 +36,14 @@ public class SubscriberSession extends DefaultEntity {
 
     public void setDisconnectionDate(LocalDate disconnectionDate) {
         this.disconnectionDate = disconnectionDate;
+    }
+
+    public Integer getDisconnectionReasonId() {
+        return disconnectionReasonId;
+    }
+
+    public void setDisconnectionReasonId(Integer disconnectionReasonId) {
+        this.disconnectionReasonId = disconnectionReasonId;
     }
 
     public int getSubscriberAccount() {

@@ -10,6 +10,7 @@ public class MainModel extends BaseObservable {
     private static Map<String, EntityModel> nameEntityModels;
     private static Map<Class, EntityModel> classEntityModels;
 
+    private static DisconnectionReasonEntityModel disconnectionReasonEntityModel;
     private static MaterialConsumptionEntityModel materialConsumptionEntityModel;
     private static MaterialEntityModel materialEntityModel;
     private static PaymentEntityModel paymentEntityModel;
@@ -21,6 +22,7 @@ public class MainModel extends BaseObservable {
 
     static {
 
+        disconnectionReasonEntityModel = new DisconnectionReasonEntityModel();
         materialConsumptionEntityModel = new MaterialConsumptionEntityModel();
         materialEntityModel = new MaterialEntityModel();
         paymentEntityModel = new PaymentEntityModel();
@@ -31,6 +33,7 @@ public class MainModel extends BaseObservable {
         tariffEntityModel = new TariffEntityModel();
 
         nameEntityModels = new HashMap<>();
+        nameEntityModels.put(disconnectionReasonEntityModel.getEntityNameKey(), disconnectionReasonEntityModel);
         nameEntityModels.put(materialConsumptionEntityModel.getEntityNameKey(), materialConsumptionEntityModel);
         nameEntityModels.put(materialEntityModel.getEntityNameKey(), materialEntityModel);
         nameEntityModels.put(paymentEntityModel.getEntityNameKey(), paymentEntityModel);
@@ -41,6 +44,7 @@ public class MainModel extends BaseObservable {
         nameEntityModels.put(tariffEntityModel.getEntityNameKey(), tariffEntityModel);
 
         classEntityModels = new HashMap<>();
+        classEntityModels.put(disconnectionReasonEntityModel.getEntityClass(), disconnectionReasonEntityModel);
         classEntityModels.put(materialConsumptionEntityModel.getEntityClass(), materialConsumptionEntityModel);
         classEntityModels.put(materialEntityModel.getEntityClass(), materialEntityModel);
         classEntityModels.put(paymentEntityModel.getEntityClass(), paymentEntityModel);
@@ -61,6 +65,10 @@ public class MainModel extends BaseObservable {
 
     public static MaterialConsumptionEntityModel getMaterialConsumptionEntityModel() {
         return materialConsumptionEntityModel;
+    }
+
+    public static DisconnectionReasonEntityModel getDisconnectionReasonEntityModel() {
+        return disconnectionReasonEntityModel;
     }
 
     public static MaterialEntityModel getMaterialEntityModel() {
@@ -104,6 +112,7 @@ public class MainModel extends BaseObservable {
         this.entityModelNames.add(getMaterialEntityModel().getEntityNameKey());
         this.entityModelNames.add(getTariffEntityModel().getEntityNameKey());
         this.entityModelNames.add(getStreetEntityModel().getEntityNameKey());
+        this.entityModelNames.add(getDisconnectionReasonEntityModel().getEntityNameKey());
 
         this.documentModelNames.add(getPaymentEntityModel().getEntityNameKey());
         this.documentModelNames.add(getRenderedServiceEntityModel().getEntityNameKey());

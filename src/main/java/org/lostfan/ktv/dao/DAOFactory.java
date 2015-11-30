@@ -12,6 +12,8 @@ public abstract class DAOFactory {
         return defaultFactory;
     }
 
+    public abstract DisconnectionReasonDAO getDisconnectionReasonDAO();
+
     public abstract MaterialDAO getMaterialDAO();
 
     public abstract PaymentDAO getPaymentDAO();

@@ -4,6 +4,7 @@ import org.lostfan.ktv.dao.*;
 
 public class HsqldbDaoFactory extends DAOFactory {
 
+    private DisconnectionReasonDAO disconnectionReasonDAO;
     private MaterialDAO materialDAO;
     private PaymentDAO paymentDAO;
     private RenderedServiceDAO renderedServiceDAO;
@@ -14,6 +15,7 @@ public class HsqldbDaoFactory extends DAOFactory {
     private MaterialConsumptionDAO materialConsumptionDAO;
 
     public HsqldbDaoFactory() {
+        this.disconnectionReasonDAO = new HsqldbDisconnectionReasonDAO();
         this.materialDAO = new HsqldbMaterialDAO();
         this.paymentDAO = new HsqldbPaymentDAO();
         this.renderedServiceDAO = new HsqldbRenderedServiceDAO();
@@ -22,6 +24,11 @@ public class HsqldbDaoFactory extends DAOFactory {
         this.tariffDAO = new HsqldbTariffDAO();
         this.streetDAO = new HsqldbStreetDAO();
         this.materialConsumptionDAO = new HsqldbMaterialConsumptionDAO();
+    }
+
+    @Override
+    public DisconnectionReasonDAO getDisconnectionReasonDAO() {
+        return this.disconnectionReasonDAO;
     }
 
     @Override

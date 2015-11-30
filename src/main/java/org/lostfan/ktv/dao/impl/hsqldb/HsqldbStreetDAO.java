@@ -82,7 +82,7 @@ public class HsqldbStreetDAO implements StreetDAO {
                 ex.printStackTrace();
             }
         } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
+            throw new IllegalArgumentException("Update nonexistent element");
         }
     }
 
