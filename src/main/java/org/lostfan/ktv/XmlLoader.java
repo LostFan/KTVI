@@ -39,9 +39,9 @@ public class XmlLoader {
         loadTariffPrices();
         loadServices();
         loadServicePrices();
-//        loadSubscribers();
+        loadDisconnectionReasons();
+        loadSubscribers();
 //        loadConnections();
-//        loadDisconnectionReasons();
 //        loadDisconnections();
 //        loadBalances();
     }
@@ -145,7 +145,27 @@ public class XmlLoader {
     }
 
     private void loadSubscribers() {
-        // TODO: implement
+        NodeList nodes = getNodes("xml/subscribers.xml", "Subscriber");
+        if (nodes == null) {
+            System.out.println("No subscribers loaded.");
+            return;
+        }
+
+        for (int i = 0; i < nodes.getLength(); ++i) {
+            Element element = (Element) nodes.item(i);
+
+            Subscriber subscriber = new Subscriber();
+            subscriber.setAccount(parseInt(element, "Id"));
+            subscriber.setName(parseString(element, "Name"));
+            subscriber.setStreetId(parseInt(element, "Street"));
+            subscriber.setBalance(0);
+            subscriber.setHouse(parseString(element, "House"));
+            subscriber.setBuilding(parseString(element, "Housing"));
+            subscriber.setPostcode(parseString(element, "Index"));
+            subscriber.setPhone(parseString(element, "Phone"));
+            DAOFactory.getDefaultDAOFactory().getSubscriberDAO().save(subscriber);
+        }
+        System.out.println(nodes.getLength() + " subscribers have been loaded");
     }
 
     private void loadConnections() {
@@ -153,7 +173,21 @@ public class XmlLoader {
     }
 
     private void loadDisconnectionReasons() {
-        // TODO: implement
+        NodeList nodes = getNodes("xml/reasons_of_disconnect.xml", "ReasonOfDisconnect");
+        if (nodes == null) {
+            System.out.println("No disconnection reasons loaded.");
+            return;
+        }
+
+        for (int i = 0; i < nodes.getLength(); ++i) {
+            Element element = (Element) nodes.item(i);
+
+            DisconnectionReason disconnectionReason = new DisconnectionReason();
+            disconnectionReason.setId(parseInt(element, "Id"));
+            disconnectionReason.setName(parseString(element, "Name"));
+            DAOFactory.getDefaultDAOFactory().getDisconnectionReasonDAO().save(disconnectionReason);
+        }
+        System.out.println(nodes.getLength() + " disconnection reasons have been loaded");
     }
 
     private void loadDisconnections() {
