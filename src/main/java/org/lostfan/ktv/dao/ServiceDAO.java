@@ -18,12 +18,6 @@ public interface ServiceDAO extends EntityDAO<Service> {
 
     void delete(int serviceId);
 
-    int getPriceByDate(int serviceId, LocalDate date);
-
-    void savePrice(ServicePrice servicePrice);
-
-    List<ServicePrice> getServicePricesByServiceId(int serviceId);
-
     List<Service> getServicesByBeginningPartOfName(String str);
 
     List<Service> getAllContainsInName(String str);

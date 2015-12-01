@@ -22,13 +22,4 @@ public interface TariffDAO extends EntityDAO<Tariff> {
 
     List<Tariff> getAllContainsInName(String str);
 
-    TariffPrice getTariffPrice(int tariffId, LocalDate date);
-
-    List<TariffPrice> getAllTariffPrices();
-
-    void saveTariffPrice(TariffPrice tariffPrice);
-
-    void deleteTariffPrice(int tariffId, LocalDate date);
-
-    Integer getPriceByDate(int tariffId, LocalDate date);
 }

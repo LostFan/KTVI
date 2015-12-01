@@ -9,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.TariffDAO;
+import org.lostfan.ktv.dao.TariffPriceDAO;
 import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.domain.TariffPrice;
 import org.lostfan.ktv.utils.ConnectionManager;
@@ -24,12 +25,14 @@ import static org.lostfan.ktv.utils.DatabaseUtils.executeSqlFile;
 public class HsqldbTariffDAOTest {
 
     private static TariffDAO tariffDAO;
+    private static TariffPriceDAO tariffPriceDAO;
 
     @BeforeClass
     public static void init() throws IOException, SQLException {
         ConnectionManager.setManager(new TestHsqldbConnectionManager());
         DAOFactory.setDefaultDAOFactory(new HsqldbDaoFactory());
         tariffDAO = DAOFactory.getDefaultDAOFactory().getTariffDAO();
+        tariffPriceDAO = DAOFactory.getDefaultDAOFactory().getTariffPriceDAO();
         executeSqlFile("/hsqldb/drop.sql");
         executeSqlFile("/hsqldb/create.sql");
     }
@@ -139,25 +142,25 @@ public class HsqldbTariffDAOTest {
 
     @Test
     public void emptyTariffPricesTest() {
-        assertEquals(tariffDAO.getAllTariffPrices().size(), 0);
+        assertEquals(tariffPriceDAO.getAll().size(), 0);
     }
 
     @Test
     public void getAllServicesReturnsCorrectTariffPriceCountTest() throws SQLException {
         insertStubData();
-        assertEquals(tariffDAO.getAllTariffPrices().size(), 3);
+        assertEquals(tariffPriceDAO.getAll().size(), 3);
     }
 
     @Test
-    public void getAllServicesReturnsAllExistingTariffPricesTest() throws SQLException {
+    public void getAllServicesReturnsAllExistingTest() throws SQLException {
         insertStubData();
-        assertEquals(tariffDAO.getAllTariffPrices().get(0).getTariffId().intValue(), 1);
+        assertEquals(tariffPriceDAO.getAll().get(0).getTariffId().intValue(), 1);
     }
 
     @Test
     public void getExistingTariffPriceByTariffIdAndDateTest() throws SQLException {
         insertStubData();
-        assertEquals(tariffDAO.getTariffPrice(1,LocalDate.of(2015,1,1)).getPrice(), 40000);
+        assertEquals(tariffPriceDAO.getByTariffIdAndDate(1,LocalDate.of(2015,1,1)).getPrice(), 40000);
     }
 
     @Test
@@ -167,8 +170,8 @@ public class HsqldbTariffDAOTest {
         tariffPrice.setTariffId(1);
         tariffPrice.setDate(LocalDate.of(2015,10,1));
         tariffPrice.setPrice(15000);
-        tariffDAO.saveTariffPrice(tariffPrice);
-        assertEquals(tariffDAO.getAllTariffPrices().size(), 4);
+        tariffPriceDAO.save(tariffPrice);
+        assertEquals(tariffPriceDAO.getAll().size(), 4);
     }
 
     @Test
@@ -178,29 +181,29 @@ public class HsqldbTariffDAOTest {
         tariffPrice.setTariffId(1);
         tariffPrice.setDate(LocalDate.of(2015, 10, 1));
         tariffPrice.setPrice(15000);
-        tariffDAO.saveTariffPrice(tariffPrice);
-        assertEquals(tariffDAO.getTariffPrice(1, LocalDate.of(2015, 10, 1)).getPrice(), 15000);
+        tariffPriceDAO.save(tariffPrice);
+        assertEquals(tariffPriceDAO.getByTariffIdAndDate(1, LocalDate.of(2015, 10, 1)).getPrice(), 15000);
     }
 
     @Test
     public void deleteTariffPriceByIdCorrectServiceCountTest() throws SQLException {
         insertStubData();
-        tariffDAO.deleteTariffPrice(1, LocalDate.of(2015, 1, 1));
-        assertEquals(tariffDAO.getAllTariffPrices().size(), 2);
+        tariffPriceDAO.deleteByTariffIdAndDate(1, LocalDate.of(2015, 1, 1));
+        assertEquals(tariffPriceDAO.getAll().size(), 2);
     }
 
     @Test
     public void deleteTariffPriceByIdShouldDeleteCorrectDataTest() throws SQLException {
         insertStubData();
-        tariffDAO.deleteTariffPrice(1, LocalDate.of(2015, 1, 1));
-        assertEquals(tariffDAO.getTariffPrice(1, LocalDate.of(2015, 1, 1)), null);
+        tariffPriceDAO.deleteByTariffIdAndDate(1, LocalDate.of(2015, 1, 1));
+        assertEquals(tariffPriceDAO.getByTariffIdAndDate(1, LocalDate.of(2015, 1, 1)), null);
     }
 
     @Test
     public void getTariffPriceIntByTariffIdAndDateTest() throws SQLException {
         insertStubData();
-        assertEquals(tariffDAO.getPriceByDate(1, LocalDate.of(2015, 1, 1)).intValue(), 40000);
-        assertEquals(tariffDAO.getPriceByDate(1, LocalDate.of(2015, 4, 1)).intValue(), 50000);
+        assertEquals(tariffPriceDAO.getPriceByDate(1, LocalDate.of(2015, 1, 1)).intValue(), 40000);
+        assertEquals(tariffPriceDAO.getPriceByDate(1, LocalDate.of(2015, 4, 1)).intValue(), 50000);
     }
 
     private void insertStubDataSubscribers() throws SQLException {

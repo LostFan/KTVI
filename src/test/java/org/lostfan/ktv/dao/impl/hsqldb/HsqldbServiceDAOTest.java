@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.ServiceDAO;
+import org.lostfan.ktv.dao.ServicePriceDAO;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.utils.ConnectionManager;
 import org.lostfan.ktv.utils.TestHsqldbConnectionManager;
@@ -19,12 +20,14 @@ import java.time.LocalDate;
 public class HsqldbServiceDAOTest {
 
     private static ServiceDAO serviceDao;
+    private static ServicePriceDAO servicePriceDao;
 
     @BeforeClass
     public static void init() throws IOException, SQLException {
         ConnectionManager.setManager(new TestHsqldbConnectionManager());
         DAOFactory.setDefaultDAOFactory(new HsqldbDaoFactory());
         serviceDao = DAOFactory.getDefaultDAOFactory().getServiceDAO();
+        servicePriceDao = DAOFactory.getDefaultDAOFactory().getServicePriceDAO();
         executeSqlFile("/hsqldb/drop.sql");
         executeSqlFile("/hsqldb/create.sql");
     }
@@ -136,17 +139,17 @@ public class HsqldbServiceDAOTest {
     public void getServicePriceByIdShouldGetCorrectDataTest() throws SQLException {
         insertStubDataServices();
         insertStubDataServicePrices();
-        assertEquals(serviceDao.getPriceByDate(1, LocalDate.of(2015, 3, 1)), 40000);
-        assertEquals(serviceDao.getPriceByDate(1, LocalDate.of(2015, 4, 2)), 50000);
-        assertEquals(serviceDao.getPriceByDate(1, LocalDate.of(2015, 6, 1)), 50000);
+        assertEquals(servicePriceDao.getPriceByDate(1, LocalDate.of(2015, 3, 1)).intValue(), 40000);
+        assertEquals(servicePriceDao.getPriceByDate(1, LocalDate.of(2015, 4, 2)).intValue(), 50000);
+        assertEquals(servicePriceDao.getPriceByDate(1, LocalDate.of(2015, 6, 1)).intValue(), 50000);
     }
 
     @Test
     public void getAllServicePriceByIdShouldReturnsCorrectServiceCountTest() throws SQLException {
         insertStubDataServices();
         insertStubDataServicePrices();
-        assertEquals(serviceDao.getServicePricesByServiceId(1).size(), 2);
-        assertEquals(serviceDao.getServicePricesByServiceId(2).size(), 1);
+        assertEquals(servicePriceDao.getServicePricesByServiceId(1).size(), 2);
+        assertEquals(servicePriceDao.getServicePricesByServiceId(2).size(), 1);
     }
 
     @Test
