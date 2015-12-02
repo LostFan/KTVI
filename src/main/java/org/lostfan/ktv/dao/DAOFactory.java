@@ -22,14 +22,10 @@ public abstract class DAOFactory {
 
     public abstract ServiceDAO getServiceDAO();
 
-    public abstract ServicePriceDAO getServicePriceDAO();
-
     public abstract SubscriberDAO getSubscriberDAO();
 
     public abstract TariffDAO getTariffDAO();
 
-    public abstract TariffPriceDAO getTariffPriceDAO();
-    
     public abstract StreetDAO getStreetDAO();
 
     public abstract MaterialConsumptionDAO getMaterialConsumptionDAO();

@@ -99,7 +99,7 @@ public class XmlLoader {
             tariffPrice.setTariffId(parseInt(element, "Tariff"));
             tariffPrice.setPrice(parseInt(element, "Price"));
             tariffPrice.setDate(parseDate(element, "Date"));
-            DAOFactory.getDefaultDAOFactory().getTariffPriceDAO().save(tariffPrice);
+            DAOFactory.getDefaultDAOFactory().getTariffDAO().saveTariffPrice(tariffPrice);
         }
         System.out.println(nodes.getLength() + " tariff prices have been loaded");
     }
@@ -139,7 +139,7 @@ public class XmlLoader {
             servicePrice.setPrice(parseInt(element, "Price"));
             servicePrice.setServiceId(parseInt(element, "Service"));
             servicePrice.setDate(parseDate(element, "Date"));
-            DAOFactory.getDefaultDAOFactory().getServicePriceDAO().save(servicePrice);
+            DAOFactory.getDefaultDAOFactory().getServiceDAO().savePrice(servicePrice);
         }
         System.out.println(nodes.getLength() + " service prices have been loaded");
     }

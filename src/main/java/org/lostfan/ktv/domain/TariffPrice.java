@@ -4,8 +4,6 @@ import java.time.LocalDate;
 
 public class TariffPrice extends DefaultEntity {
 
-    private Integer id;
-
     private Integer tariffId;
 
     private int price;
@@ -38,15 +36,11 @@ public class TariffPrice extends DefaultEntity {
 
     @Override
     public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+        return tariffId;
     }
 
     @Override
     public String getName() {
-        return id.toString();
+        return tariffId.toString();
     }
 }

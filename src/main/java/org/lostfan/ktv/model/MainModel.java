@@ -16,11 +16,9 @@ public class MainModel extends BaseObservable {
     private static PaymentEntityModel paymentEntityModel;
     private static RenderedServiceEntityModel renderedServiceEntityModel;
     private static ServiceEntityModel serviceEntityModel;
-    private static ServicePriceEntityModel servicePriceEntityModel;
     private static StreetEntityModel streetEntityModel;
     private static SubscriberEntityModel subscriberEntityModel;
     private static TariffEntityModel tariffEntityModel;
-    private static TariffPriceEntityModel tariffPriceEntityModel;
 
     static {
 
@@ -30,11 +28,9 @@ public class MainModel extends BaseObservable {
         paymentEntityModel = new PaymentEntityModel();
         renderedServiceEntityModel = new RenderedServiceEntityModel();
         serviceEntityModel = new ServiceEntityModel();
-        servicePriceEntityModel = new ServicePriceEntityModel();
         streetEntityModel = new StreetEntityModel();
         subscriberEntityModel = new SubscriberEntityModel();
         tariffEntityModel = new TariffEntityModel();
-        tariffPriceEntityModel = new TariffPriceEntityModel();
 
         nameEntityModels = new HashMap<>();
         nameEntityModels.put(disconnectionReasonEntityModel.getEntityNameKey(), disconnectionReasonEntityModel);
@@ -43,11 +39,9 @@ public class MainModel extends BaseObservable {
         nameEntityModels.put(paymentEntityModel.getEntityNameKey(), paymentEntityModel);
         nameEntityModels.put(renderedServiceEntityModel.getEntityNameKey(), renderedServiceEntityModel);
         nameEntityModels.put(serviceEntityModel.getEntityNameKey(), serviceEntityModel);
-        nameEntityModels.put(servicePriceEntityModel.getEntityNameKey(), servicePriceEntityModel);
         nameEntityModels.put(streetEntityModel.getEntityNameKey(), streetEntityModel);
         nameEntityModels.put(subscriberEntityModel.getEntityNameKey(), subscriberEntityModel);
         nameEntityModels.put(tariffEntityModel.getEntityNameKey(), tariffEntityModel);
-        nameEntityModels.put(tariffPriceEntityModel.getEntityNameKey(), tariffPriceEntityModel);
 
         classEntityModels = new HashMap<>();
         classEntityModels.put(disconnectionReasonEntityModel.getEntityClass(), disconnectionReasonEntityModel);
@@ -56,11 +50,9 @@ public class MainModel extends BaseObservable {
         classEntityModels.put(paymentEntityModel.getEntityClass(), paymentEntityModel);
         classEntityModels.put(renderedServiceEntityModel.getEntityClass(), renderedServiceEntityModel);
         classEntityModels.put(serviceEntityModel.getEntityClass(), serviceEntityModel);
-        classEntityModels.put(servicePriceEntityModel.getEntityClass(), servicePriceEntityModel);
         classEntityModels.put(streetEntityModel.getEntityClass(), streetEntityModel);
         classEntityModels.put(subscriberEntityModel.getEntityClass(), subscriberEntityModel);
         classEntityModels.put(tariffEntityModel.getEntityClass(), tariffEntityModel);
-        classEntityModels.put(tariffPriceEntityModel.getEntityClass(), tariffPriceEntityModel);
     }
 
     public static EntityModel getEntityModel(String entityName) {
@@ -95,10 +87,6 @@ public class MainModel extends BaseObservable {
         return serviceEntityModel;
     }
 
-    public static ServicePriceEntityModel getServicePriceEntityModel() {
-        return servicePriceEntityModel;
-    }
-
     public static StreetEntityModel getStreetEntityModel() {
         return streetEntityModel;
     }
@@ -109,10 +97,6 @@ public class MainModel extends BaseObservable {
 
     public static TariffEntityModel getTariffEntityModel() {
         return tariffEntityModel;
-    }
-
-    public static TariffPriceEntityModel getTariffPriceEntityModel() {
-        return tariffPriceEntityModel;
     }
 
     private List<String> entityModelNames;
@@ -133,8 +117,6 @@ public class MainModel extends BaseObservable {
         this.documentModelNames.add(getPaymentEntityModel().getEntityNameKey());
         this.documentModelNames.add(getRenderedServiceEntityModel().getEntityNameKey());
         this.documentModelNames.add(getMaterialConsumptionEntityModel().getEntityNameKey());
-        this.documentModelNames.add(getTariffPriceEntityModel().getEntityNameKey());
-        this.documentModelNames.add(getServicePriceEntityModel().getEntityNameKey());
     }
 
     public EntityModel getCurrentModel() {
