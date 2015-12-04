@@ -104,6 +104,29 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
         this.table = table;
         this.row = row;
         this.column = column;
+        //TODO Need find best solution
+        viewTableEntitiesButton.setEnabled(false);
+        viewEntityButton.setEnabled(false);
+
+        SwingUtilities.invokeLater(new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    sleep(50);
+                } catch (InterruptedException ex) {
+                }
+
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        viewTableEntitiesButton.setEnabled(true);
+                        viewEntityButton.setEnabled(true);
+                    }
+                });
+
+            }
+        });
         return panel;
     }
 
