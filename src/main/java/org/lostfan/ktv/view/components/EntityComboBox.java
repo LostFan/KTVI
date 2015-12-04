@@ -1,7 +1,9 @@
 package org.lostfan.ktv.view.components;
 
+import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
@@ -54,6 +56,21 @@ public class EntityComboBox extends JComboBox<String> {
         this.outerModelObserver = new OuterModelObserver();
         model.addObserver(this.modelObserver);
 
+    }
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        UIManager.put("ComboBox.squareButton", Boolean.FALSE);
+        setUI(new BasicComboBoxUI() {
+            @Override protected JButton createArrowButton() {
+                JButton b = new JButton();
+                b.setBorder(BorderFactory.createEmptyBorder());
+                b.setVisible(false);
+                return b;
+            }
+        });
+        setBorder(BorderFactory.createLineBorder(Color.GRAY));
     }
 
     public void comboFilter(String enteredText) {
