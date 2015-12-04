@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.swing.*;
 
 import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.model.FixedServices;
@@ -21,8 +22,9 @@ import org.lostfan.ktv.utils.ResourceBundles;
 public class ConnectionEntityView extends EntityView{
 
     private Tariff tariff;
-    private Map<String, List<Entity>> entityInnerTableValues;
+    private Map<String, List<MaterialConsumption>> entityInnerTableValues;
     private LabelFieldInput tariffLabelFieldInput;
+    private EntityInnerTableView entityInnerTableView;
 
     public ConnectionEntityView(RenderedServiceEntityModel model) {
         this(model, null);
@@ -41,8 +43,8 @@ public class ConnectionEntityView extends EntityView{
             this.addButton.removeActionListener(actionListener);
         }
         this.addButton.addActionListener(e -> {
-
             if (this.addActionListener != null) {
+                entityInnerTableView.stopEditing();
                 ((RenderedService) getEntity()).setServiceId(FixedServices.CONNECTION.getId());
                 this.addActionListener.actionPerformed(model.buildDTO((RenderedService) getEntity(), getTariff(), entityInnerTableValues));
             }
@@ -68,9 +70,9 @@ public class ConnectionEntityView extends EntityView{
             if(entity != null) {
                 list = (List<Entity>) fullEntityField.get(entity);
             }
-            EntityInnerTableView entityInnerTableView = new EntityInnerTableView(fullEntityField, list);
-            this.entityInnerTableValues.put(fullEntityField.getTitleKey(), entityInnerTableView.getEntityList());
-            this.addInnerTable(entityInnerTableView);
+            this.entityInnerTableView = new EntityInnerTableView(fullEntityField, list);
+            this.entityInnerTableValues.put(fullEntityField.getTitleKey(), this.entityInnerTableView.getEntityList());
+            this.addInnerTable(this.entityInnerTableView);
         }
 
         this.frame.invalidate();
@@ -82,10 +84,7 @@ public class ConnectionEntityView extends EntityView{
         if (entity == null) {
             entity = new Tariff();
         }
-
         this.tariffLabelFieldInput.entityField.set(entity, this.tariffLabelFieldInput.getValue());
-
-
         return entity;
     }
 }

@@ -20,11 +20,21 @@ public class EntityViewFactory {
         if (renderedServiceEntityModel == null) {
             throw new IllegalArgumentException("Wrong model.");
         }
-        EntityView entityView = null;
+
         if(service == FixedServices.CONNECTION) {
-            entityView = new ConnectionEntityView(renderedServiceEntityModel);
+            ConnectionEntityView entityView = new ConnectionEntityView(renderedServiceEntityModel);
+            entityView.setAddActionListener(args_ -> {
+                ConnectionRenderedService entity = (ConnectionRenderedService) args_;
+                ValidationResult result = renderedServiceEntityModel.save(entity);
+                if (result.hasErrors()) {
+                    entityView.showErrors(result.getErrors());
+                    return;
+                }
+                renderedServiceEntityModel.save(entity);
+                entityView.hide();
+            });
         }
-        return entityView;
+        return null;
     }
 
     public static EntityView createRenderedServiceForm(RenderedServiceEntityModel renderedServiceEntityModel, RenderedService renderedService) {

@@ -33,18 +33,8 @@ public class MainController {
 
         this.view.setMenuServiceActionListener(args -> {
             String code = (String) args;
-            RenderedServiceEntityModel renderedServiceModel =MainModel.getRenderedServiceEntityModel();
-            EntityView entityView = EntityViewFactory.createRenderedServiceForm(renderedServiceModel, FixedServices.of(code));
-            entityView.setAddActionListener(args_ -> {
-                RenderedService entity = (RenderedService) args_;
-                ValidationResult result = renderedServiceModel.save(entity);
-                if (result.hasErrors()) {
-                    entityView.showErrors(result.getErrors());
-                    return;
-                }
-                renderedServiceModel.save(entity);
-                entityView.hide();
-            });
+            RenderedServiceEntityModel renderedServiceModel = MainModel.getRenderedServiceEntityModel();
+            EntityViewFactory.createRenderedServiceForm(renderedServiceModel, FixedServices.of(code));
         });
 
         this.model.addObserver(args -> {

@@ -4,9 +4,9 @@ import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
-import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.model.EntityField;
@@ -115,10 +115,13 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         if (result.hasErrors()) {
             return result;
         }
-
+        SubscriberSession subscriberSession = new SubscriberSession();
+        subscriberSession.setConnectionDate(entity.getDate());
+        subscriberSession.setSubscriberAccount(entity.getSubscriberAccount());
         if (entity.getId() == null) {
             getDao().save(entity);
-            subscriberDAO.updateSubscriberTariff(this.subscriberTariff);
+            subscriberDAO.saveSubscriberTariff(this.subscriberTariff);
+            subscriberDAO.saveSubscriberSession(subscriberSession);
             for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
                 materialConsumption.setRenderedServiceId(entity.getId());
                 materialConsumptionDAO.save(materialConsumption);
@@ -129,7 +132,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         subscriberDAO.deleteSubscriberSession(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         getDao().update(entity);
-        subscriberDAO.saveSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
+        subscriberDAO.saveSubscriberSession(subscriberSession);
         subscriberDAO.saveSubscriberTariff(this.subscriberTariff);
         updateMaterials(entity);
         updateEntitiesList();
@@ -152,7 +155,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
 
-    public ConnectionRenderedService buildDTO(RenderedService service, Tariff tariff, Map<String, List<Entity>> map) {
+    public ConnectionRenderedService buildDTO(RenderedService service, Tariff tariff, Map<String, List<MaterialConsumption>> map) {
         ConnectionRenderedService dto = new ConnectionRenderedService();
         dto.setId(service.getId());
         dto.setDate(service.getDate());
@@ -160,7 +163,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         dto.setSubscriberAccount(service.getSubscriberAccount());
         dto.setServiceId(service.getServiceId());
         dto.setTariffId(tariff.getId());
-        dto.setMaterialConsumption(map.get("materialConsumption").stream().map(e -> (MaterialConsumption) e).collect(Collectors.toList()));
+        dto.setMaterialConsumption(map.get("materialConsumption"));
         this.subscriberTariff = new SubscriberTariff();
         this.subscriberTariff.setTariffId(tariff.getId());
         this.subscriberTariff.setSubscriberAccount(service.getSubscriberAccount());

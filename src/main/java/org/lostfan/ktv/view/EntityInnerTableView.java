@@ -161,7 +161,9 @@ public class EntityInnerTableView<T> {
         editor.setClickCountToStart(1);
         for (int columnIndex=0;columnIndex< this.table.getColumnCount(); columnIndex++) {
             if(EntityFieldTypes.getEntityClass(this.table.getColumnClass(columnIndex)).isEntityClass()) {
-                this.table.getColumn(this.table.getColumnName(columnIndex)).setCellEditor(new EntityActionTableCellEditor(editor, EntityFieldTypes.getEntityClass(this.table.getColumnClass(columnIndex))));
+                this.table.getColumn(this.table.getColumnName(columnIndex))
+                        .setCellEditor(new EntityActionTableCellEditor(
+                                editor, EntityFieldTypes.getEntityClass(this.table.getColumnClass(columnIndex))));
             }
         }
     }
@@ -193,5 +195,18 @@ public class EntityInnerTableView<T> {
 
     private String getString(String key) {
         return ResourceBundles.getGuiBundle().getString(key);
+    }
+
+    public void stopEditing()
+    {
+        if (table.isEditing())
+        {
+            int col = table.getEditingColumn(),
+                    row = table.getEditingRow();
+            CellEditor cellEditor = table.getCellEditor();
+            if (cellEditor != null)
+                cellEditor.stopCellEditing();
+            table.changeSelection(row, col, false, false);
+        }
     }
 }
