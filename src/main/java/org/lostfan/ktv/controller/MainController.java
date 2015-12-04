@@ -1,7 +1,7 @@
 package org.lostfan.ktv.controller;
 
-import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
@@ -26,30 +26,29 @@ public class MainController {
         this.model = model;
         this.view = view;
 
-        this.view.setMenuActionListener(args -> {
+        this.view.setMenuEntityActionListener(args -> {
             String code = (String) args;
-            if(model.getEntityModel(code) != null) {
-                model.setCurrentModel(code);
-            }
-            if(model.getRenderedServiceModel(code) != null) {
-                RenderedServiceEntityModel renderedServiceModel = model.getRenderedServiceModel(code);
-                EntityView entityView = EntityViewFactory.createRenderedServiceForm(renderedServiceModel, code);
-                entityView.setAddActionListener(args_ -> {
-                    RenderedService entity = (RenderedService) args_;
-                    ValidationResult result = renderedServiceModel.save(entity);
-                    if (result.hasErrors()) {
-                        entityView.showErrors(result.getErrors());
-                        return;
-                    }
-                    renderedServiceModel.save(entity);
-                    entityView.hide();
-                });
-            }
+            model.setCurrentModel(code);
+        });
+
+        this.view.setMenuServiceActionListener(args -> {
+            String code = (String) args;
+            RenderedServiceEntityModel renderedServiceModel =MainModel.getRenderedServiceEntityModel();
+            EntityView entityView = EntityViewFactory.createRenderedServiceForm(renderedServiceModel, FixedServices.of(code));
+            entityView.setAddActionListener(args_ -> {
+                RenderedService entity = (RenderedService) args_;
+                ValidationResult result = renderedServiceModel.save(entity);
+                if (result.hasErrors()) {
+                    entityView.showErrors(result.getErrors());
+                    return;
+                }
+                renderedServiceModel.save(entity);
+                entityView.hide();
+            });
         });
 
         this.model.addObserver(args -> {
-
-            if(args instanceof RenderedServiceEntityModel) {
+            if (args instanceof RenderedServiceEntityModel) {
                 RenderedServiceEntityModel newModel = (RenderedServiceEntityModel) args;
                 if (renderedServiceController == null) {
                     renderedServiceTableView = new RenderedServiceTableView(newModel);

@@ -16,12 +16,12 @@ import org.lostfan.ktv.view.RenderedServiceEntityView;
 
 public class EntityViewFactory {
 
-    public static EntityView createRenderedServiceForm(RenderedServiceEntityModel renderedServiceEntityModel, String code) {
+    public static EntityView createRenderedServiceForm(RenderedServiceEntityModel renderedServiceEntityModel, FixedServices service) {
         if (renderedServiceEntityModel == null) {
             throw new IllegalArgumentException("Wrong model.");
         }
         EntityView entityView = null;
-        if(code.equals(FixedServices.CONNECTION.getName())) {
+        if(service == FixedServices.CONNECTION) {
             entityView = new ConnectionEntityView(renderedServiceEntityModel);
         }
         return entityView;

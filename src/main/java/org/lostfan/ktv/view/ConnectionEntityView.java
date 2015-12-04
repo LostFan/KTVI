@@ -28,10 +28,9 @@ public class ConnectionEntityView extends EntityView{
         this(model, null);
     }
 
-
-    public <E extends Entity> ConnectionEntityView(RenderedServiceEntityModel model, ConnectionRenderedService entity) {
-        super(((EntityModel)model), entity);
-        this.frame.setTitle(ResourceBundles.getEntityBundle().getString(FixedServices.CONNECTION.getName()));
+    public ConnectionEntityView(RenderedServiceEntityModel model, ConnectionRenderedService entity) {
+        super((EntityModel)model, entity);
+        this.frame.setTitle(ResourceBundles.getEntityBundle().getString(FixedServices.CONNECTION.getCode()));
 
         Tariff tariff = new Tariff();
         if(entity != null) {

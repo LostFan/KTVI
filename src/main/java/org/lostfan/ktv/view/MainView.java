@@ -12,13 +12,23 @@ import javax.swing.*;
 
 public class MainView {
 
-    public class MenuActionListener implements ActionListener {
+    private class MenuActionListener implements ActionListener {
+
+        private boolean isEntityMenu;
+
+        public MenuActionListener(boolean isEntityMenu) {
+            this.isEntityMenu = isEntityMenu;
+        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             String name = ((JMenuItem) e.getSource()).getName();
-            if (MainView.this.menuActionListener != null) {
-                MainView.this.menuActionListener.actionPerformed(name);
+            if (this.isEntityMenu && MainView.this.menuEntityActionListener != null) {
+                MainView.this.menuEntityActionListener.actionPerformed(name);
+            }
+
+            if (!this.isEntityMenu && MainView.this.menuServiceActionListener != null) {
+                MainView.this.menuServiceActionListener.actionPerformed(name);
             }
         }
     }
@@ -28,7 +38,8 @@ public class MainView {
 
     private JFrame frame;
     private JPanel contentPanel;
-    private ViewActionListener menuActionListener;
+    private ViewActionListener menuEntityActionListener;
+    private ViewActionListener menuServiceActionListener;
 
     public MainView(MainModel model) {
         this.frame = new JFrame("KTV");
@@ -52,7 +63,7 @@ public class MainView {
             MainView.this.frame.dispatchEvent(new WindowEvent( MainView.this.frame, WindowEvent.WINDOW_CLOSING)));
         fileMenu.add(exitMenuItem);
 
-        MenuActionListener menuActionListener = new MenuActionListener();
+        MenuActionListener menuActionListener = new MenuActionListener(true);
         for (String code : model.getEntityItems()) {
             JMenuItem entityMenuItem = new JMenuItem(getEntityString(code));
             entityMenuItem.setName(code);
@@ -67,6 +78,7 @@ public class MainView {
             entityMenuItem.addActionListener(menuActionListener);
         }
 
+        menuActionListener = new MenuActionListener(false);
         for (String code : model.getServicesItems()) {
             JMenuItem entityMenuItem = new JMenuItem(getEntityString(code));
             entityMenuItem.setName(code);
@@ -99,8 +111,12 @@ public class MainView {
         this.frame.repaint();
     }
 
-    public void setMenuActionListener(ViewActionListener menuActionListener) {
-        this.menuActionListener = menuActionListener;
+    public void setMenuEntityActionListener(ViewActionListener menuEntityActionListener) {
+        this.menuEntityActionListener = menuEntityActionListener;
+    }
+
+    public void setMenuServiceActionListener(ViewActionListener menuServiceActionListener) {
+        this.menuServiceActionListener = menuServiceActionListener;
     }
 
     public String getEntityString(String key) {
