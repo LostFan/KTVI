@@ -40,9 +40,11 @@ public class MainView {
         JMenu entityMenu = new JMenu(getGuiString("menu.entities"));
         JMenu documentMenu = new JMenu(getGuiString("menu.documents"));
         JMenu reportMenu = new JMenu(getGuiString("menu.reports"));
+        JMenu serviceMenu = new JMenu(getGuiString("menu.services"));
         menuBar.add(fileMenu);
         menuBar.add(entityMenu);
         menuBar.add(documentMenu);
+        menuBar.add(serviceMenu);
         menuBar.add(reportMenu);
 
         JMenuItem exitMenuItem = new JMenuItem(getGuiString("menu.file.exit"));
@@ -64,6 +66,14 @@ public class MainView {
             documentMenu.add(entityMenuItem);
             entityMenuItem.addActionListener(menuActionListener);
         }
+
+        for (String code : model.getServicesItems()) {
+            JMenuItem entityMenuItem = new JMenuItem(getEntityString(code));
+            entityMenuItem.setName(code);
+            serviceMenu.add(entityMenuItem);
+            entityMenuItem.addActionListener(menuActionListener);
+        }
+
 
         model.addObserver(args -> {
             frame.setTitle("KTV - " + getEntityString(model.getCurrentModel().getEntityNameKey()));

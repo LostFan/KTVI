@@ -11,13 +11,15 @@ public class Subscriber extends DefaultEntity {
 
     private Integer balance;
 
-    private boolean connected;
+    private Boolean connected;
 
     private Integer streetId;
 
     private String house;
 
     private String building;
+
+    private String flat;
 
     private String postcode;
 
@@ -61,11 +63,11 @@ public class Subscriber extends DefaultEntity {
         this.balance = balance;
     }
 
-    public boolean isConnected() {
+    public Boolean isConnected() {
         return connected;
     }
 
-    public void setConnected(boolean connected) {
+    public void setConnected(Boolean connected) {
         this.connected = connected;
     }
 
@@ -91,6 +93,14 @@ public class Subscriber extends DefaultEntity {
 
     public void setBuilding(String building) {
         this.building = building;
+    }
+
+    public String getFlat() {
+        return flat;
+    }
+
+    public void setFlat(String flat) {
+        this.flat = flat;
     }
 
     public String getPostcode() {

@@ -4,8 +4,6 @@ import java.time.LocalDate;
 
 public class SubscriberTariff extends DefaultEntity{
 
-    private Integer id;
-
     private Integer subscriberAccount;
 
     private Integer tariffId;
@@ -13,14 +11,6 @@ public class SubscriberTariff extends DefaultEntity{
     private LocalDate connectTariff;
 
     private LocalDate disconnectTariff;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Integer getSubscriberAccount() {
         return subscriberAccount;
@@ -56,6 +46,11 @@ public class SubscriberTariff extends DefaultEntity{
 
     @Override
     public String getName() {
-        return id.toString();
+        return null;
+    }
+
+    @Override
+    public Integer getId() {
+        return null;
     }
 }

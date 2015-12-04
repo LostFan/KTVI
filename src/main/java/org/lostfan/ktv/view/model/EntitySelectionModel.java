@@ -53,6 +53,9 @@ public class EntitySelectionModel<T extends Entity> implements TableModel {
             return 0;
         }
         if (thisType.isEntityClass()) {
+            if(value == null) {
+                return null;
+            }
             value = thisType.getDAO().get((Integer) value).getName();
         }
 

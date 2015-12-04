@@ -4,8 +4,6 @@ import java.time.LocalDate;
 
 public class SubscriberSession extends DefaultEntity {
 
-    private Integer id;
-
     private int subscriberAccount;
 
     private LocalDate connectionDate;
@@ -13,14 +11,6 @@ public class SubscriberSession extends DefaultEntity {
     private LocalDate disconnectionDate;
 
     private Integer disconnectionReasonId;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public LocalDate getConnectionDate() {
         return connectionDate;
@@ -56,6 +46,11 @@ public class SubscriberSession extends DefaultEntity {
 
     @Override
     public String getName() {
-        return id.toString();
+        return null;
+    }
+
+    @Override
+    public Integer getId() {
+        return null;
     }
 }

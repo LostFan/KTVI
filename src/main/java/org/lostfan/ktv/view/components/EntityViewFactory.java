@@ -3,13 +3,40 @@ package org.lostfan.ktv.view.components;
 import org.lostfan.ktv.controller.EntityOneController;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.dto.ConnectionRenderedService;
 import org.lostfan.ktv.model.entity.EntityModel;
+import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
+import org.lostfan.ktv.view.ConnectionEntityView;
 import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.RenderedServiceEntityView;
 
 public class EntityViewFactory {
+
+    public static EntityView createRenderedServiceForm(RenderedServiceEntityModel renderedServiceEntityModel, String code) {
+        if (renderedServiceEntityModel == null) {
+            throw new IllegalArgumentException("Wrong model.");
+        }
+        EntityView entityView = null;
+        if(code.equals(FixedServices.CONNECTION.getName())) {
+            entityView = new ConnectionEntityView(renderedServiceEntityModel);
+        }
+        return entityView;
+    }
+
+    public static EntityView createRenderedServiceForm(RenderedServiceEntityModel renderedServiceEntityModel, RenderedService renderedService) {
+        if (renderedServiceEntityModel == null) {
+            throw new IllegalArgumentException("Wrong model.");
+        }
+        EntityView entityView = null;
+        if(renderedService.getServiceId() == FixedServices.CONNECTION.getId()) {
+
+            entityView = new ConnectionEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getConnectionRenderedService(renderedService));
+        }
+        return entityView;
+    }
 
     public static EntityView createForm(EntityFieldTypes type) {
         EntityModel model = MainModel.getEntityModel(type.getValueClass());

@@ -185,24 +185,6 @@ public class HsqldbTariffDAO implements TariffDAO {
         }
     }
 
-//    public void updateTariffPrice(TariffPrice tariffPrice) {
-//        if(getTariffPrice(tariffPrice.getTariffId(), tariffPrice.getDate()) != null) {
-//            try {
-//                PreparedStatement preparedStatement = getConnection().prepareStatement(
-//                        "UPDATE \"tariff_price\" set \"price\" = ? where \"tariff_id\" = ? AND \"date\" = ?");
-//                preparedStatement.setString(1, tariff.getName());
-//                preparedStatement.setString(2, tariff.getChannels());
-//                preparedStatement.setInt(3, tariff.getId());
-//                preparedStatement.executeUpdate();
-//
-//            } catch (SQLException ex) {
-//                ex.printStackTrace();
-//            }
-//        } else {
-//            throw new UnsupportedOperationException("Update nonexistent element");
-//        }
-//    }
-
     public void deleteTariffPrice(int tariffId, LocalDate date) {
 
         if(getTariffPrice(tariffId, date) != null)

@@ -31,11 +31,6 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
     }
 
     @Override
-    public List<Service> getListByForeignKey(Integer foreignKey) {
-        return null;
-    }
-
-    @Override
     public String getEntityNameKey() {
         return "services";
     }

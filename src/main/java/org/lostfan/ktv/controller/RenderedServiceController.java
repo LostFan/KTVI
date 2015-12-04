@@ -1,25 +1,24 @@
 package org.lostfan.ktv.controller;
 
-import org.lostfan.ktv.domain.Entity;
+import java.util.List;
+
+import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.entity.EntityModel;
+import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.view.EntityInnerTableView;
 import org.lostfan.ktv.view.EntitySearchView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.components.EntityViewFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+public class RenderedServiceController {
 
-public class EntityController {
+    private RenderedServiceEntityModel model;
 
-    private EntityModel model;
-
-    public EntityController(EntityModel model, EntityTableView view) {
+    public RenderedServiceController(RenderedServiceEntityModel model, EntityTableView view) {
         this.model = model;
 
         view.setFindActionListener(new FindActionListener());
@@ -28,7 +27,7 @@ public class EntityController {
         view.setDeleteActionListener(new DeleteActionListener());
     }
 
-    public void setModel(EntityModel model) {
+    public void setModel(RenderedServiceEntityModel model) {
         this.model = model;
     }
 
@@ -47,7 +46,7 @@ public class EntityController {
         public SearchFindActionListener(EntitySearchView entitySearchView) {
             this.entitySearchView = entitySearchView;
             List<FieldSearchCriterion> criteria = this.entitySearchView.getSearchCriteria();
-            model.setSearchCriteria(criteria);
+            ((EntityModel) model).setSearchCriteria(criteria);
         }
 
         @Override
@@ -63,7 +62,7 @@ public class EntityController {
         public void actionPerformed(Object args) {
             EntityView entityView = EntityViewFactory.createForm(model);
             entityView.setAddActionListener(args_ -> {
-                Entity entity = (Entity) args_;
+                RenderedService entity = (RenderedService) args_;
                 ValidationResult result = model.save(entity);
                 if (result.hasErrors()) {
                     entityView.showErrors(result.getErrors());
@@ -81,11 +80,11 @@ public class EntityController {
         public void actionPerformed(Object args) {
             int selectedId = (Integer) args;
 
-            Entity entity = model.getEntity(selectedId);
-            EntityView entityView = EntityViewFactory.createForm(model, entity);
+            RenderedService entity = model.getEntity(selectedId);
+            EntityView entityView = EntityViewFactory.createRenderedServiceForm(model, entity);
 
             entityView.setAddActionListener(args_ -> {
-                Entity entity1 = (Entity) args_;
+                RenderedService entity1 = (RenderedService) args_;
                 ValidationResult result = model.save(entity1);
                 if (result.hasErrors()) {
                     entityView.showErrors(result.getErrors());

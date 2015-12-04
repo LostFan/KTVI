@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public abstract class BaseEntityModel<T extends Entity> extends BaseObservable implements EntityModel<T> {
 
-    private List<FieldSearchCriterion<T>> searchCriteria;
+    protected List<FieldSearchCriterion<T>> searchCriteria;
 
     protected List<T> entities;
 
@@ -40,17 +40,6 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
         updateEntitiesList();
     }
 
-//    @Override
-//    public List<EntityField> getEditableFields() {
-//        return getFields().stream().filter(e -> e.isEditable()).collect(Collectors.toList());
-//    }
-
-//    @Override
-//    public List<EntityField> getEditableFieldsWithoutParent() {
-//        return getFields().stream().filter(e -> e.isEditable()).filter(e -> e.getType().getValueClass() != getParentModel().getEntityClass()).collect(Collectors.toList());
-//    }
-//
-
     @Override
     public List<T> getList() {
         if (this.entities == null) {
@@ -68,11 +57,6 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     @Override
     public T getEntity(int id) {
         return getDao().get(id);
-    }
-
-    @Override
-    public T getFullEntity(int id) {
-        return getEntity(id);
     }
 
     @Override
@@ -119,11 +103,6 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     }
 
     protected abstract EntityDAO<T> getDao();
-
-    @Override
-    public T buildDTO(T entity, Map<String, List<Entity>> map) {
-        return entity;
-    }
 
     /**
      * Dummy Implementation

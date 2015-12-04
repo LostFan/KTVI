@@ -25,11 +25,6 @@ public class DisconnectionReasonEntityModel extends BaseEntityModel<Disconnectio
     }
 
     @Override
-    public List<DisconnectionReason> getListByForeignKey(Integer foreignKey) {
-        return null;
-    }
-
-    @Override
     public String getEntityNameKey() {
         return "disconnectionReasons";
     }

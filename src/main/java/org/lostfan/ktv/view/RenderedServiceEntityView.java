@@ -44,9 +44,6 @@ public class RenderedServiceEntityView extends EntityView {
     public <E extends Entity> RenderedServiceEntityView(EntityModel model, Entity entity) {
         super(model, entity);
         RenderedServiceEntityModel renderedServiceEntityModel = (RenderedServiceEntityModel) model;
-        for (EntityField entityField : renderedServiceEntityModel.getTariffFields()) {
-
-        }
         LabelFieldInput labelFieldInput = new EntityLabelFieldInput(new EntityField("tariff", EntityFieldTypes.Tariff, Tariff::getId, Tariff::setId), null );
         for (LabelFieldInput innerLabelFieldInput : labelFieldInputs) {
             if(innerLabelFieldInput.getEntityField().getType() == EntityFieldTypes.Service) {
@@ -65,13 +62,13 @@ public class RenderedServiceEntityView extends EntityView {
             }
         }
 
-        tariffLabelFieldInputs = new ArrayList<>();
-        for (EntityField entityField : ((RenderedServiceEntityModel) model).getTariffFields()) {
-            if (!entityField.isEditable()) {
-                continue;
-            }
-            tariffLabelFieldInputs.add(createLabelFieldInput(entityField, null));
-        }
+//        tariffLabelFieldInputs = new ArrayList<>();
+//        for (EntityField entityField : ((RenderedServiceEntityModel) model).getTariffFields()) {
+//            if (!entityField.isEditable()) {
+//                continue;
+//            }
+//            tariffLabelFieldInputs.add(createLabelFieldInput(entityField, null));
+//        }
 
 
         GridBagConstraints c = new GridBagConstraints();

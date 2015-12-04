@@ -26,7 +26,7 @@ public class EntityView {
 
         protected JLabel label;
 
-        private EntityField entityField;
+        protected EntityField entityField;
 
         public LabelFieldInput(EntityField entityField) {
             this.label = new JLabel(ResourceBundles.getEntityBundle().getString(entityField.getTitleKey()), SwingConstants.LEFT);
@@ -182,6 +182,9 @@ public class EntityView {
 
         @Override
         public Object getValue() {
+            if((datePicker.getModel().getValue() == null)) {
+                return null;
+            }
             return new java.sql.Date(((Date)datePicker.getModel().getValue()).getTime()).toLocalDate();
         }
     }
@@ -198,10 +201,12 @@ public class EntityView {
             comboBox.setEditable(true);
             if (entity != null) {
 
-                Object value = entityField.get(EntityView.this.entity);
+                Object value = entityField.get(entity);
+                if(value != null) {
                 comboBox.setSelectedId((Integer) value);
-                value = comboBox.getSelectedEntity().getName();
-                ((JTextField)((comboBox).getEditor().getEditorComponent())).setText((String) value);
+                    value = comboBox.getSelectedEntity().getName();
+                    ((JTextField) ((comboBox).getEditor().getEditorComponent())).setText((String) value);
+                }
             }
             this.panel = new JPanel(new BorderLayout());
             this.panel.add(comboBox, BorderLayout.CENTER);
@@ -229,12 +234,8 @@ public class EntityView {
             }
 
             entityButton.addActionListener(e -> {
-//                EntityModel entityModel = EntityModelFactory.createForm(entityField.getType());
                 if(comboBox.getSelectedEntity() != null) {
                     EntityView entityView = EntityViewFactory.createForm(entityField.getType(), comboBox.getSelectedEntity().getId());
-//                entityView.addObserver(comboBox.getModelObserver());
-//                EntityView entityView = new EntityView(entityModel, entityModel.getEntity(comboBox.getSelectedEntity()));
-//                EntityOneController entityOneController = new EntityOneController(entityModel, entityView);
                     entityView.changeActionListener.actionPerformed(null);
                 }
             });
@@ -266,7 +267,6 @@ public class EntityView {
     protected JPanel contentPanel;
 
     protected EntityModel<? extends Entity> model;
-    private Map<String, List<Entity>> entityInnerTableValues;
 
     protected ViewActionListener addActionListener;
     protected ViewActionListener cancelActionListener;
@@ -292,7 +292,7 @@ public class EntityView {
         this.addButton.addActionListener(e -> {
 
             if (this.addActionListener != null) {
-                this.addActionListener.actionPerformed(model.buildDTO(getEntity(), entityInnerTableValues));
+                this.addActionListener.actionPerformed(getEntity());
             }
         });
 
@@ -313,17 +313,6 @@ public class EntityView {
         }
 
         buildLayout();
-
-        this.entityInnerTableValues = new HashMap<>();
-        for (FullEntityField fullEntityField : model.getFullFields()) {
-            List<Entity> list = new ArrayList<>();
-            if(entity != null) {
-                list = (List<Entity>) fullEntityField.get(entity);
-            }
-            EntityInnerTableView entityInnerTableView = new EntityInnerTableView(fullEntityField, list);
-            this.entityInnerTableValues.put(fullEntityField.getTitleKey(), entityInnerTableView.getEntityList());
-            this.addInnerTable(entityInnerTableView);
-        }
 
         frame.setVisible(true);
     }

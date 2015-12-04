@@ -49,10 +49,6 @@ public class FieldSearchCriterion<E extends Entity> {
                 return buildBooleanPredicate();
             case Date:
                 return buildDatePredicate();
-//            case Subscriber:
-//                return buildSubscriberPredicate();
-//            case Service:
-//                return buildServicePredicate();
             default:
                 return e -> true;
         }

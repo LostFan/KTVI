@@ -38,11 +38,6 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
     }
 
     @Override
-    public List<Street> getListByForeignKey(Integer foreignKey) {
-        return null;
-    }
-
-    @Override
     public String getEntityNameKey() {
         return "streets";
     }

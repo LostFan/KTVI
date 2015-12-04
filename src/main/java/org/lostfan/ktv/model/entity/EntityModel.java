@@ -15,11 +15,7 @@ public interface EntityModel<T extends Entity> extends Observable {
 
     List<T> getList();
 
-    List<T> getListByForeignKey(Integer foreignKey);
-
     T getEntity(int id);
-
-    T getFullEntity(int id);
 
     String getEntityNameKey();
 
@@ -46,7 +42,5 @@ public interface EntityModel<T extends Entity> extends Observable {
     Class getEntityClass();
 
     Validator<T> getValidator();
-
-    T buildDTO(T entity, Map<String, List<Entity>> map);
 
 }

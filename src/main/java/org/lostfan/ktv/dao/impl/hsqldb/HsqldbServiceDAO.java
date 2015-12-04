@@ -162,7 +162,6 @@ public class HsqldbServiceDAO implements ServiceDAO {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 ServicePrice servicePrice = new ServicePrice();
-//                servicePrice.setSelectedId(rs.getInt("id"));
                 servicePrice.setServiceId(rs.getInt("service_id"));
                 servicePrice.setPrice(rs.getInt("price"));
                 servicePrice.setDate(rs.getDate("date").toLocalDate());

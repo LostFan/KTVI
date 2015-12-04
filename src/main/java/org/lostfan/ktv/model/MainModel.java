@@ -9,6 +9,7 @@ public class MainModel extends BaseObservable {
 
     private static Map<String, EntityModel> nameEntityModels;
     private static Map<Class, EntityModel> classEntityModels;
+    private static Set<String> renderedServicesFields;
 
     private static DisconnectionReasonEntityModel disconnectionReasonEntityModel;
     private static MaterialConsumptionEntityModel materialConsumptionEntityModel;
@@ -53,10 +54,20 @@ public class MainModel extends BaseObservable {
         classEntityModels.put(streetEntityModel.getEntityClass(), streetEntityModel);
         classEntityModels.put(subscriberEntityModel.getEntityClass(), subscriberEntityModel);
         classEntityModels.put(tariffEntityModel.getEntityClass(), tariffEntityModel);
+
+        renderedServicesFields = new HashSet<>();
+        renderedServicesFields.add(FixedServices.CONNECTION.getName());
     }
 
     public static EntityModel getEntityModel(String entityName) {
         return nameEntityModels.get(entityName);
+    }
+
+    public static RenderedServiceEntityModel getRenderedServiceModel(String entityName) {
+        if(!renderedServicesFields.contains(entityName)){
+            return null;
+        }
+        return renderedServiceEntityModel;
     }
 
     public static EntityModel getEntityModel(Class entityClass) {
@@ -101,11 +112,13 @@ public class MainModel extends BaseObservable {
 
     private List<String> entityModelNames;
     private List<String> documentModelNames;
+    private List<String> servicesModelNames;
     private EntityModel currentModel;
 
     public MainModel() {
         this.entityModelNames = new ArrayList<>();
         this.documentModelNames = new ArrayList<>();
+        this.servicesModelNames = new ArrayList<>();
 
         this.entityModelNames.add(getServiceEntityModel().getEntityNameKey());
         this.entityModelNames.add(getSubscriberEntityModel().getEntityNameKey());
@@ -117,6 +130,8 @@ public class MainModel extends BaseObservable {
         this.documentModelNames.add(getPaymentEntityModel().getEntityNameKey());
         this.documentModelNames.add(getRenderedServiceEntityModel().getEntityNameKey());
         this.documentModelNames.add(getMaterialConsumptionEntityModel().getEntityNameKey());
+
+        this.servicesModelNames.add(FixedServices.CONNECTION.getName());
     }
 
     public EntityModel getCurrentModel() {
@@ -138,5 +153,9 @@ public class MainModel extends BaseObservable {
 
     public List<String> getDocumentItems() {
         return this.documentModelNames;
+    }
+
+    public List<String> getServicesItems() {
+        return this.servicesModelNames;
     }
 }

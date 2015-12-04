@@ -42,11 +42,6 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
     }
 
     @Override
-    public List<Material> getListByForeignKey(Integer foreignKey) {
-        return null;
-    }
-
-    @Override
     public String getEntityNameKey() {
         return "materials";
     }

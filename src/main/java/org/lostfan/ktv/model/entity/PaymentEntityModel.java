@@ -44,11 +44,6 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     }
 
     @Override
-    public List<Payment> getListByForeignKey(Integer foreignKey) {
-        return null;
-    }
-
-    @Override
     public String getEntityNameKey() {
         return "payments";
     }

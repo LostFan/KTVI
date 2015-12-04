@@ -49,7 +49,9 @@ public class EntityTableModel<T extends Entity> extends AbstractTableModel {
             return 0;
         }
         if( thisType.isEntityClass()) {
-            value =  thisType.getDAO().get((Integer) value);
+            if(value != null) {
+                value = thisType.getDAO().get((Integer) value);
+            }
         }
 
         return value;

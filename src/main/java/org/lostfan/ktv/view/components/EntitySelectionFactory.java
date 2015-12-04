@@ -7,6 +7,7 @@ import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.model.entity.ServiceEntityModel;
 import org.lostfan.ktv.model.entity.StreetEntityModel;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
+import org.lostfan.ktv.model.entity.TariffEntityModel;
 import org.lostfan.ktv.view.EntitySelectionView;
 
 public class EntitySelectionFactory {
@@ -28,6 +29,9 @@ public class EntitySelectionFactory {
                 break;
             case RenderedService:
                 model = new RenderedServiceEntityModel();
+                break;
+            case Tariff:
+                model = new TariffEntityModel();
                 break;
             default:
                 throw new IllegalArgumentException("Wrong type: " + type.toString());
