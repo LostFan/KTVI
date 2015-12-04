@@ -77,7 +77,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
     public List<RenderedService> getRenderedServicesBySubscriberId(int subscriberId) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"subscriber_id\" = ?");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"subscriber_account\" = ?");
             preparedStatement.setInt(1, subscriberId);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -92,10 +92,29 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
+    public List<RenderedService> getRenderedServicesByServiceId(int serviceId) {
+        List<RenderedService> renderedServices = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"service_id\" = ?");
+            preparedStatement.setInt(1, serviceId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                RenderedService renderedService = constructEntity(rs);
+                renderedServices.add(renderedService);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return renderedServices;
+    }
+
+
     public void save(RenderedService renderedService) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"rendered_service\" (\"id\", \"subscriber_id\", \"service_id\", \"date\",  \"price\")" +
+                    "INSERT INTO \"rendered_service\" (\"id\", \"subscriber_account\", \"service_id\", \"date\",  \"price\")" +
                             " VALUES(?, ?, ?, ?, ?)");
             if (renderedService.getId() != null) {
                 preparedStatement.setInt(1, renderedService.getId());
@@ -118,7 +137,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         if(get(renderedService.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"rendered_service\" set \"subscriber_id\" = ?, \"service_id\" = ?, \"date\" = ?, \"price\" = ? where \"id\" = ?");
+                        "UPDATE \"rendered_service\" set \"subscriber_account\" = ?, \"service_id\" = ?, \"date\" = ?, \"price\" = ? where \"id\" = ?");
                 preparedStatement.setInt(1, renderedService.getSubscriberAccount());
                 preparedStatement.setInt(2, renderedService.getServiceId());
                 preparedStatement.setDate(3, Date.valueOf(renderedService.getDate()));
@@ -172,7 +191,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         RenderedService renderedService = new RenderedService();
         renderedService.setId(rs.getInt("id"));
         renderedService.setServiceId(rs.getInt("service_id"));
-        renderedService.setSubscriberAccount(rs.getInt("subscriber_id"));
+        renderedService.setSubscriberAccount(rs.getInt("subscriber_account"));
         renderedService.setPrice(rs.getInt("price"));
         renderedService.setDate(rs.getDate("date").toLocalDate());
         return renderedService;
