@@ -23,6 +23,8 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     void saveSubscriberSession(SubscriberSession subscriberSession);
 
+    void saveSubscriberSession(int subscriberId, LocalDate date);
+
     void updateSubscriberSession(SubscriberSession subscriberSession);
 
     void deleteSubscriberSession(Integer subscriberId, LocalDate localDate);

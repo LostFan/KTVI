@@ -14,8 +14,6 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
-import org.lostfan.ktv.model.dto.MaterialConsumptionTable;
-import org.lostfan.ktv.model.dto.TariffRow;
 import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
 import org.lostfan.ktv.validation.RenderedServiceValidator;
 import org.lostfan.ktv.validation.SubscriberTariffValidator;
@@ -58,7 +56,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
         this.fullFields = new ArrayList<>();
 
-        FullEntityField materialConsumptionField = new FullEntityField("materialConsumption", EntityFieldTypes.MaterialConsumption, MaterialConsumptionTable::getMaterialConsumption, MaterialConsumptionTable::setMaterialConsumption, MaterialConsumption::new);
+        FullEntityField materialConsumptionField = new FullEntityField("materialConsumption", EntityFieldTypes.MaterialConsumption, ConnectionRenderedService::getMaterialConsumption, ConnectionRenderedService::setMaterialConsumption, MaterialConsumption::new);
         materialConsumptionField.setEntityFields(MainModel.getMaterialConsumptionEntityModel().getFields().stream().filter(e -> !e.getTitleKey().equals("renderedService")).filter(e -> !e.getTitleKey().equals("materialConsumption.id")).collect(Collectors.toList()));
         this.fullFields.add(materialConsumptionField);
     }
@@ -107,62 +105,35 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         return RenderedService.class;
     }
 
-    @Override
-    public ValidationResult save(RenderedService entity) {
+
+    public ValidationResult save(ConnectionRenderedService entity) {
         ValidationResult result = this.getValidator().validate(entity);
-
-        if(entity instanceof TariffRow) {
-            result = validatorSubscriberTariff.validate(this.subscriberTariff, result);
+        result = validatorSubscriberTariff.validate(this.subscriberTariff, result);
+        for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+            result = MainModel.getMaterialConsumptionEntityModel().getValidator().validate(materialConsumption, result);
         }
-
-        if(entity instanceof MaterialConsumptionTable) {
-            MaterialConsumptionTable materialConsumptionTable = (MaterialConsumptionTable) entity;
-            for (MaterialConsumption materialConsumption : materialConsumptionTable.getMaterialConsumption()) {
-                result = MainModel.getMaterialConsumptionEntityModel().getValidator().validate(materialConsumption, result);
-            }
-        }
-
         if (result.hasErrors()) {
             return result;
         }
+
         if (entity.getId() == null) {
             getDao().save(entity);
-            if(entity instanceof TariffRow) {
-                subscriberDAO.saveSubscriberTariff(this.subscriberTariff);
+            subscriberDAO.updateSubscriberTariff(this.subscriberTariff);
+            for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+                materialConsumption.setRenderedServiceId(entity.getId());
+                materialConsumptionDAO.save(materialConsumption);
             }
-            if(entity instanceof MaterialConsumptionTable)  {
-                MaterialConsumptionTable materialConsumptionTable = (MaterialConsumptionTable) entity;
-                for (MaterialConsumption materialConsumption : materialConsumptionTable.getMaterialConsumption()) {
-                    materialConsumption.setRenderedServiceId(materialConsumptionTable.getId());
-                    materialConsumptionDAO.save(materialConsumption);
-                }
-            }
-        } else {
-            getDao().update(entity);
-            if(entity instanceof TariffRow) {
-                subscriberDAO.updateSubscriberTariff(this.subscriberTariff);
-            }
-            if(entity instanceof MaterialConsumptionTable) {
-                MaterialConsumptionTable materialConsumptionTable = (MaterialConsumptionTable) entity;
-                List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(materialConsumptionTable.getId());
-
-                for (MaterialConsumption materialConsumption : materialConsumptionList) {
-                    if(!materialConsumptionTable.getMaterialConsumption().contains(materialConsumption)) {
-                        materialConsumptionDAO.delete(materialConsumption.getId());
-                    }
-                }
-                for (MaterialConsumption materialConsumption : materialConsumptionTable.getMaterialConsumption()) {
-                    if(materialConsumption.getId() != null) {
-                        materialConsumptionDAO.update(materialConsumption);
-                    } else {
-                        materialConsumption.setRenderedServiceId(materialConsumptionTable.getId());
-                        materialConsumptionDAO.save(materialConsumption);
-                    }
-                }
-            }
+            return result;
         }
+        RenderedService prevRenderedService = getDao().get(entity.getId());
+        subscriberDAO.deleteSubscriberSession(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        getDao().update(entity);
+        subscriberDAO.saveSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
+        subscriberDAO.saveSubscriberTariff(this.subscriberTariff);
+        updateMaterials(entity);
         updateEntitiesList();
-        return result;
+        return  result;
     }
 
     @Override
@@ -196,6 +167,25 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         this.subscriberTariff.setConnectTariff(service.getDate());
         return dto;
 
+    }
+
+    private void updateMaterials(ConnectionRenderedService entity) {
+        List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(entity.getId());
+
+        for (MaterialConsumption materialConsumption : materialConsumptionList) {
+            if(!entity.getMaterialConsumption().contains(materialConsumption)) {
+                materialConsumptionDAO.delete(materialConsumption.getId());
+            }
+        }
+
+        for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+            if(materialConsumption.getId() != null) {
+                materialConsumptionDAO.update(materialConsumption);
+            } else {
+                materialConsumption.setRenderedServiceId(entity.getId());
+                materialConsumptionDAO.save(materialConsumption);
+            }
+        }
     }
 
 }

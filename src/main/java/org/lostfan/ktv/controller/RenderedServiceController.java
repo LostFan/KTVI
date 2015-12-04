@@ -83,15 +83,7 @@ public class RenderedServiceController {
             RenderedService entity = model.getEntity(selectedId);
             EntityView entityView = EntityViewFactory.createRenderedServiceForm(model, entity);
 
-            entityView.setAddActionListener(args_ -> {
-                RenderedService entity1 = (RenderedService) args_;
-                ValidationResult result = model.save(entity1);
-                if (result.hasErrors()) {
-                    entityView.showErrors(result.getErrors());
-                    return;
-                }
-                entityView.hide();
-            });
+
         }
     }
 

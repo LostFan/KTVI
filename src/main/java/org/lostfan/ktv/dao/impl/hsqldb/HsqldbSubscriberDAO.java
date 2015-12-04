@@ -319,6 +319,20 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         }
     }
 
+    @Override
+    public void saveSubscriberSession(int subscriberId, LocalDate date) {
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "INSERT INTO \"subscriber_session\" (\"subscriber_account\", \"connection_date\") VALUES(?, ?)");
+            preparedStatement.setInt(1, subscriberId);
+            preparedStatement.setDate(2, Date.valueOf(date));
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void updateSubscriberSession(SubscriberSession subscriberSession) {
         if(getSubscriberSession(subscriberSession.getSubscriberAccount(), subscriberSession.getConnectionDate()) != null) {
             try {

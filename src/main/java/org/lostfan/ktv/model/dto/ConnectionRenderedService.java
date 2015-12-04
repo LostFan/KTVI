@@ -10,7 +10,7 @@ import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
 
-public class ConnectionRenderedService  extends RenderedService implements MaterialConsumptionTable, TariffRow {
+public class ConnectionRenderedService  extends RenderedService {
 
     List<MaterialConsumption> materialConsumption;
 
