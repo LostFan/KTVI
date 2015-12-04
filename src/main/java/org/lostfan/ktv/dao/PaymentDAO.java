@@ -8,21 +8,9 @@ import org.lostfan.ktv.domain.PaymentType;
 
 public interface PaymentDAO extends EntityDAO<Payment> {
 
-    List<Payment> getAll();
-
-    Payment get(int id);
-
     List<Payment> getPaymentsByDate(LocalDate date);
 
     List<Payment> getPaymentsBySubscriberId(int subscriberId);
-
-    void save(Payment payment);
-
-    void update(Payment payment);
-
-    void delete(int id);
-
-    List<Payment> getAllContainsInName(String str);
 
     List<PaymentType> getAllPaymentTypes();
 

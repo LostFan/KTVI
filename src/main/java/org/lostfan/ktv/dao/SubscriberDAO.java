@@ -9,16 +9,6 @@ import org.lostfan.ktv.domain.SubscriberTariff;
 
 public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
-    List<Subscriber> getAll();
-
-    Subscriber get(int id);
-
-    void save(Subscriber subscriber);
-
-    void update(Subscriber subscriber);
-
-    void delete(int subscriberId);
-
     int getBalanceByDate(int subscriberId, LocalDate date);
 
     Integer getTariffIdByDate(int subscriberId, LocalDate date);
@@ -48,6 +38,4 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
     List<Subscriber> getSubscribersByBeginningPartOfName(String str);
 
     List<Subscriber> getSubscribersByBeginningPartOfAccount(String str);
-
-    List<Subscriber> getAllContainsInName(String str);
 }

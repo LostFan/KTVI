@@ -8,16 +8,6 @@ import org.lostfan.ktv.domain.ServicePrice;
 
 public interface ServiceDAO extends EntityDAO<Service> {
 
-    List<Service> getAll();
-
-    Service get(int id);
-
-    void save(Service service);
-
-    void update(Service service);
-
-    void delete(int serviceId);
-
     int getPriceByDate(int serviceId, LocalDate date);
 
     void savePrice(ServicePrice servicePrice);
@@ -25,6 +15,4 @@ public interface ServiceDAO extends EntityDAO<Service> {
     List<ServicePrice> getServicePricesByServiceId(int serviceId);
 
     List<Service> getServicesByBeginningPartOfName(String str);
-
-    List<Service> getAllContainsInName(String str);
 }

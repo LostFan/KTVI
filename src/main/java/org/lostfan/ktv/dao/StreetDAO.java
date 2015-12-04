@@ -8,17 +8,5 @@ import java.util.List;
 
 public interface StreetDAO extends EntityDAO<Street> {
 
-    List<Street> getAll();
-
-    Street get(int id);
-
-    void save(Street subscriber);
-
-    void update(Street subscriber);
-
-    void delete(int subscriberId);
-
     List<Street> getStreetsByBeginningPartOfName(String str);
-
-    List<Street> getAllContainsInName(String str);
 }

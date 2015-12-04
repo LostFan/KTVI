@@ -7,21 +7,9 @@ import org.lostfan.ktv.domain.RenderedService;
 
 public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
 
-    List<RenderedService> getAll();
-
-    RenderedService get(int id);
-
     List<RenderedService> getRenderedServicesByDate(LocalDate date);
 
     List<RenderedService> getRenderedServicesBySubscriberId(int subscriberId);
 
     List<RenderedService> getRenderedServicesByServiceId(int serviceId);
-
-    void save(RenderedService renderedService);
-
-    void update(RenderedService renderedService);
-
-    void delete(int id);
-
-    List<RenderedService> getAllContainsInName(String str);
 }
