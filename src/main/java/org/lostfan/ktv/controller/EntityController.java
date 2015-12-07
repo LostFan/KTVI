@@ -14,10 +14,12 @@ import java.util.List;
 public class EntityController {
 
     private EntityModel model;
+    private EntityTableView view;
     private EntitySearchView entitySearchView;
 
     public EntityController(EntityModel model, EntityTableView view) {
         this.model = model;
+        this.view = view;
 
         view.setFindActionListener(this::findActionPerformed);
         view.setAddActionListener(this::addActionPerformed);
@@ -25,8 +27,12 @@ public class EntityController {
         view.setDeleteActionListener(this::deleteActionPerformed);
     }
 
-    public void setModel(EntityModel model) {
-        this.model = model;
+    public EntityModel getModel() {
+        return model;
+    }
+
+    public EntityTableView getView() {
+        return view;
     }
 
     protected void findActionPerformed(Object args) {
