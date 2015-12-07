@@ -49,7 +49,6 @@ public class ConnectionEntityView extends EntityView{
             }
         });
 
-
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(0, 10, 10, 10);
         c.anchor = GridBagConstraints.WEST;

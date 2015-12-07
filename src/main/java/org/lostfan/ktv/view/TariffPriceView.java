@@ -10,6 +10,8 @@ import org.lostfan.ktv.domain.TariffPrice;
 import org.lostfan.ktv.model.dto.TariffWithPrices;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.view.components.DatePickerField;
+import org.lostfan.ktv.view.components.IntegerTextField;
 
 public class TariffPriceView {
 
@@ -65,8 +67,8 @@ public class TariffPriceView {
     private ViewActionListener saveActionListener;
 
     private JTable archiveTable;
-    private JTextField priceTextField;
-    private JTextField dateTextField;
+    private IntegerTextField priceField;
+    private DatePickerField dateField;
 
     private JButton saveButton;
     private JButton cancelButton;
@@ -80,12 +82,12 @@ public class TariffPriceView {
 
         this.archiveTable = new JTable(new ArchiveTableModel(tariff.getArchivePrices()));
 
-        this.priceTextField = new JTextField();
-        this.dateTextField = new JTextField();
+        this.priceField = new IntegerTextField();
+        this.dateField = new DatePickerField();
 
         if (tariff.getNewPrice() != null) {
-            this.priceTextField.setText(String.valueOf(tariff.getNewPrice().getPrice()));
-            this.dateTextField.setText(String.valueOf(tariff.getNewPrice().getDate()));
+            this.priceField.setValue(tariff.getNewPrice().getPrice());
+            this.dateField.setValue(tariff.getNewPrice().getDate());
         }
 
         this.saveButton = new JButton(ResourceBundles.getGuiBundle().getString("buttons.save"));
@@ -136,13 +138,13 @@ public class TariffPriceView {
         box = Box.createHorizontalBox();
         box.add(new JLabel(ResourceBundles.getEntityBundle().getString("tariffPrice.price")));
         box.add(Box.createRigidArea(new Dimension(20, 0)));
-        box.add(this.priceTextField);
+        box.add(this.priceField);
         contentPanel.add(box);
 
         box = Box.createHorizontalBox();
         box.add(new JLabel(ResourceBundles.getEntityBundle().getString("tariffPrice.date")));
         box.add(Box.createRigidArea(new Dimension(20, 0)));
-        box.add(this.dateTextField);
+        box.add(this.dateField);
         contentPanel.add(box);
 
 
@@ -156,8 +158,8 @@ public class TariffPriceView {
     public TariffPrice buildNewTariffPrice() {
         TariffPrice tariffPrice = new TariffPrice();
         tariffPrice.setTariffId(this.tariff.getId());
-        tariffPrice.setPrice(Integer.parseInt(this.priceTextField.getText()));
-        // TODO: set date
+        tariffPrice.setPrice(this.priceField.getValue());
+        tariffPrice.setDate(this.dateField.getValue());
         return tariffPrice;
     }
 

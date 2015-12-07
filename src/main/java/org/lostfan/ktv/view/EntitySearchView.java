@@ -6,12 +6,11 @@ import java.util.*;
 import java.util.List;
 import javax.swing.*;
 
-import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.*;
+import org.lostfan.ktv.view.components.DatePickerField;
+import org.lostfan.ktv.view.components.IntegerTextField;
 import org.lostfan.ktv.view.model.CriteriaComboBoxModel;
 import org.lostfan.ktv.view.model.FieldsComboBoxModel;
 
@@ -28,8 +27,9 @@ public class EntitySearchView {
 
         private JComboBox<String> fieldComboBox;
         private JComboBox<String> criterionComboBox;
+        private IntegerTextField integerTextField;
         private JTextField valueTextField;
-        private JDatePickerImpl datePicker;
+        private DatePickerField datePicker;
         private JButton removeButton;
 
         public CriterionComponents() {
@@ -44,7 +44,8 @@ public class EntitySearchView {
 
             this.criterionComboBox = new JComboBox<>();
             this.valueTextField = new JTextField(20);
-            this.datePicker = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
+            this.integerTextField = new IntegerTextField();
+            this.datePicker = new DatePickerField();
             this.removeButton = new JButton();
             URL url = EntitySearchView.class.getClassLoader().getResource("images/remove.png");
             if(url != null) {
@@ -82,12 +83,11 @@ public class EntitySearchView {
                 case Subscriber:
                     return this.valueTextField.getText();
                 case Integer:
-                    return Integer.parseInt(this.valueTextField.getText());
+                    return this.integerTextField.getValue();
                 case Boolean:
                     return getSelectedCriterion() == SearchCriteria.Boolean.True;
                 case Date:
-                    java.sql.Date selectedDate = new java.sql.Date(((Date) datePicker.getModel().getValue()).getTime());
-                    return selectedDate.toLocalDate();
+                    return this.datePicker.getValue();
             }
             return null;
         }

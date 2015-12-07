@@ -1,17 +1,11 @@
 package org.lostfan.ktv.view;
 
-import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.*;
 import org.lostfan.ktv.validation.Error;
-import org.lostfan.ktv.view.components.EntityComboBox;
-import org.lostfan.ktv.view.components.EntityComboBoxFactory;
-import org.lostfan.ktv.view.components.EntityViewFactory;
-import org.lostfan.ktv.view.components.EntitySelectionFactory;
+import org.lostfan.ktv.view.components.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,17 +69,14 @@ public class EntityView {
 
     private class IntegerLabelFieldInput extends LabelFieldInput {
 
-        private JTextField textField;
+        private IntegerTextField textField;
 
         public IntegerLabelFieldInput(EntityField entityField) {
             super(entityField);
-            // TODO: Implement FormattedTextField or another way to filter integer only
-            this.textField = new JTextField(/*20*/);
+            this.textField = new IntegerTextField();
             this.textField.setMargin(new Insets(2, 6, 2, 6));
             if (EntityView.this.entity != null) {
-                this.textField.setText(String.valueOf(entityField.get(EntityView.this.entity)));
-            } else {
-                this.textField.setText("0");
+                this.textField.setValue((Integer)entityField.get(EntityView.this.entity));
             }
 
             new DefaultContextMenu().add(textField);
@@ -98,15 +89,7 @@ public class EntityView {
 
         @Override
         public Object getValue() {
-            String text = textField.getText();
-            if (text == null) {
-                return null;
-            }
-            try {
-                return Integer.parseInt(text);
-            } catch (NumberFormatException e) {
-                return null;
-            }
+            return textField.getValue();
         }
     }
 
@@ -166,15 +149,13 @@ public class EntityView {
 
     private class DateLabelFieldInput extends LabelFieldInput {
 
-        private JDatePickerImpl datePicker;
+        private DatePickerField datePicker;
 
         public DateLabelFieldInput(EntityField entityField) {
             super(entityField);
-            this.datePicker = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
+            this.datePicker = new DatePickerField();
             if (EntityView.this.entity != null) {
-                LocalDate localDate = (LocalDate) entityField.get(EntityView.this.entity);
-                this.datePicker.getModel().setDate(localDate.getYear(), localDate.getMonthValue() - 1, localDate.getDayOfMonth());
-                this.datePicker.getModel().setSelected(true);
+                this.datePicker.setValue((LocalDate) entityField.get(EntityView.this.entity));
             }
         }
 
@@ -185,10 +166,7 @@ public class EntityView {
 
         @Override
         public Object getValue() {
-            if((datePicker.getModel().getValue() == null)) {
-                return null;
-            }
-            return new java.sql.Date(((Date)datePicker.getModel().getValue()).getTime()).toLocalDate();
+            return this.datePicker.getValue();
         }
     }
 
