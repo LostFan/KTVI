@@ -154,20 +154,19 @@ public class EntitySearchView {
 
         this.findButton = new JButton(getString("buttons.find"));
         this.findButton.addActionListener(e -> {
-            frame.setVisible(false);
-        });
-
-        this.cancelButton = new JButton(getString("buttons.cancel"));
-        this.cancelButton.addActionListener(e -> {
             if (this.findActionListener != null) {
                 this.findActionListener.actionPerformed(null);
                 frame.setVisible(false);
             }
         });
 
+        this.cancelButton = new JButton(getString("buttons.cancel"));
+        this.cancelButton.addActionListener(e -> {
+            frame.setVisible(false);
+        });
+
         buildLayout();
         frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
     }
 
     private void buildLayout() {
@@ -236,6 +235,10 @@ public class EntitySearchView {
     private void revalidate() {
         this.frame.invalidate();
         this.frame.repaint();
+    }
+
+    public void show() {
+        this.frame.setVisible(true);
     }
 }
 

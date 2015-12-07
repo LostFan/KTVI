@@ -36,8 +36,11 @@ public class EntityController {
     }
 
     protected void findActionPerformed(Object args) {
-        this.entitySearchView = new EntitySearchView(model);
-        this.entitySearchView.setFindActionListener(this::searchFindActionPerformed);
+        if (this.entitySearchView == null) {
+            this.entitySearchView = new EntitySearchView(model);
+            this.entitySearchView.setFindActionListener(this::searchFindActionPerformed);
+        }
+        this.entitySearchView.show();
     }
 
     protected void searchFindActionPerformed(Object args) {
