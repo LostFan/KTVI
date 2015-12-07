@@ -136,13 +136,9 @@ public class HsqldbTariffDAO implements TariffDAO {
             preparedStatement.setDate(2, Date.valueOf(date));
             ResultSet rs = preparedStatement.executeQuery();
 
-            while (rs.next()) {
-                tariffPrice = new TariffPrice();
-                tariffPrice.setTariffId(rs.getInt("tariff_id"));
-                tariffPrice.setDate(rs.getDate("date").toLocalDate());
-                tariffPrice.setPrice(rs.getInt("price"));
+            if (rs.next()) {
+                tariffPrice = constructPriceEntity(rs);
             }
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -156,12 +152,25 @@ public class HsqldbTariffDAO implements TariffDAO {
             Statement statement = getConnection().createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM \"tariff_price\"");
             while (rs.next()) {
-                TariffPrice tariffPrice = new TariffPrice();
-                tariffPrice.setPrice(rs.getInt("price"));
-                tariffPrice.setTariffId(rs.getInt("tariff_id"));
-                tariffPrice.setDate(rs.getDate("date").toLocalDate());
+                tariffPrices.add(constructPriceEntity(rs));
+            }
 
-                tariffPrices.add(tariffPrice);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return tariffPrices;
+    }
+
+    @Override
+    public List<TariffPrice> getTariffPrices(int tariffId) {
+        List<TariffPrice> tariffPrices = new ArrayList<>();
+        try {
+            PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM \"tariff_price\" WHERE \"tariff_id\"=?");
+            statement.setInt(1, tariffId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                tariffPrices.add(constructPriceEntity(rs));
             }
 
         } catch (SQLException ex) {
@@ -246,5 +255,13 @@ public class HsqldbTariffDAO implements TariffDAO {
         tariff.setDigital(rs.getBoolean("digital"));
         tariff.setChannels(rs.getString("channels"));
         return tariff;
+    }
+
+    private TariffPrice constructPriceEntity(ResultSet rs) throws SQLException {
+        TariffPrice tariffPrice = new TariffPrice();
+        tariffPrice.setPrice(rs.getInt("price"));
+        tariffPrice.setTariffId(rs.getInt("tariff_id"));
+        tariffPrice.setDate(rs.getDate("date").toLocalDate());
+        return tariffPrice;
     }
 }
