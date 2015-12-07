@@ -7,6 +7,7 @@ import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.MainView;
 import org.lostfan.ktv.view.RenderedServiceTableView;
+import org.lostfan.ktv.view.TariffTableView;
 import org.lostfan.ktv.view.components.EntityViewFactory;
 
 import java.util.HashMap;
@@ -50,7 +51,11 @@ public class MainController {
         if (entityCode.equals(MainModel.getRenderedServiceEntityModel().getEntityNameKey())) {
             entityController = new RenderedServiceController(MainModel.getRenderedServiceEntityModel(),
                     new RenderedServiceTableView(MainModel.getRenderedServiceEntityModel()));
-        } else {
+        } else if (entityCode.equals(MainModel.getTariffEntityModel().getEntityNameKey())) {
+            entityController = new TariffEntityController(MainModel.getTariffEntityModel(),
+                    new TariffTableView(MainModel.getTariffEntityModel()));
+        }
+        else {
             EntityModel model = MainModel.getEntityModel(entityCode);
             entityController = new EntityController(model, new EntityTableView(model));
         }
