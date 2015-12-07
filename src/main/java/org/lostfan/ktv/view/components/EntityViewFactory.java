@@ -7,10 +7,12 @@ import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
+import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.ConnectionEntityView;
+import org.lostfan.ktv.view.DisconnectionEntityView;
 import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.RenderedServiceEntityView;
 
@@ -30,7 +32,19 @@ public class EntityViewFactory {
                     entityView.showErrors(result.getErrors());
                     return;
                 }
-                renderedServiceEntityModel.save(entity);
+                entityView.hide();
+            });
+        }
+
+        if(service == FixedServices.DISCONNECTION) {
+            DisconnectionEntityView entityView = new DisconnectionEntityView(renderedServiceEntityModel);
+            entityView.setAddActionListener(args_ -> {
+                DisconnectionRenderedService entity = (DisconnectionRenderedService) args_;
+                ValidationResult result = renderedServiceEntityModel.save(entity);
+                if (result.hasErrors()) {
+                    entityView.showErrors(result.getErrors());
+                    return;
+                }
                 entityView.hide();
             });
         }
@@ -47,6 +61,22 @@ public class EntityViewFactory {
             ConnectionEntityView entityView = new ConnectionEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getConnectionRenderedService(renderedService));
             entityView.setAddActionListener(args_ -> {
                 ConnectionRenderedService entity1 = (ConnectionRenderedService) args_;
+                ValidationResult result = renderedServiceEntityModel.save(entity1);
+                if (result.hasErrors()) {
+                    entityView.showErrors(result.getErrors());
+                    return;
+                }
+                entityView.hide();
+            });
+            return entityView;
+
+        }
+
+        if(renderedService.getServiceId() == FixedServices.DISCONNECTION.getId()) {
+
+            DisconnectionEntityView entityView = new DisconnectionEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getDisconnectionRenderedService(renderedService));
+            entityView.setAddActionListener(args_ -> {
+                DisconnectionRenderedService entity1 = (DisconnectionRenderedService) args_;
                 ValidationResult result = renderedServiceEntityModel.save(entity1);
                 if (result.hasErrors()) {
                     entityView.showErrors(result.getErrors());

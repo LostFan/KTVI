@@ -4,6 +4,7 @@ import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
+import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.sql.*;
@@ -320,17 +321,26 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public void saveSubscriberSession(int subscriberId, LocalDate date) {
+    public SubscriberSession getNotClosedSubscriberSessionByDate(Integer subscriberId, LocalDate localDate) {
+        SubscriberSession subscriberSession = null;
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"subscriber_session\" (\"subscriber_account\", \"connection_date\") VALUES(?, ?)");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<? AND \"disconnection_date\" IS NULL ORDER BY \"connection_date\" desc");
             preparedStatement.setInt(1, subscriberId);
-            preparedStatement.setDate(2, Date.valueOf(date));
-            preparedStatement.executeUpdate();
+            preparedStatement.setDate(2, Date.valueOf(localDate));
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                subscriberSession = new SubscriberSession();
+                subscriberSession.setSubscriberAccount(rs.getInt("subscriber_account"));
+                subscriberSession.setConnectionDate(rs.getDate("connection_date").toLocalDate());
+
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+
+        return subscriberSession;
     }
 
     public void updateSubscriberSession(SubscriberSession subscriberSession) {
@@ -390,6 +400,30 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
                     subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
                 }
                 subscriberTariff.setTariffId(rs.getInt("tariff_id"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscriberTariff;
+    }
+
+    @Override
+    public SubscriberTariff getNotClosedSubscriberTariffByDate(Integer subscriberId, LocalDate localDate) {
+        SubscriberTariff subscriberTariff = null;
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<? AND \"disconnection_date\" IS NULL ORDER BY \"connection_date\" desc");
+            preparedStatement.setInt(1, subscriberId);
+            preparedStatement.setDate(2, Date.valueOf(localDate));
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                subscriberTariff = new SubscriberTariff();
+                subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
+                subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
+                subscriberTariff.setTariffId(rs.getInt("tariff_id"));
+
             }
 
         } catch (SQLException ex) {

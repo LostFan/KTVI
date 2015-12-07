@@ -1,7 +1,12 @@
 package org.lostfan.ktv.model;
 
 public enum FixedServices {
-    CONNECTION (1, "connection");
+    CONNECTION (1, "connection"),
+    DISCONNECTION (3, "disconnection"),
+    CHANGE_OF_TARIFF (6, "changeOfTariff"),
+    SUBSCRIPTION_FEE (4, "subscriptionFee"),
+    ADDITIONAL_SERVICE(5,"additionalService");
+
 
     public static FixedServices of(String code) {
         for (FixedServices service : FixedServices.values()) {

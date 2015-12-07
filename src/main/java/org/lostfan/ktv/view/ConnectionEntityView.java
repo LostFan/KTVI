@@ -45,8 +45,7 @@ public class ConnectionEntityView extends EntityView{
         this.addButton.addActionListener(e -> {
             if (this.addActionListener != null) {
                 entityInnerTableView.stopEditing();
-                ((RenderedService) getEntity()).setServiceId(FixedServices.CONNECTION.getId());
-                this.addActionListener.actionPerformed(model.buildDTO((RenderedService) getEntity(), getTariff(), entityInnerTableValues));
+                this.addActionListener.actionPerformed(model.buildConnectionDTO((RenderedService) getEntity(), getTariff(), entityInnerTableValues));
             }
         });
 

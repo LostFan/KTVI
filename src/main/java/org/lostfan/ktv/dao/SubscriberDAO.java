@@ -23,13 +23,15 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     void saveSubscriberSession(SubscriberSession subscriberSession);
 
-    void saveSubscriberSession(int subscriberId, LocalDate date);
+    SubscriberSession getNotClosedSubscriberSessionByDate(Integer subscriberId, LocalDate localDate);
 
     void updateSubscriberSession(SubscriberSession subscriberSession);
 
     void deleteSubscriberSession(Integer subscriberId, LocalDate localDate);
 
     SubscriberTariff getSubscriberTariff(Integer subscriberId, LocalDate localDate);
+
+    SubscriberTariff getNotClosedSubscriberTariffByDate(Integer subscriberId, LocalDate localDate);
 
     void saveSubscriberTariff(SubscriberTariff subscriberTariff);
 
@@ -40,4 +42,5 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
     List<Subscriber> getSubscribersByBeginningPartOfName(String str);
 
     List<Subscriber> getSubscribersByBeginningPartOfAccount(String str);
+
 }

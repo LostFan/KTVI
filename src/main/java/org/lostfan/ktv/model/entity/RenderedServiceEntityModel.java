@@ -14,6 +14,7 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
+import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
 import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
 import org.lostfan.ktv.validation.RenderedServiceValidator;
 import org.lostfan.ktv.validation.SubscriberTariffValidator;
@@ -49,7 +50,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         this.fields.add(serviceEntityField);
         this.fields.add(new EntityField("renderedService.date", EntityFieldTypes.Date, RenderedService::getDate, RenderedService::setDate));
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberAccount, RenderedService::setSubscriberAccount));
-//        this.fields.add(new EntityField("service", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId));
+        this.fields.add(new EntityField("service", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId, false));
         this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
 
         this.tariffField = new EntityField("tariff", EntityFieldTypes.Tariff, Tariff::getId, Tariff::setId);
@@ -74,6 +75,10 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(renderedService.getId());
 
         return ConnectionRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
+    }
+
+    public DisconnectionRenderedService getDisconnectionRenderedService(RenderedService renderedService) {
+        return DisconnectionRenderedService.build(renderedService);
     }
 
     @Override
@@ -139,6 +144,35 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         return  result;
     }
 
+    public ValidationResult save(DisconnectionRenderedService entity) {
+        ValidationResult result = this.getValidator().validate(entity);
+        if (result.hasErrors()) {
+            return result;
+        }
+
+
+        if (entity.getId() == null) {
+            SubscriberSession subscriberSession = subscriberDAO.getNotClosedSubscriberSessionByDate(entity.getSubscriberAccount(), entity.getDate());
+            if(subscriberSession == null) {
+                result.addError("No session");
+                return result;
+            }
+            subscriberSession.setDisconnectionDate(entity.getDate());
+            SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
+            if(subscriberTariff == null) {
+                result.addError("No tariff");
+                return result;
+            }
+            subscriberTariff.setDisconnectTariff(entity.getDate());
+            getDao().save(entity);
+
+            subscriberDAO.updateSubscriberSession(subscriberSession);
+            subscriberDAO.updateSubscriberTariff(subscriberTariff);
+        }
+
+        return result;
+    }
+
     @Override
     protected EntityDAO<RenderedService> getDao() {
         return DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO();
@@ -155,13 +189,12 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
 
-    public ConnectionRenderedService buildDTO(RenderedService service, Tariff tariff, Map<String, List<MaterialConsumption>> map) {
+    public ConnectionRenderedService buildConnectionDTO(RenderedService service, Tariff tariff, Map<String, List<MaterialConsumption>> map) {
         ConnectionRenderedService dto = new ConnectionRenderedService();
         dto.setId(service.getId());
         dto.setDate(service.getDate());
         dto.setPrice(service.getPrice());
         dto.setSubscriberAccount(service.getSubscriberAccount());
-        dto.setServiceId(service.getServiceId());
         dto.setTariffId(tariff.getId());
         dto.setMaterialConsumption(map.get("materialConsumption"));
         this.subscriberTariff = new SubscriberTariff();
@@ -169,7 +202,15 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         this.subscriberTariff.setSubscriberAccount(service.getSubscriberAccount());
         this.subscriberTariff.setConnectTariff(service.getDate());
         return dto;
+    }
 
+    public DisconnectionRenderedService buildDisconnectionDTO(RenderedService service) {
+        DisconnectionRenderedService dto = new DisconnectionRenderedService();
+        dto.setId(service.getId());
+        dto.setDate(service.getDate());
+        dto.setPrice(service.getPrice());
+        dto.setSubscriberAccount(service.getSubscriberAccount());
+        return dto;
     }
 
     private void updateMaterials(ConnectionRenderedService entity) {

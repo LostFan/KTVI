@@ -82,7 +82,6 @@ public class EntityInnerTableView<T> {
     }
 
     private void buildLayout() {
-//        new EntityInnerTableController(model, this);
         this.contentPanel = new JPanel(new BorderLayout(10, 10));
 
         // ID column values should be aligned to the left;

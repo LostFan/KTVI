@@ -84,7 +84,10 @@ public class EntityView {
             this.textField.setMargin(new Insets(2, 6, 2, 6));
             if (EntityView.this.entity != null) {
                 this.textField.setText(String.valueOf(entityField.get(EntityView.this.entity)));
+            } else {
+                this.textField.setText("0");
             }
+
             new DefaultContextMenu().add(textField);
         }
 
