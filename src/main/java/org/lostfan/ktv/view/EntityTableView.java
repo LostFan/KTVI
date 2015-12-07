@@ -2,6 +2,8 @@ package org.lostfan.ktv.view;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -11,29 +13,31 @@ import javax.swing.table.DefaultTableCellRenderer;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.entity.EntityModel;
-import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.model.EntityTableModel;
 
 public class EntityTableView {
 
-    private class ModelObserver implements Observer {
-        @Override
-        public void update(Object args) {
-            EntityTableView.this.revalidate();
+    private class ActionButton {
+        JButton button;
+        /**
+         * A button is active if any table row is selected
+         */
+        boolean entityRequired;
+
+        public ActionButton(JButton button, boolean entityRequired) {
+            this.button = button;
+            this.entityRequired = entityRequired;
         }
     }
 
     private JPanel contentPanel;
+    private JPanel buttonsPanel;
     private JTable table;
     private JScrollPane tableScrollPane;
-    private JButton findButton;
-    private JButton addButton;
-    private JButton changeButton;
-    private JButton deleteButton;
 
-    private ModelObserver modelObserver;
+    private List<ActionButton> buttons;
 
     private EntityModel model;
 
@@ -44,6 +48,8 @@ public class EntityTableView {
 
     public EntityTableView(EntityModel<? extends Entity> model) {
         this.model = model;
+
+        this.buttons = new ArrayList<>();
 
         this.table = new JTable(new EntityTableModel<>(model));
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -61,49 +67,52 @@ public class EntityTableView {
             }
         });
         this.table.getSelectionModel().addListSelectionListener(e -> {
-            // "Delete" button is enabled if at least 1 row is selected
-            this.deleteButton.setEnabled(this.table.getSelectedRowCount() > 0);
-            // "Change" button is enabled if exactly 1 row is selected
-            this.changeButton.setEnabled(this.table.getSelectedRowCount() == 1);
+            boolean rowsSelected = this.table.getSelectedRowCount() > 0;
+            for (ActionButton actionButton : buttons) {
+                if (!actionButton.entityRequired) {
+                    continue;
+                }
+                actionButton.button.setEnabled(rowsSelected);
+            }
         });
 
-        this.findButton = new JButton(getString("buttons.find"));
-        this.findButton.addActionListener(e -> {
+        JButton button = new JButton(getString("buttons.find"));
+        button.addActionListener(e -> {
             if (this.findActionListener != null) {
                 this.findActionListener.actionPerformed(null);
             }
         });
+        addButton(button, false);
 
-        this.addButton = new JButton(getString("buttons.add"));
-        this.addButton.addActionListener(e -> {
+        button = new JButton(getString("buttons.add"));
+        button.addActionListener(e -> {
             if (this.addActionListener != null) {
                 this.addActionListener.actionPerformed(null);
             }
         });
+        addButton(button, false);
 
-        this.changeButton = new JButton(getString("buttons.changeSelected"));
-        this.changeButton.setEnabled(false);
-        this.changeButton.addActionListener(e -> {
-            int selectedRow = this.table.getSelectedRow();
-            if (selectedRow != -1 && this.changeActionListener != null) {
-                int actualIndex = this.table.convertRowIndexToModel(selectedRow);
-                this.changeActionListener.actionPerformed(((Entity)this.model.getList().get(actualIndex)).getId());
+        button = new JButton(getString("buttons.changeSelected"));
+        button.addActionListener(e -> {
+            int selectedId = getSelectedEntityId();
+            if (selectedId != -1 && this.changeActionListener != null) {
+                this.changeActionListener.actionPerformed(selectedId);
             }
         });
+        addButton(button, true);
 
-        this.deleteButton = new JButton(getString("buttons.delete"));
-        this.deleteButton.setEnabled(false);
-        this.deleteButton.addActionListener(e -> {
-            int[] selectedRows = this.table.getSelectedRows();
-            if (selectedRows.length != 0 && confirmDeletion() && this.deleteActionListener != null) {
-                List<Integer> selectedIndexes = IntStream.of(selectedRows).boxed().collect(Collectors.toList());
-                this.deleteActionListener.actionPerformed(selectedIndexes);
+        button = new JButton(getString("buttons.delete"));
+        button.addActionListener(e -> {
+            List<Integer> selectedIds = getSelectedEntityIds();
+            if (selectedIds.size() != 0 && confirmDeletion() && this.deleteActionListener != null) {
+                this.deleteActionListener.actionPerformed(selectedIds);
             }
         });
+        addButton(button, true);
+
+        this.buttonsPanel = new JPanel();
 
         buildLayout();
-
-        this.modelObserver = new ModelObserver();
     }
 
     private void buildLayout() {
@@ -121,13 +130,24 @@ public class EntityTableView {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         this.contentPanel.add(rightPanel, BorderLayout.LINE_END);
 
-        JPanel rightPanelInner = new JPanel(new GridLayout(4, 1, 0, 10));
-        rightPanel.add(rightPanelInner);
+        this.buttonsPanel.setLayout(new GridLayout(4, 1, 0, 10));
+        rightPanel.add(this.buttonsPanel);
 
-        rightPanelInner.add(this.findButton);
-        rightPanelInner.add(this.addButton);
-        rightPanelInner.add(this.changeButton);
-        rightPanelInner.add(this.deleteButton);
+        for (ActionButton actionButton : this.buttons) {
+            this.buttonsPanel.add(actionButton.button);
+        }
+    }
+
+    protected void addButton(JButton button, boolean entityRequired) {
+        this.buttons.add(new ActionButton(button, entityRequired));
+        if (entityRequired) {
+            button.setEnabled(false);
+        }
+        if (this.buttonsPanel != null) {
+            this.buttonsPanel.add(button);
+            GridLayout layout = (GridLayout)this.buttonsPanel.getLayout();
+            layout.setRows(layout.getRows() + 1);
+        }
     }
 
     public JPanel getContentPanel() {
@@ -147,17 +167,6 @@ public class EntityTableView {
                 selValues[0]);
 
         return result == 0;
-    }
-
-    public void setModel(EntityModel<? extends Entity> model) {
-        this.model.removeObserver(modelObserver);
-        this.model = model;
-        model.addObserver(this.modelObserver);
-
-        this.table.setModel(new EntityTableModel<>(model));
-        this.tableScrollPane.setViewportView(this.table);
-
-        revalidate();
     }
 
     private void addStringActionTableCellEditorToColumns() {
@@ -195,7 +204,28 @@ public class EntityTableView {
         this.deleteActionListener = deleteActionListener;
     }
 
-    private String getString(String key) {
+    protected String getString(String key) {
         return ResourceBundles.getGuiBundle().getString(key);
+    }
+
+    protected int getSelectedEntityId() {
+        int selectedRow = this.table.getSelectedRow();
+        if (selectedRow != -1) {
+            int actualIndex = this.table.convertRowIndexToModel(selectedRow);
+            return ((Entity)this.model.getList().get(actualIndex)).getId();
+        }
+        return selectedRow;
+    }
+
+    protected List<Integer> getSelectedEntityIds() {
+        int[] selectedRows = this.table.getSelectedRows();
+        if (selectedRows.length != 0) {
+            List<Integer> selectedIds = IntStream.of(selectedRows).boxed().map(rowNumber -> {
+                int actualIndex = table.convertRowIndexToModel(rowNumber);
+                return ((Entity) this.model.getList().get(actualIndex)).getId();
+            }).collect(Collectors.toList());
+            return selectedIds;
+        }
+        return Collections.emptyList();
     }
 }

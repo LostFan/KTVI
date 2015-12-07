@@ -80,7 +80,7 @@ public class EntityController {
     }
 
     protected void deleteActionPerformed(Object args) {
-        List<Integer> selectedIndexes = (List<Integer>) args;
-        model.deleteEntityByRow(selectedIndexes);
+        List<Integer> selectedIds = (List<Integer>) args;
+        model.deleteEntityById(selectedIds);
     }
 }

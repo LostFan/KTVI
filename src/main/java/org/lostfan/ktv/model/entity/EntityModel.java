@@ -33,9 +33,9 @@ public interface EntityModel<T extends Entity> extends Observable {
 
     T createNewEntity();
 
-    void deleteEntityByRow(List<Integer> rowNumbers);
-
     void deleteEntityById(Integer id);
+
+    void deleteEntityById(List<Integer> ids);
 
     List<EntityModel> getEntityModels();
 

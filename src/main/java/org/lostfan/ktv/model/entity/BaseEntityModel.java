@@ -75,20 +75,22 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     }
 
     @Override
-    public void deleteEntityByRow(List<Integer> rowNumbers) {
-        for (Integer rowNumber : rowNumbers) {
-            int id = getList().get(rowNumber).getId();
-            getDao().delete(id);
-        }
-        updateEntitiesList();
-    }
-
-    @Override
     public void deleteEntityById(Integer id) {
         getDao().delete(id);
         updateEntitiesList();
     }
 
+    @Override
+    public void deleteEntityById(List<Integer> ids) {
+        if (ids.size() == 0) {
+            return;
+        }
+
+        for (Integer id : ids) {
+            getDao().delete(id);
+        }
+        updateEntitiesList();
+    }
 
     protected void updateEntitiesList() {
         this.entities = getDao().getAll();
