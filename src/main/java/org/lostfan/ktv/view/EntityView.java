@@ -281,7 +281,7 @@ public class EntityView {
         this(model, null);
     }
 
-    public EntityView(EntityModel<Entity> model, Entity entity) {
+    public <E extends Entity> EntityView(EntityModel<Entity> model, Entity entity) {
 
         this.entity = entity;
         this.model = model;
