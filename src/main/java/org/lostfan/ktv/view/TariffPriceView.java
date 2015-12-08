@@ -5,9 +5,11 @@ import java.time.LocalDate;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.domain.TariffPrice;
 import org.lostfan.ktv.model.dto.TariffWithPrices;
+import org.lostfan.ktv.utils.DateFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.components.DatePickerField;
@@ -42,7 +44,7 @@ public class TariffPriceView {
             if (columnIndex == 0) {
                 return tariffPrice.getPrice();
             } else {
-                return tariffPrice.getDate();
+                return DateFormatter.format(tariffPrice.getDate());
             }
         }
 
@@ -82,6 +84,11 @@ public class TariffPriceView {
         this.frame.setLocationRelativeTo(null);
 
         this.archiveTable = new JTable(new ArchiveTableModel(tariff.getArchivePrices()));
+        // Align center
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
+        this.archiveTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        this.archiveTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 
         this.priceField = new IntegerTextField();
         this.dateField = new DatePickerField();
@@ -125,7 +132,8 @@ public class TariffPriceView {
         if (tariff.getCurrentPrice() == null) {
             box.add(new JLabel("-"));
         } else {
-            String priceStr = String.format("%d (%s)", tariff.getCurrentPrice().getPrice(), tariff.getCurrentPrice().getDate().toString());
+            String priceStr = String.format("%d (%s)",tariff.getCurrentPrice().getPrice(),
+                    DateFormatter.format(tariff.getCurrentPrice().getDate()));
             box.add(new JLabel(priceStr));
         }
         contentPanel.add(box);
