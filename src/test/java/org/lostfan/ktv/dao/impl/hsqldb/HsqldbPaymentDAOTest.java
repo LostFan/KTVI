@@ -271,9 +271,9 @@ public class HsqldbPaymentDAOTest {
     }
 
     private void insertStubDataPayments() throws SQLException {
-        executeQuery("INSERT INTO \"payment\" (\"id\", \"subscriber_id\", \"service_id\", \"payment_type_id\", \"date\", \"price\") VALUES(1, 1, 1, 1, '2015-8-3', 40000);");
-        executeQuery("INSERT INTO \"payment\" (\"id\", \"subscriber_id\", \"service_id\", \"payment_type_id\", \"date\", \"price\") VALUES(2, 1, 2, 1, '2015-6-27', 50000);");
-        executeQuery("INSERT INTO \"payment\" (\"id\", \"subscriber_id\", \"service_id\", \"payment_type_id\", \"date\", \"price\") VALUES(3, 2, 3, 2,  '2015-8-3', 10000);");
+        executeQuery("INSERT INTO \"payment\" (\"id\", \"subscriber_account\", \"service_id\", \"payment_type_id\", \"date\", \"price\") VALUES(1, 1, 1, 1, '2015-8-3', 40000);");
+        executeQuery("INSERT INTO \"payment\" (\"id\", \"subscriber_account\", \"service_id\", \"payment_type_id\", \"date\", \"price\") VALUES(2, 1, 2, 1, '2015-6-27', 50000);");
+        executeQuery("INSERT INTO \"payment\" (\"id\", \"subscriber_account\", \"service_id\", \"payment_type_id\", \"date\", \"price\") VALUES(3, 2, 3, 2,  '2015-8-3', 10000);");
     }
 
     private void insertStubData() throws SQLException{

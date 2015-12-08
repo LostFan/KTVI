@@ -184,9 +184,9 @@ public class HsqldbRenderedServiceDAOTest {
     }
 
     private void insertStubDataRenderedServices() throws SQLException {
-        executeQuery("INSERT INTO \"rendered_service\" (\"id\", \"subscriber_id\", \"service_id\", \"date\") VALUES(1, 1, 1, '2015-8-3');");
-        executeQuery("INSERT INTO \"rendered_service\" (\"id\", \"subscriber_id\", \"service_id\", \"date\") VALUES(2, 1, 2, '2015-6-27');");
-        executeQuery("INSERT INTO \"rendered_service\" (\"id\", \"subscriber_id\", \"service_id\", \"date\") VALUES(3, 2, 3, '2015-8-3');");
+        executeQuery("INSERT INTO \"rendered_service\" (\"id\", \"subscriber_account\", \"service_id\", \"date\") VALUES(1, 1, 1, '2015-8-3');");
+        executeQuery("INSERT INTO \"rendered_service\" (\"id\", \"subscriber_account\", \"service_id\", \"date\") VALUES(2, 1, 2, '2015-6-27');");
+        executeQuery("INSERT INTO \"rendered_service\" (\"id\", \"subscriber_account\", \"service_id\", \"date\") VALUES(3, 2, 3, '2015-8-3');");
     }
 
     private void insertStubData() throws SQLException{
