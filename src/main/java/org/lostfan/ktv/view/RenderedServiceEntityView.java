@@ -1,36 +1,17 @@
 package org.lostfan.ktv.view;
 
 import java.awt.*;
-import java.net.URL;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.*;
 
-import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilDateModel;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
-import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
-import org.lostfan.ktv.utils.DateLabelFormatter;
-import org.lostfan.ktv.utils.DefaultContextMenu;
-import org.lostfan.ktv.utils.ResourceBundles;
-import org.lostfan.ktv.utils.ViewActionListener;
-import org.lostfan.ktv.validation.Error;
 import org.lostfan.ktv.view.components.EntityComboBox;
-import org.lostfan.ktv.view.components.EntityComboBoxFactory;
-import org.lostfan.ktv.view.components.EntityComboBoxModel;
-import org.lostfan.ktv.view.components.EntitySelectionFactory;
-import org.lostfan.ktv.view.components.EntityViewFactory;
 
 public class RenderedServiceEntityView extends EntityView {
 
