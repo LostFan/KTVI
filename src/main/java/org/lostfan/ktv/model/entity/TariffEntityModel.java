@@ -14,6 +14,7 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.dto.TariffWithPrices;
 import org.lostfan.ktv.model.transform.TariffWithPricesTransformer;
+import org.lostfan.ktv.validation.TariffPriceValidator;
 import org.lostfan.ktv.validation.ValidationResult;
 
 public class TariffEntityModel extends BaseEntityModel<Tariff> {
@@ -21,10 +22,12 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
     private List<EntityField> fields;
 
     private TariffWithPricesTransformer tariffWithPricesTransformer;
+    private TariffPriceValidator tariffPriceValidator;
 
     public TariffEntityModel() {
-        fields = new ArrayList<>();
-        tariffWithPricesTransformer = new TariffWithPricesTransformer();
+        this.fields = new ArrayList<>();
+        this.tariffWithPricesTransformer = new TariffWithPricesTransformer();
+        this.tariffPriceValidator = new TariffPriceValidator();
 
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("tariff.id", EntityFieldTypes.Integer, Tariff::getId, Tariff::setId, false));
@@ -70,7 +73,15 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
 
     public ValidationResult save(TariffPrice price) {
         // TODO: validate and save the new price
-        return ValidationResult.createEmpty();
+        ValidationResult result = this.tariffPriceValidator.validate(price);
+        if (!result.hasErrors()) {
+            TariffWithPrices tariffWithPrices = getTariffWithPrices(price.getTariffId());
+            if (tariffWithPrices.getNewPrice() != null) {
+                getDao().deleteTariffPrice(tariffWithPrices.getNewPrice());
+            }
+            getDao().saveTariffPrice(price);
+        }
+        return result;
     }
 
     @Override

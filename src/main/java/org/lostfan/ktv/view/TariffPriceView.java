@@ -98,6 +98,7 @@ public class TariffPriceView {
             this.dateField.setValue(tariff.getNewPrice().getDate());
             newPriceTitle = getGuiString("tariffPrice.changeNew") + ":";
         } else {
+            this.priceField.setValue(0);
             newPriceTitle = getGuiString("tariffPrice.createNew") + ":";
         }
 
@@ -181,7 +182,7 @@ public class TariffPriceView {
     public TariffPrice buildNewTariffPrice() {
         TariffPrice tariffPrice = new TariffPrice();
         tariffPrice.setTariffId(this.tariff.getId());
-        tariffPrice.setPrice(this.priceField.getValue());
+        tariffPrice.setPrice(this.priceField.getValue() == null ? 0 : this.priceField.getValue());
         tariffPrice.setDate(this.dateField.getValue());
         return tariffPrice;
     }
@@ -196,5 +197,17 @@ public class TariffPriceView {
 
     private String getEntityString(String key) {
         return ResourceBundles.getEntityBundle().getString(key);
+    }
+
+    public void show() {
+        this.frame.setVisible(true);
+    }
+
+    public void hide() {
+        this.frame.setVisible(false);
+    }
+
+    public void showValidationErrors(List<org.lostfan.ktv.validation.Error> errors) {
+        // TODO:
     }
 }

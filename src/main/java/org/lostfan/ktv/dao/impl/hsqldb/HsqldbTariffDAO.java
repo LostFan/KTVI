@@ -194,22 +194,16 @@ public class HsqldbTariffDAO implements TariffDAO {
         }
     }
 
-    public void deleteTariffPrice(int tariffId, LocalDate date) {
+    public void deleteTariffPrice(TariffPrice tariffPrice) {
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "DELETE FROM  \"tariff_price\" where \"tariff_id\" = ? AND \"date\" = ?");
+            preparedStatement.setInt(1, tariffPrice.getTariffId());
+            preparedStatement.setDate(2, Date.valueOf(tariffPrice.getDate()));
+            preparedStatement.executeUpdate();
 
-        if(getTariffPrice(tariffId, date) != null)
-        {
-            try {
-                PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "DELETE FROM  \"tariff_price\" where \"tariff_id\" = ? AND \"date\" = ?");
-                preparedStatement.setInt(1, tariffId);
-                preparedStatement.setDate(2, Date.valueOf(date));
-                preparedStatement.executeUpdate();
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            throw new UnsupportedOperationException("Delete nonexistent element");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 

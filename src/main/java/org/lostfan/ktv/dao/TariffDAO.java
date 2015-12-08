@@ -18,7 +18,7 @@ public interface TariffDAO extends EntityDAO<Tariff> {
 
     void saveTariffPrice(TariffPrice tariffPrice);
 
-    void deleteTariffPrice(int tariffId, LocalDate date);
+    void deleteTariffPrice(TariffPrice tariffPrice);
 
     Integer getPriceByDate(int tariffId, LocalDate date);
 }

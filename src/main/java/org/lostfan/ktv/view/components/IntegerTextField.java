@@ -87,7 +87,7 @@ public class IntegerTextField extends JTextField {
     }
 
     public void setValue(Integer value) {
-        if (value == 0) {
+        if (value == null) {
             setText("");
         } else {
             setText(String.valueOf(value));

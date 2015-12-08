@@ -188,14 +188,20 @@ public class HsqldbTariffDAOTest {
     @Test
     public void deleteTariffPriceByIdCorrectServiceCountTest() throws SQLException {
         insertStubData();
-        tariffDAO.deleteTariffPrice(1, LocalDate.of(2015, 1, 1));
+        TariffPrice price = new TariffPrice();
+        price.setTariffId(1);
+        price.setDate(LocalDate.of(2015, 1, 1));
+        tariffDAO.deleteTariffPrice(price);
         assertEquals(tariffDAO.getAllTariffPrices().size(), 2);
     }
 
     @Test
     public void deleteTariffPriceByIdShouldDeleteCorrectDataTest() throws SQLException {
         insertStubData();
-        tariffDAO.deleteTariffPrice(1, LocalDate.of(2015, 1, 1));
+        TariffPrice price = new TariffPrice();
+        price.setTariffId(1);
+        price.setDate(LocalDate.of(2015, 1, 1));
+        tariffDAO.deleteTariffPrice(price);
         assertEquals(tariffDAO.getTariffPrice(1, LocalDate.of(2015, 1, 1)), null);
     }
 
