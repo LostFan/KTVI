@@ -262,9 +262,9 @@ public class HsqldbMaterialDAOTest {
     }
 
     private void insertStubDataSubscribers() throws SQLException {
-        executeQuery("INSERT INTO \"subscriber\" (\"id\", \"name\", \"account\") VALUES(1, 'Arya', 700111);");
-        executeQuery("INSERT INTO \"subscriber\" (\"id\", \"name\", \"account\") VALUES(2, 'Edard', 700321);");
-        executeQuery("INSERT INTO \"subscriber\" (\"id\", \"name\", \"account\") VALUES(3, 'Jon', 700812);");
+        executeQuery("INSERT INTO \"subscriber\" (\"account\", \"name\") VALUES(1, 'Arya');");
+        executeQuery("INSERT INTO \"subscriber\" (\"account\", \"name\") VALUES(2, 'Edard');");
+        executeQuery("INSERT INTO \"subscriber\" (\"account\", \"name\") VALUES(3, 'Jon');");
     }
 
     private void insertStubDataRenderedServices() throws SQLException {

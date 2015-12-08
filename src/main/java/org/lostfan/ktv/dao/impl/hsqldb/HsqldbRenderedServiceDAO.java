@@ -4,12 +4,7 @@ import org.lostfan.ktv.dao.RenderedServiceDAO;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.utils.ConnectionManager;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,7 +117,9 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             preparedStatement.setInt(2, renderedService.getSubscriberAccount());
             preparedStatement.setInt(3, renderedService.getServiceId());
             preparedStatement.setDate(4, Date.valueOf(renderedService.getDate()));
-            preparedStatement.setInt(5, renderedService.getPrice());
+            if (renderedService.getPrice() != null) {
+                preparedStatement.setInt(5, renderedService.getPrice());
+            }
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");

@@ -39,8 +39,9 @@ public class HsqldbServiceDAO implements ServiceDAO {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
-            rs.next();
-            service = constructEntity(rs);
+            if (rs.next()) {
+                service = constructEntity(rs);
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -68,8 +69,9 @@ public class HsqldbServiceDAO implements ServiceDAO {
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-            resultSet.next();
-            service.setId(resultSet.getInt(1));
+            if (resultSet.next()) {
+                service.setId(resultSet.getInt(1));
+            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();

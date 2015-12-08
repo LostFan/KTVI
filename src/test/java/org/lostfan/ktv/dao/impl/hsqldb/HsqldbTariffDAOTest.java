@@ -71,6 +71,7 @@ public class HsqldbTariffDAOTest {
         Tariff tariff = new Tariff();
         tariff.setChannels("30");
         tariff.setName("New");
+        tariff.setDigital(false);
         tariffDAO.save(tariff);
         assertEquals(tariffDAO.getAll().size(), 4);
     }
@@ -81,6 +82,7 @@ public class HsqldbTariffDAOTest {
         Tariff tariff = new Tariff();
         tariff.setChannels("30");
         tariff.setName("New");
+        tariff.setDigital(false);
         tariffDAO.save(tariff);
         assertEquals(tariffDAO.getAll().get(3).getChannels(), "30");
         assertEquals(tariffDAO.getAll().get(3).getName(), "New");
@@ -92,6 +94,7 @@ public class HsqldbTariffDAOTest {
         Tariff tariff = new Tariff();
         tariff.setChannels("30");
         tariff.setName("New");
+        tariff.setDigital(false);
         tariffDAO.save(tariff);
         assertEquals(tariffDAO.getAll().get(3).getId().intValue(), 4);
     }
@@ -204,15 +207,15 @@ public class HsqldbTariffDAOTest {
     }
 
     private void insertStubDataSubscribers() throws SQLException {
-        executeQuery("INSERT INTO \"subscriber\" (\"id\", \"name\", \"account\") VALUES(1, 'Arya', 700111);");
-        executeQuery("INSERT INTO \"subscriber\" (\"id\", \"name\", \"account\") VALUES(2, 'Edard', 700321);");
-        executeQuery("INSERT INTO \"subscriber\" (\"id\", \"name\", \"account\") VALUES(3, 'Jon', 700812);");
+        executeQuery("INSERT INTO \"subscriber\" (\"account\", \"name\") VALUES(1, 'Arya');");
+        executeQuery("INSERT INTO \"subscriber\" (\"account\", \"name\") VALUES(2, 'Edard');");
+        executeQuery("INSERT INTO \"subscriber\" (\"account\", \"name\") VALUES(3, 'Jon');");
     }
 
     private void insertStubDataTariffs() throws SQLException {
-        executeQuery("INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\") VALUES(1, 'Uno', 40);");
-        executeQuery("INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\") VALUES(2, 'Dos', 30);");
-        executeQuery("INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\") VALUES(3, 'Tres', 60);");
+        executeQuery("INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\", \"digital\") VALUES(1, 'Uno', 40, FALSE);");
+        executeQuery("INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\", \"digital\") VALUES(2, 'Dos', 30, FALSE);");
+        executeQuery("INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\", \"digital\") VALUES(3, 'Tres', 60, TRUE);");
     }
 
     private void insertStubDataTariffPrices() throws SQLException {
