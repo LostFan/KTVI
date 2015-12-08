@@ -20,11 +20,18 @@ public class DatePickerField extends JDatePickerImpl {
 
         @Override
         public Object stringToValue(String text) throws ParseException {
-            return dateFormatter.parseObject(text);
+            if (text == null || text.equals("")) {
+                return null;
+            }
+            Date date = dateFormatter.parse(text);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return calendar;
         }
 
         @Override
         public String valueToString(Object value) throws ParseException {
+            System.out.println("value = " + value);
             if (value != null) {
                 Calendar cal = (Calendar) value;
                 return dateFormatter.format(cal.getTime());
@@ -36,6 +43,7 @@ public class DatePickerField extends JDatePickerImpl {
 
     public DatePickerField() {
         super(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
+        setTextEditable(true);
     }
 
     public DatePickerField(LocalDate initialDate) {
@@ -60,4 +68,5 @@ public class DatePickerField extends JDatePickerImpl {
 
         return new java.sql.Date(((Date)getModel().getValue()).getTime()).toLocalDate();
     }
+
 }
