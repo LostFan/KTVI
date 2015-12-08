@@ -28,7 +28,7 @@ public class IntegerTextField extends JTextField {
                 }
             } else if (offset == 0 && !hasSign) {
                 // Sign at the beginning, then digits only
-                if (!insertion.matches("^[-\\+]?(\\d?)$")) {
+                if (!insertion.matches("^[-\\+]?\\d+$")) {
                     return false;
                 }
                 if (insertion.charAt(0) == '+' || insertion.charAt(0) == '-') {
