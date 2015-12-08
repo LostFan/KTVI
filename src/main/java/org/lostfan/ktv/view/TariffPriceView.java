@@ -69,6 +69,7 @@ public class TariffPriceView {
     private JTable archiveTable;
     private IntegerTextField priceField;
     private DatePickerField dateField;
+    private String newPriceTitle;
 
     private JButton saveButton;
     private JButton cancelButton;
@@ -88,16 +89,19 @@ public class TariffPriceView {
         if (tariff.getNewPrice() != null) {
             this.priceField.setValue(tariff.getNewPrice().getPrice());
             this.dateField.setValue(tariff.getNewPrice().getDate());
+            newPriceTitle = getGuiString("tariffPrice.changeNew") + ":";
+        } else {
+            newPriceTitle = getGuiString("tariffPrice.createNew") + ":";
         }
 
-        this.saveButton = new JButton(ResourceBundles.getGuiBundle().getString("buttons.save"));
+        this.saveButton = new JButton(getGuiString("buttons.save"));
         this.saveButton.addActionListener(e -> {
             if (saveActionListener != null) {
                 saveActionListener.actionPerformed(buildNewTariffPrice());
             }
         });
 
-        this.cancelButton = new JButton(ResourceBundles.getGuiBundle().getString("buttons.cancel"));
+        this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> frame.setVisible(false));
 
         buildLayout();
@@ -116,7 +120,7 @@ public class TariffPriceView {
         frame.add(contentPanel, BorderLayout.CENTER);
 
         Box box = Box.createHorizontalBox();
-        box.add(new JLabel("Current Price: "));
+        box.add(new JLabel(getGuiString("tariffPrice.currentPrice") + ": "));
         box.add(Box.createRigidArea(new Dimension(15, 0)));
         if (tariff.getCurrentPrice() == null) {
             box.add(new JLabel("-"));
@@ -128,25 +132,36 @@ public class TariffPriceView {
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         if (tariff.getArchivePrices().size() != 0) {
-            contentPanel.add(new JLabel("Archive:"));
+            contentPanel.add(new JLabel(getGuiString("tariffPrice.archive") + ":"));
             contentPanel.add(new JScrollPane(this.archiveTable));
+            contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
 
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        contentPanel.add(new JLabel("Create new price:"));
+        JPanel newPricePanel = new JPanel(new GridBagLayout());
+        contentPanel.add(newPricePanel, BorderLayout.PAGE_END);
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(5, 5, 5, 5);
+        c.weightx = 1d;
+        c.fill=GridBagConstraints.HORIZONTAL;
 
-        box = Box.createHorizontalBox();
-        box.add(new JLabel(ResourceBundles.getEntityBundle().getString("tariffPrice.price")));
-        box.add(Box.createRigidArea(new Dimension(20, 0)));
-        box.add(this.priceField);
-        contentPanel.add(box);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        newPricePanel.add(new JLabel(this.newPriceTitle), c);
 
-        box = Box.createHorizontalBox();
-        box.add(new JLabel(ResourceBundles.getEntityBundle().getString("tariffPrice.date")));
-        box.add(Box.createRigidArea(new Dimension(20, 0)));
-        box.add(this.dateField);
-        contentPanel.add(box);
+        c.gridy = 1;
+        c.gridwidth = 1;
+        newPricePanel.add(new JLabel(getEntityString("tariffPrice.price")), c);
 
+        c.gridx = 1;
+        newPricePanel.add(this.priceField, c);
+
+        c.gridx = 0;
+        c.gridy = 2;
+        newPricePanel.add(new JLabel(getEntityString("tariffPrice.date")), c);
+
+        c.gridx = 1;
+        newPricePanel.add(this.dateField, c);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         frame.add(buttonPanel, BorderLayout.PAGE_END);
@@ -165,5 +180,13 @@ public class TariffPriceView {
 
     public void setSaveActionListener(ViewActionListener saveActionListener) {
         this.saveActionListener = saveActionListener;
+    }
+
+    private String getGuiString(String key) {
+        return ResourceBundles.getGuiBundle().getString(key);
+    }
+
+    private String getEntityString(String key) {
+        return ResourceBundles.getEntityBundle().getString(key);
     }
 }
