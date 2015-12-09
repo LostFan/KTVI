@@ -13,6 +13,7 @@ import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.MainModel;
+import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
 import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
 import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
@@ -73,12 +74,16 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     public ConnectionRenderedService getConnectionRenderedService(RenderedService renderedService) {
         SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariff(renderedService.getSubscriberAccount(), renderedService.getDate());
         List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(renderedService.getId());
-
         return ConnectionRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
     }
 
     public DisconnectionRenderedService getDisconnectionRenderedService(RenderedService renderedService) {
         return DisconnectionRenderedService.build(renderedService);
+    }
+
+    public ChangeOfTariffRenderedService getChangeOfTariffRenderedService(RenderedService renderedService) {
+        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariff(renderedService.getSubscriberAccount(), renderedService.getDate());
+        return ChangeOfTariffRenderedService.build(renderedService, subscriberTariff);
     }
 
     @Override
@@ -169,7 +174,30 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             subscriberDAO.updateSubscriberSession(subscriberSession);
             subscriberDAO.updateSubscriberTariff(subscriberTariff);
         }
+        updateEntitiesList();
+        return result;
+    }
 
+    public ValidationResult save(ChangeOfTariffRenderedService entity) {
+        ValidationResult result = this.getValidator().validate(entity);
+        if (result.hasErrors()) {
+            return result;
+        }
+
+
+        if (entity.getId() == null) {
+            SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
+            if(subscriberTariff == null) {
+                result.addError("No tariff");
+                return result;
+            }
+            subscriberTariff.setDisconnectTariff(entity.getDate());
+            getDao().save(entity);
+
+            subscriberDAO.updateSubscriberTariff(subscriberTariff);
+            subscriberDAO.saveSubscriberTariff(this.subscriberTariff);
+        }
+        updateEntitiesList();
         return result;
     }
 
@@ -210,6 +238,20 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         dto.setDate(service.getDate());
         dto.setPrice(service.getPrice());
         dto.setSubscriberAccount(service.getSubscriberAccount());
+        return dto;
+    }
+
+    public ChangeOfTariffRenderedService buildChangeOfTariffDTO(RenderedService service, Tariff tariff) {
+        ChangeOfTariffRenderedService dto = new ChangeOfTariffRenderedService();
+        dto.setId(service.getId());
+        dto.setDate(service.getDate());
+        dto.setPrice(service.getPrice());
+        dto.setSubscriberAccount(service.getSubscriberAccount());
+        dto.setTariffId(tariff.getId());
+        this.subscriberTariff = new SubscriberTariff();
+        this.subscriberTariff.setTariffId(tariff.getId());
+        this.subscriberTariff.setSubscriberAccount(service.getSubscriberAccount());
+        this.subscriberTariff.setConnectTariff(service.getDate());
         return dto;
     }
 

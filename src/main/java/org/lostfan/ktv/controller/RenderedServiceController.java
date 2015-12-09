@@ -15,6 +15,7 @@ public class RenderedServiceController extends EntityController {
         super(model, view);
         view.setConnectionActionListener(this::addConnectionActionPerformed);
         view.setDisconnectionActionListener(this::addDisconnectionActionPerformed);
+        view.setChangeOfTariffActionListener(this::addChangeOfTariffActionPerformed);
         this.model = model;
     }
 
@@ -25,6 +26,10 @@ public class RenderedServiceController extends EntityController {
 
     private void addDisconnectionActionPerformed(Object args) {
         EntityViewFactory.createRenderedServiceForm(model, FixedServices.DISCONNECTION);
+    }
+
+    private void addChangeOfTariffActionPerformed(Object args) {
+        EntityViewFactory.createRenderedServiceForm(model, FixedServices.CHANGE_OF_TARIFF);
     }
 
     @Override

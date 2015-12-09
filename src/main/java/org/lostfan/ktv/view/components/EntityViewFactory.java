@@ -6,11 +6,13 @@ import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
 import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.view.ChangeOfTariffEntityView;
 import org.lostfan.ktv.view.ConnectionEntityView;
 import org.lostfan.ktv.view.DisconnectionEntityView;
 import org.lostfan.ktv.view.EntityView;
@@ -48,6 +50,19 @@ public class EntityViewFactory {
                 entityView.hide();
             });
         }
+
+        if(service == FixedServices.CHANGE_OF_TARIFF) {
+            ChangeOfTariffEntityView entityView = new ChangeOfTariffEntityView(renderedServiceEntityModel);
+            entityView.setAddActionListener(args_ -> {
+                ChangeOfTariffRenderedService entity = (ChangeOfTariffRenderedService) args_;
+                ValidationResult result = renderedServiceEntityModel.save(entity);
+                if (result.hasErrors()) {
+                    entityView.showErrors(result.getErrors());
+                    return;
+                }
+                entityView.hide();
+            });
+        }
         return null;
     }
 
@@ -57,7 +72,6 @@ public class EntityViewFactory {
         }
 //        EntityView entityView = null;
         if(renderedService.getServiceId() == FixedServices.CONNECTION.getId()) {
-
             ConnectionEntityView entityView = new ConnectionEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getConnectionRenderedService(renderedService));
             entityView.setAddActionListener(args_ -> {
                 ConnectionRenderedService entity1 = (ConnectionRenderedService) args_;
@@ -69,11 +83,9 @@ public class EntityViewFactory {
                 entityView.hide();
             });
             return entityView;
-
         }
 
         if(renderedService.getServiceId() == FixedServices.DISCONNECTION.getId()) {
-
             DisconnectionEntityView entityView = new DisconnectionEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getDisconnectionRenderedService(renderedService));
             entityView.setAddActionListener(args_ -> {
                 DisconnectionRenderedService entity1 = (DisconnectionRenderedService) args_;
@@ -85,7 +97,19 @@ public class EntityViewFactory {
                 entityView.hide();
             });
             return entityView;
-
+        }
+        if(renderedService.getServiceId() == FixedServices.CHANGE_OF_TARIFF.getId()) {
+            ChangeOfTariffEntityView entityView = new ChangeOfTariffEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getChangeOfTariffRenderedService(renderedService));
+            entityView.setAddActionListener(args_ -> {
+                ChangeOfTariffRenderedService entity1 = (ChangeOfTariffRenderedService) args_;
+                ValidationResult result = renderedServiceEntityModel.save(entity1);
+                if (result.hasErrors()) {
+                    entityView.showErrors(result.getErrors());
+                    return;
+                }
+                entityView.hide();
+            });
+            return entityView;
         }
         return null;
     }
