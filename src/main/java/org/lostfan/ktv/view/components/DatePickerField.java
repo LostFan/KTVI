@@ -31,7 +31,7 @@ public class DatePickerField extends JDatePickerImpl {
 
         @Override
         public String valueToString(Object value) throws ParseException {
-            System.out.println("value = " + value);
+
             if (value != null) {
                 Calendar cal = (Calendar) value;
                 return dateFormatter.format(cal.getTime());

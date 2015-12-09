@@ -228,4 +228,13 @@ public class EntityTableView {
         }
         return Collections.emptyList();
     }
+
+    protected JButton getButton(String name) {
+        for (ActionButton actionButton : buttons) {
+            if(name.equals(actionButton.button.getText())) {
+                return actionButton.button;
+            }
+        }
+        return null;
+    }
 }
