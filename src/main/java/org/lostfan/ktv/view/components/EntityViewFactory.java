@@ -23,120 +23,50 @@ import org.lostfan.ktv.view.RenderedServiceEntityView;
 public class EntityViewFactory {
 
     public static EntityView createRenderedServiceForm(RenderedServiceEntityModel renderedServiceEntityModel, FixedServices service) {
-        if (renderedServiceEntityModel == null) {
-            throw new IllegalArgumentException("Wrong model.");
-        }
 
         if(service == FixedServices.CONNECTION) {
             ConnectionEntityView entityView = new ConnectionEntityView(renderedServiceEntityModel);
-            entityView.setAddActionListener(args_ -> {
-                ConnectionRenderedService entity = (ConnectionRenderedService) args_;
-                ValidationResult result = renderedServiceEntityModel.save(entity);
-                if (result.hasErrors()) {
-                    entityView.showErrors(result.getErrors());
-                    return;
-                }
-                entityView.hide();
-            });
+            return entityView;
         }
 
         if(service == FixedServices.DISCONNECTION) {
             DisconnectionEntityView entityView = new DisconnectionEntityView(renderedServiceEntityModel);
-            entityView.setAddActionListener(args_ -> {
-                DisconnectionRenderedService entity = (DisconnectionRenderedService) args_;
-                ValidationResult result = renderedServiceEntityModel.save(entity);
-                if (result.hasErrors()) {
-                    entityView.showErrors(result.getErrors());
-                    return;
-                }
-                entityView.hide();
-            });
+            return entityView;
         }
 
         if(service == FixedServices.CHANGE_OF_TARIFF) {
             ChangeOfTariffEntityView entityView = new ChangeOfTariffEntityView(renderedServiceEntityModel);
-            entityView.setAddActionListener(args_ -> {
-                ChangeOfTariffRenderedService entity = (ChangeOfTariffRenderedService) args_;
-                ValidationResult result = renderedServiceEntityModel.save(entity);
-                if (result.hasErrors()) {
-                    entityView.showErrors(result.getErrors());
-                    return;
-                }
-                entityView.hide();
-            });
+            return entityView;
         }
 
         if(service == FixedServices.ADDITIONAL_SERVICE) {
             AdditionalServiceEntityView entityView = new AdditionalServiceEntityView(renderedServiceEntityModel);
-            entityView.setAddActionListener(args_ -> {
-                AdditionalRenderedService entity = (AdditionalRenderedService) args_;
-                ValidationResult result = renderedServiceEntityModel.save(entity);
-                if (result.hasErrors()) {
-                    entityView.showErrors(result.getErrors());
-                    return;
-                }
-                entityView.hide();
-            });
+            return entityView;
         }
-        return null;
+
+        throw new IllegalArgumentException("Wrong model.");
     }
 
     public static EntityView createRenderedServiceForm(RenderedServiceEntityModel renderedServiceEntityModel, RenderedService renderedService) {
         if (renderedServiceEntityModel == null) {
             throw new IllegalArgumentException("Wrong model.");
         }
-//        EntityView entityView = null;
+
         if(renderedService.getServiceId() == FixedServices.CONNECTION.getId()) {
             ConnectionEntityView entityView = new ConnectionEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getConnectionRenderedService(renderedService));
-            entityView.setAddActionListener(args_ -> {
-                ConnectionRenderedService entity1 = (ConnectionRenderedService) args_;
-                ValidationResult result = renderedServiceEntityModel.save(entity1);
-                if (result.hasErrors()) {
-                    entityView.showErrors(result.getErrors());
-                    return;
-                }
-                entityView.hide();
-            });
             return entityView;
         }
 
         if(renderedService.getServiceId() == FixedServices.DISCONNECTION.getId()) {
             DisconnectionEntityView entityView = new DisconnectionEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getDisconnectionRenderedService(renderedService));
-            entityView.setAddActionListener(args_ -> {
-                DisconnectionRenderedService entity1 = (DisconnectionRenderedService) args_;
-                ValidationResult result = renderedServiceEntityModel.save(entity1);
-                if (result.hasErrors()) {
-                    entityView.showErrors(result.getErrors());
-                    return;
-                }
-                entityView.hide();
-            });
             return entityView;
         }
         if(renderedService.getServiceId() == FixedServices.CHANGE_OF_TARIFF.getId()) {
             ChangeOfTariffEntityView entityView = new ChangeOfTariffEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getChangeOfTariffRenderedService(renderedService));
-            entityView.setAddActionListener(args_ -> {
-                ChangeOfTariffRenderedService entity1 = (ChangeOfTariffRenderedService) args_;
-                ValidationResult result = renderedServiceEntityModel.save(entity1);
-                if (result.hasErrors()) {
-                    entityView.showErrors(result.getErrors());
-                    return;
-                }
-                entityView.hide();
-            });
             return entityView;
         }
 
         AdditionalServiceEntityView entityView = new AdditionalServiceEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getAdditionalRenderedService(renderedService));
-        entityView.setAddActionListener(args_ -> {
-            AdditionalRenderedService entity1 = (AdditionalRenderedService) args_;
-            ValidationResult result = renderedServiceEntityModel.save(entity1);
-            if (result.hasErrors()) {
-                entityView.showErrors(result.getErrors());
-                return;
-            }
-            entityView.hide();
-        });
         return entityView;
     }
 

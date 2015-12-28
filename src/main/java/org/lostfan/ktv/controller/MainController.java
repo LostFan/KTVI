@@ -1,10 +1,16 @@
 package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.model.FixedServices;
+import org.lostfan.ktv.model.dto.AdditionalRenderedService;
+import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
+import org.lostfan.ktv.model.dto.ConnectionRenderedService;
+import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
+import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.EntityTableView;
+import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.MainView;
 import org.lostfan.ktv.view.RenderedServiceTableView;
 import org.lostfan.ktv.view.TariffTableView;
@@ -36,7 +42,31 @@ public class MainController {
         this.view.setMenuServiceActionListener(args -> {
             String code = (String) args;
             RenderedServiceEntityModel renderedServiceModel = MainModel.getRenderedServiceEntityModel();
-            EntityViewFactory.createRenderedServiceForm(renderedServiceModel, FixedServices.of(code));
+            EntityView entityView = EntityViewFactory.createRenderedServiceForm(renderedServiceModel, FixedServices.of(code));
+            entityView.setAddActionListener(args_ -> {
+                ValidationResult result = ValidationResult.createEmpty();
+                if (FixedServices.of(code) == FixedServices.CONNECTION) {
+                    ConnectionRenderedService entity = (ConnectionRenderedService) args_;
+                    result = renderedServiceModel.save(entity);
+                }
+                if (FixedServices.of(code) == FixedServices.DISCONNECTION) {
+                    DisconnectionRenderedService entity = (DisconnectionRenderedService) args_;
+                    result = renderedServiceModel.save(entity);
+                }
+                if (FixedServices.of(code) == FixedServices.CHANGE_OF_TARIFF) {
+                    ChangeOfTariffRenderedService entity = (ChangeOfTariffRenderedService) args_;
+                    result = renderedServiceModel.save(entity);
+                }
+                if (FixedServices.of(code) == FixedServices.ADDITIONAL_SERVICE) {
+                    AdditionalRenderedService entity = (AdditionalRenderedService) args_;
+                    result = renderedServiceModel.save(entity);
+                }
+                if (result.hasErrors()) {
+                    entityView.showErrors(result.getErrors());
+                    return;
+                }
+                entityView.hide();
+            });
         });
 
         this.model.addObserver(args -> {
