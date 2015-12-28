@@ -6,9 +6,8 @@ import java.util.List;
 import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.SubscriberTariff;
-import org.lostfan.ktv.model.FixedServices;
 
-public class ConnectionRenderedService  extends RenderedService implements MaterialsDTO {
+public class AdditionalRenderedService extends RenderedService implements MaterialsDTO {
 
     private List<MaterialConsumption> materialConsumption;
 
@@ -20,29 +19,14 @@ public class ConnectionRenderedService  extends RenderedService implements Mater
         this.materialConsumption = materialConsumption;
     }
 
-    private Integer tariffId;
 
-    public Integer getTariffId() {
-        return tariffId;
-    }
-
-    public void setTariffId(Integer tariffId) {
-        this.tariffId = tariffId;
-    }
-
-    @Override
-    public Integer getServiceId() {
-        return FixedServices.CONNECTION.getId();
-    }
-
-    public static ConnectionRenderedService build(RenderedService renderedService, SubscriberTariff subscriberTariff, List<MaterialConsumption> materialConsumptions) {
-        ConnectionRenderedService dto = new ConnectionRenderedService();
+    public static AdditionalRenderedService build(RenderedService renderedService, SubscriberTariff subscriberTariff, List<MaterialConsumption> materialConsumptions) {
+        AdditionalRenderedService dto = new AdditionalRenderedService();
         dto.setId(renderedService.getId());
         dto.setDate(renderedService.getDate());
         dto.setPrice(renderedService.getPrice());
         dto.setSubscriberAccount(renderedService.getSubscriberAccount());
         dto.setServiceId(renderedService.getServiceId());
-        dto.setTariffId(subscriberTariff.getTariffId());
         dto.setMaterialConsumption(materialConsumptions);
         return dto;
     }

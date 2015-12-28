@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.utils.BaseObservable;
 
 public abstract class EntitySearcherModel<T extends Entity> extends BaseObservable {
 
-    private List<T> entities;
+    protected List<T> entities;
 
     protected abstract EntityDAO<T> getDao();
 
@@ -31,4 +32,8 @@ public abstract class EntitySearcherModel<T extends Entity> extends BaseObservab
     }
 
     public abstract Class getEntityClass();
+
+    public abstract String getEntityNameKey();
+
+    public abstract List<EntityField> getFields();
 }

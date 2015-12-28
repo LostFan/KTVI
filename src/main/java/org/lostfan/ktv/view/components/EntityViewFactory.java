@@ -6,12 +6,14 @@ import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.dto.AdditionalRenderedService;
 import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
 import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.view.AdditionalServiceEntityView;
 import org.lostfan.ktv.view.ChangeOfTariffEntityView;
 import org.lostfan.ktv.view.ConnectionEntityView;
 import org.lostfan.ktv.view.DisconnectionEntityView;
@@ -55,6 +57,19 @@ public class EntityViewFactory {
             ChangeOfTariffEntityView entityView = new ChangeOfTariffEntityView(renderedServiceEntityModel);
             entityView.setAddActionListener(args_ -> {
                 ChangeOfTariffRenderedService entity = (ChangeOfTariffRenderedService) args_;
+                ValidationResult result = renderedServiceEntityModel.save(entity);
+                if (result.hasErrors()) {
+                    entityView.showErrors(result.getErrors());
+                    return;
+                }
+                entityView.hide();
+            });
+        }
+
+        if(service == FixedServices.ADDITIONAL_SERVICE) {
+            AdditionalServiceEntityView entityView = new AdditionalServiceEntityView(renderedServiceEntityModel);
+            entityView.setAddActionListener(args_ -> {
+                AdditionalRenderedService entity = (AdditionalRenderedService) args_;
                 ValidationResult result = renderedServiceEntityModel.save(entity);
                 if (result.hasErrors()) {
                     entityView.showErrors(result.getErrors());
@@ -111,7 +126,18 @@ public class EntityViewFactory {
             });
             return entityView;
         }
-        return null;
+
+        AdditionalServiceEntityView entityView = new AdditionalServiceEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getAdditionalRenderedService(renderedService));
+        entityView.setAddActionListener(args_ -> {
+            AdditionalRenderedService entity1 = (AdditionalRenderedService) args_;
+            ValidationResult result = renderedServiceEntityModel.save(entity1);
+            if (result.hasErrors()) {
+                entityView.showErrors(result.getErrors());
+                return;
+            }
+            entityView.hide();
+        });
+        return entityView;
     }
 
     public static EntityView createForm(EntityFieldTypes type) {

@@ -31,4 +31,8 @@ public class EntityComboBoxFactory {
         }
         return new EntityComboBox(model);
     }
+
+    public static EntityComboBox createAdditionalServiceComboBox() {
+        return new EntityComboBox(new AdditionalServiceSearcherModel());
+    }
 }

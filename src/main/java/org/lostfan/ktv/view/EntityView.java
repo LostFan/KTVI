@@ -13,6 +13,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class EntityView {
 
@@ -176,32 +177,47 @@ public class EntityView {
         private JPanel panel;
 
         public EntityLabelFieldInput(EntityField entityField, Entity entity) {
+            this(entityField, entity, null, null);
+        }
+
+        public EntityLabelFieldInput(EntityField entityField, Entity entity, EntityComboBox jComboBox, final Supplier entitySelView ) {
             super(entityField);
-            this.comboBox = EntityComboBoxFactory.createComboBox(entityField.getType());
-            new DefaultContextMenu().add((JTextField) comboBox.getEditor().getEditorComponent());
-            comboBox.setEditable(true);
+
+            if(jComboBox == null) {
+                this.comboBox = EntityComboBoxFactory.createComboBox(entityField.getType());
+            } else {
+                this.comboBox = jComboBox;
+            }
+
+            new DefaultContextMenu().add((JTextField) this.comboBox.getEditor().getEditorComponent());
+            this.comboBox.setEditable(true);
             if (entity != null) {
 
                 Object value = entityField.get(entity);
                 if(value != null) {
-                comboBox.setSelectedId((Integer) value);
-                    value = comboBox.getSelectedEntity().getName();
-                    ((JTextField) ((comboBox).getEditor().getEditorComponent())).setText((String) value);
+                    this.comboBox.setSelectedId((Integer) value);
+                    value = this.comboBox.getSelectedEntity().getName();
+                    ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText((String) value);
                 }
             }
             this.panel = new JPanel(new BorderLayout());
-            this.panel.add(comboBox, BorderLayout.CENTER);
+            this.panel.add(this.comboBox, BorderLayout.CENTER);
 
             // TODO: Move the following 2 buttons into the EntityComboBox component
             // and convert it to a JPanel that contains all these 3 components
             JButton tableButton = new JButton("...");
             tableButton.addActionListener(e -> {
-                EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityField.getType());
+                EntitySelectionView entitySelectionView;
+                if(entitySelView == null) {
+                    entitySelectionView = EntitySelectionFactory.createForm(entityField.getType());
+                } else {
+                    entitySelectionView = (EntitySelectionView) entitySelView.get();
+                }
                 if (entitySelectionView.getSelectedEntity() != null) {
-                    comboBox.setSelectedEntity(entitySelectionView.getSelectedEntity());
-                    ((JTextField) ((comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.getSelectedEntity().getName());
-                    comboBox.invalidate();
-                    comboBox.repaint();
+                    this.comboBox.setSelectedEntity(entitySelectionView.getSelectedEntity());
+                    ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.getSelectedEntity().getName());
+                    this.comboBox.invalidate();
+                    this.comboBox.repaint();
                 }
             });
 
@@ -215,7 +231,7 @@ public class EntityView {
             }
 
             entityButton.addActionListener(e -> {
-                if(comboBox.getSelectedEntity() != null) {
+                if(this.comboBox.getSelectedEntity() != null) {
                     EntityView entityView = EntityViewFactory.createForm(entityField.getType(), comboBox.getSelectedEntity().getId());
                     entityView.changeActionListener.actionPerformed(null);
                 }

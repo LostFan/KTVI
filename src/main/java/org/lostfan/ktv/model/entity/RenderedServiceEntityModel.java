@@ -6,6 +6,7 @@ import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.domain.Tariff;
@@ -13,9 +14,11 @@ import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.MainModel;
+import org.lostfan.ktv.model.dto.AdditionalRenderedService;
 import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
 import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
+import org.lostfan.ktv.model.dto.MaterialsDTO;
 import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
 import org.lostfan.ktv.validation.RenderedServiceValidator;
 import org.lostfan.ktv.validation.SubscriberTariffValidator;
@@ -32,6 +35,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     private List<EntityField> fields;
 
     private EntityField tariffField;
+    private EntityField serviceEntityField;
 
     private List<FullEntityField> fullFields;
 
@@ -47,18 +51,19 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     public RenderedServiceEntityModel() {
         this.fields = new ArrayList<>();
-        EntityField serviceEntityField = new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false);
-        this.fields.add(serviceEntityField);
+        this.fields.add(new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false));
+
+        this.fields.add(new EntityField("renderedService", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId, false));
         this.fields.add(new EntityField("renderedService.date", EntityFieldTypes.Date, RenderedService::getDate, RenderedService::setDate));
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberAccount, RenderedService::setSubscriberAccount));
-        this.fields.add(new EntityField("service", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId, false));
         this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
 
+        this.serviceEntityField = new EntityField("service", EntityFieldTypes.Service, Service::getId, Service::setId, false);
         this.tariffField = new EntityField("tariff", EntityFieldTypes.Tariff, Tariff::getId, Tariff::setId);
 
         this.fullFields = new ArrayList<>();
 
-        FullEntityField materialConsumptionField = new FullEntityField("materialConsumption", EntityFieldTypes.MaterialConsumption, ConnectionRenderedService::getMaterialConsumption, ConnectionRenderedService::setMaterialConsumption, MaterialConsumption::new);
+        FullEntityField materialConsumptionField = new FullEntityField("materialConsumption", EntityFieldTypes.MaterialConsumption, MaterialsDTO::getMaterialConsumption, MaterialsDTO::setMaterialConsumption, MaterialConsumption::new);
         materialConsumptionField.setEntityFields(MainModel.getMaterialConsumptionEntityModel().getFields().stream().filter(e -> !e.getTitleKey().equals("renderedService")).filter(e -> !e.getTitleKey().equals("materialConsumption.id")).collect(Collectors.toList()));
         this.fullFields.add(materialConsumptionField);
     }
@@ -86,6 +91,12 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         return ChangeOfTariffRenderedService.build(renderedService, subscriberTariff);
     }
 
+    public AdditionalRenderedService getAdditionalRenderedService(RenderedService renderedService) {
+        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariff(renderedService.getSubscriberAccount(), renderedService.getDate());
+        List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(renderedService.getId());
+        return AdditionalRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
+    }
+
     @Override
     public String getEntityName() {
         return "renderedService";
@@ -98,6 +109,10 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     public EntityField getTariffField() {
         return this.tariffField;
+    }
+
+    public EntityField getServiceField() {
+        return this.serviceEntityField;
     }
 
     @Override
@@ -201,6 +216,28 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         return result;
     }
 
+    public ValidationResult save(AdditionalRenderedService entity) {
+        ValidationResult result = this.getValidator().validate(entity);
+        for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+            result = MainModel.getMaterialConsumptionEntityModel().getValidator().validate(materialConsumption, result);
+        }
+        if (result.hasErrors()) {
+            return result;
+        }
+        if (entity.getId() == null) {
+            getDao().save(entity);
+            for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+                materialConsumption.setRenderedServiceId(entity.getId());
+                materialConsumptionDAO.save(materialConsumption);
+            }
+            return result;
+        }
+        getDao().update(entity);
+        updateMaterials(entity);
+        updateEntitiesList();
+        return  result;
+    }
+
     @Override
     protected EntityDAO<RenderedService> getDao() {
         return DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO();
@@ -255,6 +292,17 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         return dto;
     }
 
+    public AdditionalRenderedService buildAdditionalServiceDTO(RenderedService renderedService, Service service, Map<String, List<MaterialConsumption>> map) {
+        AdditionalRenderedService dto = new AdditionalRenderedService();
+        dto.setId(renderedService.getId());
+        dto.setDate(renderedService.getDate());
+        dto.setPrice(renderedService.getPrice());
+        dto.setSubscriberAccount(renderedService.getSubscriberAccount());
+        dto.setServiceId(service.getId());
+        dto.setMaterialConsumption(map.get("materialConsumption"));
+        return dto;
+    }
+
     private void updateMaterials(ConnectionRenderedService entity) {
         List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(entity.getId());
 
@@ -270,6 +318,33 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             } else {
                 materialConsumption.setRenderedServiceId(entity.getId());
                 materialConsumptionDAO.save(materialConsumption);
+            }
+        }
+    }
+
+    private void updateMaterials(AdditionalRenderedService entity) {
+        List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(entity.getId());
+
+        for (MaterialConsumption materialConsumption : materialConsumptionList) {
+            if(!entity.getMaterialConsumption().contains(materialConsumption)) {
+                materialConsumptionDAO.delete(materialConsumption.getId());
+            }
+        }
+
+        for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+            if(materialConsumption.getId() != null) {
+                materialConsumptionDAO.update(materialConsumption);
+            } else {
+                materialConsumption.setRenderedServiceId(entity.getId());
+                materialConsumptionDAO.save(materialConsumption);
+            }
+        }
+    }
+
+    public void setServiceFieldEditable(boolean editable) {
+        for (EntityField field : fields) {
+            if(field.getTitleKey().equals("service")) {
+                field.setEditable(editable);
             }
         }
     }

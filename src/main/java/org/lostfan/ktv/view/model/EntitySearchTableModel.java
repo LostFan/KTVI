@@ -1,27 +1,23 @@
 package org.lostfan.ktv.view.model;
 
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
+
+import javax.swing.table.AbstractTableModel;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.utils.ResourceBundles;
 
-public class EntitySelectionModel<T extends Entity> implements TableModel {
-
+public class EntitySearchTableModel<T extends Entity> extends AbstractTableModel {
     private EntitySearcherModel<T> model;
-    private int size = 0;
-
-    public EntitySelectionModel(EntitySearcherModel<T> model) {
-
+    public EntitySearchTableModel(EntitySearcherModel<T> model) {
         this.model = model;
-        size = this.model.getList().size();
+        this.model.addObserver(args -> fireTableDataChanged());
     }
 
     @Override
     public int getRowCount() {
-        return size;
+        return this.model.getList().size();
     }
 
     @Override
@@ -31,9 +27,9 @@ public class EntitySelectionModel<T extends Entity> implements TableModel {
 
     @Override
     public String getColumnName(int columnIndex) {
-    return ResourceBundles.getEntityBundle().getString(
-            this.model.getFields().get(columnIndex).getTitleKey());
-}
+        return ResourceBundles.getEntityBundle().getString(
+                this.model.getFields().get(columnIndex).getTitleKey());
+    }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
@@ -42,38 +38,26 @@ public class EntitySelectionModel<T extends Entity> implements TableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return false;
+        return this.model.getFields().get(columnIndex).getType().isEntityClass();
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object value = this.model.getFields().get(columnIndex).get(this.model.getList().get(rowIndex));
         EntityFieldTypes thisType = this.model.getFields().get(columnIndex).getType();
-        if (thisType.getValueClass() == Integer.class && value ==null) {
+        if(thisType.getValueClass() == Integer.class && value ==null) {
             return 0;
         }
-        if (thisType.isEntityClass()) {
-            if(value == null) {
-                return null;
+        if( thisType.isEntityClass()) {
+            if(value != null) {
+                value = thisType.getDAO().get((Integer) value);
             }
-            value = thisType.getDAO().get((Integer) value).getName();
         }
 
         return value;
     }
 
-    @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-
-    }
-
-    @Override
-    public void addTableModelListener(TableModelListener l) {
-
-    }
-
-    @Override
-    public void removeTableModelListener(TableModelListener l) {
-
+    public EntitySearcherModel getEntitySearcherModel() {
+        return this.model;
     }
 }

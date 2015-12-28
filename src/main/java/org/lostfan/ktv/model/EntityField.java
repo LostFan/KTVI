@@ -37,6 +37,10 @@ public class EntityField {
         return editable;
     }
 
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends Entity> Object get(T entity) {
         return getter.apply(entity);
