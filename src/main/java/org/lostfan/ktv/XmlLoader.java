@@ -7,7 +7,6 @@ import org.lostfan.ktv.utils.ConnectionManager;
 import org.lostfan.ktv.utils.HsqldbConnectionManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -25,12 +24,7 @@ public class XmlLoader {
         DAOFactory.setDefaultDAOFactory(new HsqldbDaoFactory());
 
         new XmlLoader().load();
-
-        try {
-            Thread.sleep(15000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ConnectionManager.getManager().close();
     }
 
     public void load() {

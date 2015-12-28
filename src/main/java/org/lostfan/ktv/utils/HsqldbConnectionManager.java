@@ -22,4 +22,13 @@ public class HsqldbConnectionManager extends ConnectionManager {
     public Connection getConnection() {
         return this.connection;
     }
+
+    @Override
+    public void close() {
+        try {
+            this.connection.createStatement().execute("SHUTDOWN");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -14,6 +14,14 @@ public class Application {
         ConnectionManager.setManager(new HsqldbConnectionManager());
         DAOFactory.setDefaultDAOFactory(new HsqldbDaoFactory());
 
+        // Close connections and save all the changes
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                ConnectionManager.getManager().close();
+            }
+        });
+
         MainModel model = new MainModel();
         MainView view = new MainView(model);
         MainController controller = new MainController(model, view);

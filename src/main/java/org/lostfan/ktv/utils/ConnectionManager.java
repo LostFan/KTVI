@@ -2,7 +2,7 @@ package org.lostfan.ktv.utils;
 
 import java.sql.Connection;
 
-public abstract  class ConnectionManager {
+public abstract class ConnectionManager {
 
     private static ConnectionManager manager;
 
@@ -15,4 +15,6 @@ public abstract  class ConnectionManager {
     }
 
     public abstract Connection getConnection();
+
+    public abstract void close();
 }
