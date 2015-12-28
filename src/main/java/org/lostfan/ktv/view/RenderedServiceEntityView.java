@@ -60,15 +60,14 @@ public class RenderedServiceEntityView extends EntityView {
         for (int i = 0; i < this.tariffLabelFieldInputs.size(); i++) {
             c.gridy = labelFieldInputs.size() + i;
             c.gridx = 0;
-            this.contentPanel.add(this.tariffLabelFieldInputs.get(i).label, c);
+            getFieldPanel().add(this.tariffLabelFieldInputs.get(i).label, c);
             c.gridx = 1;
             JComponent inputComponent = this.tariffLabelFieldInputs.get(i).getInputComponent();
             // HACK: textFields is excessively narrow when it's smaller than the displayed area.
             inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-            this.contentPanel.add(inputComponent, c);
+            getFieldPanel().add(inputComponent, c);
         }
-        this.frame.invalidate();
-        this.frame.repaint();
+        revalidate();
     }
 
     void  hideTariffField() {

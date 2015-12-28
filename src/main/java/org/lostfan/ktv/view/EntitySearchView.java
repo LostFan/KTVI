@@ -14,7 +14,7 @@ import org.lostfan.ktv.view.components.IntegerTextField;
 import org.lostfan.ktv.view.model.CriteriaComboBoxModel;
 import org.lostfan.ktv.view.model.FieldsComboBoxModel;
 
-public class EntitySearchView {
+public class EntitySearchView extends FrameView {
 
     private class ModelObserver implements org.lostfan.ktv.utils.Observer {
         @Override
@@ -33,7 +33,6 @@ public class EntitySearchView {
         private JButton removeButton;
 
         public CriterionComponents() {
-
             this.fieldComboBox = new JComboBox<String>(new FieldsComboBoxModel(model.getFields()));
 
             this.fieldComboBox.addActionListener(e -> {
@@ -124,8 +123,6 @@ public class EntitySearchView {
     public static final int WIDTH = 750;
     public static final int HEIGHT = 500;
 
-    private JDialog frame;
-//    private JDialog dialog;
     private JPanel criteriaPanel;
     private List<CriterionComponents> criteria;
     private JButton addButton;
@@ -139,55 +136,50 @@ public class EntitySearchView {
 
     public EntitySearchView(EntityModel model) {
         this.model = model;
-        this.frame = new JDialog(new JFrame(), getString("buttons.search") + ": " +
-                ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()), true);
-        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setTitle(getGuiString("buttons.search") + ": " + getEntityString(model.getEntityNameKey()));
+        getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         this.criteria = new ArrayList<>();
 
-        this.addButton = new JButton(getString("buttons.addCriterion"));
+        this.addButton = new JButton(getGuiString("buttons.addCriterion"));
         this.addButton.setFocusable(false);
         this.addButton.addActionListener(e -> {
             criteria.add(new CriterionComponents());
             rebuildCriteriaPanel();
         });
 
-        this.findButton = new JButton(getString("buttons.find"));
+        this.findButton = new JButton(getGuiString("buttons.find"));
         this.findButton.addActionListener(e -> {
             if (this.findActionListener != null) {
                 this.findActionListener.actionPerformed(null);
-                frame.setVisible(false);
+                hide();
             }
         });
 
-        this.cancelButton = new JButton(getString("buttons.cancel"));
+        this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {
-            frame.setVisible(false);
+            hide();
         });
 
         buildLayout();
-        frame.setLocationRelativeTo(null);
     }
 
     private void buildLayout() {
-        frame.setSize(new Dimension(WIDTH, HEIGHT));
-        frame.setLocationRelativeTo(null);
+        setSize(WIDTH, HEIGHT);
+        getFrame().setLocationRelativeTo(null);
 
-        frame.setLayout(new BorderLayout(10, 10));
-        frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-
-        frame.setLayout(new BorderLayout());
-
+        getContentPanel().setLayout(new BorderLayout(10, 10));
+        getContentPanel().getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         this.criteriaPanel = new JPanel(new GridBagLayout());
         JScrollPane scrollPane = new JScrollPane(this.criteriaPanel);
-        frame.add(scrollPane, BorderLayout.CENTER);
+        getContentPanel().add(scrollPane, BorderLayout.CENTER);
 
         JPanel butPanel = new JPanel();
         butPanel.add(findButton);
         butPanel.add(cancelButton);
         butPanel.add(addButton);
-        frame.add(butPanel, BorderLayout.SOUTH);
+        getContentPanel().add(butPanel, BorderLayout.SOUTH);
 
         rebuildCriteriaPanel();
 
@@ -204,8 +196,7 @@ public class EntitySearchView {
             this.criteria.get(i).addComponentsTo(this.criteriaPanel, i + 1);
         }
 
-        this.frame.revalidate();
-        this.frame.repaint();
+        revalidate();
     }
 
     public void setFindActionListener(ViewActionListener findActionListener) {
@@ -226,19 +217,6 @@ public class EntitySearchView {
         }
 
         return fieldCriteria;
-    }
-
-    private String getString(String key) {
-        return ResourceBundles.getGuiBundle().getString(key);
-    }
-
-    private void revalidate() {
-        this.frame.invalidate();
-        this.frame.repaint();
-    }
-
-    public void show() {
-        this.frame.setVisible(true);
     }
 }
 

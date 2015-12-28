@@ -17,9 +17,8 @@ import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
-import org.lostfan.ktv.utils.ResourceBundles;
 
-public class ConnectionEntityView extends EntityView{
+public class ConnectionEntityView extends EntityView {
 
     private Tariff tariff;
     private Map<String, List<MaterialConsumption>> entityInnerTableValues;
@@ -32,7 +31,7 @@ public class ConnectionEntityView extends EntityView{
 
     public ConnectionEntityView(RenderedServiceEntityModel model, ConnectionRenderedService entity) {
         super((EntityModel)model, entity);
-        this.frame.setTitle(ResourceBundles.getEntityBundle().getString(FixedServices.CONNECTION.getCode()));
+        setTitle(getEntityString(FixedServices.CONNECTION.getCode()));
 
         Tariff tariff = new Tariff();
         if(entity != null) {
@@ -55,12 +54,12 @@ public class ConnectionEntityView extends EntityView{
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridy = labelFieldInputs.size() + 1;
         c.gridx = 0;
-        this.contentPanel.add(this.tariffLabelFieldInput.label, c);
+        getFieldPanel().add(this.tariffLabelFieldInput.label, c);
         c.gridx = 1;
         JComponent inputComponent = this.tariffLabelFieldInput.getInputComponent();
         // HACK: textFields is excessively narrow when it's smaller than the displayed area.
         inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-        this.contentPanel.add(inputComponent, c);
+        getFieldPanel().add(inputComponent, c);
 
         this.entityInnerTableValues = new HashMap<>();
         for (FullEntityField fullEntityField : model.getFullFields()) {
@@ -73,8 +72,7 @@ public class ConnectionEntityView extends EntityView{
             this.addInnerTable(this.entityInnerTableView);
         }
 
-        this.frame.invalidate();
-        this.frame.repaint();
+        revalidate();
     }
 
     public Tariff getTariff() {

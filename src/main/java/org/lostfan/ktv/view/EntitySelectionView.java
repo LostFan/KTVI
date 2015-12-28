@@ -13,7 +13,7 @@ import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.view.model.EntitySearchTableModel;
 import org.lostfan.ktv.view.model.EntitySelectionModel;
 
-public class EntitySelectionView<T> {
+public class EntitySelectionView extends FrameView {
 
     private class ModelObserver implements Observer {
         @Override
@@ -25,8 +25,6 @@ public class EntitySelectionView<T> {
     public static final int WIDTH = 750;
     public static final int HEIGHT = 500;
 
-    private JDialog frame;
-    private JPanel contentPanel;
     private JTable table;
     private JScrollPane tableScrollPane;
     private JButton cancelButton;
@@ -41,9 +39,8 @@ public class EntitySelectionView<T> {
     public EntitySelectionView(EntitySearcherModel model) {
         this.model = model;
 
-        this.frame = new JDialog(new JFrame(), getString("buttons.search") + ": " +
-                ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()), true);
-        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setTitle(getGuiString("buttons.search") + ": " + getEntityString(model.getEntityNameKey()));
+        getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         this.table = new JTable(new EntitySelectionModel<>(model));
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -57,47 +54,38 @@ public class EntitySelectionView<T> {
                 // Dbl Click at the table row
                 if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
                     selectedEntity = (Entity) model.getList().get(EntitySelectionView.this.table.convertRowIndexToModel(EntitySelectionView.this.getSelectedIndex()));
-                    frame.setVisible(false);
+                    hide();
                 }
             }
         });
 
-
-        this.chooseButton = new JButton(getString("buttons.choose"));
+        this.chooseButton = new JButton(getGuiString("buttons.choose"));
         this.chooseButton.addActionListener(e -> {
             if (EntitySelectionView.this.getSelectedIndex() != -1) {
                 selectedEntity = (Entity) model.getList().get(EntitySelectionView.this.table.convertRowIndexToModel(EntitySelectionView.this.getSelectedIndex()));
-                frame.setVisible(false);
+                hide();
             }
         });
 
-        this.cancelButton = new JButton(getString("buttons.cancel"));
+        this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {
-                frame.setVisible(false);
+                hide();
         });
 
-
         buildLayout();
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
         this.modelObserver = new ModelObserver();
-
         model.addObserver(this.modelObserver);
+
+        getFrame().setLocationRelativeTo(null);
+        show();
     }
 
     private void buildLayout() {
 
-        frame.setSize(new Dimension(WIDTH, HEIGHT));
-        frame.setLocationRelativeTo(null);
+        setSize(WIDTH, HEIGHT);
 
-        frame.setLayout(new BorderLayout(10, 10));
-        frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-
-        frame.setLayout(new BorderLayout());
-//        new EntitySelectionController(model, this);
-        this.contentPanel = new JPanel(new BorderLayout(10, 10));
+        getContentPanel().setLayout(new BorderLayout(10, 10));
+        getContentPanel().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         // ID column values should be aligned to the left;
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
@@ -106,19 +94,16 @@ public class EntitySelectionView<T> {
         addStringActionTableCellEditorToColumns();
         this.tableScrollPane = new JScrollPane(this.table);
 
-        this.contentPanel.add(tableScrollPane, BorderLayout.CENTER);
+        getContentPanel().add(tableScrollPane, BorderLayout.CENTER);
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        this.contentPanel.add(rightPanel, BorderLayout.LINE_END);
+        getContentPanel().add(rightPanel, BorderLayout.LINE_END);
 
         JPanel rightPanelInner = new JPanel(new GridLayout(4, 1, 0, 10));
         rightPanel.add(rightPanelInner);
 
         rightPanelInner.add(this.chooseButton);
         rightPanelInner.add(this.cancelButton);
-
-
-        frame.add(this.contentPanel, BorderLayout.CENTER);
     }
 
     public int getSelectedIndex() {
@@ -146,14 +131,5 @@ public class EntitySelectionView<T> {
         textField.setEditable(false);
         DefaultCellEditor editor = new DefaultCellEditor(textField);
         editor.setClickCountToStart(1);
-    }
-    private void revalidate() {
-        this.contentPanel.invalidate();
-        this.contentPanel.repaint();
-    }
-
-
-    private String getString(String key) {
-        return ResourceBundles.getGuiBundle().getString(key);
     }
 }

@@ -17,7 +17,7 @@ import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.model.EntityTableModel;
 
-public class EntityTableView {
+public class EntityTableView extends View {
 
     private class ActionButton {
         JButton button;
@@ -32,10 +32,8 @@ public class EntityTableView {
         }
     }
 
-    private JPanel contentPanel;
     private JPanel buttonsPanel;
     private JTable table;
-    private JScrollPane tableScrollPane;
 
     private List<ActionButton> buttons;
 
@@ -76,7 +74,7 @@ public class EntityTableView {
             }
         });
 
-        JButton button = new JButton(getString("buttons.find"));
+        JButton button = new JButton(getGuiString("buttons.find"));
         button.addActionListener(e -> {
             if (this.findActionListener != null) {
                 this.findActionListener.actionPerformed(null);
@@ -84,7 +82,7 @@ public class EntityTableView {
         });
         addButton(button, false);
 
-        button = new JButton(getString("buttons.add"));
+        button = new JButton(getGuiString("buttons.add"));
         button.addActionListener(e -> {
             if (this.addActionListener != null) {
                 this.addActionListener.actionPerformed(null);
@@ -92,7 +90,7 @@ public class EntityTableView {
         });
         addButton(button, false);
 
-        button = new JButton(getString("buttons.changeSelected"));
+        button = new JButton(getGuiString("buttons.changeSelected"));
         button.addActionListener(e -> {
             int selectedId = getSelectedEntityId();
             if (selectedId != -1 && this.changeActionListener != null) {
@@ -101,7 +99,7 @@ public class EntityTableView {
         });
         addButton(button, true);
 
-        button = new JButton(getString("buttons.delete"));
+        button = new JButton(getGuiString("buttons.delete"));
         button.addActionListener(e -> {
             List<Integer> selectedIds = getSelectedEntityIds();
             if (selectedIds.size() != 0 && confirmDeletion() && this.deleteActionListener != null) {
@@ -116,19 +114,19 @@ public class EntityTableView {
     }
 
     private void buildLayout() {
-        this.contentPanel = new JPanel(new BorderLayout(10, 10));
+        getContentPanel().setLayout(new BorderLayout(10, 10));
 
         // ID column values should be aligned to the left;
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.LEFT);
         this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
         addStringActionTableCellEditorToColumns();
-        this.tableScrollPane = new JScrollPane(this.table);
+        JScrollPane tableScrollPane = new JScrollPane(this.table);
 
-        this.contentPanel.add(tableScrollPane, BorderLayout.CENTER);
+        getContentPanel().add(tableScrollPane, BorderLayout.CENTER);
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        this.contentPanel.add(rightPanel, BorderLayout.LINE_END);
+        getContentPanel().add(rightPanel, BorderLayout.LINE_END);
 
         this.buttonsPanel.setLayout(new GridLayout(4, 1, 0, 10));
         rightPanel.add(this.buttonsPanel);
@@ -150,19 +148,14 @@ public class EntityTableView {
         }
     }
 
-    public JPanel getContentPanel() {
-        return this.contentPanel;
-    }
-
     private boolean confirmDeletion() {
         int optionType = JOptionPane.OK_CANCEL_OPTION;
         int messageType = JOptionPane.QUESTION_MESSAGE;
-        Object[] selValues = {ResourceBundles.getGuiBundle().getString("buttons.yes"),
-                ResourceBundles.getGuiBundle().getString("buttons.cancel") };
-        String message = ResourceBundles.getGuiBundle().getString("window.delete") + " : "
-                + ResourceBundles.getEntityBundle().getString(model.getEntityNameKey());
+        Object[] selValues = { getGuiString("buttons.yes"), getGuiString("buttons.cancel") };
+        String message = getGuiString("window.delete") + " : "
+                + getEntityString(model.getEntityNameKey());
         int result = JOptionPane.showOptionDialog(null,
-                ResourceBundles.getGuiBundle().getString("message.deleteQuestion"), message,
+                getGuiString("message.deleteQuestion"), message,
                 optionType, messageType, null, selValues,
                 selValues[0]);
 
@@ -182,10 +175,9 @@ public class EntityTableView {
         }
     }
 
-    private void revalidate() {
+    protected void revalidate() {
         addStringActionTableCellEditorToColumns();
-        this.contentPanel.invalidate();
-        this.contentPanel.repaint();
+        super.revalidate();
     }
 
     public void setFindActionListener(ViewActionListener findActionListener) {
@@ -202,10 +194,6 @@ public class EntityTableView {
 
     public void setDeleteActionListener(ViewActionListener deleteActionListener) {
         this.deleteActionListener = deleteActionListener;
-    }
-
-    protected String getString(String key) {
-        return ResourceBundles.getGuiBundle().getString(key);
     }
 
     protected int getSelectedEntityId() {

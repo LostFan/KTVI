@@ -15,7 +15,7 @@ import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.components.DatePickerField;
 import org.lostfan.ktv.view.components.IntegerTextField;
 
-public class TariffPriceView {
+public class TariffPriceView extends FrameView {
 
     public static final int HEIGHT = 400;
     public static final int WIDTH = 300;
@@ -64,7 +64,6 @@ public class TariffPriceView {
         }
     }
 
-    private JFrame frame;
     private TariffWithPrices tariff;
     private ViewActionListener saveActionListener;
 
@@ -77,11 +76,11 @@ public class TariffPriceView {
     private JButton cancelButton;
 
     public TariffPriceView(TariffWithPrices tariff) {
+        super("TarifPrice");
         this.tariff = tariff;
 
-        this.frame = new JFrame("TarifPrice");
-        this.frame.setSize(new Dimension(WIDTH, HEIGHT));
-        this.frame.setLocationRelativeTo(null);
+        setSize(WIDTH, HEIGHT);
+        getFrame().setLocationRelativeTo(null);
 
         this.archiveTable = new JTable(new ArchiveTableModel(tariff.getArchivePrices()));
         // Align center
@@ -110,22 +109,22 @@ public class TariffPriceView {
         });
 
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
-        this.cancelButton.addActionListener(e -> frame.setVisible(false));
+        this.cancelButton.addActionListener(e -> hide());
 
         buildLayout();
 
-        this.frame.setVisible(true);
+        show();
     }
 
     private void buildLayout() {
-        frame.setLayout(new BorderLayout());
-        frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        getContentPanel().setLayout(new BorderLayout());
+        getContentPanel().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JPanel contentPanel = new JPanel();
-        BoxLayout layout = new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS);
-        contentPanel.setLayout(layout);
-        contentPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        frame.add(contentPanel, BorderLayout.CENTER);
+        JPanel mainPanel = new JPanel();
+        BoxLayout layout = new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS);
+        mainPanel.setLayout(layout);
+        mainPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        getContentPanel().add(mainPanel, BorderLayout.CENTER);
 
         Box box = Box.createHorizontalBox();
         box.add(new JLabel(getGuiString("tariffPrice.currentPrice") + ": "));
@@ -137,17 +136,17 @@ public class TariffPriceView {
                     DateFormatter.format(tariff.getCurrentPrice().getDate()));
             box.add(new JLabel(priceStr));
         }
-        contentPanel.add(box);
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        mainPanel.add(box);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
         if (tariff.getArchivePrices().size() != 0) {
-            contentPanel.add(new JLabel(getGuiString("tariffPrice.archive") + ":"));
-            contentPanel.add(new JScrollPane(this.archiveTable));
-            contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+            mainPanel.add(new JLabel(getGuiString("tariffPrice.archive") + ":"));
+            mainPanel.add(new JScrollPane(this.archiveTable));
+            mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
 
         JPanel newPricePanel = new JPanel(new GridBagLayout());
-        contentPanel.add(newPricePanel, BorderLayout.PAGE_END);
+        mainPanel.add(newPricePanel, BorderLayout.PAGE_END);
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 5);
         c.weightx = 1d;
@@ -173,7 +172,7 @@ public class TariffPriceView {
         newPricePanel.add(this.dateField, c);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-        frame.add(buttonPanel, BorderLayout.PAGE_END);
+        getContentPanel().add(buttonPanel, BorderLayout.PAGE_END);
 
         buttonPanel.add(this.saveButton);
         buttonPanel.add(this.cancelButton);
@@ -189,22 +188,6 @@ public class TariffPriceView {
 
     public void setSaveActionListener(ViewActionListener saveActionListener) {
         this.saveActionListener = saveActionListener;
-    }
-
-    private String getGuiString(String key) {
-        return ResourceBundles.getGuiBundle().getString(key);
-    }
-
-    private String getEntityString(String key) {
-        return ResourceBundles.getEntityBundle().getString(key);
-    }
-
-    public void show() {
-        this.frame.setVisible(true);
-    }
-
-    public void hide() {
-        this.frame.setVisible(false);
     }
 
     public void showValidationErrors(List<org.lostfan.ktv.validation.Error> errors) {

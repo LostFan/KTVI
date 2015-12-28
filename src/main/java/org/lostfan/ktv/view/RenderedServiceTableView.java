@@ -14,7 +14,7 @@ import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
 
-public class RenderedServiceTableView extends EntityTableView{
+public class RenderedServiceTableView extends EntityTableView {
 
     private ViewActionListener addConnectionActionListener;
     private ViewActionListener addDisconnectionActionListener;
@@ -24,35 +24,35 @@ public class RenderedServiceTableView extends EntityTableView{
     public RenderedServiceTableView(RenderedServiceEntityModel model) {
         super(model);
         final JPopupMenu popup = new JPopupMenu();
-        popup.add(new JMenuItem(new AbstractAction(ResourceBundles.getEntityBundle().getString(FixedServices.CONNECTION.getCode())) {
+        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.CONNECTION.getCode())) {
             public void actionPerformed(ActionEvent e) {
                 if (addConnectionActionListener != null) {
                     addConnectionActionListener.actionPerformed(null);
                 }
             }
         }));
-        popup.add(new JMenuItem(new AbstractAction(ResourceBundles.getEntityBundle().getString(FixedServices.DISCONNECTION.getCode())) {
+        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.DISCONNECTION.getCode())) {
             public void actionPerformed(ActionEvent e) {
                 if (addDisconnectionActionListener != null) {
                     addDisconnectionActionListener.actionPerformed(null);
                 }
             }
         }));
-        popup.add(new JMenuItem(new AbstractAction(ResourceBundles.getEntityBundle().getString(FixedServices.CHANGE_OF_TARIFF.getCode())) {
+        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.CHANGE_OF_TARIFF.getCode())) {
             public void actionPerformed(ActionEvent e) {
                 if (addChangeOfTariffActionListener != null) {
                     addChangeOfTariffActionListener.actionPerformed(null);
                 }
             }
         }));
-        popup.add(new JMenuItem(new AbstractAction(ResourceBundles.getEntityBundle().getString(FixedServices.ADDITIONAL_SERVICE.getCode())) {
+        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.ADDITIONAL_SERVICE.getCode())) {
             public void actionPerformed(ActionEvent e) {
                 if (addAdditionalServiceActionListener != null) {
                     addAdditionalServiceActionListener.actionPerformed(null);
                 }
             }
         }));
-        JButton addButton = getButton(getString("buttons.add"));
+        JButton addButton = getButton(getGuiString("buttons.add"));
         for (ActionListener actionListener : addButton.getActionListeners()) {
             addButton.removeActionListener(actionListener);
         }

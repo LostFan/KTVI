@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
 
-public class MainView {
+public class MainView extends FrameView {
 
     private class MenuActionListener implements ActionListener {
 
@@ -36,17 +36,15 @@ public class MainView {
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 700;
 
-    private JFrame frame;
-    private JPanel contentPanel;
     private ViewActionListener menuEntityActionListener;
     private ViewActionListener menuServiceActionListener;
 
     public MainView(MainModel model) {
-        this.frame = new JFrame("KTV");
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        super("KTV");
+        getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JMenuBar menuBar = new JMenuBar();
-        this.frame.setJMenuBar(menuBar);
+        getFrame().setJMenuBar(menuBar);
         JMenu fileMenu = new JMenu(getGuiString("menu.file"));
         JMenu entityMenu = new JMenu(getGuiString("menu.entities"));
         JMenu documentMenu = new JMenu(getGuiString("menu.documents"));
@@ -60,7 +58,7 @@ public class MainView {
 
         JMenuItem exitMenuItem = new JMenuItem(getGuiString("menu.file.exit"));
         exitMenuItem.addActionListener(e ->
-            MainView.this.frame.dispatchEvent(new WindowEvent( MainView.this.frame, WindowEvent.WINDOW_CLOSING)));
+            MainView.this.getFrame().dispatchEvent(new WindowEvent(MainView.this.getFrame(), WindowEvent.WINDOW_CLOSING)));
         fileMenu.add(exitMenuItem);
 
         MenuActionListener menuActionListener = new MenuActionListener(true);
@@ -88,27 +86,25 @@ public class MainView {
 
 
         model.addObserver(args -> {
-            frame.setTitle("KTV - " + getEntityString(model.getCurrentModel().getEntityNameKey()));
+            setTitle("KTV - " + getEntityString(model.getCurrentModel().getEntityNameKey()));
         });
 
         buildLayout();
-        frame.setVisible(true);
+        show();
     }
 
     private void buildLayout() {
-        this.frame.setSize(new Dimension(WIDTH, HEIGHT));
-        this.frame.setLocationRelativeTo(null);
+        setSize(WIDTH, HEIGHT);
+        getFrame().setLocationRelativeTo(null);
 
-        this.contentPanel = new JPanel(new BorderLayout(10, 10));
-        this.contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        this.frame.add(this.contentPanel);
+        getContentPanel().setLayout(new BorderLayout(10, 10));
+        getContentPanel().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
     }
 
     public void setTableView(EntityTableView view) {
-        this.contentPanel.removeAll();
-        this.contentPanel.add(view.getContentPanel());
-        this.frame.revalidate();
-        this.frame.repaint();
+        getContentPanel().removeAll();
+        getContentPanel().add(view.getContentPanel());
+        revalidate();
     }
 
     public void setMenuEntityActionListener(ViewActionListener menuEntityActionListener) {
@@ -117,13 +113,5 @@ public class MainView {
 
     public void setMenuServiceActionListener(ViewActionListener menuServiceActionListener) {
         this.menuServiceActionListener = menuServiceActionListener;
-    }
-
-    public String getEntityString(String key) {
-        return ResourceBundles.getEntityBundle().getString(key);
-    }
-
-    public String getGuiString(String key) {
-        return ResourceBundles.getGuiBundle().getString(key);
     }
 }

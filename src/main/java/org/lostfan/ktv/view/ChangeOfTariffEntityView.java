@@ -10,9 +10,8 @@ import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
-import org.lostfan.ktv.utils.ResourceBundles;
 
-public class ChangeOfTariffEntityView extends EntityView{
+public class ChangeOfTariffEntityView extends EntityView {
 
     private Tariff tariff;
     private LabelFieldInput tariffLabelFieldInput;
@@ -23,7 +22,7 @@ public class ChangeOfTariffEntityView extends EntityView{
 
     public ChangeOfTariffEntityView(RenderedServiceEntityModel model, ChangeOfTariffRenderedService entity) {
         super((EntityModel)model, entity);
-        this.frame.setTitle(ResourceBundles.getEntityBundle().getString(FixedServices.CHANGE_OF_TARIFF.getCode()));
+        setTitle(getEntityString(FixedServices.CHANGE_OF_TARIFF.getCode()));
 
         Tariff tariff = new Tariff();
         if(entity != null) {
@@ -45,15 +44,14 @@ public class ChangeOfTariffEntityView extends EntityView{
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridy = labelFieldInputs.size() + 1;
         c.gridx = 0;
-        this.contentPanel.add(this.tariffLabelFieldInput.label, c);
+        getFieldPanel().add(this.tariffLabelFieldInput.label, c);
         c.gridx = 1;
         JComponent inputComponent = this.tariffLabelFieldInput.getInputComponent();
         // HACK: textFields is excessively narrow when it's smaller than the displayed area.
         inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-        this.contentPanel.add(inputComponent, c);
+        getFieldPanel().add(inputComponent, c);
 
-        this.frame.invalidate();
-        this.frame.repaint();
+        revalidate();
     }
 
     public Tariff getTariff() {

@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class EntityView {
+public class EntityView extends FrameView {
 
     protected abstract class LabelFieldInput {
 
@@ -24,7 +24,7 @@ public class EntityView {
         protected EntityField entityField;
 
         public LabelFieldInput(EntityField entityField) {
-            this.label = new JLabel(ResourceBundles.getEntityBundle().getString(entityField.getTitleKey()), SwingConstants.LEFT);
+            this.label = new JLabel(getEntityString(entityField.getTitleKey()), SwingConstants.LEFT);
             this.entityField = entityField;
         }
 
@@ -257,11 +257,10 @@ public class EntityView {
     protected static final int WIDTH = 450;
     protected static final int HEIGHT = 550;
 
-    protected JFrame frame;
     protected List<LabelFieldInput> labelFieldInputs;
     protected JButton addButton;
     protected JButton cancelButton;
-    protected JPanel contentPanel;
+    private JPanel fieldPanel;
 
     protected EntityModel<? extends Entity> model;
 
@@ -276,16 +275,15 @@ public class EntityView {
     }
 
     public <E extends Entity> EntityView(EntityModel<Entity> model, Entity entity) {
-
         this.entity = entity;
         this.model = model;
 
-        this.frame = new JFrame(ResourceBundles.getEntityBundle().getString(model.getEntityNameKey()));
-        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.frame.setSize(new Dimension(WIDTH, HEIGHT));
-        this.frame.setLocationRelativeTo(null);
+        setTitle(getEntityString(model.getEntityNameKey()));
+        setSize(WIDTH, HEIGHT);
+        getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        getFrame().setLocationRelativeTo(null);
 
-        this.addButton = new JButton(getString(entity == null ? "buttons.add" : "buttons.change"));
+        this.addButton = new JButton(getGuiString(entity == null ? "buttons.add" : "buttons.change"));
         this.addButton.addActionListener(e -> {
 
             if (this.addActionListener != null) {
@@ -293,7 +291,7 @@ public class EntityView {
             }
         });
 
-        this.cancelButton = new JButton(getString("buttons.cancel"));
+        this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {
             if (this.cancelActionListener != null) {
                 this.cancelActionListener.actionPerformed(null);
@@ -311,16 +309,19 @@ public class EntityView {
 
         buildLayout();
 
-        frame.setVisible(true);
+        show();
+    }
+
+    protected JPanel getFieldPanel() {
+        return this.fieldPanel;
     }
 
     private void buildLayout() {
+        getContentPanel().setLayout(new BorderLayout(10, 10));
+        getContentPanel().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        frame.setLayout(new BorderLayout(10, 10));
-        frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-
-        this.contentPanel = new JPanel(new GridBagLayout());
-        frame.add(this.contentPanel, BorderLayout.PAGE_START);
+        this.fieldPanel = new JPanel(new GridBagLayout());
+        getContentPanel().add(this.fieldPanel, BorderLayout.PAGE_START);
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(0, 10, 10, 10);
@@ -330,18 +331,18 @@ public class EntityView {
         for (int i = 0; i < this.labelFieldInputs.size(); i++) {
             c.gridy = i;
             c.gridx = 0;
-            this.contentPanel.add(this.labelFieldInputs.get(i).label, c);
+            this.fieldPanel.add(this.labelFieldInputs.get(i).label, c);
             c.gridx = 1;
             JComponent inputComponent = this.labelFieldInputs.get(i).getInputComponent();
             // HACK: textFields is excessively narrow when it's smaller than the displayed area.
             inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-            this.contentPanel.add(inputComponent, c);
+            this.fieldPanel.add(inputComponent, c);
         }
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addButton);
         buttonPanel.add(cancelButton);
-        frame.add(buttonPanel, BorderLayout.SOUTH);
+        getContentPanel().add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private LabelFieldInput createLabelFieldInput(EntityField entityField) {
@@ -402,13 +403,13 @@ public class EntityView {
     public void showErrors(List<org.lostfan.ktv.validation.Error> errors) {
         // TODO: add appropriate implementation of visualising the errors
         for (Error error : errors) {
-            String message = error.getField() != null ? ResourceBundles.getEntityBundle().getString(error.getField()) + " " : "";
+            String message = error.getField() != null ? getEntityString(error.getField()) + " " : "";
             if (error.getMessage().equals("empty")) {
                 message += "should not be empty";
             } else {
                 message += error.getMessage();
             }
-            JOptionPane.showMessageDialog(this.frame, message, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(getFrame(), message, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -417,18 +418,6 @@ public class EntityView {
     }
 
     public void addInnerTable(EntityInnerTableView innerTableView) {
-        frame.add(innerTableView.getContentPanel(), BorderLayout.CENTER);
-    }
-
-    public void hide() {
-        this.frame.setVisible(false);
-    }
-
-    public void show() {
-        this.frame.setVisible(true);
-    }
-
-    private String getString(String key) {
-        return ResourceBundles.getGuiBundle().getString(key);
+        getContentPanel().add(innerTableView.getContentPanel(), BorderLayout.CENTER);
     }
 }

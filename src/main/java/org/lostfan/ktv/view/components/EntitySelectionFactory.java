@@ -1,13 +1,6 @@
 package org.lostfan.ktv.view.components;
 
-import org.lostfan.ktv.model.entity.BaseEntityModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
-import org.lostfan.ktv.model.entity.MaterialEntityModel;
-import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
-import org.lostfan.ktv.model.entity.ServiceEntityModel;
-import org.lostfan.ktv.model.entity.StreetEntityModel;
-import org.lostfan.ktv.model.entity.SubscriberEntityModel;
-import org.lostfan.ktv.model.entity.TariffEntityModel;
 import org.lostfan.ktv.model.searcher.AdditionalServiceSearcherModel;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.model.searcher.MaterialSearcherModel;
@@ -21,7 +14,7 @@ import org.lostfan.ktv.view.EntitySelectionView;
 public class EntitySelectionFactory {
 
     public static EntitySelectionView createForm(EntityFieldTypes type) {
-        EntitySearcherModel model = null;
+        EntitySearcherModel model;
         switch (type) {
             case Street:
                 model = new StreetSearcherModel();

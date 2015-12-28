@@ -17,11 +17,10 @@ import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.dto.AdditionalRenderedService;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
-import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.view.components.EntityComboBoxFactory;
 import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
-public class AdditionalServiceEntityView extends EntityView{
+public class AdditionalServiceEntityView extends EntityView {
 
     private Map<String, List<MaterialConsumption>> entityInnerTableValues;
     private LabelFieldInput serviceLabelFieldInput;
@@ -34,7 +33,7 @@ public class AdditionalServiceEntityView extends EntityView{
 
     public AdditionalServiceEntityView(RenderedServiceEntityModel model, AdditionalRenderedService entity) {
         super((EntityModel)model, entity);
-        this.frame.setTitle(ResourceBundles.getEntityBundle().getString(FixedServices.ADDITIONAL_SERVICE.getCode()));
+        setTitle(getEntityString(FixedServices.ADDITIONAL_SERVICE.getCode()));
 
         Service service = new Service();
         if(entity != null) {
@@ -57,12 +56,12 @@ public class AdditionalServiceEntityView extends EntityView{
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridy = labelFieldInputs.size() + 1;
         c.gridx = 0;
-        this.contentPanel.add(this.serviceLabelFieldInput.label, c);
+        getFieldPanel().add(this.serviceLabelFieldInput.label, c);
         c.gridx = 1;
         JComponent inputComponent = this.serviceLabelFieldInput.getInputComponent();
         // HACK: textFields is excessively narrow when it's smaller than the displayed area.
         inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-        this.contentPanel.add(inputComponent, c);
+        getFieldPanel().add(inputComponent, c);
 
         this.entityInnerTableValues = new HashMap<>();
         for (FullEntityField fullEntityField : model.getFullFields()) {
@@ -75,8 +74,7 @@ public class AdditionalServiceEntityView extends EntityView{
             this.addInnerTable(this.entityInnerTableView);
         }
 
-        this.frame.invalidate();
-        this.frame.repaint();
+        revalidate();
     }
 
     public Service getService() {

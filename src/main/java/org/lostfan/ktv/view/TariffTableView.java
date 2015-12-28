@@ -13,7 +13,7 @@ public class TariffTableView extends EntityTableView {
     public TariffTableView(EntityModel<? extends Entity> model) {
         super(model);
 
-        JButton priceButton = new JButton(getString("buttons.tariffPrice"));
+        JButton priceButton = new JButton(getGuiString("buttons.tariffPrice"));
         priceButton.addActionListener(e -> {
             if (priceActionListener != null) {
                 priceActionListener.actionPerformed(getSelectedEntityId());

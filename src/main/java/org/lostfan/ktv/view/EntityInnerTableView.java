@@ -4,7 +4,6 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.utils.Observer;
-import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.model.EntityActionTableCellEditor;
 import org.lostfan.ktv.view.model.EntityInnerTableModel;
@@ -16,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.List;
 
-public class EntityInnerTableView<T> {
+public class EntityInnerTableView<T> extends View {
 
     private class ModelObserver implements Observer {
         @Override
@@ -25,7 +24,6 @@ public class EntityInnerTableView<T> {
         }
     }
 
-    private JPanel contentPanel;
     private JTable table;
     private JScrollPane tableScrollPane;
     private JButton addCopyButton;
@@ -51,24 +49,24 @@ public class EntityInnerTableView<T> {
         this.table.setAutoCreateRowSorter(false);
         this.table.setFillsViewportHeight(true);
 
-        this.addButton = new JButton(getString("buttons.add"));
+        this.addButton = new JButton(getGuiString("buttons.add"));
         this.addButton.addActionListener(e -> {
             this.entityInnerTableModel.addRow();
             revalidate();
         });
 
-        this.addCopyButton = new JButton(getString("buttons.addCopy"));
+        this.addCopyButton = new JButton(getGuiString("buttons.addCopy"));
         this.addCopyButton.addActionListener(e -> {
             this.entityInnerTableModel.addRow(this.table.getSelectedRow());
             revalidate();
         });
-        this.restoreRowButton = new JButton(getString("buttons.restoreRows"));
+        this.restoreRowButton = new JButton(getGuiString("buttons.restoreRows"));
         this.restoreRowButton.addActionListener(e -> {
             this.entityInnerTableModel.restoreRows();
             revalidate();
         });
 
-        this.deleteButton = new JButton(getString("buttons.delete"));
+        this.deleteButton = new JButton(getGuiString("buttons.delete"));
         this.deleteButton.addActionListener(e -> {
             this.entityInnerTableModel.deleteRows(this.table.getSelectedRows());
             revalidate();
@@ -82,7 +80,7 @@ public class EntityInnerTableView<T> {
     }
 
     private void buildLayout() {
-        this.contentPanel = new JPanel(new BorderLayout(10, 10));
+        getContentPanel().setLayout(new BorderLayout(10, 10));
 
         // ID column values should be aligned to the left;
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
@@ -91,10 +89,10 @@ public class EntityInnerTableView<T> {
         addStringActionTableCellEditorToColumns();
         this.tableScrollPane = new JScrollPane(this.table);
 
-        this.contentPanel.add(tableScrollPane, BorderLayout.CENTER);
+        getContentPanel().add(tableScrollPane, BorderLayout.CENTER);
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        this.contentPanel.add(rightPanel, BorderLayout.LINE_END);
+        getContentPanel().add(rightPanel, BorderLayout.LINE_END);
 
         JPanel rightPanelInner = new JPanel(new GridLayout(4, 1, 0, 10));
         rightPanel.add(rightPanelInner);
@@ -111,11 +109,6 @@ public class EntityInnerTableView<T> {
 
     public int[] getSelectedIndexes() {
         return this.table.getSelectedRows();
-    }
-
-
-    public JPanel getContentPanel() {
-        return this.contentPanel;
     }
 
 //    public boolean isConfirm() {
@@ -166,10 +159,9 @@ public class EntityInnerTableView<T> {
             }
         }
     }
-    private void revalidate() {
+    protected void revalidate() {
         addStringActionTableCellEditorToColumns();
-        this.contentPanel.invalidate();
-        this.contentPanel.repaint();
+        super.revalidate();
     }
 
     public void setAddActionListener(ViewActionListener addActionListener) {
@@ -192,14 +184,8 @@ public class EntityInnerTableView<T> {
         this.deleteButton.addActionListener(listener);
     }
 
-    private String getString(String key) {
-        return ResourceBundles.getGuiBundle().getString(key);
-    }
-
-    public void stopEditing()
-    {
-        if (table.isEditing())
-        {
+    public void stopEditing() {
+        if (table.isEditing()) {
             int col = table.getEditingColumn(),
                     row = table.getEditingRow();
             CellEditor cellEditor = table.getCellEditor();
