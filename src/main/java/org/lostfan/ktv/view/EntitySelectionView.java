@@ -13,7 +13,7 @@ import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.view.model.EntitySearchTableModel;
 import org.lostfan.ktv.view.model.EntitySelectionModel;
 
-public class EntitySelectionView extends FrameView {
+public class EntitySelectionView extends DialogView<Entity> {
 
     private class ModelObserver implements Observer {
         @Override
@@ -30,17 +30,11 @@ public class EntitySelectionView extends FrameView {
     private JButton cancelButton;
     private JButton chooseButton;
 
-    private Entity selectedEntity = null;
-
     private ModelObserver modelObserver;
 
-    private EntitySearcherModel model;
-
     public EntitySelectionView(EntitySearcherModel model) {
-        this.model = model;
 
         setTitle(getGuiString("buttons.search") + ": " + getEntityString(model.getEntityNameKey()));
-        getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         this.table = new JTable(new EntitySelectionModel<>(model));
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -53,8 +47,7 @@ public class EntitySelectionView extends FrameView {
                 EntitySelectionView view = EntitySelectionView.this;
                 // Dbl Click at the table row
                 if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
-                    selectedEntity = (Entity) model.getList().get(EntitySelectionView.this.table.convertRowIndexToModel(EntitySelectionView.this.getSelectedIndex()));
-                    hide();
+                    set((Entity) model.getList().get(EntitySelectionView.this.table.convertRowIndexToModel(EntitySelectionView.this.getSelectedIndex())));
                 }
             }
         });
@@ -62,22 +55,18 @@ public class EntitySelectionView extends FrameView {
         this.chooseButton = new JButton(getGuiString("buttons.choose"));
         this.chooseButton.addActionListener(e -> {
             if (EntitySelectionView.this.getSelectedIndex() != -1) {
-                selectedEntity = (Entity) model.getList().get(EntitySelectionView.this.table.convertRowIndexToModel(EntitySelectionView.this.getSelectedIndex()));
-                hide();
+                set((Entity) model.getList().get(EntitySelectionView.this.table.convertRowIndexToModel(EntitySelectionView.this.getSelectedIndex())));
             }
         });
 
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {
-                hide();
+                set(null);
         });
 
         buildLayout();
         this.modelObserver = new ModelObserver();
         model.addObserver(this.modelObserver);
-
-        getFrame().setLocationRelativeTo(null);
-        show();
     }
 
     private void buildLayout() {
@@ -106,23 +95,8 @@ public class EntitySelectionView extends FrameView {
         rightPanelInner.add(this.cancelButton);
     }
 
-    public int getSelectedIndex() {
+    private int getSelectedIndex() {
         return this.table.getSelectedRow();
-    }
-
-    public Entity getSelectedEntity() {
-        return this.selectedEntity;
-    }
-
-    public void setModel(EntitySearcherModel model) {
-        this.model.removeObserver(modelObserver);
-        this.model = model;
-        model.addObserver(this.modelObserver);
-
-        this.table.setModel(new EntitySearchTableModel<>(model));
-        this.tableScrollPane.setViewportView(this.table);
-
-        revalidate();
     }
 
     private void addStringActionTableCellEditorToColumns() {

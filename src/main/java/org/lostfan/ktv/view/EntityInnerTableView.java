@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.List;
 
-public class EntityInnerTableView<T> extends View {
+public class EntityInnerTableView<T extends Entity> extends View {
 
     private class ModelObserver implements Observer {
         @Override
@@ -137,8 +137,9 @@ public class EntityInnerTableView<T> extends View {
 //        revalidate();
 //    }
 
-    public List<Entity> getEntityList() {
-        return entityInnerTableModel.getEntityList();
+    @SuppressWarnings("unchecked")
+    public List<T> getEntityList() {
+        return (List<T>)entityInnerTableModel.getEntityList();
     }
 
 //    public EntityModel getEntityModel() {

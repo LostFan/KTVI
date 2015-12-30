@@ -23,7 +23,7 @@ public class ConnectionEntityView extends EntityView {
     private Tariff tariff;
     private Map<String, List<MaterialConsumption>> entityInnerTableValues;
     private LabelFieldInput tariffLabelFieldInput;
-    private EntityInnerTableView entityInnerTableView;
+    private EntityInnerTableView<MaterialConsumption> entityInnerTableView;
 
     public ConnectionEntityView(RenderedServiceEntityModel model) {
         this(model, null);
@@ -67,7 +67,7 @@ public class ConnectionEntityView extends EntityView {
             if(entity != null) {
                 list = (List<Entity>) fullEntityField.get(entity);
             }
-            this.entityInnerTableView = new EntityInnerTableView(fullEntityField, list);
+            this.entityInnerTableView = new EntityInnerTableView<>(fullEntityField, list);
             this.entityInnerTableValues.put(fullEntityField.getTitleKey(), this.entityInnerTableView.getEntityList());
             this.addInnerTable(this.entityInnerTableView);
         }

@@ -24,7 +24,7 @@ public class AdditionalServiceEntityView extends EntityView {
 
     private Map<String, List<MaterialConsumption>> entityInnerTableValues;
     private LabelFieldInput serviceLabelFieldInput;
-    private EntityInnerTableView entityInnerTableView;
+    private EntityInnerTableView<MaterialConsumption> entityInnerTableView;
     private Service service;
 
     public AdditionalServiceEntityView(RenderedServiceEntityModel model) {
@@ -69,7 +69,7 @@ public class AdditionalServiceEntityView extends EntityView {
             if(entity != null) {
                 list = (List<Entity>) fullEntityField.get(entity);
             }
-            this.entityInnerTableView = new EntityInnerTableView(fullEntityField, list);
+            this.entityInnerTableView = new EntityInnerTableView<>(fullEntityField, list);
             this.entityInnerTableValues.put(fullEntityField.getTitleKey(), this.entityInnerTableView.getEntityList());
             this.addInnerTable(this.entityInnerTableView);
         }

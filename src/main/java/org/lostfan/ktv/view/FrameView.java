@@ -10,6 +10,7 @@ public abstract class FrameView extends View {
     public FrameView() {
         this.frame = new JFrame();
         this.frame.add(getContentPanel());
+        this.frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     public FrameView(String title) {
@@ -35,6 +36,7 @@ public abstract class FrameView extends View {
     }
 
     public void show() {
+        this.frame.setLocationRelativeTo(null);
         this.frame.setVisible(true);
     }
 
@@ -44,5 +46,14 @@ public abstract class FrameView extends View {
 
     public boolean isVisible() {
         return this.frame.isVisible();
+    }
+
+    /**
+     * Opens the specified view as a modal dialog frame.
+     * Blocks the current thread until the dialog returns a result
+     * @param dialogView A dialog view for opening
+     */
+    public void openDialog(DialogView dialogView) {
+        dialogView.setOwner(this.frame);
     }
 }

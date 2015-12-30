@@ -80,7 +80,6 @@ public class TariffPriceView extends FrameView {
         this.tariff = tariff;
 
         setSize(WIDTH, HEIGHT);
-        getFrame().setLocationRelativeTo(null);
 
         this.archiveTable = new JTable(new ArchiveTableModel(tariff.getArchivePrices()));
         // Align center

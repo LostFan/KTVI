@@ -17,7 +17,7 @@ public class DisconnectionEntityView extends EntityView {
     private Tariff tariff;
     private Map<String, List<MaterialConsumption>> entityInnerTableValues;
     private LabelFieldInput tariffLabelFieldInput;
-    private EntityInnerTableView entityInnerTableView;
+    private EntityInnerTableView<MaterialConsumption> entityInnerTableView;
 
     public DisconnectionEntityView(RenderedServiceEntityModel model) {
         this(model, null);

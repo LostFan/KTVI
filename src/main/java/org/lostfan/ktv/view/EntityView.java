@@ -213,9 +213,10 @@ public class EntityView extends FrameView {
                 } else {
                     entitySelectionView = (EntitySelectionView) entitySelView.get();
                 }
-                if (entitySelectionView.getSelectedEntity() != null) {
-                    this.comboBox.setSelectedEntity(entitySelectionView.getSelectedEntity());
-                    ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.getSelectedEntity().getName());
+                openDialog(entitySelectionView);
+                if (entitySelectionView.get() != null) {
+                    this.comboBox.setSelectedEntity(entitySelectionView.get());
+                    ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.get().getName());
                     this.comboBox.invalidate();
                     this.comboBox.repaint();
                 }
@@ -280,8 +281,6 @@ public class EntityView extends FrameView {
 
         setTitle(getEntityString(model.getEntityNameKey()));
         setSize(WIDTH, HEIGHT);
-        getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        getFrame().setLocationRelativeTo(null);
 
         this.addButton = new JButton(getGuiString(entity == null ? "buttons.add" : "buttons.change"));
         this.addButton.addActionListener(e -> {

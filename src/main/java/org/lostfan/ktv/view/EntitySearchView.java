@@ -137,7 +137,6 @@ public class EntitySearchView extends FrameView {
     public EntitySearchView(EntityModel model) {
         this.model = model;
         setTitle(getGuiString("buttons.search") + ": " + getEntityString(model.getEntityNameKey()));
-        getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         this.criteria = new ArrayList<>();
 
@@ -166,7 +165,6 @@ public class EntitySearchView extends FrameView {
 
     private void buildLayout() {
         setSize(WIDTH, HEIGHT);
-        getFrame().setLocationRelativeTo(null);
 
         getContentPanel().setLayout(new BorderLayout(10, 10));
         getContentPanel().getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));

@@ -11,6 +11,7 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.view.DialogView;
 import org.lostfan.ktv.view.EntitySelectionView;
 import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.components.EntityComboBox;
@@ -59,9 +60,10 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
         viewTableEntitiesButton.addActionListener(e -> {
 
             EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityFieldTypes);
-            if (entitySelectionView.getSelectedEntity() != null) {
-                this.entityComboBox.setSelectedEntity(entitySelectionView.getSelectedEntity());
-                ((JTextField) (entityComboBox.getEditor().getEditorComponent())).setText(entitySelectionView.getSelectedEntity().getName());
+            DialogView.open(entitySelectionView);
+            if (entitySelectionView.get() != null) {
+                this.entityComboBox.setSelectedEntity(entitySelectionView.get());
+                ((JTextField) (entityComboBox.getEditor().getEditorComponent())).setText(entitySelectionView.get().getName());
                 this.entityComboBox.invalidate();
                 this.entityComboBox.repaint();
             }

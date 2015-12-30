@@ -84,7 +84,6 @@ public class MainView extends FrameView {
             entityMenuItem.addActionListener(menuActionListener);
         }
 
-
         model.addObserver(args -> {
             setTitle("KTV - " + getEntityString(model.getCurrentModel().getEntityNameKey()));
         });
@@ -95,7 +94,6 @@ public class MainView extends FrameView {
 
     private void buildLayout() {
         setSize(WIDTH, HEIGHT);
-        getFrame().setLocationRelativeTo(null);
 
         getContentPanel().setLayout(new BorderLayout(10, 10));
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
