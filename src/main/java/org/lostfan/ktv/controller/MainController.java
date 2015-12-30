@@ -24,13 +24,13 @@ public class MainController {
     private MainView view;
     private MainModel model;
 
-    private Map<String, EntityController> entityControllers;
+    private Map<String, MainInnerController> innerControllers;
 
     public MainController(MainModel model, MainView view) {
         this.model = model;
         this.view = view;
 
-        entityControllers = new HashMap<>();
+        innerControllers = new HashMap<>();
         this.model.getEntityItems().forEach(this::createEntityController);
         this.model.getDocumentItems().forEach(this::createEntityController);
 
@@ -71,8 +71,8 @@ public class MainController {
 
         this.model.addObserver(args -> {
             EntityModel currentModel = (EntityModel) args;
-            EntityController currentController = this.entityControllers.get(currentModel.getEntityNameKey());
-            view.setTableView(currentController.getView());
+            MainInnerController currentController = this.innerControllers.get(currentModel.getEntityNameKey());
+            view.setInnerView(currentController.getView());
         });
     }
 
@@ -89,6 +89,6 @@ public class MainController {
             EntityModel model = MainModel.getEntityModel(entityCode);
             entityController = new EntityController(model, new EntityTableView(model));
         }
-        this.entityControllers.put(entityCode, entityController);
+        this.innerControllers.put(entityCode, entityController);
     }
 }

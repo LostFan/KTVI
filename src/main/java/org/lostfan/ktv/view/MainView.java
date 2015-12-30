@@ -99,7 +99,7 @@ public class MainView extends FrameView {
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
     }
 
-    public void setTableView(EntityTableView view) {
+    public void setInnerView(View view) {
         getContentPanel().removeAll();
         getContentPanel().add(view.getContentPanel());
         revalidate();

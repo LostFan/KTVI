@@ -11,7 +11,7 @@ import org.lostfan.ktv.view.components.EntityViewFactory;
 
 import java.util.List;
 
-public class EntityController {
+public class EntityController implements MainInnerController {
 
     private EntityModel model;
     private EntityTableView view;
