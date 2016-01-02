@@ -101,8 +101,11 @@ public class EntitySearchView extends FrameView {
             if (this.fieldComboBox.getSelectedItem() != null) {
                 panel.add(this.criterionComboBox, c);
             }
-            if (getSelectedFieldType() != null && getSelectedFieldType() != EntityFieldTypes.Boolean && getSelectedFieldType() != EntityFieldTypes.Date) {
+            if (getSelectedFieldType() != null && getSelectedFieldType() != EntityFieldTypes.Boolean && getSelectedFieldType() != EntityFieldTypes.Date  && getSelectedFieldType() != EntityFieldTypes.Integer) {
                 panel.add(this.valueTextField, c);
+            }
+            if (getSelectedFieldType() != null && getSelectedFieldType() == EntityFieldTypes.Integer) {
+                panel.add(this.integerTextField, c);
             }
             if (getSelectedFieldType() != null && getSelectedFieldType() == EntityFieldTypes.Date) {
                 panel.add(this.datePicker, c);
