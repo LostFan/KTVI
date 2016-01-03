@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
 
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.Tariff;
@@ -18,6 +19,7 @@ public class DisconnectionEntityView extends EntityView {
     private Map<String, List<MaterialConsumption>> entityInnerTableValues;
     private LabelFieldInput tariffLabelFieldInput;
     private EntityInnerTableView<MaterialConsumption> entityInnerTableView;
+    private RenderedServiceEntityModel model;
 
     public DisconnectionEntityView(RenderedServiceEntityModel model) {
         this(model, null);
@@ -25,17 +27,14 @@ public class DisconnectionEntityView extends EntityView {
 
     public DisconnectionEntityView(RenderedServiceEntityModel model, DisconnectionRenderedService entity) {
         super((EntityModel)model, entity);
+        this.model = model;
         setTitle(getEntityString(FixedServices.DISCONNECTION.getCode()));
 
-        for (ActionListener actionListener : this.addButton.getActionListeners()) {
-            this.addButton.removeActionListener(actionListener);
-        }
-        this.addButton.addActionListener(e -> {
-            if (this.addActionListener != null) {
-                this.addActionListener.actionPerformed(model.buildDisconnectionDTO((RenderedService) getEntity()));
-            }
-        });
-
         revalidate();
+    }
+
+    @Override
+    protected Entity buildEntity() {
+        return model.buildDisconnectionDTO((RenderedService) super.buildEntity());
     }
 }

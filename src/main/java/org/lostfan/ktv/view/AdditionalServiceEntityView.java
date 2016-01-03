@@ -25,6 +25,7 @@ public class AdditionalServiceEntityView extends EntityView {
     private Map<String, List<MaterialConsumption>> entityInnerTableValues;
     private LabelFieldInput serviceLabelFieldInput;
     private EntityInnerTableView<MaterialConsumption> entityInnerTableView;
+    private RenderedServiceEntityModel model;
     private Service service;
 
     public AdditionalServiceEntityView(RenderedServiceEntityModel model) {
@@ -33,6 +34,7 @@ public class AdditionalServiceEntityView extends EntityView {
 
     public AdditionalServiceEntityView(RenderedServiceEntityModel model, AdditionalRenderedService entity) {
         super((EntityModel)model, entity);
+        this.model = model;
         setTitle(getEntityString(FixedServices.ADDITIONAL_SERVICE.getCode()));
 
         Service service = new Service();
@@ -40,15 +42,7 @@ public class AdditionalServiceEntityView extends EntityView {
             service.setId(entity.getServiceId());
         }
         serviceLabelFieldInput = new EntityLabelFieldInput(model.getServiceField(), service, EntityComboBoxFactory.createAdditionalServiceComboBox(), EntitySelectionFactory::createAdditionalServiceForm);
-        for (ActionListener actionListener : this.addButton.getActionListeners()) {
-            this.addButton.removeActionListener(actionListener);
-        }
-        this.addButton.addActionListener(e -> {
-            if (this.addActionListener != null) {
-                entityInnerTableView.stopEditing();
-                this.addActionListener.actionPerformed(model.buildAdditionalServiceDTO((RenderedService) getEntity(), getService(), entityInnerTableValues));
-            }
-        });
+        // TODO: stop table editing on save
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(0, 10, 10, 10);
@@ -77,7 +71,12 @@ public class AdditionalServiceEntityView extends EntityView {
         revalidate();
     }
 
-    public Service getService() {
+    @Override
+    protected Entity buildEntity() {
+        return model.buildAdditionalServiceDTO((RenderedService) super.buildEntity(), getService(), entityInnerTableValues);
+    }
+
+    private Service getService() {
         Service entity = this.service;
         if (entity == null) {
             entity = new Service();
