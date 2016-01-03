@@ -16,6 +16,7 @@ public class MainModel extends BaseObservable {
     private static MaterialEntityModel materialEntityModel;
     private static PaymentEntityModel paymentEntityModel;
     private static RenderedServiceEntityModel renderedServiceEntityModel;
+    private static SubscriptionFeeModel subscriptionFeeModel;
     private static ServiceEntityModel serviceEntityModel;
     private static StreetEntityModel streetEntityModel;
     private static SubscriberEntityModel subscriberEntityModel;
@@ -27,6 +28,7 @@ public class MainModel extends BaseObservable {
         materialEntityModel = new MaterialEntityModel();
         paymentEntityModel = new PaymentEntityModel();
         renderedServiceEntityModel = new RenderedServiceEntityModel();
+        subscriptionFeeModel = new SubscriptionFeeModel();
         serviceEntityModel = new ServiceEntityModel();
         streetEntityModel = new StreetEntityModel();
         subscriberEntityModel = new SubscriberEntityModel();
@@ -38,6 +40,7 @@ public class MainModel extends BaseObservable {
         nameEntityModels.put(materialEntityModel.getEntityNameKey(), materialEntityModel);
         nameEntityModels.put(paymentEntityModel.getEntityNameKey(), paymentEntityModel);
         nameEntityModels.put(renderedServiceEntityModel.getEntityNameKey(), renderedServiceEntityModel);
+//        nameEntityModels.put(subscriptionFeeModel.getEntityNameKey(), subscriptionFeeModel);
         nameEntityModels.put(serviceEntityModel.getEntityNameKey(), serviceEntityModel);
         nameEntityModels.put(streetEntityModel.getEntityNameKey(), streetEntityModel);
         nameEntityModels.put(subscriberEntityModel.getEntityNameKey(), subscriberEntityModel);
@@ -83,6 +86,10 @@ public class MainModel extends BaseObservable {
         return renderedServiceEntityModel;
     }
 
+    public static SubscriptionFeeModel getSubscriptionFeeModel() {
+        return subscriptionFeeModel;
+    }
+
     public static ServiceEntityModel getServiceEntityModel() {
         return serviceEntityModel;
     }
@@ -102,7 +109,7 @@ public class MainModel extends BaseObservable {
     private List<String> entityModelNames;
     private List<String> documentModelNames;
     private List<String> servicesNames;
-    private EntityModel currentModel;
+    private BaseModel currentModel;
 
     public MainModel() {
         this.entityModelNames = new ArrayList<>();
@@ -117,16 +124,23 @@ public class MainModel extends BaseObservable {
 
         this.documentModelNames.add(getPaymentEntityModel().getEntityNameKey());
         this.documentModelNames.add(getRenderedServiceEntityModel().getEntityNameKey());
+        this.documentModelNames.add(getSubscriptionFeeModel().getEntityNameKey());
         this.documentModelNames.add(getMaterialConsumptionEntityModel().getEntityNameKey());
 
         this.servicesNames = Arrays.stream(FixedServices.values()).map(FixedServices::getCode).collect(Collectors.toList());
     }
 
-    public EntityModel getCurrentModel() {
+    public BaseModel getCurrentModel() {
         return this.currentModel;
     }
 
     public void setCurrentModel(String code) {
+        if(code == getSubscriptionFeeModel().getEntityNameKey()) {
+            this.currentModel = getSubscriptionFeeModel();
+            notifyObservers(getSubscriptionFeeModel());
+            return;
+        }
+
         EntityModel model = getEntityModel(code);
 
         if (model != null) {

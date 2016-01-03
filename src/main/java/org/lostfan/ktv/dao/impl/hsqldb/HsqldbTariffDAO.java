@@ -131,7 +131,7 @@ public class HsqldbTariffDAO implements TariffDAO {
     public TariffPrice getTariffPrice(int tariffId, LocalDate date) {
         TariffPrice tariffPrice = null;
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"tariff_price\" where \"tariff_id\" = ? AND \"date\" = ?");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"tariff_price\" where \"tariff_id\" = ? AND \"date\" <= ?");
             preparedStatement.setInt(1, tariffId);
             preparedStatement.setDate(2, Date.valueOf(date));
             ResultSet rs = preparedStatement.executeQuery();

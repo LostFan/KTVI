@@ -33,6 +33,16 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     SubscriberTariff getNotClosedSubscriberTariffByDate(Integer subscriberId, LocalDate localDate);
 
+    List<SubscriberTariff> getSubscriberTariffsBySubscriberIdInMonth(Integer subscriberId, LocalDate localDate);
+
+    SubscriberTariff getSubscriberTariffBySubscriberIdInAllMonth(Integer subscriberId, LocalDate localDate);
+
+    SubscriberTariff getSubscriberTariffBySubscriberIdInMonthBeginInPrevMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate);
+
+    List<SubscriberTariff> getSubscriberTariffsBySubscriberIdInMonthBeginInCurrentMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate);
+
+    SubscriberTariff getSubscriberTariffBySubscriberIdInMonthBeginInCurrentMonth(Integer subscriberId, LocalDate localDate);
+
     void saveSubscriberTariff(SubscriberTariff subscriberTariff);
 
     void updateSubscriberTariff(SubscriberTariff subscriberTariff);

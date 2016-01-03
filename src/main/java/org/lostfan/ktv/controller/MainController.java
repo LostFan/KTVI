@@ -8,12 +8,9 @@ import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
+import org.lostfan.ktv.model.entity.BaseModel;
 import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.view.EntityTableView;
-import org.lostfan.ktv.view.EntityView;
-import org.lostfan.ktv.view.MainView;
-import org.lostfan.ktv.view.RenderedServiceTableView;
-import org.lostfan.ktv.view.TariffTableView;
+import org.lostfan.ktv.view.*;
 import org.lostfan.ktv.view.components.EntityViewFactory;
 
 import java.util.HashMap;
@@ -70,20 +67,23 @@ public class MainController {
         });
 
         this.model.addObserver(args -> {
-            EntityModel currentModel = (EntityModel) args;
+            BaseModel currentModel = (BaseModel) args;
             MainInnerController currentController = this.innerControllers.get(currentModel.getEntityNameKey());
             view.setInnerView(currentController.getView());
         });
     }
 
     private void createEntityController(String entityCode) {
-        EntityController entityController;
+        MainInnerController entityController;
         if (entityCode.equals(MainModel.getRenderedServiceEntityModel().getEntityNameKey())) {
             entityController = new RenderedServiceController(MainModel.getRenderedServiceEntityModel(),
                     new RenderedServiceTableView(MainModel.getRenderedServiceEntityModel()));
         } else if (entityCode.equals(MainModel.getTariffEntityModel().getEntityNameKey())) {
             entityController = new TariffEntityController(MainModel.getTariffEntityModel(),
                     new TariffTableView(MainModel.getTariffEntityModel()));
+        } else if (entityCode.equals(MainModel.getSubscriptionFeeModel().getEntityNameKey())) {
+            entityController = new SubscriptionFeeController(MainModel.getSubscriptionFeeModel(),
+                    new SubscriptionFeeTableView(MainModel.getSubscriptionFeeModel()));
         }
         else {
             EntityModel model = MainModel.getEntityModel(entityCode);

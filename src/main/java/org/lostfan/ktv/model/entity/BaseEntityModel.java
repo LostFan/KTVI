@@ -43,7 +43,7 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     @Override
     public List<T> getList() {
         if (this.entities == null) {
-            this.entities = getDao().getAll();
+            this.entities = getAll();
         }
 
         return this.entities;
@@ -92,8 +92,9 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
         updateEntitiesList();
     }
 
+
     protected void updateEntitiesList() {
-        this.entities = getDao().getAll();
+        this.entities = getAll();
         if (this.searchCriteria != null && this.searchCriteria.size() > 0) {
             Stream<T> stream = this.entities.stream();
             for (FieldSearchCriterion<T> fieldSearchCriterion : this.searchCriteria) {
@@ -102,6 +103,10 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
             this.entities = stream.collect(Collectors.toList());
         }
         this.notifyObservers(null);
+    }
+
+    protected List<T> getAll() {
+        return getDao().getAll();
     }
 
     protected abstract EntityDAO<T> getDao();

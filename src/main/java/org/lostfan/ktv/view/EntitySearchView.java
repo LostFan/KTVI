@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.*;
 
 import org.lostfan.ktv.model.*;
-import org.lostfan.ktv.model.entity.EntityModel;
+import org.lostfan.ktv.model.entity.BaseModel;
 import org.lostfan.ktv.utils.*;
 import org.lostfan.ktv.view.components.DatePickerField;
 import org.lostfan.ktv.view.components.IntegerTextField;
@@ -131,13 +131,13 @@ public class EntitySearchView extends FrameView {
     private JButton addButton;
     private JButton findButton;
     private JButton cancelButton;
-    private EntityModel model;
+    private BaseModel model;
 
     private ViewActionListener findActionListener;
 
     private ModelObserver modelObserver;
 
-    public EntitySearchView(EntityModel model) {
+    public EntitySearchView(BaseModel model) {
         this.model = model;
         setTitle(getGuiString("buttons.search") + ": " + getEntityString(model.getEntityNameKey()));
 

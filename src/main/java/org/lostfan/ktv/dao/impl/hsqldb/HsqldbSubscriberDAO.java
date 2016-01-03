@@ -433,6 +433,153 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         return subscriberTariff;
     }
 
+    @Override
+    public List<SubscriberTariff> getSubscriberTariffsBySubscriberIdInMonth(Integer subscriberId, LocalDate localDate) {
+        LocalDate beginDate = localDate.withDayOfMonth(1);
+        LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
+        List<SubscriberTariff> subscriberTariffs = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND" +
+                    " ((\"connection_date\"<? AND \"disconnection_date\" IS NULL OR \"disconnection_date\" > ?) OR (\"connection_date\">=? AND \"connection_date\"<?)) ORDER BY \"connection_date\" desc");
+            preparedStatement.setInt(1, subscriberId);
+            preparedStatement.setDate(2, Date.valueOf(endDate));
+            preparedStatement.setDate(3, Date.valueOf(beginDate));
+            preparedStatement.setDate(4, Date.valueOf(beginDate));
+            preparedStatement.setDate(5, Date.valueOf(endDate));
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                SubscriberTariff subscriberTariff = new SubscriberTariff();
+                subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
+                subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
+                subscriberTariff.setTariffId(rs.getInt("tariff_id"));
+                subscriberTariffs.add(subscriberTariff);
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscriberTariffs;
+    }
+
+    @Override
+    public SubscriberTariff getSubscriberTariffBySubscriberIdInAllMonth(Integer subscriberId, LocalDate localDate) {
+        LocalDate beginDate = localDate.withDayOfMonth(1);
+        LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
+        SubscriberTariff subscriberTariff = null;
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND" +
+                    " (\"connection_date\"<? AND (\"disconnection_date\" IS NULL OR \"disconnection_date\" > ?)) ORDER BY \"connection_date\" desc");
+            preparedStatement.setInt(1, subscriberId);
+            preparedStatement.setDate(2, Date.valueOf(beginDate));
+            preparedStatement.setDate(3, Date.valueOf(endDate));
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                subscriberTariff = new SubscriberTariff();
+                subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
+                subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
+                subscriberTariff.setTariffId(rs.getInt("tariff_id"));
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscriberTariff;
+    }
+    @Override
+    public SubscriberTariff getSubscriberTariffBySubscriberIdInMonthBeginInPrevMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate) {
+        LocalDate beginDate = localDate.withDayOfMonth(1);
+        LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
+        SubscriberTariff subscriberTariff = null;
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND" +
+                    " (\"connection_date\"<? AND \"disconnection_date\" > ? AND \"disconnection_date\" < ?) ORDER BY \"connection_date\" desc");
+            preparedStatement.setInt(1, subscriberId);
+            preparedStatement.setDate(2, Date.valueOf(beginDate));
+            preparedStatement.setDate(3, Date.valueOf(beginDate));
+            preparedStatement.setDate(4, Date.valueOf(endDate));
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                subscriberTariff = new SubscriberTariff();
+                subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
+                subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
+                subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
+                subscriberTariff.setTariffId(rs.getInt("tariff_id"));
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscriberTariff;
+    }
+
+    @Override
+    public SubscriberTariff getSubscriberTariffBySubscriberIdInMonthBeginInCurrentMonth(Integer subscriberId, LocalDate localDate) {
+        LocalDate beginDate = localDate.withDayOfMonth(1);
+        LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
+        SubscriberTariff subscriberTariff = null;
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND" +
+                    " (\"connection_date\">? AND \"connection_date\"<=? AND (\"disconnection_date\" IS NULL OR \"disconnection_date\" > ?)) ORDER BY \"connection_date\" desc");
+            preparedStatement.setInt(1, subscriberId);
+            preparedStatement.setDate(2, Date.valueOf(beginDate));
+            preparedStatement.setDate(3, Date.valueOf(endDate));
+            preparedStatement.setDate(4, Date.valueOf(endDate));
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                subscriberTariff = new SubscriberTariff();
+                subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
+                subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
+                subscriberTariff.setTariffId(rs.getInt("tariff_id"));
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscriberTariff;
+    }
+
+    @Override
+    public List<SubscriberTariff> getSubscriberTariffsBySubscriberIdInMonthBeginInCurrentMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate) {
+        LocalDate beginDate = localDate.withDayOfMonth(1);
+        LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
+        List<SubscriberTariff> subscriberTariffs = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND" +
+                    " (\"connection_date\">? AND (\"disconnection_date\" < ? AND \"disconnection_date\" IS NOT NULL)) ORDER BY \"connection_date\" desc");
+            preparedStatement.setInt(1, subscriberId);
+            preparedStatement.setDate(2, Date.valueOf(beginDate));
+            preparedStatement.setDate(3, Date.valueOf(endDate));
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                SubscriberTariff subscriberTariff = new SubscriberTariff();
+                subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
+                subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
+                subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
+                subscriberTariff.setTariffId(rs.getInt("tariff_id"));
+                subscriberTariffs.add(subscriberTariff);
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscriberTariffs;
+    }
+
     public void saveSubscriberTariff(SubscriberTariff subscriberTariff) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(

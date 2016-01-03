@@ -105,6 +105,66 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
+    public List<RenderedService> getRenderedServicesByServiceIdAndDate(int serviceId, LocalDate date) {
+        List<RenderedService> renderedServices = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"service_id\" = ? AND \"date\" = ?");
+            preparedStatement.setInt(1, serviceId);
+            preparedStatement.setDate(2, Date.valueOf(date));
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                RenderedService renderedService = constructEntity(rs);
+                renderedServices.add(renderedService);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return renderedServices;
+    }
+
+    public List<RenderedService> getRenderedServicesByServiceIdInMonth(int serviceId, LocalDate date) {
+        List<RenderedService> renderedServices = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"service_id\" = ? AND \"date\" >= ? AND \"date\" < ?");
+            preparedStatement.setInt(1, serviceId);
+            preparedStatement.setDate(2, Date.valueOf(date.withDayOfMonth(1)));
+            preparedStatement.setDate(3, Date.valueOf(date.withDayOfMonth(1).plusMonths(1)));
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                RenderedService renderedService = constructEntity(rs);
+                renderedServices.add(renderedService);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return renderedServices;
+    }
+
+    public List<RenderedService> getRenderedServicesByServiceIdAndSubscriberIdInMonth(int serviceId, int subscriberId, LocalDate date) {
+        List<RenderedService> renderedServices = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"service_id\" = ? AND \"subscriber_account\" = ? AND \"date\" >= ? AND \"date\" < ?");
+            preparedStatement.setInt(1, serviceId);
+            preparedStatement.setInt(2, subscriberId);
+            preparedStatement.setDate(3, Date.valueOf(date.withDayOfMonth(1)));
+            preparedStatement.setDate(4, Date.valueOf(date.withDayOfMonth(1).plusMonths(1)));
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                RenderedService renderedService = constructEntity(rs);
+                renderedServices.add(renderedService);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return renderedServices;
+    }
+
 
     public void save(RenderedService renderedService) {
         try {

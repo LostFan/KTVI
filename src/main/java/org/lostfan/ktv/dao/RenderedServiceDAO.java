@@ -12,4 +12,10 @@ public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
     List<RenderedService> getRenderedServicesBySubscriberId(int subscriberId);
 
     List<RenderedService> getRenderedServicesByServiceId(int serviceId);
+
+    List<RenderedService> getRenderedServicesByServiceIdAndDate(int serviceId, LocalDate date);
+
+    List<RenderedService> getRenderedServicesByServiceIdInMonth(int serviceId, LocalDate date);
+
+    List<RenderedService> getRenderedServicesByServiceIdAndSubscriberIdInMonth(int serviceId, int subscriberId, LocalDate date);
 }

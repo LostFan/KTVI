@@ -10,10 +10,7 @@ import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.domain.Tariff;
-import org.lostfan.ktv.model.EntityField;
-import org.lostfan.ktv.model.EntityFieldTypes;
-import org.lostfan.ktv.model.FullEntityField;
-import org.lostfan.ktv.model.MainModel;
+import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.dto.AdditionalRenderedService;
 import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
@@ -347,6 +344,10 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
                 field.setEditable(editable);
             }
         }
+    }
+
+    protected List<RenderedService> getAll() {
+        return getDao().getAll().stream().filter(e -> e.getServiceId() != FixedServices.SUBSCRIPTION_FEE.getId()).collect(Collectors.toList());
     }
 
 }

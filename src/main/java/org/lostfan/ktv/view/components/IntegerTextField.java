@@ -70,6 +70,7 @@ public class IntegerTextField extends JTextField {
     }
 
     public IntegerTextField() {
+        super(20);
         ((AbstractDocument) this.getDocument()).setDocumentFilter(new IntegerDocumentFilter());
     }
 
