@@ -29,7 +29,7 @@ public class EntityOneController {
         public void actionPerformed(Object args) {
 
             view.setAddActionListener(args_ -> {
-                Entity entity = view.getEntity();
+                Entity entity = (Entity) args;
                 ValidationResult result = model.getValidator().validate(entity);
                 if (result.hasErrors()) {
                     view.showErrors(result.getErrors());

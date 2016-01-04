@@ -24,6 +24,7 @@ public class ConnectionEntityView extends EntityView {
     private Map<String, List<MaterialConsumption>> entityInnerTableValues;
     private LabelFieldInput tariffLabelFieldInput;
     private EntityInnerTableView<MaterialConsumption> entityInnerTableView;
+    private RenderedServiceEntityModel model;
 
     public ConnectionEntityView(RenderedServiceEntityModel model) {
         this(model, null);
@@ -31,6 +32,7 @@ public class ConnectionEntityView extends EntityView {
 
     public ConnectionEntityView(RenderedServiceEntityModel model, ConnectionRenderedService entity) {
         super((EntityModel)model, entity);
+        this.model = model;
         setTitle(getEntityString(FixedServices.CONNECTION.getCode()));
 
         Tariff tariff = new Tariff();
@@ -38,15 +40,7 @@ public class ConnectionEntityView extends EntityView {
             tariff.setId(entity.getTariffId());
         }
         tariffLabelFieldInput = createLabelFieldInput(model.getTariffField(), tariff);
-        for (ActionListener actionListener : this.addButton.getActionListeners()) {
-            this.addButton.removeActionListener(actionListener);
-        }
-        this.addButton.addActionListener(e -> {
-            if (this.addActionListener != null) {
-                entityInnerTableView.stopEditing();
-                this.addActionListener.actionPerformed(model.buildConnectionDTO((RenderedService) getEntity(), getTariff(), entityInnerTableValues));
-            }
-        });
+        // TODO: stop table editing
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(0, 10, 10, 10);
@@ -73,6 +67,11 @@ public class ConnectionEntityView extends EntityView {
         }
 
         revalidate();
+    }
+
+    @Override
+    protected Entity buildEntity() {
+        return model.buildConnectionDTO((RenderedService) super.buildEntity(), getTariff(), entityInnerTableValues);
     }
 
     public Tariff getTariff() {

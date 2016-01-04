@@ -286,7 +286,7 @@ public class EntityView extends FrameView {
         this.addButton.addActionListener(e -> {
 
             if (this.addActionListener != null) {
-                this.addActionListener.actionPerformed(getEntity());
+                this.addActionListener.actionPerformed(buildEntity());
             }
         });
 
@@ -378,7 +378,10 @@ public class EntityView extends FrameView {
         }
     }
 
-    public Entity getEntity() {
+    /**
+     * Assembles values of the input fields into a Entity object.
+     */
+    protected Entity buildEntity() {
         Entity entity = this.entity;
         if (entity == null) {
             entity = this.model.createNewEntity();

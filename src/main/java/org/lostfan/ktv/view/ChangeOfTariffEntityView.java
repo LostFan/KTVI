@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.model.FixedServices;
@@ -15,6 +16,7 @@ public class ChangeOfTariffEntityView extends EntityView {
 
     private Tariff tariff;
     private LabelFieldInput tariffLabelFieldInput;
+    private RenderedServiceEntityModel model;
 
     public ChangeOfTariffEntityView(RenderedServiceEntityModel model) {
         this(model, null);
@@ -22,6 +24,7 @@ public class ChangeOfTariffEntityView extends EntityView {
 
     public ChangeOfTariffEntityView(RenderedServiceEntityModel model, ChangeOfTariffRenderedService entity) {
         super((EntityModel)model, entity);
+        this.model = model;
         setTitle(getEntityString(FixedServices.CHANGE_OF_TARIFF.getCode()));
 
         Tariff tariff = new Tariff();
@@ -29,14 +32,6 @@ public class ChangeOfTariffEntityView extends EntityView {
             tariff.setId(entity.getTariffId());
         }
         tariffLabelFieldInput = createLabelFieldInput(model.getTariffField(), tariff);
-        for (ActionListener actionListener : this.addButton.getActionListeners()) {
-            this.addButton.removeActionListener(actionListener);
-        }
-        this.addButton.addActionListener(e -> {
-            if (this.addActionListener != null) {
-                this.addActionListener.actionPerformed(model.buildChangeOfTariffDTO((RenderedService) getEntity(), getTariff()));
-            }
-        });
 
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(0, 10, 10, 10);
@@ -52,6 +47,11 @@ public class ChangeOfTariffEntityView extends EntityView {
         getFieldPanel().add(inputComponent, c);
 
         revalidate();
+    }
+
+    @Override
+    protected Entity buildEntity() {
+        return model.buildChangeOfTariffDTO((RenderedService) super.buildEntity(), getTariff());
     }
 
     public Tariff getTariff() {
