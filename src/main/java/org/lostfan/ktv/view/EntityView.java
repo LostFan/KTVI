@@ -255,21 +255,22 @@ public class EntityView extends FrameView {
         }
     }
 
-    protected static final int WIDTH = 450;
-    protected static final int HEIGHT = 550;
+    public static final int WIDTH = 500;
+    public static final int HEIGHT = 550;
 
-    protected List<LabelFieldInput> labelFieldInputs;
-    protected JButton addButton;
-    protected JButton cancelButton;
+    private List<LabelFieldInput> labelFieldInputs;
+    private JButton addButton;
+    private JButton cancelButton;
     private JPanel fieldPanel;
+    private EntityInnerTableView innerTableView;
 
-    protected EntityModel<? extends Entity> model;
+    private EntityModel<? extends Entity> model;
 
-    protected ViewActionListener addActionListener;
-    protected ViewActionListener cancelActionListener;
+    private ViewActionListener addActionListener;
+    private ViewActionListener cancelActionListener;
     protected ViewActionListener changeActionListener;
 
-    protected Entity entity;
+    private Entity entity;
 
     public EntityView(EntityModel model) {
         this(model, null);
@@ -284,8 +285,11 @@ public class EntityView extends FrameView {
 
         this.addButton = new JButton(getGuiString(entity == null ? "buttons.add" : "buttons.change"));
         this.addButton.addActionListener(e -> {
-
             if (this.addActionListener != null) {
+                // Stop to edit the inner table view
+                if (this.innerTableView != null) {
+                    this.innerTableView.stopEditing();
+                }
                 this.addActionListener.actionPerformed(buildEntity());
             }
         });
@@ -322,20 +326,8 @@ public class EntityView extends FrameView {
         this.fieldPanel = new JPanel(new GridBagLayout());
         getContentPanel().add(this.fieldPanel, BorderLayout.PAGE_START);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(0, 10, 10, 10);
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.HORIZONTAL;
-
         for (int i = 0; i < this.labelFieldInputs.size(); i++) {
-            c.gridy = i;
-            c.gridx = 0;
-            this.fieldPanel.add(this.labelFieldInputs.get(i).label, c);
-            c.gridx = 1;
-            JComponent inputComponent = this.labelFieldInputs.get(i).getInputComponent();
-            // HACK: textFields is excessively narrow when it's smaller than the displayed area.
-            inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-            this.fieldPanel.add(inputComponent, c);
+            addLabelFieldInput(this.labelFieldInputs.get(i));
         }
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -376,6 +368,21 @@ public class EntityView extends FrameView {
             default:
                 return entityField.getType().isEntityClass() ? new EntityLabelFieldInput(entityField , entity) : new StringLabelFieldInput(entityField);
         }
+    }
+
+    protected void addLabelFieldInput(LabelFieldInput input) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(0, 10, 10, 10);
+        c.anchor = GridBagConstraints.WEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridy = this.fieldPanel.getComponentCount();
+        c.gridx = 0;
+        this.fieldPanel.add(input.label, c);
+        c.gridx = 1;
+        JComponent inputComponent = input.getInputComponent();
+        // HACK: textFields is excessively narrow when it's smaller than the displayed area.
+        inputComponent.setMinimumSize(inputComponent.getPreferredSize());
+        this.fieldPanel.add(inputComponent, c);
     }
 
     /**
@@ -419,7 +426,8 @@ public class EntityView extends FrameView {
         this.changeActionListener = changeActionListener;
     }
 
-    public void addInnerTable(EntityInnerTableView innerTableView) {
+    protected void setInnerTable(EntityInnerTableView innerTableView) {
+        this.innerTableView = innerTableView;
         getContentPanel().add(innerTableView.getContentPanel(), BorderLayout.CENTER);
     }
 }

@@ -1,12 +1,9 @@
 package org.lostfan.ktv.view;
 
-import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.*;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.MaterialConsumption;
@@ -39,21 +36,8 @@ public class ConnectionEntityView extends EntityView {
         if(entity != null) {
             tariff.setId(entity.getTariffId());
         }
-        tariffLabelFieldInput = createLabelFieldInput(model.getTariffField(), tariff);
-        // TODO: stop table editing
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(0, 10, 10, 10);
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridy = labelFieldInputs.size() + 1;
-        c.gridx = 0;
-        getFieldPanel().add(this.tariffLabelFieldInput.label, c);
-        c.gridx = 1;
-        JComponent inputComponent = this.tariffLabelFieldInput.getInputComponent();
-        // HACK: textFields is excessively narrow when it's smaller than the displayed area.
-        inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-        getFieldPanel().add(inputComponent, c);
+        this.tariffLabelFieldInput = createLabelFieldInput(model.getTariffField(), tariff);
+        addLabelFieldInput(this.tariffLabelFieldInput);
 
         this.entityInnerTableValues = new HashMap<>();
         for (FullEntityField fullEntityField : model.getFullFields()) {
@@ -63,7 +47,7 @@ public class ConnectionEntityView extends EntityView {
             }
             this.entityInnerTableView = new EntityInnerTableView<>(fullEntityField, list);
             this.entityInnerTableValues.put(fullEntityField.getTitleKey(), this.entityInnerTableView.getEntityList());
-            this.addInnerTable(this.entityInnerTableView);
+            this.setInnerTable(this.entityInnerTableView);
         }
 
         revalidate();

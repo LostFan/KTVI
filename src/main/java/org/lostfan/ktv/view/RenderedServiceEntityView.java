@@ -26,22 +26,6 @@ public class RenderedServiceEntityView extends EntityView {
         super(model, entity);
         RenderedServiceEntityModel renderedServiceEntityModel = (RenderedServiceEntityModel) model;
         LabelFieldInput labelFieldInput = new EntityLabelFieldInput(new EntityField("tariff", EntityFieldTypes.Tariff, Tariff::getId, Tariff::setId), null );
-        for (LabelFieldInput innerLabelFieldInput : labelFieldInputs) {
-            if(innerLabelFieldInput.getEntityField().getType() == EntityFieldTypes.Service) {
-                Service service = ((Service)((EntityComboBox)innerLabelFieldInput.getInputComponent().getComponent(0))
-                        .getSelectedEntity());
-                if(service == null) {
-                    hideTariffField();
-                    continue;
-                }
-                if(service.isConnectionService()) {
-                    showTariffField();
-                    continue;
-                }
-                hideTariffField();
-
-            }
-        }
 
 //        tariffLabelFieldInputs = new ArrayList<>();
 //        for (EntityField entityField : ((RenderedServiceEntityModel) model).getTariffFields()) {
@@ -51,23 +35,26 @@ public class RenderedServiceEntityView extends EntityView {
 //            tariffLabelFieldInputs.add(createLabelFieldInput(entityField, null));
 //        }
 
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(0, 10, 10, 10);
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.HORIZONTAL;
-
         for (int i = 0; i < this.tariffLabelFieldInputs.size(); i++) {
-            c.gridy = labelFieldInputs.size() + i;
-            c.gridx = 0;
-            getFieldPanel().add(this.tariffLabelFieldInputs.get(i).label, c);
-            c.gridx = 1;
-            JComponent inputComponent = this.tariffLabelFieldInputs.get(i).getInputComponent();
-            // HACK: textFields is excessively narrow when it's smaller than the displayed area.
-            inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-            getFieldPanel().add(inputComponent, c);
+            addLabelFieldInput(this.tariffLabelFieldInputs.get(i));
         }
         revalidate();
+    }
+
+    @Override
+    protected void addLabelFieldInput(LabelFieldInput input) {
+        super.addLabelFieldInput(input);
+        if(input.getEntityField().getType() == EntityFieldTypes.Service) {
+            Service service = ((Service)((EntityComboBox)input.getInputComponent().getComponent(0))
+                    .getSelectedEntity());
+            if(service == null) {
+                hideTariffField();
+            }
+            if(service.isConnectionService()) {
+                showTariffField();
+            }
+            hideTariffField();
+        }
     }
 
     void  hideTariffField() {

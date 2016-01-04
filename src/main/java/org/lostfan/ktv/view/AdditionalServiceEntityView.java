@@ -1,12 +1,9 @@
 package org.lostfan.ktv.view;
 
-import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.*;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.MaterialConsumption;
@@ -41,21 +38,8 @@ public class AdditionalServiceEntityView extends EntityView {
         if(entity != null) {
             service.setId(entity.getServiceId());
         }
-        serviceLabelFieldInput = new EntityLabelFieldInput(model.getServiceField(), service, EntityComboBoxFactory.createAdditionalServiceComboBox(), EntitySelectionFactory::createAdditionalServiceForm);
-        // TODO: stop table editing on save
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(0, 10, 10, 10);
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridy = labelFieldInputs.size() + 1;
-        c.gridx = 0;
-        getFieldPanel().add(this.serviceLabelFieldInput.label, c);
-        c.gridx = 1;
-        JComponent inputComponent = this.serviceLabelFieldInput.getInputComponent();
-        // HACK: textFields is excessively narrow when it's smaller than the displayed area.
-        inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-        getFieldPanel().add(inputComponent, c);
+        this.serviceLabelFieldInput = new EntityLabelFieldInput(model.getServiceField(), service, EntityComboBoxFactory.createAdditionalServiceComboBox(), EntitySelectionFactory::createAdditionalServiceForm);
+        addLabelFieldInput(this.serviceLabelFieldInput);
 
         this.entityInnerTableValues = new HashMap<>();
         for (FullEntityField fullEntityField : model.getFullFields()) {
@@ -65,7 +49,7 @@ public class AdditionalServiceEntityView extends EntityView {
             }
             this.entityInnerTableView = new EntityInnerTableView<>(fullEntityField, list);
             this.entityInnerTableValues.put(fullEntityField.getTitleKey(), this.entityInnerTableView.getEntityList());
-            this.addInnerTable(this.entityInnerTableView);
+            this.setInnerTable(this.entityInnerTableView);
         }
 
         revalidate();

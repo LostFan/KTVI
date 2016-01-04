@@ -31,20 +31,8 @@ public class ChangeOfTariffEntityView extends EntityView {
         if(entity != null) {
             tariff.setId(entity.getTariffId());
         }
-        tariffLabelFieldInput = createLabelFieldInput(model.getTariffField(), tariff);
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(0, 10, 10, 10);
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridy = labelFieldInputs.size() + 1;
-        c.gridx = 0;
-        getFieldPanel().add(this.tariffLabelFieldInput.label, c);
-        c.gridx = 1;
-        JComponent inputComponent = this.tariffLabelFieldInput.getInputComponent();
-        // HACK: textFields is excessively narrow when it's smaller than the displayed area.
-        inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-        getFieldPanel().add(inputComponent, c);
+        this.tariffLabelFieldInput = createLabelFieldInput(model.getTariffField(), tariff);
+        addLabelFieldInput(this.tariffLabelFieldInput);
 
         revalidate();
     }

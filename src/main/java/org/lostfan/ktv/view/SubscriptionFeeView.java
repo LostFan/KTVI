@@ -1,10 +1,8 @@
 package org.lostfan.ktv.view;
 
-import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.SubscriptionFeeModel;
-import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.validation.Error;
@@ -16,7 +14,6 @@ import java.net.URL;
 import java.time.LocalDate;
 
 public class SubscriptionFeeView extends FrameView {
-
 
     private class DateLabelFieldInput {
 
