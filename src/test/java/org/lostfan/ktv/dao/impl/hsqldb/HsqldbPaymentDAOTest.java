@@ -84,7 +84,7 @@ public class HsqldbPaymentDAOTest {
         payment.setDate(LocalDate.of(2015, 11, 11));
         paymentDao.save(payment);
         assertEquals(paymentDao.getAll().get(3).getServicePaymentId().intValue(), 1);
-        assertEquals(paymentDao.getAll().get(3).getSubscriberAccount(), 3);
+        assertEquals(paymentDao.getAll().get(3).getSubscriberAccount().intValue(), 3);
         assertEquals(paymentDao.getAll().get(3).getDate(), LocalDate.of(2015, 11, 11));
     }
 
@@ -124,7 +124,7 @@ public class HsqldbPaymentDAOTest {
         Payment payment = paymentDao.get(1);
         payment.setServicePaymentId(2);
         paymentDao.update(payment);
-        assertEquals(paymentDao.get(1).getSubscriberAccount(), 1);
+        assertEquals(paymentDao.get(1).getSubscriberAccount().intValue(), 1);
     }
 
     @Test
@@ -168,7 +168,7 @@ public class HsqldbPaymentDAOTest {
     public void getAllPaymentsByDateShouldReturnsCorrectDataTest() throws SQLException {
         insertStubData();
         assertEquals(paymentDao.getPaymentsByDate(LocalDate.of(2015, 6, 27)).get(0).getServicePaymentId().intValue(), 2);
-        assertEquals(paymentDao.getPaymentsByDate(LocalDate.of(2015, 6, 27)).get(0).getSubscriberAccount(), 1);
+        assertEquals(paymentDao.getPaymentsByDate(LocalDate.of(2015, 6, 27)).get(0).getSubscriberAccount().intValue(), 1);
     }
 
     @Test

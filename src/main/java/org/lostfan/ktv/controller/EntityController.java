@@ -57,7 +57,6 @@ public class EntityController implements MainInnerController {
                 entityView.showErrors(result.getErrors());
                 return;
             }
-            model.save(entity);
             entityView.hide();
         });
     }

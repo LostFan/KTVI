@@ -179,4 +179,12 @@ public class EntityInnerTableModel extends DefaultTableModel {
     public List<Entity> getEntityList() {
         return list;
     }
+
+    public void setEntityList(List<Entity> entityList) {
+        for (Entity entity : entityList) {
+            this.list.add(entity);
+        }
+        this.size = list.size();
+        this.fireTableDataChanged();
+    }
 }

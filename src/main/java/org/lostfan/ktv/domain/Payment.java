@@ -10,9 +10,9 @@ public class Payment extends DefaultEntity {
 
     private Integer servicePaymentId;
 
-    private int subscriberAccount;
+    private Integer subscriberAccount;
 
-    private int price;
+    private Integer price;
 
     private LocalDate date;
 
@@ -32,19 +32,19 @@ public class Payment extends DefaultEntity {
         this.servicePaymentId = servicePaymentId;
     }
 
-    public int getSubscriberAccount() {
+    public Integer getSubscriberAccount() {
         return subscriberAccount;
     }
 
-    public void setSubscriberAccount(int subscriberAccount) {
+    public void setSubscriberAccount(Integer subscriberAccount) {
         this.subscriberAccount = subscriberAccount;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 

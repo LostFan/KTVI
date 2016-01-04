@@ -84,6 +84,9 @@ public class MainController {
         } else if (entityCode.equals(MainModel.getSubscriptionFeeModel().getEntityNameKey())) {
             entityController = new SubscriptionFeeController(MainModel.getSubscriptionFeeModel(),
                     new SubscriptionFeeTableView(MainModel.getSubscriptionFeeModel()));
+        } else if (entityCode.equals(MainModel.getPaymentEntityModel().getEntityNameKey())) {
+            entityController = new PaymentController(MainModel.getPaymentEntityModel(),
+                    new PaymentTableView(MainModel.getPaymentEntityModel()));
         }
         else {
             EntityModel model = MainModel.getEntityModel(entityCode);

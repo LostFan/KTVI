@@ -62,12 +62,14 @@ public class EntityInnerTableView<T extends Entity> extends View {
         });
         this.restoreRowButton = new JButton(getGuiString("buttons.restoreRows"));
         this.restoreRowButton.addActionListener(e -> {
+            this.stopEditing();
             this.entityInnerTableModel.restoreRows();
             revalidate();
         });
 
         this.deleteButton = new JButton(getGuiString("buttons.delete"));
         this.deleteButton.addActionListener(e -> {
+            this.stopEditing();
             this.entityInnerTableModel.deleteRows(this.table.getSelectedRows());
             revalidate();
         });
@@ -140,6 +142,10 @@ public class EntityInnerTableView<T extends Entity> extends View {
     @SuppressWarnings("unchecked")
     public List<T> getEntityList() {
         return (List<T>)entityInnerTableModel.getEntityList();
+    }
+
+    public void setEntityList(List<Entity> entityList) {
+        entityInnerTableModel.setEntityList(entityList);
     }
 
 //    public EntityModel getEntityModel() {
