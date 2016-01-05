@@ -9,7 +9,7 @@ public class SubscriberTariffValidator implements Validator<SubscriberTariff> {
     public ValidationResult validate(SubscriberTariff entity, ValidationResult result) {
 
         if (entity.getTariffId() == null) {
-            result.addError("empty", "tariff");
+            result.addError("errors.empty", "tariff");
         }
 
 //        if (entity.getConnectTariff() == null) {

@@ -8,15 +8,15 @@ public class MaterialConsumptionValidator implements Validator<MaterialConsumpti
     public ValidationResult validate(MaterialConsumption entity, ValidationResult result) {
 
         if (entity.getMaterialId() == null || entity.getMaterialId().toString().length() == 0) {
-            result.addError("empty", "material");
+            result.addError("errors.empty", "material");
         }
 
         if (entity.getAmount() == null|| entity.getAmount().toString().length() == 0) {
-            result.addError("empty", "materialConsumption.amount");
+            result.addError("errors.empty", "materialConsumption.amount");
         }
 
 //        if (entity.getAccount() == null || entity.getAccount().length() == 0) {
-//            result.addError("empty", "subscriber.account");
+//            result.addError("errors.empty", "subscriber.account");
 //        }
 
         return result;

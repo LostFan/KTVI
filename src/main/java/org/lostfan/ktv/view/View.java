@@ -21,11 +21,11 @@ public abstract class View {
         return contentPanel;
     }
 
-    public String getEntityString(String key) {
+    public static String getEntityString(String key) {
         return ResourceBundles.getEntityBundle().getString(key);
     }
 
-    public String getGuiString(String key) {
+    public static String getGuiString(String key) {
         return ResourceBundles.getGuiBundle().getString(key);
     }
 }

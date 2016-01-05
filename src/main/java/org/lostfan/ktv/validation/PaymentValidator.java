@@ -7,19 +7,19 @@ public class PaymentValidator implements Validator<Payment> {
     @Override
     public ValidationResult validate(Payment entity, ValidationResult result) {
         if (entity.getDate() == null) {
-            result.addError("empty", "payment.payDate");
+            result.addError("errors.empty", "payment.payDate");
         }
 
         if (entity.getPrice() == null) {
-            result.addError("empty", "payment.price");
+            result.addError("errors.empty", "payment.price");
         }
 
         if (entity.getServicePaymentId() == null) {
-            result.addError("empty", "service");
+            result.addError("errors.empty", "service");
         }
 
         if (entity.getSubscriberAccount() == null) {
-            result.addError("empty", "subscriber");
+            result.addError("errors.empty", "subscriber");
         }
 
         return result;

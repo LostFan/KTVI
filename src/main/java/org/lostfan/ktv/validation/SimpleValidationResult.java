@@ -2,6 +2,7 @@ package org.lostfan.ktv.validation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class SimpleValidationResult implements ValidationResult {
@@ -57,5 +58,10 @@ public class SimpleValidationResult implements ValidationResult {
 
     private void addError(Error error) {
         this.errors.add(error);
+    }
+
+    @Override
+    public Iterator<Error> iterator() {
+        return this.errors.iterator();
     }
 }

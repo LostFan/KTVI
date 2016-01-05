@@ -27,7 +27,7 @@ public class TariffEntityController extends EntityController {
         TariffPrice tariffPrice = (TariffPrice) args;
         ValidationResult result = this.model.save(tariffPrice);
         if (result.hasErrors()) {
-            this.tariffPriceView.showValidationErrors(result.getErrors());
+            this.tariffPriceView.showErrors(result);
         } else {
             this.tariffPriceView.hide();
         }

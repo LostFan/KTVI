@@ -13,11 +13,11 @@ public class TariffPriceValidator implements Validator<TariffPrice> {
 
         if (entity.getDate() != null) {
             if (entity.getPrice() < 0) {
-                result.addError("cannot be negative", "tariffPrice.price");
+                result.addError("errors.negative", "tariffPrice.price");
             }
 
             if (!LocalDate.now().isBefore(entity.getDate())) {
-                result.addError("should be future", "tariffPrice.date");
+                result.addError("errors.pastDate", "tariffPrice.date");
             }
         }
 

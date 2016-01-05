@@ -8,7 +8,7 @@ public class TariffValidator implements Validator<Tariff> {
     public ValidationResult validate(Tariff entity, ValidationResult result) {
 
         if (entity.getName() == null || entity.getName().length() == 0) {
-            result.addError("empty", "tariff.name");
+            result.addError("errors.empty", "tariff.name");
         }
 
         return result;

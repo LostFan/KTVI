@@ -2,7 +2,7 @@ package org.lostfan.ktv.validation;
 
 import java.util.List;
 
-public interface ValidationResult {
+public interface ValidationResult extends Iterable<Error> {
 
     boolean hasErrors();
 

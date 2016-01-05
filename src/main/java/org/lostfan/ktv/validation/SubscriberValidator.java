@@ -8,15 +8,15 @@ public class SubscriberValidator implements Validator<Subscriber> {
     public ValidationResult validate(Subscriber entity, ValidationResult result) {
 
         if (entity.getName() == null || entity.getName().length() == 0) {
-            result.addError("empty", "subscriber.name");
+            result.addError("errors.empty", "subscriber.name");
         }
 
         if (entity.getStreetId() == null) {
-            result.addError("empty", "subscriber.street_id");
+            result.addError("errors.empty", "subscriber.street_id");
         }
 
         if (entity.getAccount() == null || entity.getAccount() == 0) {
-            result.addError("empty", "subscriber.account");
+            result.addError("errors.empty", "subscriber.account");
         }
 
         return result;
