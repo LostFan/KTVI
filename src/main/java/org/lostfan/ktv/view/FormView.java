@@ -262,11 +262,23 @@ public class FormView extends FrameView {
     }
 
     private JPanel fieldPanel;
+    private JLabel formTitleLabel;
     private Map<String, FormField> fields;
 
     public FormView() {
         this.fieldPanel = new JPanel(new GridBagLayout());
         getContentPanel().add(this.fieldPanel);
+
+        this.formTitleLabel = new JLabel();
+        this.formTitleLabel.setVisible(false);
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(10, 10, 10, 10);
+        c.weightx = 1d;
+        c.fill=GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 2;
+        fieldPanel.add(this.formTitleLabel, c);
 
         this.fields = new HashMap<>();
     }
@@ -280,6 +292,14 @@ public class FormView extends FrameView {
     }
 
     /**
+     * Sets the form title that will be displayed just above the input fields
+     */
+    protected void setFormTitle(String title) {
+        this.formTitleLabel.setText(title);
+        this.formTitleLabel.setVisible(true);
+    }
+
+    /**
      * Adds the specified FormField to the fieldList and onto the fieldPanel
      */
     protected void addFormField(FormField field) {
@@ -288,7 +308,7 @@ public class FormView extends FrameView {
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        c.gridy = this.fields.size() * 2;
+        c.gridy = this.fields.size() * 2 + 1;
         c.gridx = 0;
         c.insets = new Insets(15, 10, 10, 10);
         this.fieldPanel.add(field.label, c);
