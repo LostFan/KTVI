@@ -12,13 +12,11 @@ import org.lostfan.ktv.model.dto.TariffWithPrices;
 import org.lostfan.ktv.utils.DateFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
-import org.lostfan.ktv.view.components.DatePickerField;
-import org.lostfan.ktv.view.components.IntegerTextField;
 
-public class TariffPriceView extends FrameView {
+public class TariffPriceView extends FormView {
 
     public static final int HEIGHT = 400;
-    public static final int WIDTH = 300;
+    public static final int WIDTH = 350;
 
     private static class ArchiveTableModel extends AbstractTableModel {
 
@@ -68,15 +66,16 @@ public class TariffPriceView extends FrameView {
     private ViewActionListener saveActionListener;
 
     private JTable archiveTable;
-    private IntegerTextField priceField;
-    private DatePickerField dateField;
+    private IntegerFormField priceField;
+    private DateFormField dateField;
     private String newPriceTitle;
 
     private JButton saveButton;
     private JButton cancelButton;
 
     public TariffPriceView(TariffWithPrices tariff) {
-        super("TarifPrice");
+        super();
+        setTitle("TariffPrice");
         this.tariff = tariff;
 
         setSize(WIDTH, HEIGHT);
@@ -88,8 +87,8 @@ public class TariffPriceView extends FrameView {
         this.archiveTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         this.archiveTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 
-        this.priceField = new IntegerTextField();
-        this.dateField = new DatePickerField();
+        this.priceField = new IntegerFormField("tariffPrice.price");
+        this.dateField = new DateFormField("tariffPrice.date");
 
         if (tariff.getNewPrice() != null) {
             this.priceField.setValue(tariff.getNewPrice().getPrice());
@@ -144,31 +143,10 @@ public class TariffPriceView extends FrameView {
             mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
 
-        JPanel newPricePanel = new JPanel(new GridBagLayout());
-        mainPanel.add(newPricePanel, BorderLayout.PAGE_END);
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 5, 5, 5);
-        c.weightx = 1d;
-        c.fill=GridBagConstraints.HORIZONTAL;
-
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
-        newPricePanel.add(new JLabel(this.newPriceTitle), c);
-
-        c.gridy = 1;
-        c.gridwidth = 1;
-        newPricePanel.add(new JLabel(getEntityString("tariffPrice.price")), c);
-
-        c.gridx = 1;
-        newPricePanel.add(this.priceField, c);
-
-        c.gridx = 0;
-        c.gridy = 2;
-        newPricePanel.add(new JLabel(getEntityString("tariffPrice.date")), c);
-
-        c.gridx = 1;
-        newPricePanel.add(this.dateField, c);
+        setFormTitle(newPriceTitle);
+        addFormField(this.priceField);
+        addFormField(this.dateField);
+        mainPanel.add(getFieldPanel(), BorderLayout.PAGE_END);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         getContentPanel().add(buttonPanel, BorderLayout.PAGE_END);
@@ -187,9 +165,5 @@ public class TariffPriceView extends FrameView {
 
     public void setSaveActionListener(ViewActionListener saveActionListener) {
         this.saveActionListener = saveActionListener;
-    }
-
-    public void showValidationErrors(List<org.lostfan.ktv.validation.Error> errors) {
-        // TODO:
     }
 }
