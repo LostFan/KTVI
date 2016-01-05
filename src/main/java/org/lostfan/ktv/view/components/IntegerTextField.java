@@ -18,17 +18,12 @@ public class IntegerTextField extends JTextField {
             // Inserting in the beginning
             boolean _hasSign = hasSign;
             if (hasSign && offset == 0) {
-                // No more signs
-                if (insertion.charAt(0) == '+' || insertion.charAt(0) == '-') {
-                    return false;
-                }
-                // Digits only
-                if (!insertion.matches("^\\d+$")) {
-                    return false;
-                }
+                // There is a sign in the very beginning
+                // Nothing is allowed to be placed before it
+                return false;
             } else if (offset == 0 && !hasSign) {
                 // Sign at the beginning, then digits only
-                if (!insertion.matches("^[-\\+]?\\d+$")) {
+                if (!insertion.matches("^[-\\+]?\\d*$")) {
                     return false;
                 }
                 if (insertion.charAt(0) == '+' || insertion.charAt(0) == '-') {
