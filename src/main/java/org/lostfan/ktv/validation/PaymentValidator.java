@@ -14,7 +14,7 @@ public class PaymentValidator implements Validator<Payment> {
             result.addError("errors.empty", "payment.price");
         }
 
-        if (entity.getServicePaymentId() == null) {
+        if (entity.getRenderedServicePaymentId() == null) {
             result.addError("errors.empty", "service");
         }
 

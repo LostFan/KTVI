@@ -97,13 +97,13 @@ public class HsqldbPaymentDAO implements PaymentDAO {
     public void save(Payment payment) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"payment\" (\"id\", \"subscriber_account\", \"service_id\", \"payment_type_id\", \"price\", \"date\")" +
+                    "INSERT INTO \"payment\" (\"id\", \"subscriber_account\", \"rendered_service_id\", \"payment_type_id\", \"price\", \"date\")" +
                             " VALUES(?, ?, ?, ?, ?, ?)");
             if (payment.getId() != null) {
                 preparedStatement.setInt(1, payment.getId());
             }
             preparedStatement.setInt(2, payment.getSubscriberAccount());
-            preparedStatement.setInt(3, payment.getServicePaymentId());
+            preparedStatement.setInt(3, payment.getRenderedServicePaymentId());
             if( payment.getPaymentTypeId() != null) {
                 preparedStatement.setInt(4, payment.getPaymentTypeId());
             }
@@ -123,9 +123,9 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         if(get(payment.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"payment\" set \"subscriber_account\" = ?, \"service_id\" = ?, \"payment_type_id\" = ?, \"price\" = ?, \"date\" = ? where \"id\" = ?");
+                        "UPDATE \"payment\" set \"subscriber_account\" = ?, \"rendered_service_id\" = ?, \"payment_type_id\" = ?, \"price\" = ?, \"date\" = ? where \"id\" = ?");
                 preparedStatement.setInt(1, payment.getSubscriberAccount());
-                preparedStatement.setInt(2, payment.getServicePaymentId());
+                preparedStatement.setInt(2, payment.getRenderedServicePaymentId());
                 if( payment.getPaymentTypeId() != null) {
                     preparedStatement.setInt(3, payment.getPaymentTypeId());
                 }
@@ -268,7 +268,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         payment.setDate(rs.getDate("date").toLocalDate());
         payment.setPaymentTypeId(rs.getInt("payment_type_id"));
         payment.setSubscriberAccount(rs.getInt("subscriber_account"));
-        payment.setServicePaymentId(rs.getInt("service_id"));
+        payment.setRenderedServicePaymentId(rs.getInt("rendered_service_id"));
         return payment;
     }
 }

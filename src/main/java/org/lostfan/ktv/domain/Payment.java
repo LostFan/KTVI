@@ -8,7 +8,7 @@ public class Payment extends DefaultEntity {
 
     private Integer paymentTypeId;
 
-    private Integer servicePaymentId;
+    private Integer renderedServicePaymentId;
 
     private Integer subscriberAccount;
 
@@ -24,12 +24,12 @@ public class Payment extends DefaultEntity {
         this.paymentTypeId = paymentTypeId;
     }
 
-    public Integer getServicePaymentId() {
-        return servicePaymentId;
+    public Integer getRenderedServicePaymentId() {
+        return renderedServicePaymentId;
     }
 
-    public void setServicePaymentId(Integer servicePaymentId) {
-        this.servicePaymentId = servicePaymentId;
+    public void setRenderedServicePaymentId(Integer renderedServicePaymentId) {
+        this.renderedServicePaymentId = renderedServicePaymentId;
     }
 
     public Integer getSubscriberAccount() {

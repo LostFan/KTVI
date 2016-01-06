@@ -27,7 +27,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         this.fields.add(new EntityField("payment.id", EntityFieldTypes.Integer, Payment::getId, Payment::setId, false));
         this.fields.add(new EntityField("payment.payDate", EntityFieldTypes.Date, Payment::getDate, Payment::setDate));
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, Payment::getSubscriberAccount, Payment::setSubscriberAccount));
-        this.fields.add(new EntityField("service", EntityFieldTypes.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
+        this.fields.add(new EntityField("service", EntityFieldTypes.Service, Payment::getRenderedServicePaymentId, Payment::setRenderedServicePaymentId));
         this.fields.add(new EntityField("payment.price", EntityFieldTypes.Integer, Payment::getPrice, Payment::setPrice));
 
         loadFullEntityField = new FullEntityField("payment", EntityFieldTypes.Payment, null, null, Payment::new);
@@ -85,7 +85,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         payment.setDate(date);
         payment.setPaymentTypeId(null);
         payment.setPrice(price);
-        payment.setServicePaymentId(FixedServices.SUBSCRIPTION_FEE.getId());
+        payment.setRenderedServicePaymentId(FixedServices.SUBSCRIPTION_FEE.getId());
         return payment;
     }
 
