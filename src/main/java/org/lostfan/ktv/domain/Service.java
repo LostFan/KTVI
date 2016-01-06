@@ -2,6 +2,14 @@ package org.lostfan.ktv.domain;
 
 public class Service extends DefaultEntity  {
 
+    public Service() {
+        additionalService = false;
+        isConsumeMaterials = false;
+        isChangeTariff = false;
+        isConnectionService = false;
+        isDisconnectionService = false;
+    }
+
     private Integer id;
 
     private String name;

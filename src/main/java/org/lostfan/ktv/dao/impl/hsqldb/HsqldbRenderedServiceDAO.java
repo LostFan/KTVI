@@ -165,6 +165,25 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
+    public RenderedService getFirstRenderedServiceLessDate(int serviceId, int subscriberId, LocalDate date) {
+        RenderedService renderedService = null;
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"rendered_service\" where \"service_id\" = ? AND \"subscriber_account\" = ? AND \"date\" <= ? ORDER BY \"date\" DESC");
+            preparedStatement.setInt(1, serviceId);
+            preparedStatement.setInt(2, subscriberId);
+            preparedStatement.setDate(3, Date.valueOf(date));;
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                renderedService = constructEntity(rs);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return renderedService;
+    }
+
 
     public void save(RenderedService renderedService) {
         try {
@@ -186,6 +205,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
             resultSet.next();
             renderedService.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
+            System.out.println(renderedService.getSubscriberAccount());
             ex.printStackTrace();
         }
     }
