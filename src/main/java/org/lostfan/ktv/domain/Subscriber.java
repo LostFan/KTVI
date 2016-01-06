@@ -31,6 +31,8 @@ public class Subscriber extends DefaultEntity {
 
     private LocalDate passportDate;
 
+    private LocalDate contractDate;
+
     public Integer getId() {
         return account;
     }
@@ -141,5 +143,13 @@ public class Subscriber extends DefaultEntity {
 
     public void setPassportDate(LocalDate passportDate) {
         this.passportDate = passportDate;
+    }
+
+    public LocalDate getContractDate() {
+        return contractDate;
+    }
+
+    public void setContractDate(LocalDate contractDate) {
+        this.contractDate = contractDate;
     }
 }

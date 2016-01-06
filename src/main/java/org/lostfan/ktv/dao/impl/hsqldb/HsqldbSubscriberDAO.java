@@ -59,8 +59,8 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"subscriber\" (\"account\", \"name\", \"street_id\", \"balance\"," +
                             " \"connected\", \"house\", \"building\", \"postcode\", \"phone\"," +
-                            " \"passport_number\", \"passport_authority\", \"passport_date\") " +
-                            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                            " \"passport_number\", \"passport_authority\", \"passport_date\" , \"date_of_contract\") " +
+                            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             preparedStatement.setInt(1, subscriber.getAccount());
             preparedStatement.setString(2, subscriber.getName());
@@ -96,6 +96,9 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             if (subscriber.getPassportDate() != null) {
                 preparedStatement.setDate(12, Date.valueOf(subscriber.getPassportDate()));
             }
+            if (subscriber.getContractDate() != null) {
+                preparedStatement.setDate(13, Date.valueOf(subscriber.getContractDate()));
+            }
             preparedStatement.executeUpdate();
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
@@ -121,7 +124,8 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
                                 "\"phone\" = ?, " +
                                 "\"passport_number\" = ?, " +
                                 "\"passport_authority\" = ?, " +
-                                "\"passport_date\" = ? " +
+                                "\"passport_date\" = ?, " +
+                                "\"date_of_contract\" = ?" +
                                 "where \"account\" = ?");
                 preparedStatement.setString(1, subscriber.getName());
                 if(subscriber.getStreetId() != null) {
@@ -156,7 +160,10 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
                 if (subscriber.getPassportDate() != null) {
                     preparedStatement.setDate(11, Date.valueOf(subscriber.getPassportDate()));
                 }
-                preparedStatement.setInt(12, subscriber.getAccount());
+                if (subscriber.getContractDate() != null) {
+                    preparedStatement.setDate(12, Date.valueOf(subscriber.getContractDate()));
+                }
+                preparedStatement.setInt(13, subscriber.getAccount());
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
@@ -713,6 +720,10 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         Date passportDate = rs.getDate("passport_date");
         if (passportDate != null) {
             subscriber.setPassportDate(passportDate.toLocalDate());
+        }
+        Date contractDate = rs.getDate("date_of_contract");
+        if (contractDate != null) {
+            subscriber.setContractDate(passportDate.toLocalDate());
         }
         return subscriber;
     }
