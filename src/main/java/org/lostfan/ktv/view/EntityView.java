@@ -155,7 +155,7 @@ public class EntityView extends FormView {
             if (!entityField.isEditable()) {
                 continue;
             }
-            addFormField(createFormField(entityField));
+            addFormField(createFormField(entityField, entity));
         }
 
         buildLayout();
