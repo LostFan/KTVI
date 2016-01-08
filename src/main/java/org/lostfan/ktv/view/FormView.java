@@ -263,6 +263,7 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
     }
 
     private JPanel fieldPanel;
+    private JPanel globalErrorPanel;
     private JLabel formTitleLabel;
     private Map<String, FormField> fields;
 
@@ -280,6 +281,13 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
         c.gridy = 0;
         c.gridwidth = 2;
         fieldPanel.add(this.formTitleLabel, c);
+
+        this.globalErrorPanel = new JPanel();
+        this.globalErrorPanel.setForeground(Color.RED);
+        this.globalErrorPanel.setLayout(new BoxLayout(this.globalErrorPanel, BoxLayout.PAGE_AXIS));
+        c.insets = new Insets(0, 10, 0, 10);
+        c.gridy = 1;
+        this.fieldPanel.add(this.globalErrorPanel, c);
 
         this.fields = new HashMap<>();
     }
@@ -313,7 +321,7 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
 
-        c.gridy = this.fields.size() * 2 + 1;
+        c.gridy = this.fields.size() * 2 + 2;
         c.gridx = 0;
         c.insets = new Insets(15, 10, 10, 10);
         this.fieldPanel.add(field.label, c);
@@ -341,15 +349,18 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
             field.clearError();
         }
 
+        this.globalErrorPanel.removeAll();
+
         for (Error error : errors) {
             if (error.getField() == null) {
-                // TODO: show on top of the fields panel
-                JOptionPane.showMessageDialog(getFrame(), getGuiString(error.getMessage()), "Error", JOptionPane.ERROR_MESSAGE);
-                continue;
-            }
-            FormField field = getFormField(error.getField());
-            if (field != null){
-                field.setError(error.getMessage());
+                JLabel errorLabel = new JLabel(getGuiString(error.getMessage()));
+                errorLabel.setForeground(Color.RED);
+                this.globalErrorPanel.add(errorLabel);
+            } else {
+                FormField field = getFormField(error.getField());
+                if (field != null) {
+                    field.setError(error.getMessage());
+                }
             }
         }
     }

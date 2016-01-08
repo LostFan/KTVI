@@ -180,13 +180,13 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         if (entity.getId() == null) {
             SubscriberSession subscriberSession = subscriberDAO.getNotClosedSubscriberSessionByDate(entity.getSubscriberAccount(), entity.getDate());
             if(subscriberSession == null) {
-                result.addError("No session");
+                result.addError("errors.noCurrentSession");
                 return result;
             }
             subscriberSession.setDisconnectionDate(entity.getDate());
             SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
             if(subscriberTariff == null) {
-                result.addError("No tariff");
+                result.addError("errors.noCurrentTariff");
                 return result;
             }
             subscriberTariff.setDisconnectTariff(entity.getDate());
@@ -213,7 +213,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         if (entity.getId() == null) {
             SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
             if(subscriberTariff == null) {
-                result.addError("No tariff");
+                result.addError("errors.noCurrentTariff");
                 return result;
             }
             subscriberTariff.setDisconnectTariff(entity.getDate());
