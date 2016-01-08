@@ -18,7 +18,7 @@ public class ChangeOfTariffEntityView extends EntityView {
         super((EntityModel)model, entity);
         setTitle(getEntityString(FixedServices.CHANGE_OF_TARIFF.getCode()));
 
-        addFormField(createFormField(model.getChangeTariffField(), entity));
+        addFormField(createFormField(model.getChangeTariffField(), entity), model.getChangeTariffField());
 
         revalidate();
     }

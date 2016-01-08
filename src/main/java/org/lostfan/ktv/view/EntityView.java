@@ -155,7 +155,7 @@ public class EntityView extends FormView {
             if (!entityField.isEditable()) {
                 continue;
             }
-            addFormField(createFormField(entityField, entity));
+            addFormField(createFormField(entityField, entity), entityField);
         }
 
         buildLayout();
@@ -197,7 +197,6 @@ public class EntityView extends FormView {
                 formField =  entityField.getType().isEntityClass() ? new EntityFormField(entityField , this.entity)
                         : new StringFormField(entityField.getTitleKey());
         }
-        entityFormFieldMap.put(entityField, formField);
         return formField;
     }
 
@@ -207,6 +206,11 @@ public class EntityView extends FormView {
             field.setValue(entityField.get(entity));
         }
         return field;
+    }
+
+    protected void addFormField(FormField formField, EntityField entityField) {
+        super.addFormField(formField);
+        entityFormFieldMap.put(entityField, formField);
     }
 
     /**

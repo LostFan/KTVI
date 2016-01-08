@@ -33,7 +33,8 @@ public class AdditionalServiceEntityView extends EntityView {
         if(entity != null) {
             service.setId(entity.getServiceId());
         }
-        addFormField(new EntityFormField(model.getServiceField(), service, EntityComboBoxFactory.createAdditionalServiceComboBox(), EntitySelectionFactory::createAdditionalServiceForm));
+        addFormField(new EntityFormField(model.getServiceField(), entity, EntityComboBoxFactory.createAdditionalServiceComboBox(),
+                EntitySelectionFactory::createAdditionalServiceForm), model.getServiceField());
 
         for (FullEntityField fullEntityField : model.getFullFields()) {
             List<Entity> list = new ArrayList<>();

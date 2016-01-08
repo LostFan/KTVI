@@ -27,7 +27,7 @@ public class ConnectionEntityView extends EntityView {
         super((EntityModel)model, entity);
         setTitle(getEntityString(FixedServices.CONNECTION.getCode()));
 
-        addFormField(createFormField(model.getConnectionTariffField(), entity));
+        addFormField(createFormField(model.getConnectionTariffField(), entity), model.getConnectionTariffField());
 
         for (FullEntityField fullEntityField : model.getFullFields()) {
             List<Entity> list = new ArrayList<>();
