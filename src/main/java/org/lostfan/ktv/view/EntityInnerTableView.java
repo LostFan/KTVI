@@ -38,11 +38,13 @@ public class EntityInnerTableView<T extends Entity> extends View {
 
     private ModelObserver modelObserver;
 
+    private FullEntityField fullEntityField;
+
 //    private EntityModel model;
 
     public EntityInnerTableView(FullEntityField fullEntityField, List<Entity> list) {
 //        this.model = model;
-
+        this.fullEntityField = fullEntityField;
         this.entityInnerTableModel = new EntityInnerTableModel(fullEntityField, list);
         this.table = new JTable(this.entityInnerTableModel);
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -169,6 +171,10 @@ public class EntityInnerTableView<T extends Entity> extends View {
     protected void revalidate() {
         addStringActionTableCellEditorToColumns();
         super.revalidate();
+    }
+
+    public FullEntityField getFullEntityField() {
+        return this.fullEntityField;
     }
 
     public void setAddActionListener(ViewActionListener addActionListener) {

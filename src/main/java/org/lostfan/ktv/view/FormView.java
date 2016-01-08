@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Map;
  * for entering values, retrieving the result object
  * and showing validation errors.
  */
-public class FormView extends FrameView {
+public class FormView extends FrameView implements Iterable<FormView.FormField> {
 
     public static abstract class FormField<T> {
 
@@ -291,6 +292,10 @@ public class FormView extends FrameView {
         return fieldPanel;
     }
 
+    protected FormField getFormField(String code) {
+        return this.fields.get(code);
+    }
+
     /**
      * Sets the form title that will be displayed just above the input fields
      */
@@ -342,10 +347,15 @@ public class FormView extends FrameView {
                 JOptionPane.showMessageDialog(getFrame(), getGuiString(error.getMessage()), "Error", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
-            FormField field = this.fields.get(error.getField());
+            FormField field = getFormField(error.getField());
             if (field != null){
                 field.setError(error.getMessage());
             }
         }
+    }
+
+    @Override
+    public Iterator<FormField> iterator() {
+        return this.fields.values().iterator();
     }
 }

@@ -4,184 +4,27 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.*;
-import org.lostfan.ktv.validation.Error;
 import org.lostfan.ktv.view.components.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.*;
-import java.util.List;
 import java.util.function.Supplier;
 
-public class EntityView extends FrameView {
+public class EntityView extends FormView {
 
-    protected abstract class LabelFieldInput {
-
-        protected JLabel label;
-
-        protected EntityField entityField;
-
-        public LabelFieldInput(EntityField entityField) {
-            this.label = new JLabel(getEntityString(entityField.getTitleKey()), SwingConstants.LEFT);
-            this.entityField = entityField;
-        }
-
-        /**
-         * Returns a Component that represents the source for entering a value
-         */
-        public abstract JComponent getInputComponent();
-
-        /**
-         * Returns the current value of the component
-         */
-        public abstract Object getValue();
-
-        protected EntityField getEntityField() {
-            return this.entityField;
-        }
-    }
-
-    private class StringLabelFieldInput extends LabelFieldInput {
-
-        private JTextField textField;
-
-        public StringLabelFieldInput(EntityField entityField) {
-            super(entityField);
-            this.textField = new JTextField(20);
-            this.textField.setMargin(new Insets(2, 6, 2, 6));
-            if (EntityView.this.entity != null) {
-                this.textField.setText(String.valueOf(entityField.get(EntityView.this.entity)));
-            }
-            new DefaultContextMenu().add(textField);
-        }
-
-        @Override
-        public JComponent getInputComponent() {
-            return this.textField;
-        }
-
-        @Override
-        public Object getValue() {
-            return this.textField.getText();
-        }
-    }
-
-    private class IntegerLabelFieldInput extends LabelFieldInput {
-
-        private IntegerTextField textField;
-
-        public IntegerLabelFieldInput(EntityField entityField) {
-            super(entityField);
-            this.textField = new IntegerTextField();
-            this.textField.setMargin(new Insets(2, 6, 2, 6));
-            if (EntityView.this.entity != null) {
-                this.textField.setValue((Integer)entityField.get(EntityView.this.entity));
-            }
-
-            new DefaultContextMenu().add(textField);
-        }
-
-        @Override
-        public JComponent getInputComponent() {
-            return this.textField;
-        }
-
-        @Override
-        public Object getValue() {
-            return textField.getValue();
-        }
-    }
-
-    private class DoubleLabelFieldInput extends LabelFieldInput {
-
-        private JTextField textField;
-
-        public DoubleLabelFieldInput(EntityField entityField) {
-            super(entityField);
-            // TODO: Implement FormattedTextField or another way to filter double values only
-            this.textField = new JTextField(20);
-            this.textField.setMargin(new Insets(2, 6, 2, 6));
-            if (EntityView.this.entity != null) {
-                this.textField.setText(String.valueOf(entityField.get(EntityView.this.entity)));
-            }
-            new DefaultContextMenu().add(textField);
-        }
-
-        @Override
-        public JComponent getInputComponent() {
-            return this.textField;
-        }
-
-        @Override
-        public Object getValue() {
-            String text = textField.getText();
-            try {
-                return Double.parseDouble(text);
-            } catch (NumberFormatException | NullPointerException e) {
-                return null;
-            }
-        }
-    }
-
-    private class BooleanLabelFieldInput extends LabelFieldInput {
-
-        private JCheckBox checkBox;
-
-        public BooleanLabelFieldInput(EntityField entityField) {
-            super(entityField);
-            this.checkBox = new JCheckBox();
-            if (EntityView.this.entity != null) {
-                checkBox.setSelected((Boolean)entityField.get(EntityView.this.entity));
-            }
-        }
-
-        @Override
-        public JComponent getInputComponent() {
-            return this.checkBox;
-        }
-
-        @Override
-        public Object getValue() {
-            return this.checkBox.isSelected();
-        }
-    }
-
-    private class DateLabelFieldInput extends LabelFieldInput {
-
-        private DatePickerField datePicker;
-
-        public DateLabelFieldInput(EntityField entityField) {
-            super(entityField);
-            this.datePicker = new DatePickerField();
-            if (EntityView.this.entity != null) {
-                this.datePicker.setValue((LocalDate) entityField.get(EntityView.this.entity));
-            }
-        }
-
-        @Override
-        public JComponent getInputComponent() {
-            return this.datePicker;
-        }
-
-        @Override
-        public Object getValue() {
-            return this.datePicker.getValue();
-        }
-    }
-
-    protected class EntityLabelFieldInput extends LabelFieldInput {
+  protected class EntityFormField extends FormField<Integer> {
 
         private EntityComboBox comboBox;
         private JPanel panel;
 
-        public EntityLabelFieldInput(EntityField entityField, Entity entity) {
+        public EntityFormField(EntityField entityField, Entity entity) {
             this(entityField, entity, null, null);
         }
 
-        public EntityLabelFieldInput(EntityField entityField, Entity entity, EntityComboBox jComboBox, final Supplier entitySelView ) {
-            super(entityField);
+        public EntityFormField(EntityField entityField, Entity entity, EntityComboBox jComboBox, final Supplier entitySelView ) {
+            super(entityField.getTitleKey());
 
             if(jComboBox == null) {
                 this.comboBox = EntityComboBoxFactory.createComboBox(entityField.getType());
@@ -249,8 +92,13 @@ public class EntityView extends FrameView {
             return this.panel;
         }
 
-        @Override
-        public Object getValue() {
+      @Override
+      public void setValue(Integer value) {
+
+      }
+
+      @Override
+        public Integer getValue() {
             return  this.comboBox.getSelectedEntity() != null ? this.comboBox.getSelectedEntity().getId() : null;
         }
     }
@@ -258,10 +106,8 @@ public class EntityView extends FrameView {
     public static final int WIDTH = 500;
     public static final int HEIGHT = 550;
 
-    private List<LabelFieldInput> labelFieldInputs;
     private JButton addButton;
     private JButton cancelButton;
-    private JPanel fieldPanel;
     private EntityInnerTableView innerTableView;
 
     private EntityModel<? extends Entity> model;
@@ -271,6 +117,7 @@ public class EntityView extends FrameView {
     protected ViewActionListener changeActionListener;
 
     private Entity entity;
+    private Map<EntityField, FormField> entityFormFieldMap;
 
     public EntityView(EntityModel model) {
         this(model, null);
@@ -282,6 +129,8 @@ public class EntityView extends FrameView {
 
         setTitle(getEntityString(model.getEntityNameKey()));
         setSize(WIDTH, HEIGHT);
+
+        entityFormFieldMap = new HashMap<>();
 
         this.addButton = new JButton(getGuiString(entity == null ? "buttons.add" : "buttons.change"));
         this.addButton.addActionListener(e -> {
@@ -302,12 +151,11 @@ public class EntityView extends FrameView {
             hide();
         });
 
-        labelFieldInputs = new ArrayList<>();
         for (EntityField entityField : model.getFields()) {
             if (!entityField.isEditable()) {
                 continue;
             }
-            labelFieldInputs.add(createLabelFieldInput(entityField));
+            addFormField(createFormField(entityField));
         }
 
         buildLayout();
@@ -315,20 +163,11 @@ public class EntityView extends FrameView {
         show();
     }
 
-    protected JPanel getFieldPanel() {
-        return this.fieldPanel;
-    }
-
     private void buildLayout() {
         getContentPanel().setLayout(new BorderLayout(10, 10));
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        this.fieldPanel = new JPanel(new GridBagLayout());
-        getContentPanel().add(this.fieldPanel, BorderLayout.PAGE_START);
-
-        for (int i = 0; i < this.labelFieldInputs.size(); i++) {
-            addLabelFieldInput(this.labelFieldInputs.get(i));
-        }
+        getContentPanel().add(getFieldPanel(), BorderLayout.PAGE_START);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addButton);
@@ -336,53 +175,38 @@ public class EntityView extends FrameView {
         getContentPanel().add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private LabelFieldInput createLabelFieldInput(EntityField entityField) {
+    private FormField createFormField(EntityField entityField) {
+        FormField formField;
         switch (entityField.getType()) {
             case String:
-                return new StringLabelFieldInput(entityField);
+                formField = new StringFormField(entityField.getTitleKey());
+                break;
             case Integer:
-                return new IntegerLabelFieldInput(entityField);
+                formField = new IntegerFormField(entityField.getTitleKey());
+                break;
             case Double:
-                return new DoubleLabelFieldInput(entityField);
+                formField = new DoubleFormField(entityField.getTitleKey());
+                break;
             case Boolean:
-                return new BooleanLabelFieldInput(entityField);
+                formField = new BooleanFormField(entityField.getTitleKey());
+                break;
             case Date:
-                return new DateLabelFieldInput(entityField);
+                formField = new DateFormField(entityField.getTitleKey());
+                break;
             default:
-                return entityField.getType().isEntityClass() ? new EntityLabelFieldInput(entityField , this.entity) : new StringLabelFieldInput(entityField);
+                formField =  entityField.getType().isEntityClass() ? new EntityFormField(entityField , this.entity)
+                        : new StringFormField(entityField.getTitleKey());
         }
+        entityFormFieldMap.put(entityField, formField);
+        return formField;
     }
 
-    protected LabelFieldInput createLabelFieldInput(EntityField entityField, Entity entity) {
-        switch (entityField.getType()) {
-            case String:
-                return new StringLabelFieldInput(entityField);
-            case Integer:
-                return new IntegerLabelFieldInput(entityField);
-            case Double:
-                return new DoubleLabelFieldInput(entityField);
-            case Boolean:
-                return new BooleanLabelFieldInput(entityField);
-            case Date:
-                return new DateLabelFieldInput(entityField);
-            default:
-                return entityField.getType().isEntityClass() ? new EntityLabelFieldInput(entityField , entity) : new StringLabelFieldInput(entityField);
+    protected FormField createFormField(EntityField entityField, Entity entity) {
+        FormField field = createFormField(entityField);
+        if (entity != null) {
+            field.setValue(entityField.get(entity));
         }
-    }
-
-    protected void addLabelFieldInput(LabelFieldInput input) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(0, 10, 10, 10);
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridy = this.fieldPanel.getComponentCount();
-        c.gridx = 0;
-        this.fieldPanel.add(input.label, c);
-        c.gridx = 1;
-        JComponent inputComponent = input.getInputComponent();
-        // HACK: textFields is excessively narrow when it's smaller than the displayed area.
-        inputComponent.setMinimumSize(inputComponent.getPreferredSize());
-        this.fieldPanel.add(inputComponent, c);
+        return field;
     }
 
     /**
@@ -391,14 +215,28 @@ public class EntityView extends FrameView {
     protected Entity buildEntity() {
         Entity entity = this.entity;
         if (entity == null) {
-            entity = this.model.createNewEntity();
+            entity = createNewEntity();
         }
 
-        for (LabelFieldInput labelFieldInput : this.labelFieldInputs) {
-            labelFieldInput.entityField.set(entity, labelFieldInput.getValue());
+        for (Map.Entry<EntityField, FormField> entry : this.entityFormFieldMap.entrySet()) {
+            entry.getKey().set(entity, entry.getValue().getValue());
+        }
+
+        if (this.innerTableView != null) {
+            this.innerTableView.getFullEntityField().set(entity, this.innerTableView.getEntityList());
         }
 
         return entity;
+    }
+
+    /**
+     * Return a new empty Entity instance.
+     * Default implementation based on EntityModel::createNewEntity
+     * Override this method to change the returned Entity type
+     * @return
+     */
+    protected Entity createNewEntity() {
+        return this.model.createNewEntity();
     }
 
     public void setAddActionListener(ViewActionListener addActionListener) {
@@ -407,19 +245,6 @@ public class EntityView extends FrameView {
 
     public void setCancelActionListener(ViewActionListener cancelActionListener) {
         this.cancelActionListener = cancelActionListener;
-    }
-
-    public void showErrors(List<org.lostfan.ktv.validation.Error> errors) {
-        // TODO: add appropriate implementation of visualising the errors
-        for (Error error : errors) {
-            String message = error.getField() != null ? getEntityString(error.getField()) + " " : "";
-            if (error.getMessage().equals("empty")) {
-                message += "should not be empty";
-            } else {
-                message += error.getMessage();
-            }
-            JOptionPane.showMessageDialog(getFrame(), message, "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     public void setChangeActionListener(ViewActionListener changeActionListener) {

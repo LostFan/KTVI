@@ -15,7 +15,7 @@ import org.lostfan.ktv.view.components.EntityComboBox;
 
 public class RenderedServiceEntityView extends EntityView {
 
-    protected List<LabelFieldInput> tariffLabelFieldInputs;
+    protected List<FormField> tariffFormFields;
 
     public RenderedServiceEntityView(EntityModel model) {
         this(model, null);
@@ -25,44 +25,36 @@ public class RenderedServiceEntityView extends EntityView {
     public <E extends Entity> RenderedServiceEntityView(EntityModel model, Entity entity) {
         super(model, entity);
         RenderedServiceEntityModel renderedServiceEntityModel = (RenderedServiceEntityModel) model;
-        LabelFieldInput labelFieldInput = new EntityLabelFieldInput(new EntityField("tariff", EntityFieldTypes.Tariff, Tariff::getId, Tariff::setId), null );
+        FormField labelFieldInput = new EntityFormField(new EntityField("tariff", EntityFieldTypes.Tariff, Tariff::getId, Tariff::setId), null );
 
-//        tariffLabelFieldInputs = new ArrayList<>();
+//        tariffFormFields = new ArrayList<>();
 //        for (EntityField entityField : ((RenderedServiceEntityModel) model).getTariffFields()) {
 //            if (!entityField.isEditable()) {
 //                continue;
 //            }
-//            tariffLabelFieldInputs.add(createLabelFieldInput(entityField, null));
+//            tariffFormFields.add(createFormField(entityField, null));
 //        }
 
-        for (int i = 0; i < this.tariffLabelFieldInputs.size(); i++) {
-            addLabelFieldInput(this.tariffLabelFieldInputs.get(i));
-        }
+//        for (int i = 0; i < this.tariffFormFields.size(); i++) {
+//            addLabelFieldInput(this.tariffFormFields.get(i));
+//        }
         revalidate();
     }
 
     @Override
-    protected void addLabelFieldInput(LabelFieldInput input) {
-        super.addLabelFieldInput(input);
-        if(input.getEntityField().getType() == EntityFieldTypes.Service) {
-            Service service = ((Service)((EntityComboBox)input.getInputComponent().getComponent(0))
-                    .getSelectedEntity());
-            if(service == null) {
-                hideTariffField();
-            }
-            if(service.isConnectionService()) {
-                showTariffField();
-            }
-            hideTariffField();
-        }
-    }
-
-    void  hideTariffField() {
-
-    }
-
-    void showTariffField() {
-
+    protected void addFormField(FormField field) {
+        super.addFormField(field);
+//        if(field.getEntityField().getType() == EntityFieldTypes.Service) {
+//            Service service = ((Service)((EntityComboBox)field.getInputComponent().getComponent(0))
+//                    .getSelectedEntity());
+//            if(service == null) {
+//                hideTariffField();
+//            }
+//            if(service.isConnectionService()) {
+//                showTariffField();
+//            }
+//            hideTariffField();
+//        }
     }
 
 }

@@ -12,6 +12,8 @@ public class ConnectionRenderedService  extends RenderedService implements Mater
 
     private List<MaterialConsumption> materialConsumption;
 
+    private Integer tariffId;
+
     public List<MaterialConsumption> getMaterialConsumption() {
         return materialConsumption;
     }
@@ -19,8 +21,6 @@ public class ConnectionRenderedService  extends RenderedService implements Mater
     public void setMaterialConsumption(List<MaterialConsumption> materialConsumption) {
         this.materialConsumption = materialConsumption;
     }
-
-    private Integer tariffId;
 
     public Integer getTariffId() {
         return tariffId;

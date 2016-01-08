@@ -6,7 +6,7 @@ public class Material extends DefaultEntity {
 
     private String name;
 
-    private int price;
+    private Integer price;
 
     private String unit;
 
@@ -18,11 +18,11 @@ public class Material extends DefaultEntity {
         this.name = name;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 

@@ -31,7 +31,8 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     private List<EntityField> fields;
 
-    private EntityField tariffField;
+    private EntityField connectionTariffField;
+    private EntityField changeTariffField;
     private EntityField serviceEntityField;
 
     private List<FullEntityField> fullFields;
@@ -43,9 +44,6 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     private MaterialConsumptionDAO materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
 
-    private SubscriberTariff subscriberTariff;
-
-
     public RenderedServiceEntityModel() {
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false));
@@ -56,7 +54,8 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
 
         this.serviceEntityField = new EntityField("service", EntityFieldTypes.Service, Service::getId, Service::setId, false);
-        this.tariffField = new EntityField("tariff", EntityFieldTypes.Tariff, Tariff::getId, Tariff::setId);
+        this.connectionTariffField = new EntityField("tariff", EntityFieldTypes.Tariff, ConnectionRenderedService::getTariffId, ConnectionRenderedService::setTariffId);
+        this.changeTariffField = new EntityField("tariff", EntityFieldTypes.Tariff, ChangeOfTariffRenderedService::getTariffId, ChangeOfTariffRenderedService::setTariffId);
 
         this.fullFields = new ArrayList<>();
 
@@ -104,8 +103,12 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         return this.fields;
     }
 
-    public EntityField getTariffField() {
-        return this.tariffField;
+    // TODO: a bad idea to have these methods
+    public EntityField getConnectionTariffField() {
+        return connectionTariffField;
+    }
+    public EntityField getChangeTariffField() {
+        return changeTariffField;
     }
 
     public EntityField getServiceField() {
@@ -130,7 +133,13 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     public ValidationResult save(ConnectionRenderedService entity) {
         ValidationResult result = this.getValidator().validate(entity);
-        result = validatorSubscriberTariff.validate(this.subscriberTariff, result);
+
+        SubscriberTariff subscriberTariff = new SubscriberTariff();
+        subscriberTariff.setTariffId(entity.getTariffId());
+        subscriberTariff.setSubscriberAccount(entity.getSubscriberAccount());
+        subscriberTariff.setConnectTariff(entity.getDate());
+        result = validatorSubscriberTariff.validate(subscriberTariff, result);
+
         for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
             result = MainModel.getMaterialConsumptionEntityModel().getValidator().validate(materialConsumption, result);
         }
@@ -142,7 +151,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         subscriberSession.setSubscriberAccount(entity.getSubscriberAccount());
         if (entity.getId() == null) {
             getDao().save(entity);
-            subscriberDAO.saveSubscriberTariff(this.subscriberTariff);
+            subscriberDAO.saveSubscriberTariff(subscriberTariff);
             subscriberDAO.saveSubscriberSession(subscriberSession);
             for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
                 materialConsumption.setRenderedServiceId(entity.getId());
@@ -155,7 +164,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         getDao().update(entity);
         subscriberDAO.saveSubscriberSession(subscriberSession);
-        subscriberDAO.saveSubscriberTariff(this.subscriberTariff);
+        subscriberDAO.saveSubscriberTariff(subscriberTariff);
         updateMaterials(entity);
         updateEntitiesList();
         return  result;
@@ -196,6 +205,10 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             return result;
         }
 
+        SubscriberTariff newSubscriberTariff = new SubscriberTariff();
+        newSubscriberTariff.setTariffId(entity.getTariffId());
+        newSubscriberTariff.setSubscriberAccount(entity.getSubscriberAccount());
+        newSubscriberTariff.setConnectTariff(entity.getDate());
 
         if (entity.getId() == null) {
             SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
@@ -207,7 +220,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             getDao().save(entity);
 
             subscriberDAO.updateSubscriberTariff(subscriberTariff);
-            subscriberDAO.saveSubscriberTariff(this.subscriberTariff);
+            subscriberDAO.saveSubscriberTariff(newSubscriberTariff);
         }
         updateEntitiesList();
         return result;
@@ -248,56 +261,6 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     @Override
     public Validator<RenderedService> getValidator() {
         return this.validator;
-    }
-
-
-    public ConnectionRenderedService buildConnectionDTO(RenderedService service, Tariff tariff, Map<String, List<MaterialConsumption>> map) {
-        ConnectionRenderedService dto = new ConnectionRenderedService();
-        dto.setId(service.getId());
-        dto.setDate(service.getDate());
-        dto.setPrice(service.getPrice());
-        dto.setSubscriberAccount(service.getSubscriberAccount());
-        dto.setTariffId(tariff.getId());
-        dto.setMaterialConsumption(map.get("materialConsumption"));
-        this.subscriberTariff = new SubscriberTariff();
-        this.subscriberTariff.setTariffId(tariff.getId());
-        this.subscriberTariff.setSubscriberAccount(service.getSubscriberAccount());
-        this.subscriberTariff.setConnectTariff(service.getDate());
-        return dto;
-    }
-
-    public DisconnectionRenderedService buildDisconnectionDTO(RenderedService service) {
-        DisconnectionRenderedService dto = new DisconnectionRenderedService();
-        dto.setId(service.getId());
-        dto.setDate(service.getDate());
-        dto.setPrice(service.getPrice());
-        dto.setSubscriberAccount(service.getSubscriberAccount());
-        return dto;
-    }
-
-    public ChangeOfTariffRenderedService buildChangeOfTariffDTO(RenderedService service, Tariff tariff) {
-        ChangeOfTariffRenderedService dto = new ChangeOfTariffRenderedService();
-        dto.setId(service.getId());
-        dto.setDate(service.getDate());
-        dto.setPrice(service.getPrice());
-        dto.setSubscriberAccount(service.getSubscriberAccount());
-        dto.setTariffId(tariff.getId());
-        this.subscriberTariff = new SubscriberTariff();
-        this.subscriberTariff.setTariffId(tariff.getId());
-        this.subscriberTariff.setSubscriberAccount(service.getSubscriberAccount());
-        this.subscriberTariff.setConnectTariff(service.getDate());
-        return dto;
-    }
-
-    public AdditionalRenderedService buildAdditionalServiceDTO(RenderedService renderedService, Service service, Map<String, List<MaterialConsumption>> map) {
-        AdditionalRenderedService dto = new AdditionalRenderedService();
-        dto.setId(renderedService.getId());
-        dto.setDate(renderedService.getDate());
-        dto.setPrice(renderedService.getPrice());
-        dto.setSubscriberAccount(renderedService.getSubscriberAccount());
-        dto.setServiceId(service.getId());
-        dto.setMaterialConsumption(map.get("materialConsumption"));
-        return dto;
     }
 
     private void updateMaterials(ConnectionRenderedService entity) {

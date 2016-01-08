@@ -90,7 +90,7 @@ public class HsqldbMaterialDAOTest {
         material.setPrice(30000);
         materialDao.save(material);
         assertEquals(materialDao.getAll().get(3).getName(), "New");
-        assertEquals(materialDao.getAll().get(3).getPrice(), 30000);
+        assertEquals(materialDao.getAll().get(3).getPrice().intValue(), 30000);
         assertEquals(materialDao.getAll().get(3).getUnit(), "m");
     }
 
@@ -111,7 +111,7 @@ public class HsqldbMaterialDAOTest {
         Material material = materialDao.get(1);
         material.setPrice(2);
         materialDao.update(material);
-        assertEquals(materialDao.get(1).getPrice(), 2);
+        assertEquals(materialDao.get(1).getPrice().intValue(), 2);
     }
 
     @Test

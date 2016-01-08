@@ -19,11 +19,7 @@ import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
 public class AdditionalServiceEntityView extends EntityView {
 
-    private Map<String, List<MaterialConsumption>> entityInnerTableValues;
-    private LabelFieldInput serviceLabelFieldInput;
     private EntityInnerTableView<MaterialConsumption> entityInnerTableView;
-    private RenderedServiceEntityModel model;
-    private Service service;
 
     public AdditionalServiceEntityView(RenderedServiceEntityModel model) {
         this(model, null);
@@ -31,24 +27,20 @@ public class AdditionalServiceEntityView extends EntityView {
 
     public AdditionalServiceEntityView(RenderedServiceEntityModel model, AdditionalRenderedService entity) {
         super((EntityModel)model, entity);
-        this.model = model;
         setTitle(getEntityString(FixedServices.ADDITIONAL_SERVICE.getCode()));
 
         Service service = new Service();
         if(entity != null) {
             service.setId(entity.getServiceId());
         }
-        this.serviceLabelFieldInput = new EntityLabelFieldInput(model.getServiceField(), service, EntityComboBoxFactory.createAdditionalServiceComboBox(), EntitySelectionFactory::createAdditionalServiceForm);
-        addLabelFieldInput(this.serviceLabelFieldInput);
+        addFormField(new EntityFormField(model.getServiceField(), service, EntityComboBoxFactory.createAdditionalServiceComboBox(), EntitySelectionFactory::createAdditionalServiceForm));
 
-        this.entityInnerTableValues = new HashMap<>();
         for (FullEntityField fullEntityField : model.getFullFields()) {
             List<Entity> list = new ArrayList<>();
             if(entity != null) {
                 list = (List<Entity>) fullEntityField.get(entity);
             }
             this.entityInnerTableView = new EntityInnerTableView<>(fullEntityField, list);
-            this.entityInnerTableValues.put(fullEntityField.getTitleKey(), this.entityInnerTableView.getEntityList());
             this.setInnerTable(this.entityInnerTableView);
         }
 
@@ -56,16 +48,7 @@ public class AdditionalServiceEntityView extends EntityView {
     }
 
     @Override
-    protected Entity buildEntity() {
-        return model.buildAdditionalServiceDTO((RenderedService) super.buildEntity(), getService(), entityInnerTableValues);
-    }
-
-    private Service getService() {
-        Service entity = this.service;
-        if (entity == null) {
-            entity = new Service();
-        }
-        this.serviceLabelFieldInput.entityField.set(entity, this.serviceLabelFieldInput.getValue());
-        return entity;
+    protected Entity createNewEntity() {
+        return new AdditionalRenderedService();
     }
 }

@@ -17,11 +17,7 @@ import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 
 public class ConnectionEntityView extends EntityView {
 
-    private Tariff tariff;
-    private Map<String, List<MaterialConsumption>> entityInnerTableValues;
-    private LabelFieldInput tariffLabelFieldInput;
     private EntityInnerTableView<MaterialConsumption> entityInnerTableView;
-    private RenderedServiceEntityModel model;
 
     public ConnectionEntityView(RenderedServiceEntityModel model) {
         this(model, null);
@@ -29,24 +25,16 @@ public class ConnectionEntityView extends EntityView {
 
     public ConnectionEntityView(RenderedServiceEntityModel model, ConnectionRenderedService entity) {
         super((EntityModel)model, entity);
-        this.model = model;
         setTitle(getEntityString(FixedServices.CONNECTION.getCode()));
 
-        Tariff tariff = new Tariff();
-        if(entity != null) {
-            tariff.setId(entity.getTariffId());
-        }
-        this.tariffLabelFieldInput = createLabelFieldInput(model.getTariffField(), tariff);
-        addLabelFieldInput(this.tariffLabelFieldInput);
+        addFormField(createFormField(model.getConnectionTariffField(), entity));
 
-        this.entityInnerTableValues = new HashMap<>();
         for (FullEntityField fullEntityField : model.getFullFields()) {
             List<Entity> list = new ArrayList<>();
             if(entity != null) {
                 list = (List<Entity>) fullEntityField.get(entity);
             }
             this.entityInnerTableView = new EntityInnerTableView<>(fullEntityField, list);
-            this.entityInnerTableValues.put(fullEntityField.getTitleKey(), this.entityInnerTableView.getEntityList());
             this.setInnerTable(this.entityInnerTableView);
         }
 
@@ -54,16 +42,7 @@ public class ConnectionEntityView extends EntityView {
     }
 
     @Override
-    protected Entity buildEntity() {
-        return model.buildConnectionDTO((RenderedService) super.buildEntity(), getTariff(), entityInnerTableValues);
-    }
-
-    public Tariff getTariff() {
-        Tariff entity = this.tariff;
-        if (entity == null) {
-            entity = new Tariff();
-        }
-        this.tariffLabelFieldInput.entityField.set(entity, this.tariffLabelFieldInput.getValue());
-        return entity;
+    protected Entity createNewEntity() {
+        return new ConnectionRenderedService();
     }
 }

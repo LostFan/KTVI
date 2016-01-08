@@ -723,7 +723,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         }
         Date contractDate = rs.getDate("date_of_contract");
         if (contractDate != null) {
-            subscriber.setContractDate(passportDate.toLocalDate());
+            subscriber.setContractDate(contractDate.toLocalDate());
         }
         return subscriber;
     }
