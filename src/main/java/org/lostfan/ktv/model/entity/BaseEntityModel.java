@@ -75,6 +75,11 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     }
 
     @Override
+    public ValidationResult update(T entity) {
+        return save(entity);
+    }
+
+    @Override
     public void deleteEntityById(Integer id) {
         getDao().delete(id);
         updateEntitiesList();

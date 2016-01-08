@@ -69,7 +69,7 @@ public class EntityController implements MainInnerController {
 
         entityView.setAddActionListener(args_ -> {
             Entity entity1 = (Entity) args_;
-            ValidationResult result = model.save(entity1);
+            ValidationResult result = model.update(entity1);
             if (result.hasErrors()) {
                 entityView.showErrors(result.getErrors());
                 return;

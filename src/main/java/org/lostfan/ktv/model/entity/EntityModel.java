@@ -24,6 +24,8 @@ public interface EntityModel<T extends Entity> extends BaseModel {
 
     ValidationResult save(T entity);
 
+    ValidationResult update(T entity);
+
     T createNewEntity();
 
     void deleteEntityById(Integer id);
