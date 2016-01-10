@@ -1,4 +1,4 @@
-package org.lostfan.ktv.dao.impl.hsqldb;
+package org.lostfan.ktv.dao.impl.postgre;
 
 import org.lostfan.ktv.dao.RenderedServiceDAO;
 import org.lostfan.ktv.domain.RenderedService;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
+public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
 
     private Connection getConnection() {
         return ConnectionManager.getManager().getConnection();
@@ -168,7 +168,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
     public RenderedService getFirstRenderedServiceLessDate(int serviceId, int subscriberId, LocalDate date) {
         RenderedService renderedService = null;
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"rendered_service\" where \"service_id\" = ? AND \"subscriber_account\" = ? AND \"date\" <= ? ORDER BY \"date\" DESC");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"service_id\" = ? AND \"subscriber_account\" = ? AND \"date\" <= ? ORDER BY \"date\" DESC LIMIT 1");
             preparedStatement.setInt(1, serviceId);
             preparedStatement.setInt(2, subscriberId);
             preparedStatement.setDate(3, Date.valueOf(date));;
@@ -188,7 +188,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
     public void save(RenderedService renderedService) {
         try {
             PreparedStatement preparedStatement;
-            if(renderedService.getId() !=null) {
+            if(renderedService.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"rendered_service\" (\"subscriber_account\", \"service_id\", \"date\",  \"price\", \"id\")" +
                                 " VALUES(?, ?, ?, ?, ?)");
@@ -198,20 +198,19 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
                         "INSERT INTO \"rendered_service\" (\"subscriber_account\", \"service_id\", \"date\",  \"price\")" +
                                 " VALUES(?, ?, ?, ?)");
             }
-
             preparedStatement.setInt(1, renderedService.getSubscriberAccount());
             preparedStatement.setInt(2, renderedService.getServiceId());
             preparedStatement.setDate(3, Date.valueOf(renderedService.getDate()));
             if (renderedService.getPrice() != null) {
                 preparedStatement.setInt(4, renderedService.getPrice());
             } else {
-                preparedStatement.setNull(4, Types.INTEGER);
+                preparedStatement.setInt(4, 0);
             }
             preparedStatement.executeUpdate();
-            Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-            resultSet.next();
-            renderedService.setId(resultSet.getInt(1));
+//            Statement statement = getConnection().createStatement();
+//            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+//            resultSet.next();
+//            renderedService.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             System.out.println(renderedService.getSubscriberAccount());
             ex.printStackTrace();

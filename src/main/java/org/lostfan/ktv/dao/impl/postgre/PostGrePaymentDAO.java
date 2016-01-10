@@ -1,21 +1,16 @@
-package org.lostfan.ktv.dao.impl.hsqldb;
+package org.lostfan.ktv.dao.impl.postgre;
 
 import org.lostfan.ktv.dao.PaymentDAO;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.domain.PaymentType;
 import org.lostfan.ktv.utils.ConnectionManager;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HsqldbPaymentDAO implements PaymentDAO {
+public class PostGrePaymentDAO implements PaymentDAO {
 
     private Connection getConnection() {
         return ConnectionManager.getManager().getConnection();
@@ -96,20 +91,25 @@ public class HsqldbPaymentDAO implements PaymentDAO {
 
     public void save(Payment payment) {
         try {
+
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"price\", \"date\")" +
-                            " VALUES(?, ?, ?, ?)");
+                    "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"rendered_service_id\", \"price\", \"date\")" +
+                            " VALUES(?, ?, ?, ?, ?)");
 
             preparedStatement.setInt(1, payment.getSubscriberAccount());
             preparedStatement.setInt(2, payment.getServicePaymentId());
-
-            preparedStatement.setInt(3, payment.getPrice());
-            preparedStatement.setDate(4, Date.valueOf(payment.getDate()));
+            if(payment.getRenderedServicePaymentId() != null) {
+                preparedStatement.setInt(3, payment.getRenderedServicePaymentId());
+            } else {
+                preparedStatement.setNull(3, Types.INTEGER);
+            }
+            preparedStatement.setInt(4, payment.getPrice());
+            preparedStatement.setDate(5, Date.valueOf(payment.getDate()));
             preparedStatement.executeUpdate();
-            Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-            resultSet.next();
-            payment.setId(resultSet.getInt(1));
+//            Statement statement = getConnection().createStatement();
+//            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+//            resultSet.next();
+//            payment.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

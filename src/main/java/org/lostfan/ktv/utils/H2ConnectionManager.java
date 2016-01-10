@@ -4,16 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class HsqldbConnectionManager extends ConnectionManager {
+public class H2ConnectionManager extends ConnectionManager {
 
     private Connection connection;
 
-    public HsqldbConnectionManager() {
+    public H2ConnectionManager() {
         try {
-            Class.forName("org.hsqldb.jdbcDriver");
-//            this.connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/D:/KTV/DB/NEW", "SA", "");
-            this.connection = DriverManager.getConnection(
-                    "jdbc:hsqldb:file:HSQLDB", "SA", "");
+            Class.forName("org.h2.river");
+            this.connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/D:/KTV/DB/NEW", "SA", "");
         } catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
         }

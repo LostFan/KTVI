@@ -4,16 +4,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class HsqldbConnectionManager extends ConnectionManager {
+public class PostgreConnectionManager extends ConnectionManager {
 
     private Connection connection;
 
-    public HsqldbConnectionManager() {
+    public PostgreConnectionManager() {
         try {
-            Class.forName("org.hsqldb.jdbcDriver");
-//            this.connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/D:/KTV/DB/NEW", "SA", "");
+            Class.forName("org.postgresql.Driver");
             this.connection = DriverManager.getConnection(
-                    "jdbc:hsqldb:file:HSQLDB", "SA", "");
+                    "jdbc:postgresql://localhost:5432/KTV", "postgres", "postgres");
         } catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
         }
@@ -26,10 +25,10 @@ public class HsqldbConnectionManager extends ConnectionManager {
 
     @Override
     public void close() {
-        try {
-            this.connection.createStatement().execute("SHUTDOWN");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            this.connection.createStatement().execute("SHUTDOWN");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 }

@@ -1,10 +1,9 @@
-package org.lostfan.ktv.dao.impl.hsqldb;
+package org.lostfan.ktv.dao.impl.postgre;
 
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
-import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.sql.*;
@@ -12,7 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HsqldbSubscriberDAO implements SubscriberDAO {
+public class PostGreSubscriberDAO implements SubscriberDAO {
 
     private Connection getConnection() {
         return ConnectionManager.getManager().getConnection();
@@ -58,7 +57,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"subscriber\" (\"account\", \"name\", \"street_id\", \"balance\"," +
-                            " \"connected\", \"house\", \"building\", \"postcode\", \"phone\"," +
+                            " \"connected\", \"house\", \"building\", \"flat\", \"phone\"," +
                             " \"passport_number\", \"passport_authority\", \"passport_date\" , \"date_of_contract\") " +
                             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
@@ -66,8 +65,6 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             preparedStatement.setString(2, subscriber.getName());
             if(subscriber.getStreetId() != null) {
                 preparedStatement.setInt(3, subscriber.getStreetId());
-            } else {
-                preparedStatement.setNull(3, Types.INTEGER);
             }
             if(subscriber.getBalance() != null) {
                 preparedStatement.setInt(4, subscriber.getBalance());
@@ -81,34 +78,22 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
             }
             if(subscriber.getHouse() != null) {
                 preparedStatement.setString(6, subscriber.getHouse());
-            } else {
-                preparedStatement.setNull(6, Types.VARCHAR);
             }
             if(subscriber.getBuilding() != null) {
                 preparedStatement.setString(7, subscriber.getBuilding());
-            } else {
-                preparedStatement.setNull(7, Types.VARCHAR);
             }
-            if(subscriber.getPostcode() != null) {
-                preparedStatement.setString(8, subscriber.getPostcode());
-            } else {
-                preparedStatement.setNull(8, Types.VARCHAR);
-            }
+//            if(subscriber.getFlat() != null) {
+                preparedStatement.setString(8, subscriber.getFlat());
+//            }
             if(subscriber.getPhone() != null) {
                 preparedStatement.setString(9, subscriber.getPhone());
-            } else {
-                preparedStatement.setNull(9, Types.VARCHAR);
             }
-            if(subscriber.getPassportNumber() != null) {
+//            if(subscriber.getPassportNumber() != null) {
                 preparedStatement.setString(10, subscriber.getPassportNumber());
-            } else {
-                preparedStatement.setNull(10, Types.VARCHAR);
-            }
-            if(subscriber.getPassportAuthority() != null) {
+//            }
+//            if(subscriber.getPassportAuthority() != null) {
                 preparedStatement.setString(11, subscriber.getPassportAuthority());
-            } else {
-                preparedStatement.setNull(11, Types.VARCHAR);
-            }
+//            }
             if (subscriber.getPassportDate() != null) {
                 preparedStatement.setDate(12, Date.valueOf(subscriber.getPassportDate()));
             } else {
@@ -136,7 +121,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
                                 "\"connected\" = ?, " +
                                 "\"house\" = ?, " +
                                 "\"building\" = ?, " +
-                                "\"postcode\" = ?, " +
+                                "\"flat\" = ?, " +
                                 "\"phone\" = ?, " +
                                 "\"passport_number\" = ?, " +
                                 "\"passport_authority\" = ?, " +
@@ -161,8 +146,8 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
                 if(subscriber.getBuilding() != null) {
                     preparedStatement.setString(6, subscriber.getBuilding());
                 }
-                if(subscriber.getPostcode() != null) {
-                    preparedStatement.setString(7, subscriber.getPostcode());
+                if(subscriber.getFlat() != null) {
+                    preparedStatement.setString(7, subscriber.getFlat());
                 }
                 if(subscriber.getPhone() != null) {
                     preparedStatement.setString(8, subscriber.getPhone());
@@ -729,7 +714,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         subscriber.setConnected(rs.getBoolean("connected"));
         subscriber.setHouse(rs.getString("house"));
         subscriber.setBuilding(rs.getString("building"));
-        subscriber.setPostcode(rs.getString("postcode"));
+        subscriber.setFlat(rs.getString("flat"));
         subscriber.setPhone(rs.getString("phone"));
         subscriber.setPassportNumber(rs.getString("passport_number"));
         subscriber.setPassportAuthority(rs.getString("passport_authority"));

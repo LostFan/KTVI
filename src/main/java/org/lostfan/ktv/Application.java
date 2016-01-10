@@ -2,17 +2,17 @@ package org.lostfan.ktv;
 
 import org.lostfan.ktv.controller.MainController;
 import org.lostfan.ktv.dao.DAOFactory;
-import org.lostfan.ktv.dao.impl.hsqldb.HsqldbDaoFactory;
+import org.lostfan.ktv.dao.impl.postgre.PostGreDaoFactory;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.utils.ConnectionManager;
-import org.lostfan.ktv.utils.HsqldbConnectionManager;
+import org.lostfan.ktv.utils.PostgreConnectionManager;
 import org.lostfan.ktv.view.MainView;
 
 public class Application {
 
     public static void main(String[] args) {
-        ConnectionManager.setManager(new HsqldbConnectionManager());
-        DAOFactory.setDefaultDAOFactory(new HsqldbDaoFactory());
+        ConnectionManager.setManager(new PostgreConnectionManager());
+        DAOFactory.setDefaultDAOFactory(new PostGreDaoFactory());
 
         // Close connections and save all the changes
         Runtime.getRuntime().addShutdownHook(new Thread() {
