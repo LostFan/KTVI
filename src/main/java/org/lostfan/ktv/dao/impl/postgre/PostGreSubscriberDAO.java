@@ -57,9 +57,9 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "INSERT INTO \"subscriber\" (\"account\", \"name\", \"street_id\", \"balance\"," +
-                            " \"connected\", \"house\", \"building\", \"flat\", \"phone\"," +
+                            " \"connected\", \"house\", \"building\", \"flat\", \"index\", \"phone\"," +
                             " \"passport_number\", \"passport_authority\", \"passport_date\" , \"date_of_contract\") " +
-                            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
             preparedStatement.setInt(1, subscriber.getAccount());
             preparedStatement.setString(2, subscriber.getName());
@@ -77,32 +77,31 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
                 preparedStatement.setBoolean(5, false);
             }
             if(subscriber.getHouse() != null) {
-                preparedStatement.setString(6, subscriber.getHouse());
-            }
-            if(subscriber.getBuilding() != null) {
-                preparedStatement.setString(7, subscriber.getBuilding());
-            }
-//            if(subscriber.getFlat() != null) {
-                preparedStatement.setString(8, subscriber.getFlat());
-//            }
-            if(subscriber.getPhone() != null) {
-                preparedStatement.setString(9, subscriber.getPhone());
-            }
-//            if(subscriber.getPassportNumber() != null) {
-                preparedStatement.setString(10, subscriber.getPassportNumber());
-//            }
-//            if(subscriber.getPassportAuthority() != null) {
-                preparedStatement.setString(11, subscriber.getPassportAuthority());
-//            }
-            if (subscriber.getPassportDate() != null) {
-                preparedStatement.setDate(12, Date.valueOf(subscriber.getPassportDate()));
+                preparedStatement.setInt(6, subscriber.getHouse());
             } else {
-                preparedStatement.setDate(12, null);
+                preparedStatement.setNull(6, Types.INTEGER);
             }
-            if (subscriber.getContractDate() != null) {
-                preparedStatement.setDate(13, Date.valueOf(subscriber.getContractDate()));
+            preparedStatement.setString(7, subscriber.getBuilding());
+
+            preparedStatement.setString(8, subscriber.getFlat());
+
+            preparedStatement.setString(9, subscriber.getIndex());
+
+            preparedStatement.setString(10, subscriber.getPhone());
+
+            preparedStatement.setString(11, subscriber.getPassportNumber());
+
+            preparedStatement.setString(12, subscriber.getPassportAuthority());
+
+            if (subscriber.getPassportDate() != null) {
+                preparedStatement.setDate(13, Date.valueOf(subscriber.getPassportDate()));
             } else {
                 preparedStatement.setDate(13, null);
+            }
+            if (subscriber.getContractDate() != null) {
+                preparedStatement.setDate(14, Date.valueOf(subscriber.getContractDate()));
+            } else {
+                preparedStatement.setDate(14, null);
             }
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
@@ -122,6 +121,7 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
                                 "\"house\" = ?, " +
                                 "\"building\" = ?, " +
                                 "\"flat\" = ?, " +
+                                "\"index\" = ?, " +
                                 "\"phone\" = ?, " +
                                 "\"passport_number\" = ?, " +
                                 "\"passport_authority\" = ?, " +
@@ -139,31 +139,38 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
                 }
                 if(subscriber.isConnected() != null) {
                     preparedStatement.setBoolean(4, subscriber.isConnected());
+                } else {
+                    preparedStatement.setBoolean(5, false);
                 }
-                if(subscriber.getHouse() != null) {
-                    preparedStatement.setString(5, subscriber.getHouse());
+                if(subscriber.getBalance() != null) {
+                    preparedStatement.setInt(5, subscriber.getHouse());
+                } else {
+                    preparedStatement.setNull(5, Types.INTEGER);
                 }
-                if(subscriber.getBuilding() != null) {
-                    preparedStatement.setString(6, subscriber.getBuilding());
-                }
-                if(subscriber.getFlat() != null) {
-                    preparedStatement.setString(7, subscriber.getFlat());
-                }
-                if(subscriber.getPhone() != null) {
-                    preparedStatement.setString(8, subscriber.getPhone());
-                }
-                if(subscriber.getPassportNumber() != null) {
-                    preparedStatement.setString(9, subscriber.getPassportNumber());
-                }
-                if(subscriber.getPassportAuthority() != null) {
-                    preparedStatement.setString(10, subscriber.getPassportAuthority());
-                }
+
+                preparedStatement.setString(6, subscriber.getBuilding());
+
+                preparedStatement.setString(7, subscriber.getFlat());
+
+                preparedStatement.setString(8, subscriber.getIndex());
+
+                preparedStatement.setString(9, subscriber.getPhone());
+
+                preparedStatement.setString(10, subscriber.getPassportNumber());
+
+                preparedStatement.setString(11, subscriber.getPassportAuthority());
+
                 if (subscriber.getPassportDate() != null) {
-                    preparedStatement.setDate(11, Date.valueOf(subscriber.getPassportDate()));
+                    preparedStatement.setDate(12, Date.valueOf(subscriber.getPassportDate()));
+                } else {
+                    preparedStatement.setDate(12, null);
                 }
                 if (subscriber.getContractDate() != null) {
-                    preparedStatement.setDate(12, Date.valueOf(subscriber.getContractDate()));
+                    preparedStatement.setDate(13, Date.valueOf(subscriber.getContractDate()));
+                } else {
+                    preparedStatement.setDate(13, null);
                 }
+
                 preparedStatement.setInt(13, subscriber.getAccount());
                 preparedStatement.executeUpdate();
 
@@ -712,9 +719,10 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
         }
         subscriber.setBalance(rs.getInt("balance"));
         subscriber.setConnected(rs.getBoolean("connected"));
-        subscriber.setHouse(rs.getString("house"));
+        subscriber.setHouse(rs.getInt("house"));
         subscriber.setBuilding(rs.getString("building"));
         subscriber.setFlat(rs.getString("flat"));
+        subscriber.setIndex(rs.getString("index"));
         subscriber.setPhone(rs.getString("phone"));
         subscriber.setPassportNumber(rs.getString("passport_number"));
         subscriber.setPassportAuthority(rs.getString("passport_authority"));

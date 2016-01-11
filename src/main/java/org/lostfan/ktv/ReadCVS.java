@@ -12,8 +12,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.lostfan.ktv.dao.DAOFactory;
@@ -68,7 +70,38 @@ public class ReadCVS {
 //        loadSubscriptionFees();
 //        loadConnections();
 //        loadAdditionalServices();
-        loadPayments();
+//        loadPayments();
+
+        Map<Integer, Integer> mapFile = getFile();
+        Map<Integer, Integer> mapBase = getBase();
+        int size = 0;
+        int sum = 0;
+        System.out.println(mapBase.size());
+        for (Integer integer : mapBase.keySet()) {
+            if( mapFile.get(integer).intValue() !=  mapBase.get(integer).intValue()) {
+                System.out.println(integer + "\t" + mapFile.get(integer) + "\t" + mapBase.get(integer));
+                size++;
+                sum += mapBase.get(integer).intValue() - mapFile.get(integer).intValue();
+            }
+        }
+        for (Integer integer : mapFile.keySet()) {
+            if(mapBase.get(integer) == null && mapFile.get(integer)!=0) {
+                System.out.println(integer + "\t" + mapFile.get(integer) + "\t" + 0);
+                sum+= -mapFile.get(integer);
+                size++;
+            }
+
+       }
+        System.out.println(sum);
+
+//        for (Integer integer : mapBase.keySet()) {
+//            if(mapFile.get(integer) == null) {
+//                System.out.println(integer + "\t" + mapFile.get(integer) + "\t" + 0);
+//            }
+//        }
+
+
+        System.out.println(size);
 
 //        loadTariffs();
 //        loadTariffPrices();
@@ -76,6 +109,111 @@ public class ReadCVS {
 //        loadServicePrices();
 //        loadDisconnectionReasons();
 //        loadSubscribers();
+    }
+
+    public Map<Integer, Integer> getFile() {
+        String csvFile = "BASES/OB_AB_06.TXT";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = "\t";
+
+        Map<Integer, Integer> map = new HashMap<>();
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            int sum1 = 0;
+            int sum2 = 0;
+            while ((line = br.readLine()) != null) {
+                String[] row = line.split(cvsSplitBy);
+                if(row[0].length() >0 && row[0].substring(0,1).equals("0")) {
+//                    System.out.println(parseInt(line.substring(0, 7).trim()));
+//                    System.out.println(parseInt(line.substring(68, 75).trim()));
+//                    System.out.println(parseInt(line.substring(75, 82).trim()));
+                    sum1+=parseInt(line.substring(75, 82).trim());
+                    sum2+=parseInt(line.substring(68, 75).trim());
+                    map.put(parseInt(line.substring(0, 7).trim()),parseInt(line.substring(75, 82).trim()) - parseInt(line.substring(68, 75).trim()));
+                }
+//                if (size == -1) {
+//                    size++;
+//                    continue;
+//                }
+//                Street street = new Street();
+//                String[] row = line.split(cvsSplitBy);
+//                if(parseInt(row[0]) != 5) {
+//                    continue;
+//                }
+//                street.setId(parseInt(row[1]));
+//                street.setName(row[2]);
+//                DAOFactory.getDefaultDAOFactory().getStreetDAO().save(street);
+
+
+            }
+            System.out.println(sum2 + "   " + sum1 + "   " + (sum2 - sum1));
+//            System.out.println(size + " streets have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No subscribers loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return map;
+    }
+
+    public Map<Integer, Integer> getBase() {
+        String csvFile = "BASES/1.TXT";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ";";
+
+        Map<Integer, Integer> map = new HashMap<>();
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                String[] row = line.split(cvsSplitBy);
+                map.put(parseInt(row[1]),parseInt(row[4]));
+
+//                if (size == -1) {
+//                    size++;
+//                    continue;
+//                }
+//                Street street = new Street();
+//                String[] row = line.split(cvsSplitBy);
+//                if(parseInt(row[0]) != 5) {
+//                    continue;
+//                }
+//                street.setId(parseInt(row[1]));
+//                street.setName(row[2]);
+//                DAOFactory.getDefaultDAOFactory().getStreetDAO().save(street);
+
+
+            }
+//            System.out.println(size + " streets have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No subscribers loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return map;
     }
 
     public List<Integer> getSubscribersIdWithoutConnection() {
@@ -132,6 +270,17 @@ public class ReadCVS {
 //        FROM "rendered_service"  group by "rendered_service"."service_id", "rendered_service". "subscriber_account") as  "rendered_service"
 //        ON "payment"."subscriber_account" = "rendered_service"."subscriber_account" AND "payment"."service_id"="rendered_service"."service_id"
 ////        order by  "payment"."service_id"
+
+//        SELECT "payment"."service_id", "rendered_service"."subscriber_account",  "payment"."subscriber_account"  ,
+//                (CASE WHEN "payment"."payment_price" is NULL THEN 0 ELSE "payment"."payment_price" END) AS "payment_price",
+//                "rendered_service"."rendered_service_price" ,
+//                (CASE WHEN "payment"."payment_price" is NULL THEN - "rendered_service"."rendered_service_price" ELSE "payment"."payment_price" - "rendered_service"."rendered_service_price" END) AS "Balance"
+//        from(SELECT "payment"."service_id", "payment"."subscriber_account", SUM("payment"."price") as "payment_price"
+//                FROM "payment" where  "payment"."date"<'2015-06-01'  AND "payment"."service_id" = 1      group by  "payment"."service_id", "payment". "subscriber_account") as "payment" RIGHT JOIN (
+//                SELECT "rendered_service". "service_id", "rendered_service"."subscriber_account",SUM("rendered_service"."price") as "rendered_service_price"
+//        FROM "rendered_service" where  "rendered_service"."date"<'2015-06-01'  group by "rendered_service"."service_id", "rendered_service". "subscriber_account") as  "rendered_service"
+//        ON ("payment"."subscriber_account" = "rendered_service"."subscriber_account") where "rendered_service"."service_id" = 1
+
 
 //        SELECT * FROM(SELECT "payment"."service_id",  "payment"."subscriber_account"  , "payment"."payment_price", "rendered_service"."rendered_service_price" ,
 //                "payment"."payment_price" -  "rendered_service"."rendered_service_price"  as "Balance"
@@ -304,7 +453,8 @@ public class ReadCVS {
                 subscriber.setName(row[2] + " " + row[3] + " "  + row[4]);
                 subscriber.setStreetId(parseInt(row[5]));
                 subscriber.setBalance(0);
-                subscriber.setHouse(parseInt(row[6]) + row[7]);
+                subscriber.setHouse(parseInt(row[6]));
+                subscriber.setIndex(row[7]);
                 subscriber.setBuilding(row[8]);
                 subscriber.setFlat(row[9]);
                 subscriber.setPhone(row[10]);

@@ -15,13 +15,13 @@ public class Subscriber extends DefaultEntity {
 
     private Integer streetId;
 
-    private String house;
+    private Integer house;
 
     private String building;
 
     private String flat;
 
-    private String postcode;
+    private String index;
 
     private String phone;
 
@@ -81,11 +81,11 @@ public class Subscriber extends DefaultEntity {
         this.streetId = streetId;
     }
 
-    public String getHouse() {
+    public Integer getHouse() {
         return house;
     }
 
-    public void setHouse(String house) {
+    public void setHouse(Integer house) {
         this.house = house;
     }
 
@@ -105,12 +105,12 @@ public class Subscriber extends DefaultEntity {
         this.flat = flat;
     }
 
-    public String getPostcode() {
-        return postcode;
+    public String getIndex() {
+        return index;
     }
 
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
+    public void setIndex(String index) {
+        this.index = index;
     }
 
     public String getPhone() {
