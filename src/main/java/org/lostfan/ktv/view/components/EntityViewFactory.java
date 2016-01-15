@@ -3,17 +3,20 @@ package org.lostfan.ktv.view.components;
 import org.lostfan.ktv.controller.EntityOneController;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
+import org.lostfan.ktv.model.entity.SubscriberEntityModel;
 import org.lostfan.ktv.view.AdditionalServiceEntityView;
 import org.lostfan.ktv.view.ChangeOfTariffEntityView;
 import org.lostfan.ktv.view.ConnectionEntityView;
 import org.lostfan.ktv.view.DisconnectionEntityView;
 import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.RenderedServiceEntityView;
+import org.lostfan.ktv.view.SubscriberEntityView;
 
 public class EntityViewFactory {
 
@@ -75,6 +78,9 @@ public class EntityViewFactory {
             case RenderedService:
                 entityView = new RenderedServiceEntityView(model);
                 break;
+            case Subscriber:
+                entityView = new SubscriberEntityView((SubscriberEntityModel) model);
+                break;
             default:
                 entityView = new EntityView(model);
         }
@@ -94,6 +100,9 @@ public class EntityViewFactory {
             case RenderedService:
                 entityView = new RenderedServiceEntityView(model, model.getEntity(id));
                 break;
+            case Subscriber:
+                entityView = new SubscriberEntityView((SubscriberEntityModel) model,  ((SubscriberEntityModel) model).getEntity(id));
+                break;
             default:
                 entityView = new EntityView(model, model.getEntity(id));
         }
@@ -108,6 +117,9 @@ public class EntityViewFactory {
         if (model.getEntityClass() == RenderedService.class) {
             return new RenderedServiceEntityView(model);
         }
+        if (model.getEntityClass() == Subscriber.class) {
+            return new SubscriberEntityView((SubscriberEntityModel) model);
+        }
         return new EntityView(model);
     }
 
@@ -121,6 +133,8 @@ public class EntityViewFactory {
         EntityView entityView = null;
         if (model.getEntityClass() == RenderedService.class) {
             entityView = new RenderedServiceEntityView(model, entity);
+        } else if (model.getEntityClass() == Subscriber.class) {
+            entityView = new SubscriberEntityView((SubscriberEntityModel) model, (Subscriber) entity);
         } else {
             entityView = new EntityView(model, entity);
         }

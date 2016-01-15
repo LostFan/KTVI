@@ -123,7 +123,7 @@ public class EntityView extends FormView {
         this(model, null);
     }
 
-    public <E extends Entity> EntityView(EntityModel<Entity> model, Entity entity) {
+    public EntityView(EntityModel model, Entity entity) {
         this.entity = entity;
         this.model = model;
 

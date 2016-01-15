@@ -153,9 +153,9 @@ public class XmlLoader {
             subscriber.setName(parseString(element, "Name"));
             subscriber.setStreetId(parseInt(element, "Street"));
             subscriber.setBalance(0);
-            subscriber.setHouse(parseString(element, "House"));
+            subscriber.setHouse(parseInt(element, "House"));
             subscriber.setBuilding(parseString(element, "Housing"));
-            subscriber.setPostcode(parseString(element, "Index"));
+            subscriber.setIndex(parseString(element, "Index"));
             subscriber.setPhone(parseString(element, "Phone"));
             DAOFactory.getDefaultDAOFactory().getSubscriberDAO().save(subscriber);
         }

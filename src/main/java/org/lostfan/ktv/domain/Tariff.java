@@ -6,7 +6,7 @@ public class Tariff extends DefaultEntity  {
 
     private String name;
 
-    private Boolean digital;
+    private boolean digital;
 
     private String channels;
 
@@ -18,11 +18,11 @@ public class Tariff extends DefaultEntity  {
         this.name = name;
     }
 
-    public Boolean isDigital() {
+    public boolean isDigital() {
         return digital;
     }
 
-    public void setDigital(Boolean digital) {
+    public void setDigital(boolean digital) {
         this.digital = digital;
     }
 

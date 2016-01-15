@@ -70,19 +70,24 @@ public class PostGreTariffDAO implements TariffDAO {
 
     public void save(Tariff tariff) {
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"tariff\" (\"id\", \"name\", \"channels\", \"digital\") VALUES(?, ?, ?, ?)");
-            if (tariff.getId() != null) {
-                preparedStatement.setInt(1, tariff.getId());
+            PreparedStatement preparedStatement;
+            if(tariff.getId() != null) {
+                preparedStatement = getConnection().prepareStatement(
+                        "INSERT INTO \"tariff\" (\"name\", \"channels\", \"digital\", \"id\") VALUES(?, ?, ?, ?)");
+                preparedStatement.setInt(4, tariff.getId());
+            } else {
+                preparedStatement = getConnection().prepareStatement(
+                        "INSERT INTO \"tariff\" (\"name\", \"channels\", \"digital\") VALUES(?, ?, ?)");
             }
-            preparedStatement.setString(2, tariff.getName());
-            preparedStatement.setString(3, tariff.getChannels());
-            preparedStatement.setBoolean(4, tariff.isDigital());
+
+            preparedStatement.setString(1, tariff.getName());
+            preparedStatement.setString(2, tariff.getChannels());
+            preparedStatement.setBoolean(3, tariff.isDigital());
             preparedStatement.executeUpdate();
-            Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-            resultSet.next();
-            tariff.setId(resultSet.getInt(1));
+//            Statement statement = getConnection().createStatement();
+//            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+//            resultSet.next();
+//            tariff.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

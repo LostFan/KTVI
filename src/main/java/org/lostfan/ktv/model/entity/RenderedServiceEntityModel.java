@@ -16,7 +16,6 @@ import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
 import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
 import org.lostfan.ktv.model.dto.MaterialsDTO;
-import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
 import org.lostfan.ktv.validation.RenderedServiceValidator;
 import org.lostfan.ktv.validation.SubscriberTariffValidator;
 import org.lostfan.ktv.validation.ValidationResult;
@@ -40,7 +39,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     private Validator<RenderedService> validator = new RenderedServiceValidator();
     private Validator<SubscriberTariff> validatorSubscriberTariff = new SubscriberTariffValidator();
 
-    private RenderedServiceTransformer transformer = new RenderedServiceTransformer();
+
     private MaterialConsumptionDAO materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
 

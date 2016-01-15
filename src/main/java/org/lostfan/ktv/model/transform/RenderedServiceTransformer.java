@@ -1,19 +1,13 @@
 package org.lostfan.ktv.model.transform;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
-import org.lostfan.ktv.model.dto.ConnectionRenderedService;
+import org.lostfan.ktv.model.dto.RenderedServiceExt;
 
-public class RenderedServiceTransformer implements EntityTransformer<RenderedService, ConnectionRenderedService> {
+public class RenderedServiceTransformer implements EntityTransformer<RenderedService, RenderedServiceExt> {
 
     @Override
-    public ConnectionRenderedService transformTo(RenderedService entity) {
-        ConnectionRenderedService dto = new ConnectionRenderedService();
+    public RenderedServiceExt transformTo(RenderedService entity) {
+        RenderedServiceExt dto = new RenderedServiceExt();
         dto.setId(entity.getId());
         dto.setDate(entity.getDate());
         dto.setPrice(entity.getPrice());
