@@ -37,6 +37,11 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         return payments;
     }
 
+    @Override
+    public List<Payment> getByMonth(LocalDate date) {
+        return null;
+    }
+
     public Payment get(int id) {
         Payment payment = null;
         try {

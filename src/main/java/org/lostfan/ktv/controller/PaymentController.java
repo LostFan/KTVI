@@ -1,13 +1,12 @@
 package org.lostfan.ktv.controller;
 
-import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.Payment;
-import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.LoadPaymentsView;
 import org.lostfan.ktv.view.PaymentTableView;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class PaymentController extends EntityController{
@@ -20,6 +19,7 @@ public class PaymentController extends EntityController{
         this.model = model;
         this.view = view;
         view.loadActionListener(this::loadActionPerformed);
+        view.newDateActionListener(this::newDateActionPerformed);
     }
 
     private void loadActionPerformed(Object args) {
@@ -38,6 +38,11 @@ public class PaymentController extends EntityController{
             loadPaymentsView.hide();
         });
 //        this.loadPaymentsView.setSaveActionListener(this::saveTariffPriceActionPerformed);
+    }
+
+    private void newDateActionPerformed(Object args) {
+        LocalDate date = (LocalDate) args;
+        this.model.setDate(date);
     }
 
 }

@@ -19,7 +19,25 @@ public class PostGrePaymentDAO implements PaymentDAO {
     public List<Payment> getAll() {
         List<Payment> payments = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"payment\"");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"payment\"  order by \"date\" limit 100");
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                payments.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return payments;
+    }
+
+    public List<Payment> getByMonth(LocalDate date) {
+        List<Payment> payments = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"payment\" where \"date\" >= ? AND \"date\" < ?  order by \"date\" ");
+            preparedStatement.setDate(1, Date.valueOf(date));
+            preparedStatement.setDate(2, Date.valueOf(date.plusMonths(1)));
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 payments.add(constructEntity(rs));

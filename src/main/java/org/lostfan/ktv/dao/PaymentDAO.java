@@ -8,6 +8,8 @@ import org.lostfan.ktv.domain.PaymentType;
 
 public interface PaymentDAO extends EntityDAO<Payment> {
 
+    List<Payment> getByMonth(LocalDate date);
+
     List<Payment> getPaymentsByDate(LocalDate date);
 
     List<Payment> getPaymentsBySubscriberId(int subscriberId);

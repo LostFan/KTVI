@@ -15,12 +15,16 @@ import org.lostfan.ktv.validation.Validator;
 
 public class PaymentEntityModel extends BaseEntityModel<Payment> {
 
+    private LocalDate date;
     private List<EntityField> fields;
     private FullEntityField loadFullEntityField;
     private Validator<Payment> validator = new PaymentValidator();
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
 
     public PaymentEntityModel() {
+
+        date = LocalDate.now().withDayOfMonth(1);
+
         fields = new ArrayList<>();
 
         this.fields = new ArrayList<>();
@@ -93,5 +97,18 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     @Override
     public Validator<Payment> getValidator() {
         return this.validator;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+        updateEntitiesList();
+    }
+
+    public List<Payment> getAll() {
+        return DAOFactory.getDefaultDAOFactory().getPaymentDAO().getByMonth(this.date);
+    }
+
+    public LocalDate getDate() {
+        return this.date;
     }
 }
