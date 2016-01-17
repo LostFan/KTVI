@@ -171,7 +171,7 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
                     preparedStatement.setDate(13, null);
                 }
 
-                preparedStatement.setInt(13, subscriber.getAccount());
+                preparedStatement.setInt(14, subscriber.getAccount());
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {

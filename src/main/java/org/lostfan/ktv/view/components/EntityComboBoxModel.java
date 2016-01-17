@@ -8,9 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.*;
-import javax.swing.event.ListDataListener;
 
-public class EntityComboBoxModel implements ComboBoxModel<String> {
+public class EntityComboBoxModel extends DefaultComboBoxModel<String> {
 
     private class FormattedEntity {
         private Entity entity;
@@ -37,11 +36,15 @@ public class EntityComboBoxModel implements ComboBoxModel<String> {
     private List<FormattedEntity> entities;
 
     public EntityComboBoxModel(EntitySearcherModel model) {
-        setModel(model);
+        this.model = model;
+        init();
+        model.addObserver(args -> {
+            init();
+            fireContentsChanged(this, 0, getSize() - 1);
+        });
     }
 
-    public void setModel(EntitySearcherModel model) {
-        this.model = model;
+    private void init() {
         this.formattedNames = new HashMap<>(this.model.getList().size());
         this.entities = new ArrayList<>(this.model.getList().size());
         List<? extends Entity> entities = this.model.getList();
@@ -52,8 +55,7 @@ public class EntityComboBoxModel implements ComboBoxModel<String> {
         }
     }
 
-    public void setNewModel(EntitySearcherModel model, String currentValue) {
-        setModel(model);
+    public void setCurrentValue(String currentValue) {
         this.currentValue = currentValue;
         if (this.entity != null && !this.formattedNames.containsKey(formatName(currentValue, this.entity.getId()))
                 && !this.formattedNames.containsKey(this.currentValue)) {
@@ -130,16 +132,6 @@ public class EntityComboBoxModel implements ComboBoxModel<String> {
             return null;
         }
         return entities.get(index).formattedName;
-    }
-
-    @Override
-    public void addListDataListener(ListDataListener l) {
-
-    }
-
-    @Override
-    public void removeListDataListener(ListDataListener l) {
-
     }
 
     private String formatName(String name, Integer id) {

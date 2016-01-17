@@ -8,29 +8,23 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.utils.Observer;
+import org.lostfan.ktv.utils.ViewActionListener;
 
 public class EntityComboBox extends JComboBox<String> {
 
     private class ModelObserver implements Observer {
         @Override
         public void update(Object args) {
-            EntityComboBox.this.thisRevalidate();
-        }
-    }
-
-    private class OuterModelObserver implements Observer {
-        @Override
-        public void update(Object args) {
-            EntityComboBox.this.rev();
+            EntityComboBox.this.revalidateResult();
         }
     }
 
     private JTextField textField;
     private EntitySearcherModel model;
     private EntityComboBoxModel entityComboBoxModel;
+    private ViewActionListener searchActionListener;
 
     private ModelObserver modelObserver;
-    private OuterModelObserver outerModelObserver;
 
     public EntityComboBox(EntitySearcherModel model) {
         textField = (JTextField)     this.getEditor().getEditorComponent();
@@ -52,10 +46,39 @@ public class EntityComboBox extends JComboBox<String> {
         });
         this.setEditable(true);
 
+        setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
         this.modelObserver = new ModelObserver();
-        this.outerModelObserver = new OuterModelObserver();
         model.addObserver(this.modelObserver);
 
+        this.textField.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent ke) {
+                // Result select key:
+                // 37 - Left Arrow
+                // 38 - Up Arrow
+                // 39 - Right Arrow
+                // 40 - Down Arrow
+                // 10 - Enter
+                if ((ke.getKeyCode() >= 37 && ke.getKeyCode() <= 40) || ke.getKeyCode() == 10) {
+                    return;
+                }
+
+                entityComboBoxModel.setCurrentValue(textField.getText());
+
+                // Perform search action
+                // Model update triggers component revalidation
+                if (searchActionListener != null) {
+                    searchActionListener.actionPerformed(textField.getText());
+                }
+            }
+        });
+
+        this.textField.addActionListener( e -> {
+            // Place into the textField the selected value
+            textField.setText(entityComboBoxModel.getSelectedName());
+        });
     }
 
     @Override
@@ -63,25 +86,21 @@ public class EntityComboBox extends JComboBox<String> {
         super.updateUI();
         UIManager.put("ComboBox.squareButton", Boolean.FALSE);
         setUI(new BasicComboBoxUI() {
-            @Override protected JButton createArrowButton() {
-                JButton b = new JButton();
-                b.setBorder(BorderFactory.createEmptyBorder());
+            @Override
+            protected JButton createArrowButton() {
+                JButton b = super.createArrowButton();
                 b.setVisible(false);
                 return b;
             }
         });
-        setBorder(BorderFactory.createLineBorder(Color.GRAY));
     }
 
-    public void comboFilter(String enteredText) {
-        entityComboBoxModel.setNewModel(model, enteredText);
-        if (entityComboBoxModel.getSize() > 0) {
-            this.setModel(entityComboBoxModel);
+    private void revalidateResult() {
+        revalidate();
+        if (textField.hasFocus()) {
+            hidePopup();
+            showPopup();
         }
-    }
-
-    public String getText() {
-        return textField.getText();
     }
 
     public Entity getSelectedEntity() {
@@ -92,10 +111,6 @@ public class EntityComboBox extends JComboBox<String> {
         return entityComboBoxModel.getSelectedItem();
     }
 
-    public JComboBox getJComboBox() {
-        return this;
-    }
-
     public void setSelectedId(int id){
         entityComboBoxModel.setSelectedEntity(id);
     }
@@ -104,79 +119,7 @@ public class EntityComboBox extends JComboBox<String> {
         entityComboBoxModel.setSelectedEntity(id);
     }
 
-
-    public void thisRevalidate() {
-        if(this.isPopupVisible()) {
-            this.hidePopup();
-            this.showPopup();
-        }
-    }
-
-    public void addLocalKeyListener(KeyListener listener) {
-        this.textField.addKeyListener(listener);
-    }
-
-    public void addComboBoxActionListener(ActionListener listener) {
-        this.addActionListener(listener);
-    }
-
-    public void keyClick(KeyEvent ke) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                if ((ke.getKeyCode() < 37 || ke.getKeyCode() > 40) && ke.getKeyCode() != 10) { //up, right, left, down and enter keys
-                    comboFilter(textField.getText());
-                }
-                boolean popupVisible = true;
-                if (entityComboBoxModel.getSize() == 0) {
-                    popupVisible = false;
-                } else if (entityComboBoxModel.getSelectedEntity() == null && ke.getKeyCode() == 10) {
-
-                }
-                if (ke.getKeyCode() == 10) {
-                    if (entityComboBoxModel.getSelectedEntity() == null) {
-                        popupVisible = true;
-                        getJComboBox().setSelectedIndex(0);
-
-                    } else {
-                        popupVisible = false;
-
-                    }
-                }
-
-                if (popupVisible) {
-                    getJComboBox().showPopup();
-                } else {
-                    getJComboBox().hidePopup();
-                }
-
-                thisRevalidate();
-
-            }
-        });
-    }
-
-    public boolean isReloadComboBoxData(KeyEvent ke) {
-        return !(ke.getKeyCode() >= 37 && ke.getKeyCode() <= 40);
-    }
-
-    public boolean isReloadComboBoxData() {
-        return !getJComboBox().isPopupVisible();
-    }
-
-    public void editTextFieldText() {
-        textField.setText(this.entityComboBoxModel.getSelectedName());
-    }
-
-
-    private void rev() {
-        if(entityComboBoxModel.getSelectedEntity() != null) {
-            textField.setText(entityComboBoxModel.getSelectedEntity().getName());
-        }
-        this.invalidate();
-        this.repaint();
-    }
-
-    public Observer getModelObserver() {
-        return this.outerModelObserver;
+    public void setSearchActionListener(ViewActionListener searchActionListener) {
+        this.searchActionListener = searchActionListener;
     }
 }
