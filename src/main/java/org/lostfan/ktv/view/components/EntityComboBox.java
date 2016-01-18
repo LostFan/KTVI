@@ -83,12 +83,14 @@ public class EntityComboBox extends JComboBox<String> {
 
     @Override
     public void updateUI() {
+        // Hide arrow button
         super.updateUI();
         UIManager.put("ComboBox.squareButton", Boolean.FALSE);
         setUI(new BasicComboBoxUI() {
             @Override
             protected JButton createArrowButton() {
-                JButton b = super.createArrowButton();
+                JButton b = new JButton();
+                b.setBorder(BorderFactory.createEmptyBorder());
                 b.setVisible(false);
                 return b;
             }
