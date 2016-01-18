@@ -35,6 +35,9 @@ public class FieldSearchCriterion<E extends Entity> {
     }
 
     public Predicate<E> buildPredicate() {
+        if(this.entityField.getType() == EntityFieldTypes.Subscriber) {
+            return buildSubscriberPredicate();
+        }
         if(this.entityField.getType().isEntityClass()) {
             return buildEntityPredicate();
         }
@@ -121,6 +124,39 @@ public class FieldSearchCriterion<E extends Entity> {
             return e -> {
                 Object object = this.entityField.getType().getDAO().get((Integer) this.entityField.get(e));
                 return ((Entity) object).getName().toLowerCase().contains(((String) value).toLowerCase());
+            };
+        } else if (cr == SearchCriteria.Entity.NotContains) {
+            return e -> {
+                Object object = this.entityField.getType().getDAO().get((Integer) this.entityField.get(e));
+                return !((Entity) object).getName().toLowerCase().contains(((String) value).toLowerCase());
+            };
+        }
+
+        return e -> true;
+    }
+
+    private Predicate<E> buildSubscriberPredicate() {
+        SearchCriteria.Entity cr = (SearchCriteria.Entity) this.criterion;
+        if (cr == SearchCriteria.Entity.Equals) {
+            return e -> {
+                Object object = this.entityField.getType().getDAO().get((Integer) this.entityField.get(e));
+                try {
+                    Integer intValue = Integer.parseInt((String)value);
+                    return ((Entity) object).getId().equals(intValue);
+                } catch (NumberFormatException ex) {
+                    return ((Entity) object).getName().equalsIgnoreCase((String) value);
+                }
+
+            };
+        } else if (cr == SearchCriteria.Entity.Contains) {
+            return e -> {
+                Object object = this.entityField.getType().getDAO().get((Integer) this.entityField.get(e));
+                try {
+                    Integer intValue = Integer.parseInt((String)value);
+                    return ((Entity) object).getId().equals(intValue);
+                } catch (NumberFormatException ex) {
+                    return ((Entity) object).getName().toLowerCase().contains(((String) value).toLowerCase());
+                }
             };
         } else if (cr == SearchCriteria.Entity.NotContains) {
             return e -> {
