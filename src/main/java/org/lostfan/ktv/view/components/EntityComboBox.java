@@ -55,13 +55,23 @@ public class EntityComboBox extends JComboBox<String> {
 
             @Override
             public void keyReleased(KeyEvent ke) {
+                // "Enter" key
+                // Select the first found value
+                if (ke.getKeyCode() == 10) {
+                    if (entityComboBoxModel.getSelectedEntity() == null) {
+                        setSelectedIndex(0);
+                        textField.setText(entityComboBoxModel.getSelectedName());
+                        hidePopup();
+                    }
+                    return;
+                }
+
                 // Result select key:
                 // 37 - Left Arrow
                 // 38 - Up Arrow
                 // 39 - Right Arrow
                 // 40 - Down Arrow
-                // 10 - Enter
-                if ((ke.getKeyCode() >= 37 && ke.getKeyCode() <= 40) || ke.getKeyCode() == 10) {
+                if (ke.getKeyCode() >= 37 && ke.getKeyCode() <= 40) {
                     return;
                 }
 
