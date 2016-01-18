@@ -19,7 +19,7 @@ public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
             Statement statement = getConnection().createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM \"rendered_service\"");
+            ResultSet rs = statement.executeQuery("SELECT * FROM \"rendered_service\" limit 1000 OFFSET  0");
             while (rs.next()) {
                 RenderedService renderedService = constructEntity(rs);
 
@@ -191,8 +191,10 @@ public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
             if(renderedService.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"rendered_service\" (\"subscriber_account\", \"service_id\", \"date\",  \"price\", \"id\")" +
-                                " VALUES(?, ?, ?, ?, ?)");
+                                " VALUES(?, ?, ?, ?, ?); " +
+                                "ALTER SEQUENCE serial_rendered_service RESTART WITH ?;");
                 preparedStatement.setInt(5, renderedService.getId());
+                preparedStatement.setInt(6, renderedService.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"rendered_service\" (\"subscriber_account\", \"service_id\", \"date\",  \"price\")" +
@@ -207,10 +209,13 @@ public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
                 preparedStatement.setInt(4, 0);
             }
             preparedStatement.executeUpdate();
-//            Statement statement = getConnection().createStatement();
-//            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-//            resultSet.next();
-//            renderedService.setId(resultSet.getInt(1));
+            if(renderedService.getId() != null) {
+                return;
+            }
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+            resultSet.next();
+            renderedService.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             System.out.println(renderedService.getSubscriberAccount());
             ex.printStackTrace();
@@ -257,8 +262,8 @@ public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
     public List<RenderedService> getAllContainsInName(String str) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where LOWER(\"id\") LIKE ?");
-            preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where LOWER(CAST(\"id\" AS varchar(10))) LIKE ? ORDER BY \"id\" LIMIT 20");
+            preparedStatement.setString(1, (str + "%").toLowerCase());
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 renderedServices.add(constructEntity(rs));

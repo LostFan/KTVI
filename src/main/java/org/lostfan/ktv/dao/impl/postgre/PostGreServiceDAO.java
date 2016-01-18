@@ -58,8 +58,10 @@ public class PostGreServiceDAO implements ServiceDAO {
             if (service.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"service\" (\"name\", \"additional\", \"consume_materials\"" +
-                                ", \"change_tariff\", \"connection_service\", \"disconnection_service\", \"id\") VALUES(?, ?, ?, ?, ?, ?, ?)");
+                                ", \"change_tariff\", \"connection_service\", \"disconnection_service\", \"id\") VALUES(?, ?, ?, ?, ?, ?, ?); " +
+                                "ALTER SEQUENCE serial_service RESTART WITH ?;");
                 preparedStatement.setInt(7, service.getId());
+                preparedStatement.setInt(8, service.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"service\" (\"name\", \"additional\", \"consume_materials\"" +
@@ -72,11 +74,15 @@ public class PostGreServiceDAO implements ServiceDAO {
             preparedStatement.setBoolean(5, service.isConnectionService());
             preparedStatement.setBoolean(6, service.isDisconnectionService());
             preparedStatement.executeUpdate();
-//            Statement statement = getConnection().createStatement();
-//            ResultSet resultSet = statement.executeQuery("SELECT lastval() ");
-//            if (resultSet.next()) {
-//                service.setId(resultSet.getInt(1));
-//            }
+            if (service.getId() != null) {
+                return;
+            }
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+            if (resultSet.next()) {
+                service.setId(resultSet.getInt(1));
+            }
+
 
         } catch (SQLException ex) {
             ex.printStackTrace();

@@ -52,15 +52,23 @@ public class PostGreStreetDAO implements StreetDAO {
 
     public void save(Street street) {
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"street\" (\"id\", \"name\") VALUES(?, ?)");
+            PreparedStatement preparedStatement;
             if (street.getId() != null) {
-                preparedStatement.setInt(1, street.getId());
-            } else {
-                preparedStatement.setNull(1, Types.INTEGER);
+                preparedStatement = getConnection().prepareStatement(
+                        "INSERT INTO \"street\" (\"name\", \"id\") VALUES(?, ?); " +
+                                "ALTER SEQUENCE serial_street RESTART WITH ?;");
+                preparedStatement.setInt(2, street.getId());
+                preparedStatement.setInt(3, street.getId() + 1);
             }
-            preparedStatement.setString(2, street.getName());
+             else {
+                preparedStatement = getConnection().prepareStatement(
+                        "INSERT INTO \"street\" (\"name\") VALUES(?)");
+            }
+            preparedStatement.setString(1, street.getName());
             preparedStatement.executeUpdate();
+            if(street.getId() != null) {
+                return;
+            }
             Statement statement = getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT lastval() ");
             if (resultSet.next()) {

@@ -45,15 +45,24 @@ public class PostGreDisconnectionReasonDAO implements DisconnectionReasonDAO {
     @Override
     public void save(DisconnectionReason disconnectionReason) {
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"disconnection_reason\" (\"id\", \"name\") VALUES(?, ?)");
+            PreparedStatement preparedStatement;
             if (disconnectionReason.getId() != null) {
-                preparedStatement.setInt(1, disconnectionReason.getId());
+                preparedStatement = getConnection().prepareStatement(
+                        "INSERT INTO \"disconnection_reason\" (\"name\", \"id\") VALUES(?, ?); " +
+                                "ALTER SEQUENCE serial_disconnection_reason RESTART WITH ?;");
+                preparedStatement.setInt(2, disconnectionReason.getId());
+                preparedStatement.setInt(3, disconnectionReason.getId() + 1);
+            } else {
+                preparedStatement = getConnection().prepareStatement(
+                        "INSERT INTO \"disconnection_reason\" (\"name\") VALUES(?)");
             }
-            preparedStatement.setString(2, disconnectionReason.getName());
+            preparedStatement.setString(1, disconnectionReason.getName());
             preparedStatement.executeUpdate();
+            if(disconnectionReason.getId() != null) {
+                return;
+            }
             Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
             if (resultSet.next()) {
                 disconnectionReason.setId(resultSet.getInt(1));
             }

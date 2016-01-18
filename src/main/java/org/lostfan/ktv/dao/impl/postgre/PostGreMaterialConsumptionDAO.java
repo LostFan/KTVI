@@ -51,18 +51,28 @@ public class PostGreMaterialConsumptionDAO implements MaterialConsumptionDAO {
 
     public void save(MaterialConsumption materialConsumption) {
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"material_consumption\" (\"id\", \"material_id\", \"rendered_service_id\", \"amount\")" +
-                            " VALUES(?, ?, ?, ?)");
+            PreparedStatement preparedStatement;
             if (materialConsumption.getId() != null) {
-                preparedStatement.setInt(1, materialConsumption.getId());
+                preparedStatement = getConnection().prepareStatement(
+                        "INSERT INTO \"material_consumption\" (\"material_id\", \"rendered_service_id\", \"amount\", \"id\")" +
+                                " VALUES(?, ?, ?, ?); " +
+                                "ALTER SEQUENCE serial_material_consumption RESTART WITH ?;");
+                preparedStatement.setInt(4, materialConsumption.getId());
+                preparedStatement.setInt(5, materialConsumption.getId() + 1);
+            } else {
+                preparedStatement = getConnection().prepareStatement(
+                        "INSERT INTO \"material_consumption\" (\"material_id\", \"rendered_service_id\", \"amount\")" +
+                                " VALUES(?, ?, ?)");
             }
-            preparedStatement.setInt(2, materialConsumption.getMaterialId());
-            preparedStatement.setInt(3, materialConsumption.getRenderedServiceId());
-            preparedStatement.setDouble(4, materialConsumption.getAmount());
+            preparedStatement.setInt(1, materialConsumption.getMaterialId());
+            preparedStatement.setInt(2, materialConsumption.getRenderedServiceId());
+            preparedStatement.setDouble(3, materialConsumption.getAmount());
             preparedStatement.executeUpdate();
+            if (materialConsumption.getId() != null) {
+                return;
+            }
             Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
             resultSet.next();
             materialConsumption.setId(resultSet.getInt(1));
 

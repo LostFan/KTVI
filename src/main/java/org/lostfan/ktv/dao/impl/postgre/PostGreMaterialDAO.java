@@ -55,8 +55,10 @@ public class PostGreMaterialDAO implements MaterialDAO {
             PreparedStatement preparedStatement;
             if (material.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
-                        "INSERT INTO \"material\" (\"name\", \"price\", \"unit\", \"id\") VALUES(?, ?, ?, ?)");
+                        "INSERT INTO \"material\" (\"name\", \"price\", \"unit\", \"id\") VALUES(?, ?, ?, ?); " +
+                                "ALTER SEQUENCE serial_material RESTART WITH ?;");
                 preparedStatement.setInt(4, material.getId());
+                preparedStatement.setInt(5, material.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"material\" (\"name\", \"price\", \"unit\") VALUES(?, ?, ?)");
@@ -65,8 +67,11 @@ public class PostGreMaterialDAO implements MaterialDAO {
             preparedStatement.setInt(2, material.getPrice());
             preparedStatement.setString(3, material.getUnit());
             preparedStatement.executeUpdate();
+            if (material.getId() != null) {
+                return;
+            }
             Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
+            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
             resultSet.next();
             material.setId(resultSet.getInt(1));
         } catch (SQLException ex) {

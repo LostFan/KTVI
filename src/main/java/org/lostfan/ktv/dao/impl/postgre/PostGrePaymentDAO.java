@@ -109,11 +109,19 @@ public class PostGrePaymentDAO implements PaymentDAO {
 
     public void save(Payment payment) {
         try {
-
-            PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"rendered_service_id\", \"price\", \"date\")" +
-                            " VALUES(?, ?, ?, ?, ?)");
-
+            PreparedStatement preparedStatement;
+            if(payment.getId() != null) {
+                preparedStatement = getConnection().prepareStatement(
+                        "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"rendered_service_id\", \"price\", \"date\", \"id\")" +
+                                " VALUES(?, ?, ?, ?, ?, ?); " +
+                                "ALTER SEQUENCE serial_payment RESTART WITH ?;");
+                preparedStatement.setInt(6, payment.getId());
+                preparedStatement.setInt(7, payment.getId() + 1);
+            } else {
+                preparedStatement = getConnection().prepareStatement(
+                        "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"rendered_service_id\", \"price\", \"date\")" +
+                                " VALUES(?, ?, ?, ?, ?)");
+            }
             preparedStatement.setInt(1, payment.getSubscriberAccount());
             preparedStatement.setInt(2, payment.getServicePaymentId());
             if(payment.getRenderedServicePaymentId() != null) {
@@ -124,10 +132,13 @@ public class PostGrePaymentDAO implements PaymentDAO {
             preparedStatement.setInt(4, payment.getPrice());
             preparedStatement.setDate(5, Date.valueOf(payment.getDate()));
             preparedStatement.executeUpdate();
-//            Statement statement = getConnection().createStatement();
-//            ResultSet resultSet = statement.executeQuery("CALL IDENTITY()");
-//            resultSet.next();
-//            payment.setId(resultSet.getInt(1));
+            if(payment.getId() != null) {
+                return;
+            }
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+            resultSet.next();
+            payment.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -264,7 +275,7 @@ public class PostGrePaymentDAO implements PaymentDAO {
     public List<Payment> getAllContainsInName(String str) {
         List<Payment> payments = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where LOWER(\"id\") LIKE ?");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where LOWER(\"id\" AS varchar(10)) LIKE ?");
             preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -283,9 +294,13 @@ public class PostGrePaymentDAO implements PaymentDAO {
         payment.setId(rs.getInt("id"));
         payment.setPrice(rs.getInt("price"));
         payment.setDate(rs.getDate("date").toLocalDate());
-        payment.setPaymentTypeId(rs.getInt("payment_type_id"));
+        if(rs.getObject("rendered_service_id") != null) {
+            payment.setPaymentTypeId(rs.getInt("payment_type_id"));
+        }
         payment.setSubscriberAccount(rs.getInt("subscriber_account"));
-        payment.setRenderedServicePaymentId(rs.getInt("rendered_service_id"));
+        if(rs.getObject("rendered_service_id") != null) {
+            payment.setRenderedServicePaymentId(rs.getInt("rendered_service_id"));
+        }
         payment.setServicePaymentId(rs.getInt("service_id"));
         return payment;
     }
