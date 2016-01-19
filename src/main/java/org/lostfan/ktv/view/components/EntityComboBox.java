@@ -58,11 +58,11 @@ public class EntityComboBox extends JComboBox<String> {
                 // "Enter" key
                 // Select the first found value
                 if (ke.getKeyCode() == 10) {
-                    if (entityComboBoxModel.getSelectedEntity() == null) {
+                    if (entityComboBoxModel.getSelectedEntity() == null && entityComboBoxModel.getSize() > 0) {
                         setSelectedIndex(0);
                         textField.setText(entityComboBoxModel.getSelectedName());
-                        hidePopup();
                     }
+                    hidePopup();
                     return;
                 }
 

@@ -43,7 +43,6 @@ public class EntityView extends FormView {
                     ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText((String) value);
                 }
             }
-            this.comboBox.addActionListener(e -> fireValueChanged(getValue()));
 
             this.panel = new JPanel(new BorderLayout());
             this.panel.add(this.comboBox, BorderLayout.CENTER);
@@ -62,7 +61,6 @@ public class EntityView extends FormView {
                 if (entitySelectionView.get() != null) {
                     this.comboBox.setSelectedEntity(entitySelectionView.get());
                     ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.get().getName());
-                    fireValueChanged(getValue());
                     this.comboBox.invalidate();
                     this.comboBox.repaint();
                 }
@@ -88,6 +86,12 @@ public class EntityView extends FormView {
             buttonPanel.add(tableButton, BorderLayout.LINE_START);
             buttonPanel.add(entityButton, BorderLayout.LINE_END);
             this.panel.add(buttonPanel, BorderLayout.LINE_END);
+
+            ((EntityComboBoxModel)this.comboBox.getModel()).addEntitySelectedListener(e -> fireValueChanged(getValue()));
+
+            addValueListener(v -> {
+                System.out.println("entity new value: " + v);
+            });
         }
 
         @Override

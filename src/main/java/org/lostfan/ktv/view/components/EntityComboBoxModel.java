@@ -3,13 +3,15 @@ package org.lostfan.ktv.view.components;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.swing.*;
 
 public class EntityComboBoxModel extends DefaultComboBoxModel<String> {
+
+    public interface EntitySelectedListener {
+
+        void entitySelected(Entity entity);
+    }
 
     private class FormattedEntity {
         private Entity entity;
@@ -35,6 +37,8 @@ public class EntityComboBoxModel extends DefaultComboBoxModel<String> {
     private Map<String, Integer> formattedNames;
     private List<FormattedEntity> entities;
 
+    private Set<EntitySelectedListener> entitySelectedListeners;
+
     public EntityComboBoxModel(EntitySearcherModel model) {
         this.model = model;
         init();
@@ -42,6 +46,8 @@ public class EntityComboBoxModel extends DefaultComboBoxModel<String> {
             init();
             fireContentsChanged(this, 0, getSize() - 1);
         });
+
+        this.entitySelectedListeners = new HashSet<>();
     }
 
     private void init() {
@@ -84,13 +90,15 @@ public class EntityComboBoxModel extends DefaultComboBoxModel<String> {
     }
 
     public void setSelectedEntity(int id){
-        this.entity = this.model.getEntity(id);
+        setSelectedEntity(this.model.getEntity(id));
     }
 
-    public void setSelectedEntity(Entity entity){
+    public void setSelectedEntity(Entity entity) {
         this.entity = entity;
+        if (this.entitySelectedListeners != null && this.entitySelectedListeners.size() > 0) {
+            this.entitySelectedListeners.forEach(l -> l.entitySelected(entity));
+        }
     }
-
 
     @Override
     public void setSelectedItem(Object anItem) {
@@ -109,7 +117,7 @@ public class EntityComboBoxModel extends DefaultComboBoxModel<String> {
         }
 
         if(this.formattedNames.containsKey(this.currentValue)) {
-            this.entity = this.entities.get(this.formattedNames.get(this.currentValue)).entity;
+            setSelectedEntity(this.entities.get(this.formattedNames.get(this.currentValue)).entity);
         } else if (this.entity != null && !this.formattedNames.containsKey(this.currentFormattedValue)){
             this.currentFormattedValue = null;
             this.entity = null;
@@ -132,6 +140,14 @@ public class EntityComboBoxModel extends DefaultComboBoxModel<String> {
             return null;
         }
         return entities.get(index).formattedName;
+    }
+
+    public void addEntitySelectedListener(EntitySelectedListener listener) {
+        this.entitySelectedListeners.add(listener);
+    }
+
+    public void removeEntitySelectedListener(EntitySelectedListener listener) {
+        this.entitySelectedListeners.remove(listener);
     }
 
     private String formatName(String name, Integer id) {
