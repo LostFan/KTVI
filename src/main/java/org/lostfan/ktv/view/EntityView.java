@@ -43,6 +43,8 @@ public class EntityView extends FormView {
                     ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText((String) value);
                 }
             }
+            this.comboBox.addActionListener(e -> fireValueChanged(getValue()));
+
             this.panel = new JPanel(new BorderLayout());
             this.panel.add(this.comboBox, BorderLayout.CENTER);
 
@@ -60,6 +62,7 @@ public class EntityView extends FormView {
                 if (entitySelectionView.get() != null) {
                     this.comboBox.setSelectedEntity(entitySelectionView.get());
                     ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.get().getName());
+                    fireValueChanged(getValue());
                     this.comboBox.invalidate();
                     this.comboBox.repaint();
                 }

@@ -1,12 +1,11 @@
 package org.lostfan.ktv.view.components;
 
-import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
-public class IntegerTextField extends JTextField {
+public class IntegerTextField extends TextField {
 
     private class IntegerDocumentFilter extends DocumentFilter {
 

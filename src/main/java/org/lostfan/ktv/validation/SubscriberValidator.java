@@ -12,7 +12,7 @@ public class SubscriberValidator implements Validator<Subscriber> {
         }
 
         if (entity.getStreetId() == null) {
-            result.addError("errors.empty", "subscriber.street_id");
+            result.addError("errors.notSelected", "subscriber.street_id");
         }
 
         if (entity.getAccount() == null || entity.getAccount() == 0) {

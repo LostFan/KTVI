@@ -3,13 +3,18 @@ package org.lostfan.ktv.view;
 import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.validation.Error;
 import org.lostfan.ktv.view.components.*;
+import org.lostfan.ktv.view.components.TextField;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represents a FrameView class that can contain input fields
@@ -18,12 +23,19 @@ import java.util.Map;
  */
 public class FormView extends FrameView implements Iterable<FormView.FormField> {
 
+    public interface FieldValueListener<T> {
+
+        void valueChanged(T newValue);
+    }
+
     public static abstract class FormField<T> {
 
         protected JLabel label;
         protected JLabel errorLabel;
 
         protected String fieldKey;
+
+        private Set<FieldValueListener<T>> valueListeners;
 
         public FormField(String fieldKey) {
             this.label = new JLabel(getEntityString(fieldKey), SwingConstants.LEFT);
@@ -33,6 +45,8 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
             this.errorLabel.setVisible(false);
             this.errorLabel.setForeground(Color.RED);
             this.errorLabel.setFont(new Font(this.errorLabel.getName(), Font.BOLD, this.errorLabel.getFont().getSize() - 1));
+
+            valueListeners = new HashSet<>();
         }
 
         /**
@@ -74,17 +88,25 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
         public String getFieldKey() {
             return this.fieldKey;
         }
+
+        public void addValueListener(FieldValueListener<T> valueListener) {
+            this.valueListeners.add(valueListener);
+        }
+
+        protected void fireValueChanged(T newValue) {
+            this.valueListeners.forEach(l -> l.valueChanged(newValue));
+        }
     }
 
     public static class StringFormField extends FormField<String> {
 
-        private JTextField textField;
+        private TextField textField;
 
         public StringFormField(String fieldKey) {
             super(fieldKey);
-            this.textField = new JTextField(20);
-            this.textField.setMargin(new Insets(2, 6, 2, 6));
-            new DefaultContextMenu().add(textField);
+            this.textField = new TextField();
+
+            this.textField.addTextChangeListener(v -> fireValueChanged(getValue()));
         }
 
         @Override
@@ -122,9 +144,8 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
         public IntegerFormField(String fieldKey) {
             super(fieldKey);
             this.textField = new IntegerTextField();
-            this.textField.setMargin(new Insets(2, 6, 2, 6));
 
-            new DefaultContextMenu().add(textField);
+            this.textField.addTextChangeListener(v -> fireValueChanged(getValue()));
         }
 
         @Override
@@ -157,14 +178,14 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
 
     public static class DoubleFormField extends FormField<Double> {
 
-        private JTextField textField;
+        private TextField textField;
 
         public DoubleFormField(String fieldKey) {
             super(fieldKey);
             // TODO: Implement FormattedTextField or another way to filter double values only
-            this.textField = new JTextField(20);
-            this.textField.setMargin(new Insets(2, 6, 2, 6));
-            new DefaultContextMenu().add(textField);
+            this.textField = new TextField();
+
+            this.textField.addTextChangeListener(v -> fireValueChanged(getValue()));
         }
 
         @Override
@@ -207,6 +228,8 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
         public BooleanFormField(String fieldKey) {
             super(fieldKey);
             this.checkBox = new JCheckBox();
+
+            this.checkBox.addActionListener(e -> fireValueChanged(getValue()));
         }
 
         @Override
@@ -232,6 +255,10 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
         public DateFormField(String fieldKey) {
             super(fieldKey);
             this.datePicker = new DatePickerField();
+
+            datePicker.addActionListener(e -> fireValueChanged(getValue()));
+            // TODO: something with the manual date entering
+            // datePicker.getModel().addChangeListener(e -> fireValueChanged(getValue()));
         }
 
         @Override
