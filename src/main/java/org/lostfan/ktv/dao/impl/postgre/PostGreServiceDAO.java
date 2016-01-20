@@ -147,8 +147,8 @@ public class PostGreServiceDAO implements ServiceDAO {
         if(get(serviceId) != null) {
             int price = 0;
             try {
-                PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"service_price\" where \"service_id\" = ? AND \"date\" <= ?" +
-                        " ORDER BY \"date\" DESC");
+                PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"service_price\" where \"service_id\" = ? AND \"date\" <= ?" +
+                        " ORDER BY \"date\" DESC LIMIT 1");
                 preparedStatement.setInt(1, serviceId);
                 preparedStatement.setDate(2, Date.valueOf(date));
                 ResultSet rs = preparedStatement.executeQuery();

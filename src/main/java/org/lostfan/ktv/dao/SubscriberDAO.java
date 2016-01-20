@@ -19,17 +19,29 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     List<SubscriberTariff> getSubscriberTariffs(int subscriberId);
 
-    SubscriberSession getSubscriberSession(Integer subscriberId, LocalDate localDate);
+    SubscriberSession getSubscriberSessionBySubscriberIdAndConnectionDate(Integer subscriberId, LocalDate localDate);
+
+    SubscriberSession getSubscriberSessionBySubscriberIdAndDisconnectionDate(Integer subscriberId, LocalDate localDate);
 
     void saveSubscriberSession(SubscriberSession subscriberSession);
 
+    SubscriberSession getSubscriberSessionBySubscriberIdAndAfterDate(Integer subscriberId, LocalDate localDate);
+
     SubscriberSession getNotClosedSubscriberSessionByDate(Integer subscriberId, LocalDate localDate);
+
+    SubscriberSession getSubscriberSessionBySubscriberIdAndContainDate(Integer subscriberId, LocalDate localDate);
 
     void updateSubscriberSession(SubscriberSession subscriberSession);
 
     void deleteSubscriberSession(Integer subscriberId, LocalDate localDate);
 
-    SubscriberTariff getSubscriberTariff(Integer subscriberId, LocalDate localDate);
+    SubscriberTariff getSubscriberTariffBySubscriberIdAndConnectionDate(Integer subscriberId, LocalDate localDate);
+
+    SubscriberTariff getSubscriberTariffBySubscriberIdAndDisconnectionDate(Integer subscriberId, LocalDate localDate);
+
+    SubscriberTariff getSubscriberTariffBySubscriberIdAndContainDate(Integer subscriberId, LocalDate localDate);
+
+    SubscriberTariff getSubscriberTariffBySubscriberIdAndAfterDate(Integer subscriberId, LocalDate localDate);
 
     SubscriberTariff getNotClosedSubscriberTariffByDate(Integer subscriberId, LocalDate localDate);
 

@@ -216,7 +216,7 @@ public class PostGreTariffDAO implements TariffDAO {
         Integer price = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
-                    "SELECT TOP 1 * FROM \"tariff_price\" where \"tariff_id\" = ? AND \"date\" <= ? ORDER BY \"date\" DESC");
+                    "SELECT * FROM \"tariff_price\" where \"tariff_id\" = ? AND \"date\" <= ? ORDER BY \"date\" DESC LIMIT 1");
             preparedStatement.setInt(1, tariffId);
             preparedStatement.setDate(2, Date.valueOf(date));
             ResultSet rs = preparedStatement.executeQuery();
