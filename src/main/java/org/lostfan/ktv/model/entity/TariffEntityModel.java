@@ -3,6 +3,7 @@ package org.lostfan.ktv.model.entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
@@ -34,6 +35,12 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
         this.fields.add(new EntityField("tariff.name", EntityFieldTypes.String, Tariff::getName, Tariff::setName));
         this.fields.add(new EntityField("tariff.digital", EntityFieldTypes.Boolean, Tariff::isDigital, Tariff::setDigital));
         this.fields.add(new EntityField("tariff.channels", EntityFieldTypes.String, Tariff::getChannels, Tariff::setChannels));
+        this.fields.add(new EntityField("tariff.currentPrice", EntityFieldTypes.Integer, new Function<Tariff, Integer>() {
+            @Override
+            public Integer apply(Tariff tariff) {
+                return getDao().getPriceByDate(tariff.getId(), LocalDate.now());
+            }
+        }, (e1,e2) -> {}, false));
     }
 
     @Override
@@ -80,8 +87,13 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
                 getDao().deleteTariffPrice(tariffWithPrices.getNewPrice());
             }
             getDao().saveTariffPrice(price);
+
         }
         return result;
+    }
+
+    public void delete(TariffPrice price) {
+        getDao().deleteTariffPrice(price);
     }
 
     @Override

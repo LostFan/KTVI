@@ -19,6 +19,8 @@ public class TariffPriceValidator implements Validator<TariffPrice> {
             if (!LocalDate.now().isBefore(entity.getDate())) {
                 result.addError("errors.pastDate", "tariffPrice.date");
             }
+        } else {
+            result.addError("errors.pastDate", "tariffPrice.date");
         }
 
         return result;

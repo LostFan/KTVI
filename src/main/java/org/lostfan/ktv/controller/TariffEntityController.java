@@ -21,6 +21,7 @@ public class TariffEntityController extends EntityController {
         Integer id = (Integer) args;
         this.tariffPriceView = new TariffPriceView(model.getTariffWithPrices(id));
         this.tariffPriceView.setSaveActionListener(this::saveTariffPriceActionPerformed);
+        this.tariffPriceView.setDeleteActionListener(this::deleteTariffPriceActionPerformed);
     }
 
     private void saveTariffPriceActionPerformed(Object args) {
@@ -31,5 +32,12 @@ public class TariffEntityController extends EntityController {
         } else {
             this.tariffPriceView.hide();
         }
+    }
+
+    private void deleteTariffPriceActionPerformed(Object args) {
+        TariffPrice tariffPrice = (TariffPrice) args;
+        this.model.delete(tariffPrice);
+        this.tariffPriceView.hide();
+
     }
 }

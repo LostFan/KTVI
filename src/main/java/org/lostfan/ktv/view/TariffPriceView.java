@@ -64,6 +64,7 @@ public class TariffPriceView extends FormView {
 
     private TariffWithPrices tariff;
     private ViewActionListener saveActionListener;
+    private ViewActionListener deleteActionListener;
 
     private JTable archiveTable;
     private IntegerFormField priceField;
@@ -71,6 +72,7 @@ public class TariffPriceView extends FormView {
     private String newPriceTitle;
 
     private JButton saveButton;
+    private JButton deleteButton;
     private JButton cancelButton;
 
     public TariffPriceView(TariffWithPrices tariff) {
@@ -98,13 +100,25 @@ public class TariffPriceView extends FormView {
             this.priceField.setValue(0);
             newPriceTitle = getGuiString("tariffPrice.createNew") + ":";
         }
-
-        this.saveButton = new JButton(getGuiString("buttons.save"));
+        String nameSaveButton = "buttons.save";
+        if(tariff.getNewPrice() != null) {
+            nameSaveButton = "buttons.change";
+        }
+        this.saveButton = new JButton(getGuiString(nameSaveButton));
         this.saveButton.addActionListener(e -> {
             if (saveActionListener != null) {
                 saveActionListener.actionPerformed(buildNewTariffPrice());
             }
         });
+
+        this.deleteButton = new JButton(getGuiString("buttons.delete"));
+        this.deleteButton.addActionListener(e -> {
+            if (deleteActionListener != null) {
+                deleteActionListener.actionPerformed(tariff.getNewPrice());
+            }
+        });
+
+
 
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> hide());
@@ -152,6 +166,9 @@ public class TariffPriceView extends FormView {
         getContentPanel().add(buttonPanel, BorderLayout.PAGE_END);
 
         buttonPanel.add(this.saveButton);
+        if(tariff.getNewPrice() != null) {
+            buttonPanel.add(this.deleteButton);
+        }
         buttonPanel.add(this.cancelButton);
     }
 
@@ -165,5 +182,9 @@ public class TariffPriceView extends FormView {
 
     public void setSaveActionListener(ViewActionListener saveActionListener) {
         this.saveActionListener = saveActionListener;
+    }
+
+    public void setDeleteActionListener(ViewActionListener deleteActionListener) {
+        this.deleteActionListener = deleteActionListener;
     }
 }
