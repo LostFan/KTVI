@@ -3,6 +3,8 @@ package org.lostfan.ktv.model.entity;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.dao.MaterialConsumptionDAO;
+import org.lostfan.ktv.dao.RenderedServiceDAO;
+import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
@@ -19,6 +21,7 @@ import org.lostfan.ktv.validation.SubscriberTariffValidator;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.validation.Validator;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +42,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     private MaterialConsumptionDAO materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
+    private ServiceDAO serviceDAO = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
     public RenderedServiceEntityModel() {
         this.fields = new ArrayList<>();
@@ -372,7 +376,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     @Override
-    protected EntityDAO<RenderedService> getDao() {
+    protected RenderedServiceDAO getDao() {
         return DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO();
     }
 
@@ -434,6 +438,13 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     protected List<RenderedService> getAll() {
         return getDao().getAll().stream().filter(e -> e.getServiceId() != FixedServices.SUBSCRIPTION_FEE.getId()).collect(Collectors.toList());
+    }
+
+    public Integer getRenderedServicePriceByDate(Integer serviceId, LocalDate date) {
+        if(serviceId != null && date != null) {
+            return serviceDAO.getPriceByDate(serviceId, date);
+        }
+        return 0;
     }
 
     private ValidationResult addConnectionValidation(ValidationResult result, RenderedService entity) {

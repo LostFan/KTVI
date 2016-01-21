@@ -1,18 +1,14 @@
 package org.lostfan.ktv.view;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.MaterialConsumption;
-import org.lostfan.ktv.domain.RenderedService;
-import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
-import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 
 public class ConnectionEntityView extends EntityView {
@@ -24,10 +20,15 @@ public class ConnectionEntityView extends EntityView {
     }
 
     public ConnectionEntityView(RenderedServiceEntityModel model, ConnectionRenderedService entity) {
-        super((EntityModel)model, entity);
+        super(model, entity);
         setTitle(getEntityString(FixedServices.CONNECTION.getCode()));
 
         addFormField(createFormField(model.getConnectionTariffField(), entity), model.getConnectionTariffField());
+
+        FormField dateField = getFormField("renderedService.date");
+        FormField priceField = getFormField("renderedService.price");
+        dateField.addValueListener(e ->
+                priceField.setValue(model.getRenderedServicePriceByDate(FixedServices.CONNECTION.getId(), (LocalDate)dateField.getValue())));
 
         for (FullEntityField fullEntityField : model.getFullFields()) {
             List<Entity> list = new ArrayList<>();

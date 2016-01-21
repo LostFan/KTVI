@@ -59,9 +59,10 @@ public class PostGreServiceDAO implements ServiceDAO {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"service\" (\"name\", \"additional\", \"consume_materials\"" +
                                 ", \"change_tariff\", \"connection_service\", \"disconnection_service\", \"id\") VALUES(?, ?, ?, ?, ?, ?, ?); " +
-                                "ALTER SEQUENCE serial_service RESTART WITH ?;");
+//                                "ALTER SEQUENCE serial_service RESTART WITH ?;");
+                                "");
                 preparedStatement.setInt(7, service.getId());
-                preparedStatement.setInt(8, service.getId() + 1);
+//                preparedStatement.setInt(8, service.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"service\" (\"name\", \"additional\", \"consume_materials\"" +
@@ -157,9 +158,6 @@ public class PostGreServiceDAO implements ServiceDAO {
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
-            }
-            if(price == 0) {
-                throw new UnsupportedOperationException("Tariff not exist for this day");
             }
             return price;
         } else {
