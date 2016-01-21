@@ -9,6 +9,7 @@ import org.lostfan.ktv.utils.ConnectionManager;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class HsqldbSubscriberDAO implements SubscriberDAO {
@@ -785,6 +786,11 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
 
     @Override
     public SubscriberTariff getSubscriberTariffBySubscriberIdAndDisconnectionDate(Integer subscriberId, LocalDate localDate) {
+        return null;
+    }
+
+    @Override
+    public HashMap<Integer, Integer> getServicesBalanceBySubscriberIdAndDate(Integer subscriberId, LocalDate date) {
         return null;
     }
 

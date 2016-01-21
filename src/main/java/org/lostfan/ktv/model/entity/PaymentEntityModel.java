@@ -2,12 +2,14 @@ package org.lostfan.ktv.model.entity;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.validation.PaymentValidator;
@@ -86,12 +88,56 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         if (subscriberDAO.get(subscriberId) == null) {
             return null;
         }
+        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalanceBySubscriberIdAndDate(subscriberId, LocalDate.now());
         payment.setSubscriberAccount(subscriberId);
         payment.setDate(date);
         payment.setPaymentTypeId(null);
         payment.setPrice(price);
-        payment.setRenderedServicePaymentId(FixedServices.SUBSCRIPTION_FEE.getId());
+        payment.setServicePaymentId(FixedServices.SUBSCRIPTION_FEE.getId());
         return payment;
+    }
+
+    public List<Payment> createPayments(Integer subscriberId, LocalDate date, Integer price, List<Entity> paymentsInList) {
+        List<Payment> payments = new ArrayList<>();
+        if (subscriberDAO.get(subscriberId) == null) {
+            return payments;
+        }
+        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalanceBySubscriberIdAndDate(subscriberId, LocalDate.now());
+        for (Integer integer : hashMap.keySet()) {
+            if(integer == FixedServices.SUBSCRIPTION_FEE.getId()) {
+                continue;
+            }
+            if(price == 0) {
+                break;
+            }
+            if(hashMap.get(integer) == 0) {
+                continue;
+            }
+            Payment payment = new Payment();
+            payment.setSubscriberAccount(subscriberId);
+            payment.setDate(date);
+            payment.setPaymentTypeId(null);
+            if(price >= hashMap.get(integer)) {
+                payment.setPrice(hashMap.get(integer));
+                price -= hashMap.get(integer);
+            } else {
+                payment.setPrice(price);
+                price = 0;
+            }
+            payment.setServicePaymentId(integer);
+            payments.add(payment);
+        }
+        if(price == 0) {
+            return payments;
+        }
+        Payment payment = new Payment();
+        payment.setSubscriberAccount(subscriberId);
+        payment.setDate(date);
+        payment.setPaymentTypeId(null);
+        payment.setPrice(price);
+        payment.setServicePaymentId(FixedServices.SUBSCRIPTION_FEE.getId());
+        payments.add(payment);
+        return payments;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.lostfan.ktv.dao;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 
 import org.lostfan.ktv.domain.Subscriber;
@@ -64,5 +65,7 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
     List<Subscriber> getSubscribersByBeginningPartOfName(String str);
 
     List<Subscriber> getSubscribersByBeginningPartOfAccount(String str);
+
+    HashMap<Integer, Integer> getServicesBalanceBySubscriberIdAndDate(Integer subscriberId, LocalDate date);
 
 }

@@ -88,21 +88,19 @@ public class LoadPaymentsView extends FrameView {
                         String sCurrentLine;
                         while ((sCurrentLine = br.readLine()) != null) {
                             String str[] = sCurrentLine.split("\\^");
-                            Payment payment;
+
                             try {
-                                payment =
-                                        LoadPaymentsView.this.model.createPayment(Integer.parseInt(str[2]), createDate(str[9]), Integer.parseInt(str[6].split("\\.")[0]));
+                                payments.addAll(LoadPaymentsView.this.model.createPayments(Integer.parseInt(str[2]), createDate(str[9]), Integer.parseInt(str[6].split("\\.")[0]), payments));
                             } catch (Exception ex) {
                                 continue;
                             }
-                            if (payment != null) {
-                                payments.add(payment);
-                            }
+
                         }
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
                     LoadPaymentsView.this.entityInnerTableView.setEntityList(payments);
+                    payments.clear();
 //                    label.setText(label.getText() + "\n" + file.getName());
                 }
             }
