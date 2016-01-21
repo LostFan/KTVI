@@ -11,28 +11,33 @@ public class IntegerTextField extends TextField {
 
         private boolean hasSign;
 
-        private boolean willBeInteger(String insertion, int offset) {
+        private boolean willBeInteger(String insertion, int offset, int lengthToDelete) {
             String text = getText();
             // The string has already a sign
             // Inserting in the beginning
             boolean _hasSign = hasSign;
-            if (hasSign && offset == 0) {
-                // There is a sign in the very beginning
-                // Nothing is allowed to be placed before it
-                return false;
-            } else if (offset == 0 && !hasSign) {
-                // Sign at the beginning, then digits only
-                if (!insertion.matches("^[-\\+]?\\d*$")) {
+            // Insertion at the beginning
+            if (offset == 0) {
+                if (hasSign && lengthToDelete == 0) {
+                    // There is a sign in the very beginning
+                    // Nothing is allowed to be placed before it
                     return false;
-                }
-                if (insertion.charAt(0) == '+' || insertion.charAt(0) == '-') {
-                    _hasSign = true;
+                } else {
+                    // Sign at the beginning, then digits only
+                    if (!insertion.matches("^[-\\+]?\\d*$")) {
+                        return false;
+                    }
+                    if (insertion.charAt(0) == '+' || insertion.charAt(0) == '-') {
+                        _hasSign = true;
+                    } else {
+                        _hasSign = false;
+                    }
                 }
             } else if (!insertion.matches("^\\d+$")) {
                 return false;
             }
 
-            if (text.length() + insertion.length() > (_hasSign ? 10 : 9)) {
+            if (text.length() + insertion.length() - lengthToDelete > (_hasSign ? 10 : 9)) {
                 return false;
             }
 
@@ -42,14 +47,14 @@ public class IntegerTextField extends TextField {
 
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-            if (willBeInteger(string, offset)) {
+            if (willBeInteger(string, offset, 0)) {
                 super.insertString(fb, offset, string, attr);
             }
         }
 
         @Override
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-            if (willBeInteger(text, offset)) {
+            if (willBeInteger(text, offset, length)) {
                 super.replace(fb, offset, length, text, attrs);
             }
         }
