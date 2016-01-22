@@ -14,5 +14,11 @@ public interface ServiceDAO extends EntityDAO<Service> {
 
     List<ServicePrice> getServicePricesByServiceId(int serviceId);
 
+    void saveServicePrice(ServicePrice servicePrice);
+
+    void deleteServicePrice(ServicePrice servicePrice);
+
+    List<ServicePrice> getServicePrices(int tariffId);
+
     List<Service> getServicesByBeginningPartOfName(String str);
 }

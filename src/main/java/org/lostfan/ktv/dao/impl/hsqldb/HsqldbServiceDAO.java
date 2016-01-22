@@ -156,6 +156,21 @@ public class HsqldbServiceDAO implements ServiceDAO {
         }
     }
 
+    @Override
+    public void saveServicePrice(ServicePrice servicePrice) {
+
+    }
+
+    @Override
+    public void deleteServicePrice(ServicePrice servicePrice) {
+
+    }
+
+    @Override
+    public List<ServicePrice> getServicePrices(int tariffId) {
+        return null;
+    }
+
     public List<ServicePrice> getServicePricesByServiceId(int serviceId) {
         List<ServicePrice> servicePrices = new ArrayList<>();
         try {

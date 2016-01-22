@@ -81,6 +81,9 @@ public class MainController {
         } else if (entityCode.equals(MainModel.getTariffEntityModel().getEntityNameKey())) {
             entityController = new TariffEntityController(MainModel.getTariffEntityModel(),
                     new TariffTableView(MainModel.getTariffEntityModel()));
+        } else if (entityCode.equals(MainModel.getServiceEntityModel().getEntityNameKey())) {
+            entityController = new ServiceEntityController(MainModel.getServiceEntityModel(),
+                    new ServiceTableView(MainModel.getServiceEntityModel()));
         } else if (entityCode.equals(MainModel.getSubscriptionFeeModel().getEntityNameKey())) {
             entityController = new SubscriptionFeeController(MainModel.getSubscriptionFeeModel(),
                     new SubscriptionFeeTableView(MainModel.getSubscriptionFeeModel()));

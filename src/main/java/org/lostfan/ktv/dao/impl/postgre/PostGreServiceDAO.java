@@ -186,6 +186,52 @@ public class PostGreServiceDAO implements ServiceDAO {
         return servicePrices;
     }
 
+    public void saveServicePrice(ServicePrice servicePrice) {
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "INSERT INTO \"service_price\" (\"service_id\", \"date\", \"price\") VALUES(?, ?, ?)");
+            preparedStatement.setInt(1, servicePrice.getServiceId());
+            preparedStatement.setDate(2, Date.valueOf(servicePrice.getDate()));
+            preparedStatement.setInt(3, servicePrice.getPrice());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    public void deleteServicePrice(ServicePrice servicePrice) {
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "DELETE FROM  \"service_price\" where \"service_id\" = ? AND \"date\" = ?");
+            preparedStatement.setInt(1, servicePrice.getServiceId());
+            preparedStatement.setDate(2, Date.valueOf(servicePrice.getDate()));
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<ServicePrice> getServicePrices(int serviceId) {
+        List<ServicePrice> servicePrices = new ArrayList<>();
+        try {
+            PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM \"service_price\" WHERE \"service_id\"=?");
+            statement.setInt(1, serviceId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                servicePrices.add(constructPriceEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return servicePrices;
+    }
+
 
     public List<Service> getServicesByBeginningPartOfName(String str) {
         List<Service> services = new ArrayList<>();
@@ -233,5 +279,13 @@ public class PostGreServiceDAO implements ServiceDAO {
         service.setConnectionService(rs.getBoolean("connection_service"));
         service.setDisconnectionService(rs.getBoolean("disconnection_service"));
         return service;
+    }
+
+    private ServicePrice constructPriceEntity(ResultSet rs) throws SQLException {
+        ServicePrice servicePrice = new ServicePrice();
+        servicePrice.setPrice(rs.getInt("price"));
+        servicePrice.setServiceId(rs.getInt("service_id"));
+        servicePrice.setDate(rs.getDate("date").toLocalDate());
+        return servicePrice;
     }
 }
