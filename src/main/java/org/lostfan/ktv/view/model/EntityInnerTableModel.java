@@ -42,8 +42,7 @@ public class EntityInnerTableModel extends DefaultTableModel {
 
     private static final String NUMBER_COLUMN_NAME = "number";
 
-//    private EntityModel<T> model;
-    private int size = 0;
+
     private List<Entity> list;
     private List<DeletedObject> deletedObjects;
     private List<EntityField> entityFieldList;
@@ -57,7 +56,6 @@ public class EntityInnerTableModel extends DefaultTableModel {
 
         this.list = new ArrayList<>();
         deletedObjects = new ArrayList<>();
-        size = list.size();
 
         for (Entity entity : list) {
             this.list.add(entity);
@@ -65,7 +63,6 @@ public class EntityInnerTableModel extends DefaultTableModel {
     }
 
     public void addRow() {
-        this.size++;
         list.add( this.fullEntityField.createEntity());
     }
 
@@ -73,7 +70,6 @@ public class EntityInnerTableModel extends DefaultTableModel {
         if(index == -1) {
             return;
         }
-        this.size++;
         Entity newEntity = this.fullEntityField.createEntity();
 
         for (EntityField entityField : this.entityFieldList) {
@@ -94,7 +90,6 @@ public class EntityInnerTableModel extends DefaultTableModel {
 
         for (int i = indexes.length - 1; i >= 0; --i) {
             list.remove(indexes[i]);
-            this.size--;
         }
         deletedObjects.add(new DeletedObject(deletedList, indexes));
         this.fireTableDataChanged();
@@ -109,7 +104,6 @@ public class EntityInnerTableModel extends DefaultTableModel {
         List<Entity> deletedList = deletedObjects.get(lastIndex).getList();
         for (int i = 0; i < deletedIndexes.length; i++) {
             this.list.add(deletedIndexes[i], deletedList.get(i));
-            this.size++;
         }
         deletedObjects.remove(lastIndex);
 
@@ -117,7 +111,10 @@ public class EntityInnerTableModel extends DefaultTableModel {
 
     @Override
     public int getRowCount() {
-        return size;
+        if(list == null) {
+            return 0;
+        }
+        return list.size();
     }
 
     @Override
@@ -184,7 +181,6 @@ public class EntityInnerTableModel extends DefaultTableModel {
         for (Entity entity : entityList) {
             this.list.add(entity);
         }
-        this.size = list.size();
         this.fireTableDataChanged();
     }
 }

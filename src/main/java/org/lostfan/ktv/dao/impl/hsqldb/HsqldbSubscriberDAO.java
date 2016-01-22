@@ -794,6 +794,11 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         return null;
     }
 
+    @Override
+    public HashMap<Integer, Integer> getServicesBalanceBySubscriberId(Integer subscriberId) {
+        return null;
+    }
+
     private Subscriber constructEntity(ResultSet rs) throws SQLException{
         Subscriber subscriber = new Subscriber();
         subscriber.setAccount(rs.getInt("account"));

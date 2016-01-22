@@ -18,6 +18,8 @@ public class Payment extends DefaultEntity {
 
     private LocalDate date;
 
+    private String bankFileName;
+
     public Integer getPaymentTypeId() {
         return paymentTypeId;
     }
@@ -72,6 +74,14 @@ public class Payment extends DefaultEntity {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getBankFileName() {
+        return bankFileName;
+    }
+
+    public void setBankFileName(String bankFileName) {
+        this.bankFileName = bankFileName;
     }
 
     @Override

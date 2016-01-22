@@ -14,6 +14,8 @@ public interface PaymentDAO extends EntityDAO<Payment> {
 
     List<Payment> getPaymentsBySubscriberId(int subscriberId);
 
+    List<Payment> getPaymentsByBankFileName(String bankFileName);
+
     List<PaymentType> getAllPaymentTypes();
 
     PaymentType getPaymentType(int id);

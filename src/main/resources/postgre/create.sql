@@ -125,6 +125,7 @@ CREATE TABLE "payment" (
   "payment_type_id"  INTEGER,
   "date" DATE,
   "price" INTEGER DEFAULT 0,
+  "bank_file_name" VARCHAR(64),
   FOREIGN KEY ("subscriber_account") REFERENCES "subscriber"("account"),
   FOREIGN KEY ("service_id") REFERENCES "service"("id"),
   FOREIGN KEY ("rendered_service_id") REFERENCES "rendered_service"("id"),

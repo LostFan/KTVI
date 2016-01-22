@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
+import org.lostfan.ktv.dao.PaymentDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.Payment;
@@ -36,6 +37,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         this.fields.add(new EntityField("service", EntityFieldTypes.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
         this.fields.add(new EntityField("renderedService", EntityFieldTypes.RenderedService, Payment::getRenderedServicePaymentId, Payment::setRenderedServicePaymentId));
         this.fields.add(new EntityField("payment.price", EntityFieldTypes.Integer, Payment::getPrice, Payment::setPrice));
+        this.fields.add(new EntityField("payment.bankFileName", EntityFieldTypes.String, Payment::getBankFileName, Payment::setBankFileName));
 
         loadFullEntityField = new FullEntityField("payment", EntityFieldTypes.Payment, null, null, Payment::new);
         loadFullEntityField.setEntityFields(getFields().stream().filter(e -> !e.getTitleKey().equals("payment.id")).collect(Collectors.toList()));
@@ -70,7 +72,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     }
 
     @Override
-    protected EntityDAO<Payment> getDao() {
+    protected PaymentDAO getDao() {
         return DAOFactory.getDefaultDAOFactory().getPaymentDAO();
     }
 
@@ -88,7 +90,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         if (subscriberDAO.get(subscriberId) == null) {
             return null;
         }
-        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalanceBySubscriberIdAndDate(subscriberId, LocalDate.now());
+        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalanceBySubscriberId(subscriberId);
         payment.setSubscriberAccount(subscriberId);
         payment.setDate(date);
         payment.setPaymentTypeId(null);
@@ -97,34 +99,42 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         return payment;
     }
 
-    public List<Payment> createPayments(Integer subscriberId, LocalDate date, Integer price, List<Entity> paymentsInList) {
+    public List<Payment> createPayments(Integer subscriberId, LocalDate date, Integer price, String bankFileName, List<Payment> paymentsInList) {
         List<Payment> payments = new ArrayList<>();
         if (subscriberDAO.get(subscriberId) == null) {
             return payments;
         }
-        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalanceBySubscriberIdAndDate(subscriberId, LocalDate.now());
-        for (Integer integer : hashMap.keySet()) {
-            if(integer == FixedServices.SUBSCRIPTION_FEE.getId()) {
-                continue;
-            }
+        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalanceBySubscriberId(subscriberId);
+        for (Integer serviceId : hashMap.keySet()) {
             if(price == 0) {
                 break;
             }
-            if(hashMap.get(integer) == 0) {
+            if(serviceId == FixedServices.SUBSCRIPTION_FEE.getId()) {
+                continue;
+            }
+            Integer renderedServicePrice = hashMap.get(serviceId);
+            for (Payment payment : paymentsInList) {
+                if(payment.getServicePaymentId().equals(serviceId)
+                        && payment.getSubscriberAccount().equals(subscriberId)) {
+                    renderedServicePrice-= payment.getPrice();
+                }
+            }
+            if(renderedServicePrice <= 0) {
                 continue;
             }
             Payment payment = new Payment();
             payment.setSubscriberAccount(subscriberId);
             payment.setDate(date);
             payment.setPaymentTypeId(null);
-            if(price >= hashMap.get(integer)) {
-                payment.setPrice(hashMap.get(integer));
-                price -= hashMap.get(integer);
+            payment.setBankFileName(bankFileName);
+            if(price >= renderedServicePrice) {
+                payment.setPrice(renderedServicePrice);
+                price -= renderedServicePrice;
             } else {
                 payment.setPrice(price);
                 price = 0;
             }
-            payment.setServicePaymentId(integer);
+            payment.setServicePaymentId(serviceId);
             payments.add(payment);
         }
         if(price == 0) {
@@ -133,6 +143,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         Payment payment = new Payment();
         payment.setSubscriberAccount(subscriberId);
         payment.setDate(date);
+        payment.setBankFileName(bankFileName);
         payment.setPaymentTypeId(null);
         payment.setPrice(price);
         payment.setServicePaymentId(FixedServices.SUBSCRIPTION_FEE.getId());
@@ -156,5 +167,9 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
 
     public LocalDate getDate() {
         return this.date;
+    }
+
+    public List<Payment> getPaymentsByBankFileName(String bankFileName) {
+        return getDao().getPaymentsByBankFileName(bankFileName);
     }
 }

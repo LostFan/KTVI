@@ -68,4 +68,5 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     HashMap<Integer, Integer> getServicesBalanceBySubscriberIdAndDate(Integer subscriberId, LocalDate date);
 
+    HashMap<Integer, Integer> getServicesBalanceBySubscriberId(Integer subscriberId);
 }

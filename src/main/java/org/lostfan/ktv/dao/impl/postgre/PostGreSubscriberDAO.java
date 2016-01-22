@@ -863,6 +863,35 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
         return hashMap;
     }
 
+    @Override
+    public HashMap<Integer, Integer> getServicesBalanceBySubscriberId(Integer subscriberId) {
+        HashMap<Integer, Integer> hashMap = new HashMap<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT " +
+                    "(CASE WHEN \"payment\".\"service_id\" is NULL THEN \"rendered_service\".\"service_id\" ELSE \"payment\".\"service_id\" END) AS \"service_id\"," +
+                    "(CASE WHEN \"payment\".\"payment_price\" is NULL THEN 0 ELSE \"payment\".\"payment_price\" END) AS \"payment_price\"," +
+                    "(CASE WHEN \"rendered_service\".\"rendered_service_price\" is NULL THEN 0 ELSE \"rendered_service\".\"rendered_service_price\" END) AS \"rendered_service_price\"," +
+                    "(CASE WHEN \"rendered_service\".\"rendered_service_price\" is NULL THEN 0 ELSE \"rendered_service\".\"rendered_service_price\" END) -" +
+                    "(CASE WHEN \"payment\".\"payment_price\" is NULL THEN 0 ELSE \"payment\".\"payment_price\" END) AS \"balance\"" +
+                    "from(SELECT \"payment\".\"service_id\", \"payment\".\"subscriber_account\", SUM(\"payment\".\"price\") as \"payment_price\"" +
+                    "FROM \"payment\" where  \"payment\".\"subscriber_account\" = ?      group by  \"payment\".\"service_id\", \"payment\". \"subscriber_account\") as \"payment\" FULL JOIN (" +
+                    "SELECT \"rendered_service\". \"service_id\", \"rendered_service\".\"subscriber_account\",SUM(\"rendered_service\".\"price\") as \"rendered_service_price\"" +
+                    "FROM \"rendered_service\" where \"rendered_service\".\"subscriber_account\" = ?   group by \"rendered_service\".\"service_id\", \"rendered_service\". \"subscriber_account\") as  \"rendered_service\"" +
+                    "ON (\"payment\".\"service_id\" = \"rendered_service\". \"service_id\")");
+            preparedStatement.setInt(1, subscriberId);
+            preparedStatement.setInt(2, subscriberId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                hashMap.put(rs.getInt("service_id"), rs.getInt("balance"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return hashMap;
+    }
+
     public List<Subscriber> getSubscribersByBeginningPartOfAccount(String str) {
         List<Subscriber> subscribers = new ArrayList<>();
         try {

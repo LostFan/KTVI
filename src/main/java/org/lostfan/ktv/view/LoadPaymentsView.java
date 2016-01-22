@@ -1,7 +1,6 @@
 package org.lostfan.ktv.view;
 
 
-import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
@@ -38,7 +37,8 @@ public class LoadPaymentsView extends FrameView {
 
         this.model = model;
         fileOpen = new JFileChooser();
-        List<Entity> payments = new ArrayList<>();
+        fileOpen.setMultiSelectionEnabled(true);
+        List<String> bankFileNames = new ArrayList<>();
         setTitle(getGuiString("window.loadPayments"));
         setSize(WIDTH, HEIGHT);
 
@@ -80,28 +80,35 @@ public class LoadPaymentsView extends FrameView {
                     }
                 });
                 int ret = fileOpen.showDialog(null, getGuiString("buttons.openFile"));
-                BufferedReader br = null;
                 if (ret == JFileChooser.APPROVE_OPTION) {
-                    File file = fileOpen.getSelectedFile();
-                    try {
-                        br = new BufferedReader(new FileReader(file));
-                        String sCurrentLine;
-                        while ((sCurrentLine = br.readLine()) != null) {
-                            String str[] = sCurrentLine.split("\\^");
-
-                            try {
-                                payments.addAll(LoadPaymentsView.this.model.createPayments(Integer.parseInt(str[2]), createDate(str[9]), Integer.parseInt(str[6].split("\\.")[0]), payments));
-                            } catch (Exception ex) {
+                    File[] files = fileOpen.getSelectedFiles();
+                    List<Payment> payments = entityInnerTableView.getEntityList();
+                    for (File file : files) {
+                        if(bankFileNames.contains(file.getName())
+                                || !LoadPaymentsView.this.model.getPaymentsByBankFileName(file.getName()).isEmpty()) {
+                            if(!confirmAdding()) {
                                 continue;
                             }
-
+                        } else {
+                            bankFileNames.add(file.getName());
                         }
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
+                        try {
+                            BufferedReader br = new BufferedReader(new FileReader(file));
+                            String sCurrentLine;
+                            while ((sCurrentLine = br.readLine()) != null) {
+                                String str[] = sCurrentLine.split("\\^");
+                                try {
+                                    payments.addAll(LoadPaymentsView.this.model.
+                                            createPayments(Integer.parseInt(str[2]), createDate(str[9]), Integer.parseInt(str[6].split("\\.")[0]), file.getName(), payments));
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                     }
-                    LoadPaymentsView.this.entityInnerTableView.setEntityList(payments);
-                    payments.clear();
-//                    label.setText(label.getText() + "\n" + file.getName());
+                    entityInnerTableView.revalidate();
                 }
             }
         });
@@ -121,10 +128,6 @@ public class LoadPaymentsView extends FrameView {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         panel.add(Box.createVerticalGlue());
-
-//        final JLabel label = new JLabel("Выбранный файл");
-//        label.setAlignmentX(CENTER_ALIGNMENT);
-//        panel.add(label);
 
         panel.add(Box.createRigidArea(new Dimension(10, 10)));
 
@@ -152,6 +155,20 @@ public class LoadPaymentsView extends FrameView {
 
     private LocalDate createDate(String s) {
         return LocalDate.of(Integer.parseInt(s.substring(0, 4)), Integer.parseInt(s.substring(4, 6)), Integer.parseInt(s.substring(6, 8)));
+    }
+
+    private boolean confirmAdding(){
+        int optionType = JOptionPane.OK_CANCEL_OPTION;
+        int messageType = JOptionPane.QUESTION_MESSAGE;
+        Object[] selValues = { getGuiString("buttons.yes"), getGuiString("buttons.cancel") };
+        String message = getGuiString("window.loadPayments") + " : "
+                + getEntityString(model.getEntityNameKey());
+        int result = JOptionPane.showOptionDialog(null,
+                getGuiString("message.alreadyExistLoadQuestion"), message,
+                optionType, messageType, null, selValues,
+                selValues[0]);
+
+        return result == 0;
     }
 
     public void showErrors(List<org.lostfan.ktv.validation.Error> errors) {

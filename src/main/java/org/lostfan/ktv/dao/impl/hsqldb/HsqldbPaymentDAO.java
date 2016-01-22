@@ -265,6 +265,11 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         return payments;
     }
 
+    @Override
+    public List<Payment> getPaymentsByBankFileName(String bankFileName) {
+        return null;
+    }
+
     private Payment constructEntity(ResultSet rs) throws SQLException{
         Payment payment = new Payment();
         payment.setId(rs.getInt("id"));

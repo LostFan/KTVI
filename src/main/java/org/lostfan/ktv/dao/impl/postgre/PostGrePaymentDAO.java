@@ -112,15 +112,16 @@ public class PostGrePaymentDAO implements PaymentDAO {
             PreparedStatement preparedStatement;
             if(payment.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
-                        "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"rendered_service_id\", \"price\", \"date\", \"id\")" +
-                                " VALUES(?, ?, ?, ?, ?, ?); " +
-                                "ALTER SEQUENCE serial_payment RESTART WITH ?;");
-                preparedStatement.setInt(6, payment.getId());
-                preparedStatement.setInt(7, payment.getId() + 1);
+                        "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"rendered_service_id\", \"price\", \"date\", \"bank_file_name\", \"id\")" +
+                                " VALUES(?, ?, ?, ?, ?, ?, ?); " +
+//                                "ALTER SEQUENCE serial_payment RESTART WITH ?;");
+                                "");
+                preparedStatement.setInt(7, payment.getId());
+//                preparedStatement.setInt(7, payment.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
-                        "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"rendered_service_id\", \"price\", \"date\")" +
-                                " VALUES(?, ?, ?, ?, ?)");
+                        "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"rendered_service_id\", \"price\", \"date\", \"bank_file_name\")" +
+                                " VALUES(?, ?, ?, ?, ?, ?)");
             }
             preparedStatement.setInt(1, payment.getSubscriberAccount());
             preparedStatement.setInt(2, payment.getServicePaymentId());
@@ -131,6 +132,7 @@ public class PostGrePaymentDAO implements PaymentDAO {
             }
             preparedStatement.setInt(4, payment.getPrice());
             preparedStatement.setDate(5, Date.valueOf(payment.getDate()));
+            preparedStatement.setString(6, payment.getBankFileName());
             preparedStatement.executeUpdate();
             if(payment.getId() != null) {
                 return;
@@ -148,7 +150,7 @@ public class PostGrePaymentDAO implements PaymentDAO {
         if(get(payment.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"payment\" set \"subscriber_account\" = ?, \"service_id\" = ?, \"rendered_service_id\" = ?, \"payment_type_id\" = ?, \"price\" = ?, \"date\" = ? where \"id\" = ?");
+                        "UPDATE \"payment\" set \"subscriber_account\" = ?, \"service_id\" = ?, \"rendered_service_id\" = ?, \"payment_type_id\" = ?, \"price\" = ?, \"date\" = ?, \"bank_file_name\" where \"id\" = ?");
                 preparedStatement.setInt(1, payment.getSubscriberAccount());
                 preparedStatement.setInt(2, payment.getServicePaymentId());
                 if( payment.getRenderedServicePaymentId() != null) {
@@ -159,7 +161,8 @@ public class PostGrePaymentDAO implements PaymentDAO {
                 }
                 preparedStatement.setInt(5, payment.getPrice());
                 preparedStatement.setDate(6, Date.valueOf(payment.getDate()));
-                preparedStatement.setInt(7, payment.getId());
+                preparedStatement.setString(7, payment.getBankFileName());
+                preparedStatement.setInt(8, payment.getId());
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
@@ -184,6 +187,24 @@ public class PostGrePaymentDAO implements PaymentDAO {
         } else {
             throw new UnsupportedOperationException("Delete nonexistent element");
         }
+    }
+
+    public List<Payment> getPaymentsByBankFileName(String bankFileName) {
+        List<Payment> payments = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"payment\" where \"bank_file_name\" = ?");
+            preparedStatement.setString(1, bankFileName);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                payments.add(constructEntity(rs));
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return payments;
     }
 
     public List<PaymentType> getAllPaymentTypes() {
@@ -302,6 +323,7 @@ public class PostGrePaymentDAO implements PaymentDAO {
             payment.setRenderedServicePaymentId(rs.getInt("rendered_service_id"));
         }
         payment.setServicePaymentId(rs.getInt("service_id"));
+        payment.setBankFileName(rs.getString("bank_file_name"));
         return payment;
     }
 }

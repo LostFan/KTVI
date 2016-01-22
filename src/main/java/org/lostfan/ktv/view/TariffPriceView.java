@@ -77,7 +77,7 @@ public class TariffPriceView extends FormView {
 
     public TariffPriceView(TariffWithPrices tariff) {
         super();
-        setTitle("TariffPrice");
+        setTitle(getGuiString("tariffPrice.windowTitle"));
         this.tariff = tariff;
 
         setSize(WIDTH, HEIGHT);
