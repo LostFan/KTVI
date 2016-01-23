@@ -2,12 +2,12 @@ package org.lostfan.ktv.view.components;
 
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 
-public class EntityComboBoxController {
+public class EntityPanelController {
 
     private EntitySearcherModel model;
-    private EntityComboBox view;
+    private EntityPanel view;
 
-    public EntityComboBoxController(EntitySearcherModel model, EntityComboBox view) {
+    public EntityPanelController(EntitySearcherModel model, EntityPanel view) {
         this.model = model;
         this.view = view;
         this.view.setSearchActionListener(this::searchAction);

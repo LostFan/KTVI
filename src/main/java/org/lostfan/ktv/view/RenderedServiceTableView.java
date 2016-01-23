@@ -1,12 +1,14 @@
 package org.lostfan.ktv.view;
 
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 import javax.swing.*;
 
 import org.lostfan.ktv.model.FixedServices;
@@ -20,6 +22,7 @@ public class RenderedServiceTableView extends EntityTableView {
     private ViewActionListener addDisconnectionActionListener;
     private ViewActionListener addChangeOfTariffActionListener;
     private ViewActionListener addAdditionalServiceActionListener;
+    private ViewActionListener newDateActionListener;
 
     public RenderedServiceTableView(RenderedServiceEntityModel model) {
         super(model);
@@ -70,6 +73,68 @@ public class RenderedServiceTableView extends EntityTableView {
                 }
             }
         });
+        JButton beginButton =  new JButton("<<<");
+        JButton minusYear =  new JButton("<<");
+        JButton minusMonth =  new JButton("<");
+        JButton plusMonth =  new JButton(">");
+        JButton plusYear =  new JButton(">>");
+        JButton endButton =  new JButton(">>>");
+        JTextArea numberOfMonth = new JTextArea();
+        numberOfMonth.setText(String.valueOf(model.getDate().getMonth().getValue()));
+        numberOfMonth.setOpaque(false);
+        numberOfMonth.setBackground(new Color(0,0,0,0));
+        JTextArea numberOfYear = new JTextArea();
+        numberOfYear.setText(String.valueOf(model.getDate().getYear()));
+        numberOfYear.setOpaque(false);
+        numberOfYear.setBackground(new Color(0,0,0,0));
+        numberOfYear.setForeground(null);
+
+
+        minusMonth.addActionListener(e -> {
+            LocalDate date = model.getDate().minusMonths(1);
+            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
+            numberOfYear.setText(String.valueOf(date.getYear()));
+            if (newDateActionListener != null) {
+                newDateActionListener.actionPerformed(date);
+            }
+        });
+        minusYear.addActionListener(e -> {
+            LocalDate date = model.getDate().minusYears(1);
+            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
+            numberOfYear.setText(String.valueOf(date.getYear()));
+            if (newDateActionListener != null) {
+                newDateActionListener.actionPerformed(date);
+            }
+        });
+        plusMonth.addActionListener(e -> {
+            LocalDate date = model.getDate().plusMonths(1);
+            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
+            numberOfYear.setText(String.valueOf(date.getYear()));
+            if (newDateActionListener != null) {
+                newDateActionListener.actionPerformed(date);
+            }
+        });
+        plusYear.addActionListener(e -> {
+            LocalDate date = model.getDate().plusYears(1);
+            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
+            numberOfYear.setText(String.valueOf(date.getYear()));
+            if (newDateActionListener != null) {
+                newDateActionListener.actionPerformed(date);
+            }
+        });
+
+
+
+        JPanel newPanel = new JPanel();
+        getContentPanel().add(newPanel,  BorderLayout.SOUTH);
+        newPanel.add(beginButton);
+        newPanel.add(minusYear);
+        newPanel.add(minusMonth);
+        newPanel.add(numberOfMonth);
+        newPanel.add(numberOfYear);
+        newPanel.add(plusMonth);
+        newPanel.add(plusYear);
+        newPanel.add(endButton);
     }
 
     public void setConnectionActionListener(ViewActionListener addConnectionActionListener) {
@@ -86,5 +151,9 @@ public class RenderedServiceTableView extends EntityTableView {
 
     public void setAdditionalServiceActionListener(ViewActionListener addAdditionalServiceActionListener) {
         this.addAdditionalServiceActionListener = addAdditionalServiceActionListener;
+    }
+
+    public void newDateActionListener(ViewActionListener newDateActionListener) {
+        this.newDateActionListener = newDateActionListener;
     }
 }

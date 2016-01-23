@@ -8,86 +8,38 @@ import org.lostfan.ktv.view.components.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 import java.util.*;
-import java.util.function.Supplier;
 
 public class EntityView extends FormView {
 
   protected class EntityFormField extends FormField<Integer> {
 
-        private EntityComboBox comboBox;
-        private JPanel panel;
+        private EntityPanel panel;
 
         public EntityFormField(EntityField entityField, Entity entity) {
-            this(entityField, entity, null, null);
+            this(entityField, entity, null);
         }
 
-        public EntityFormField(EntityField entityField, Entity entity, EntityComboBox jComboBox, final Supplier entitySelView ) {
+        public EntityFormField(EntityField entityField, Entity entity, EntityPanel jComboBox ) {
             super(entityField.getTitleKey());
 
             if(jComboBox == null) {
-                this.comboBox = EntityComboBoxFactory.createComboBox(entityField.getType());
+                this.panel = EntityPanelFactory.createEntityPanel(entityField.getType());
             } else {
-                this.comboBox = jComboBox;
+                this.panel = jComboBox;
             }
 
-            new DefaultContextMenu().add((JTextField) this.comboBox.getEditor().getEditorComponent());
-            this.comboBox.setEditable(true);
-            if (entity != null) {
+            this.panel.setParentView(EntityView.this);
 
+            if (entity != null) {
                 Object value = entityField.get(entity);
                 if(value != null) {
-                    this.comboBox.setSelectedId((Integer) value);
-                    value = this.comboBox.getSelectedEntity().getName();
-                    ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText((String) value);
+                    this.panel.setSelectedId((Integer) value);
+                    value = this.panel.getSelectedEntity().getName();
+                    ((JTextField) ((this.panel.getComboBox()).getEditor().getEditorComponent())).setText((String) value);
                 }
             }
-
-            this.panel = new JPanel(new BorderLayout());
-            this.panel.add(this.comboBox, BorderLayout.CENTER);
-
-            // TODO: Move the following 2 buttons into the EntityComboBox component
-            // and convert it to a JPanel that contains all these 3 components
-            JButton tableButton = new JButton("...");
-            tableButton.addActionListener(e -> {
-                EntitySelectionView entitySelectionView;
-                if(entitySelView == null) {
-                    entitySelectionView = EntitySelectionFactory.createForm(entityField.getType());
-                } else {
-                    entitySelectionView = (EntitySelectionView) entitySelView.get();
-                }
-                openDialog(entitySelectionView);
-                if (entitySelectionView.get() != null) {
-                    this.comboBox.setSelectedEntity(entitySelectionView.get());
-                    ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.get().getName());
-                    this.comboBox.invalidate();
-                    this.comboBox.repaint();
-                }
-            });
-
-            JButton entityButton = new JButton();
-            URL url = EntitySearchView.class.getClassLoader().getResource("images/search.png");
-            if(url != null) {
-                ImageIcon icon = new ImageIcon(url);
-                Image image = icon.getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
-                icon = new ImageIcon(image);
-                entityButton.setIcon(icon);
-            }
-
-            entityButton.addActionListener(e -> {
-                if(this.comboBox.getSelectedEntity() != null) {
-                    EntityView entityView = EntityViewFactory.createForm(entityField.getType(), comboBox.getSelectedEntity().getId());
-                    entityView.changeActionListener.actionPerformed(null);
-                }
-            });
-
-            JPanel buttonPanel = new JPanel(new BorderLayout(0, 0));
-            buttonPanel.add(tableButton, BorderLayout.LINE_START);
-            buttonPanel.add(entityButton, BorderLayout.LINE_END);
-            this.panel.add(buttonPanel, BorderLayout.LINE_END);
-
-            ((EntityComboBoxModel)this.comboBox.getModel()).addEntitySelectedListener(e -> fireValueChanged(getValue()));
+            ((EntityComboBoxModel)this.panel.getComboBox().getModel()).addEntitySelectedListener(e -> fireValueChanged(getValue()));
 
             addValueListener(v -> {
                 System.out.println("entity new value: " + v);
@@ -99,14 +51,14 @@ public class EntityView extends FormView {
             return this.panel;
         }
 
-      @Override
-      public void setValue(Integer value) {
+        @Override
+        public void setValue(Integer value) {
 
-      }
+        }
 
-      @Override
+        @Override
         public Integer getValue() {
-            return  this.comboBox.getSelectedEntity() != null ? this.comboBox.getSelectedEntity().getId() : null;
+            return  this.panel.getSelectedEntity() != null ? this.panel.getSelectedEntity().getId() : null;
         }
     }
 
@@ -260,6 +212,10 @@ public class EntityView extends FormView {
 
     public void setChangeActionListener(ViewActionListener changeActionListener) {
         this.changeActionListener = changeActionListener;
+    }
+
+    public ViewActionListener getChangeActionListener() {
+        return this.changeActionListener;
     }
 
     protected void setInnerTable(EntityInnerTableView innerTableView) {

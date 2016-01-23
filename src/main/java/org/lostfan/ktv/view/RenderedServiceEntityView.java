@@ -1,17 +1,13 @@
 package org.lostfan.ktv.view;
 
-import java.awt.*;
 import java.util.List;
-import javax.swing.*;
 
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
-import org.lostfan.ktv.view.components.EntityComboBox;
 
 public class RenderedServiceEntityView extends EntityView {
 
@@ -45,7 +41,7 @@ public class RenderedServiceEntityView extends EntityView {
     protected void addFormField(FormField field) {
         super.addFormField(field);
 //        if(field.getEntityField().getType() == EntityFieldTypes.Service) {
-//            Service service = ((Service)((EntityComboBox)field.getInputComponent().getComponent(0))
+//            Service service = ((Service)((EntityPanel)field.getInputComponent().getComponent(0))
 //                    .getSelectedEntity());
 //            if(service == null) {
 //                hideTariffField();

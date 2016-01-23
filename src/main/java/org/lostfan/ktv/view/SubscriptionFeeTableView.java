@@ -9,6 +9,7 @@ import org.lostfan.ktv.view.model.SubscriptionFeeTableModel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +41,7 @@ public class SubscriptionFeeTableView extends View {
     private ViewActionListener findActionListener;
     private ViewActionListener countWithActionListener;
     private ViewActionListener countAllWithActionListener;
+    private ViewActionListener newDateActionListener;
 
     public SubscriptionFeeTableView(SubscriptionFeeModel model) {
         this.model = model;
@@ -124,6 +126,69 @@ public class SubscriptionFeeTableView extends View {
         for (ActionButton actionButton : this.buttons) {
             this.buttonsPanel.add(actionButton.button);
         }
+
+        JButton beginButton =  new JButton("<<<");
+        JButton minusYear =  new JButton("<<");
+        JButton minusMonth =  new JButton("<");
+        JButton plusMonth =  new JButton(">");
+        JButton plusYear =  new JButton(">>");
+        JButton endButton =  new JButton(">>>");
+        JTextArea numberOfMonth = new JTextArea();
+        numberOfMonth.setText(String.valueOf(model.getDate().getMonth().getValue()));
+        numberOfMonth.setOpaque(false);
+        numberOfMonth.setBackground(new Color(0,0,0,0));
+        JTextArea numberOfYear = new JTextArea();
+        numberOfYear.setText(String.valueOf(model.getDate().getYear()));
+        numberOfYear.setOpaque(false);
+        numberOfYear.setBackground(new Color(0,0,0,0));
+        numberOfYear.setForeground(null);
+
+
+        minusMonth.addActionListener(e -> {
+            LocalDate date = model.getDate().minusMonths(1);
+            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
+            numberOfYear.setText(String.valueOf(date.getYear()));
+            if (newDateActionListener != null) {
+                newDateActionListener.actionPerformed(date);
+            }
+        });
+        minusYear.addActionListener(e -> {
+            LocalDate date = model.getDate().minusYears(1);
+            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
+            numberOfYear.setText(String.valueOf(date.getYear()));
+            if (newDateActionListener != null) {
+                newDateActionListener.actionPerformed(date);
+            }
+        });
+        plusMonth.addActionListener(e -> {
+            LocalDate date = model.getDate().plusMonths(1);
+            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
+            numberOfYear.setText(String.valueOf(date.getYear()));
+            if (newDateActionListener != null) {
+                newDateActionListener.actionPerformed(date);
+            }
+        });
+        plusYear.addActionListener(e -> {
+            LocalDate date = model.getDate().plusYears(1);
+            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
+            numberOfYear.setText(String.valueOf(date.getYear()));
+            if (newDateActionListener != null) {
+                newDateActionListener.actionPerformed(date);
+            }
+        });
+
+
+
+        JPanel newPanel = new JPanel();
+        getContentPanel().add(newPanel,  BorderLayout.SOUTH);
+        newPanel.add(beginButton);
+        newPanel.add(minusYear);
+        newPanel.add(minusMonth);
+        newPanel.add(numberOfMonth);
+        newPanel.add(numberOfYear);
+        newPanel.add(plusMonth);
+        newPanel.add(plusYear);
+        newPanel.add(endButton);
     }
 
     protected void addButton(JButton button, boolean entityRequired) {
@@ -158,11 +223,6 @@ public class SubscriptionFeeTableView extends View {
         textField.setEditable(false);
         DefaultCellEditor editor = new DefaultCellEditor(textField);
         editor.setClickCountToStart(1);
-        for (int columnIndex=0;columnIndex< table.getColumnCount(); columnIndex++) {
-            if(((EntityField)this.model.getFields().get(columnIndex)).getType().isEntityClass()) {
-//                this.table.getColumn(table.getColumnName(columnIndex)).setCellEditor(new EntityActionTableCellEditor(editor));
-            }
-        }
     }
 
     protected void revalidate() {
@@ -211,5 +271,9 @@ public class SubscriptionFeeTableView extends View {
             }
         }
         return null;
+    }
+
+    public void newDateActionListener(ViewActionListener newDateActionListener) {
+        this.newDateActionListener = newDateActionListener;
     }
 }

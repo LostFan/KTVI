@@ -11,8 +11,7 @@ import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.dto.AdditionalRenderedService;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
-import org.lostfan.ktv.view.components.EntityComboBoxFactory;
-import org.lostfan.ktv.view.components.EntitySelectionFactory;
+import org.lostfan.ktv.view.components.EntityPanelFactory;
 
 public class AdditionalServiceEntityView extends EntityView {
 
@@ -30,8 +29,8 @@ public class AdditionalServiceEntityView extends EntityView {
         if(entity != null) {
             service.setId(entity.getServiceId());
         }
-        addFormField(new EntityFormField(model.getServiceField(), entity, EntityComboBoxFactory.createAdditionalServiceComboBox(),
-                EntitySelectionFactory::createAdditionalServiceForm), model.getServiceField());
+        addFormField(new EntityFormField(model.getServiceField(), entity, EntityPanelFactory.createAdditionalServiceEntityPanel())
+                , model.getServiceField());
 
         FormField dateField = getFormField("renderedService.date");
         FormField priceField = getFormField("renderedService.price");

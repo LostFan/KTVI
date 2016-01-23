@@ -3,9 +3,9 @@ package org.lostfan.ktv.view.components;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.searcher.*;
 
-public class EntityComboBoxFactory {
+public class EntityPanelFactory {
 
-    public static EntityComboBox createComboBox(EntityFieldTypes type) {
+    public static EntityPanel createEntityPanel(EntityFieldTypes type) {
         EntitySearcherModel model = null;
         switch (type) {
             case Street:
@@ -29,10 +29,10 @@ public class EntityComboBoxFactory {
             default:
                 throw new IllegalArgumentException("Wrong type: " + type.toString());
         }
-        return new EntityComboBox(model);
+        return new EntityPanel(model);
     }
 
-    public static EntityComboBox createAdditionalServiceComboBox() {
-        return new EntityComboBox(new AdditionalServiceSearcherModel());
+    public static EntityPanel createAdditionalServiceEntityPanel() {
+        return new EntityPanel(new AdditionalServiceSearcherModel());
     }
 }

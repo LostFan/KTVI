@@ -1,7 +1,6 @@
 package org.lostfan.ktv.view.model;
 
 import java.awt.*;
-import java.net.URL;
 import java.util.EventObject;
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
@@ -10,105 +9,62 @@ import javax.swing.table.TableCellEditor;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.utils.DefaultContextMenu;
-import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.DialogView;
 import org.lostfan.ktv.view.EntitySelectionView;
-import org.lostfan.ktv.view.EntityView;
-import org.lostfan.ktv.view.components.EntityComboBox;
-import org.lostfan.ktv.view.components.EntityComboBoxFactory;
-import org.lostfan.ktv.view.components.EntityViewFactory;
+import org.lostfan.ktv.view.components.EntityPanel;
+import org.lostfan.ktv.view.components.EntityPanelFactory;
 import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
 /**
  * Created by Ihar_Niakhlebau on 30-Oct-15.
  */
-public abstract class ActionTableCellEditor implements TableCellEditor {
+public class ActionTableCellEditor implements TableCellEditor {
 
     private TableCellEditor editor;
-    private JButton viewTableEntitiesButton = new JButton();
-    private JButton viewEntityButton = new JButton();
     private EntityFieldTypes entityFieldTypes;
-    private ViewActionListener changeActionListener;
 
 
     protected JTable table;
     protected int row, column;
-    private EntityComboBox entityComboBox;
+    private EntityPanel entityPanel;
 
     public ActionTableCellEditor(TableCellEditor editor, EntityFieldTypes entityFieldTypes){
 
         this.entityFieldTypes = entityFieldTypes;
-        URL urlTableEntities = ActionTableCellEditor.class.getClassLoader().getResource("images/ellipsis.gif");
-
-        if(urlTableEntities != null) {
-            ImageIcon ELLIPSIS_ICON = new ImageIcon(urlTableEntities);
-            Image image = ELLIPSIS_ICON.getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-            ELLIPSIS_ICON = new ImageIcon(image);
-            viewTableEntitiesButton.setIcon(ELLIPSIS_ICON);
-        }
-
-        URL urlEntity = ActionTableCellEditor.class.getClassLoader().getResource("images/search.png");
-
-        if(urlEntity != null) {
-            ImageIcon ELLIPSIS_ICON = new ImageIcon(urlEntity);
-            Image image = ELLIPSIS_ICON.getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH);
-            ELLIPSIS_ICON = new ImageIcon(image);
-            viewEntityButton.setIcon(ELLIPSIS_ICON);
-        }
-
         this.editor = editor;
-        viewTableEntitiesButton.addActionListener(e -> {
-
-            EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityFieldTypes);
-            DialogView.open(entitySelectionView);
-            if (entitySelectionView.get() != null) {
-                this.entityComboBox.setSelectedEntity(entitySelectionView.get());
-                ((JTextField) (entityComboBox.getEditor().getEditorComponent())).setText(entitySelectionView.get().getName());
-                this.entityComboBox.invalidate();
-                this.entityComboBox.repaint();
-            }
-            editor.stopCellEditing();
-
-        });
-
-        // ui-tweaking
-        viewTableEntitiesButton.setFocusable(false);
-        viewTableEntitiesButton.setFocusPainted(false);
-        viewTableEntitiesButton.setMargin(new Insets(0, 0, 0, 0));
-
-        viewEntityButton.addActionListener(e -> {
-            editor.cancelCellEditing();
-            EntityView entityView = EntityViewFactory.createForm(entityFieldTypes, this.entityComboBox.getSelectedEntity().getId());
-//            entityView.changeActionListener.actionPerformed(null);
-        });
-
-        viewEntityButton.setFocusable(false);
-        viewEntityButton.setFocusPainted(false);
-        viewEntityButton.setMargin(new Insets(0, 0, 0, 0));
     }
 
     public Component getTableCellEditorComponent(JTable table, Object value
             , boolean isSelected, int row, int column){
         Entity entity = (Entity) value;
         JPanel panel = new JPanel(new BorderLayout());
-//        panel.add(editor.getTableCellEditorComponent(table, value, isSelected, row, column));
-        this.entityComboBox = EntityComboBoxFactory.createComboBox(entityFieldTypes);
-        panel.add(this.entityComboBox);
-        new DefaultContextMenu().add((JTextField)  this.entityComboBox.getEditor().getEditorComponent());
+        this.entityPanel = EntityPanelFactory.createEntityPanel(entityFieldTypes);
+        panel.add(this.entityPanel);
+        new DefaultContextMenu().add((JTextField)  this.entityPanel.getComboBox().getEditor().getEditorComponent());
         if(entity != null) {
-            this.entityComboBox.setSelectedEntity(entity);
-            ((JTextField) (this.entityComboBox.getEditor().getEditorComponent())).setText(entity.getName());
+            this.entityPanel.setSelectedEntity(entity);
+            ((JTextField) (this.entityPanel.getComboBox().getEditor().getEditorComponent())).setText(entity.getName());
         }
-        JPanel panelButtons = new JPanel(new BorderLayout());
-        panelButtons.add(viewTableEntitiesButton, BorderLayout.WEST);
-        panelButtons.add(viewEntityButton, BorderLayout.EAST);
-        panel.add(panelButtons, BorderLayout.EAST);
+        entityPanel.getTableButton().addActionListener(e -> {
+                EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityFieldTypes);
+                DialogView.open(entitySelectionView);
+                if (entitySelectionView.get() != null) {
+                    this.entityPanel.setSelectedEntity(entitySelectionView.get());
+                    ((JTextField) (entityPanel.getComboBox().getEditor().getEditorComponent())).setText(entitySelectionView.get().getName());
+                    this.entityPanel.invalidate();
+                    this.entityPanel.repaint();
+                }
+                editor.stopCellEditing();
+
+            });
         this.table = table;
         this.row = row;
         this.column = column;
+
         //TODO Need find best solution
-        viewTableEntitiesButton.setEnabled(false);
-        viewEntityButton.setEnabled(false);
+        entityPanel.getEntityButton().setMaximumSize(new Dimension(1,1));
+        entityPanel.getTableButton().setEnabled(false);
+        entityPanel.getEntityButton().setEnabled(false);
 
         SwingUtilities.invokeLater(new Thread() {
 
@@ -122,8 +78,8 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
                 SwingUtilities.invokeLater(new Runnable() {
 
                     public void run() {
-                        viewTableEntitiesButton.setEnabled(true);
-                        viewEntityButton.setEnabled(true);
+                        entityPanel.getTableButton().setEnabled(true);
+                        entityPanel.getEntityButton().setEnabled(true);
                     }
                 });
 
@@ -133,7 +89,7 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
     }
 
     public Object getCellEditorValue(){
-        return this.entityComboBox.getSelectedEntity();
+        return this.entityPanel.getSelectedEntity();
     }
 
     public boolean isCellEditable(EventObject anEvent){
@@ -160,8 +116,5 @@ public abstract class ActionTableCellEditor implements TableCellEditor {
         editor.removeCellEditorListener(l);
     }
 
-    protected abstract void openEntityTableView(JTable table, int row, int column);
-
-    protected abstract void openEntityView(JTable table, int row, int column);
 }
 

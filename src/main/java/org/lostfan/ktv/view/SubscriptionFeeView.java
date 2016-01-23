@@ -3,14 +3,12 @@ package org.lostfan.ktv.view;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.SubscriptionFeeModel;
-import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.validation.Error;
 import org.lostfan.ktv.view.components.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 import java.time.LocalDate;
 
 public class SubscriptionFeeView extends FrameView {
@@ -37,62 +35,23 @@ public class SubscriptionFeeView extends FrameView {
     private class SubscriberLabelFieldInput {
 
         private JLabel label;
-        private EntityComboBox comboBox;
-        private JPanel panel;
+        private EntityPanel panel;
 
         public SubscriberLabelFieldInput(Subscriber entity) {
             this.label = new JLabel(getEntityString("subscriber"), SwingConstants.LEFT);
-            this.comboBox = EntityComboBoxFactory.createComboBox(EntityFieldTypes.Subscriber);
+            this.panel = EntityPanelFactory.createEntityPanel(EntityFieldTypes.Subscriber);
 
-            new DefaultContextMenu().add((JTextField) this.comboBox.getEditor().getEditorComponent());
-            this.comboBox.setEditable(true);
+            this.panel.setParentView(SubscriptionFeeView.this);
+
             if (entity != null) {
 
                 Object value = entity;
                 if(value != null) {
-                    this.comboBox.setSelectedId(entity.getId());
-                    value = this.comboBox.getSelectedEntity().getName();
-                    ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText((String) value);
+                    this.panel.setSelectedId(entity.getId());
+                    value = this.panel.getSelectedEntity().getName();
+                    ((JTextField) ((this.panel.getComboBox()).getEditor().getEditorComponent())).setText((String) value);
                 }
             }
-            this.panel = new JPanel(new BorderLayout());
-            this.panel.add(this.comboBox, BorderLayout.CENTER);
-
-            // TODO: Move the following 2 buttons into the EntityComboBox component
-            // and convert it to a JPanel that contains all these 3 components
-            JButton tableButton = new JButton("...");
-            tableButton.addActionListener(e -> {
-                EntitySelectionView entitySelectionView;
-                    entitySelectionView = EntitySelectionFactory.createForm(EntityFieldTypes.Subscriber);
-                openDialog(entitySelectionView);
-                if (entitySelectionView.get() != null) {
-                    this.comboBox.setSelectedEntity(entitySelectionView.get());
-                    ((JTextField) ((this.comboBox).getEditor().getEditorComponent())).setText(entitySelectionView.get().getName());
-                    this.comboBox.invalidate();
-                    this.comboBox.repaint();
-                }
-            });
-
-            JButton entityButton = new JButton();
-            URL url = EntitySearchView.class.getClassLoader().getResource("images/search.png");
-            if(url != null) {
-                ImageIcon icon = new ImageIcon(url);
-                Image image = icon.getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
-                icon = new ImageIcon(image);
-                entityButton.setIcon(icon);
-            }
-
-            entityButton.addActionListener(e -> {
-                if(this.comboBox.getSelectedEntity() != null) {
-                    EntityView entityView = EntityViewFactory.createForm(EntityFieldTypes.Subscriber, comboBox.getSelectedEntity().getId());
-                    entityView.changeActionListener.actionPerformed(null);
-                }
-            });
-
-            JPanel buttonPanel = new JPanel(new BorderLayout(0, 0));
-            buttonPanel.add(tableButton, BorderLayout.LINE_START);
-            buttonPanel.add(entityButton, BorderLayout.LINE_END);
-            this.panel.add(buttonPanel, BorderLayout.LINE_END);
         }
 
 
@@ -102,7 +61,7 @@ public class SubscriptionFeeView extends FrameView {
 
 
         public Object getValue() {
-            return  this.comboBox.getSelectedEntity() != null ? this.comboBox.getSelectedEntity().getId() : null;
+            return  this.panel.getSelectedEntity() != null ? this.panel.getSelectedEntity().getId() : null;
         }
     }
 

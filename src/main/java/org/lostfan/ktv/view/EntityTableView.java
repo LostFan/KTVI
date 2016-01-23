@@ -122,6 +122,13 @@ public class EntityTableView extends View {
         this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
         addStringActionTableCellEditorToColumns();
         JScrollPane tableScrollPane = new JScrollPane(this.table);
+        tableScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+                System.out.println(e);
+                System.out.println(tableScrollPane.getVerticalScrollBar().getMaximum());
+            }
+        });
 
         getContentPanel().add(tableScrollPane, BorderLayout.CENTER);
 
@@ -168,11 +175,6 @@ public class EntityTableView extends View {
         textField.setEditable(false);
         DefaultCellEditor editor = new DefaultCellEditor(textField);
         editor.setClickCountToStart(1);
-        for (int columnIndex=0;columnIndex< table.getColumnCount(); columnIndex++) {
-            if(((EntityField)this.model.getFields().get(columnIndex)).getType().isEntityClass()) {
-//                this.table.getColumn(table.getColumnName(columnIndex)).setCellEditor(new EntityActionTableCellEditor(editor));
-            }
-        }
     }
 
     protected void revalidate() {
