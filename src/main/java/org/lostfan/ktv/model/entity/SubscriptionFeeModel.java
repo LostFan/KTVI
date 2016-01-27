@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
 
+    private LocalDate date;
     private List<FieldSearchCriterion> searchCriteria;
     private List<RenderedService> entities;
     private List<EntityField> fields;
@@ -27,6 +28,9 @@ public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
     private TariffDAO tariffDAO = DAOFactory.getDefaultDAOFactory().getTariffDAO();
 
     public SubscriptionFeeModel() {
+
+        date = LocalDate.now().withDayOfMonth(1);
+
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false));
 
@@ -42,9 +46,6 @@ public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
         return this.entities;
     }
 
-    protected List<RenderedService> getAll() {
-        return getDao().getAll().stream().filter(e -> e.getServiceId() == FixedServices.SUBSCRIPTION_FEE.getId()).collect(Collectors.toList());
-    }
 
     public List<EntityField> getFields() {
         return fields;
@@ -172,5 +173,19 @@ public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
     public void setSearchCriteria(List<FieldSearchCriterion> criteria) {
         this.searchCriteria = criteria;
         updateEntitiesList();
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+        updateEntitiesList();
+    }
+
+    public List<RenderedService> getAll() {
+        return DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getByMonth(this.date)
+                .stream().filter(e -> e.getServiceId() == FixedServices.SUBSCRIPTION_FEE.getId()).collect(Collectors.toList());
+    }
+
+    public LocalDate getDate() {
+        return this.date;
     }
 }

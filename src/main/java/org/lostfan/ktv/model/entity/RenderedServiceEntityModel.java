@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService> {
 
+    private LocalDate date;
     private List<EntityField> fields;
 
     private EntityField connectionTariffField;
@@ -45,6 +46,8 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     private ServiceDAO serviceDAO = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
     public RenderedServiceEntityModel() {
+        date = LocalDate.now().withDayOfMonth(1);
+
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false));
 
@@ -436,15 +439,25 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
     }
 
-    protected List<RenderedService> getAll() {
-        return getDao().getAll().stream().filter(e -> e.getServiceId() != FixedServices.SUBSCRIPTION_FEE.getId()).collect(Collectors.toList());
-    }
-
     public Integer getRenderedServicePriceByDate(Integer serviceId, LocalDate date) {
         if(serviceId != null && date != null) {
             return serviceDAO.getPriceByDate(serviceId, date);
         }
         return 0;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+        updateEntitiesList();
+    }
+
+    public List<RenderedService> getAll() {
+        return DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getByMonth(this.date)
+                .stream().filter(e -> e.getServiceId() != FixedServices.SUBSCRIPTION_FEE.getId()).collect(Collectors.toList());
+    }
+
+    public LocalDate getDate() {
+        return this.date;
     }
 
     private ValidationResult addConnectionValidation(ValidationResult result, RenderedService entity) {
