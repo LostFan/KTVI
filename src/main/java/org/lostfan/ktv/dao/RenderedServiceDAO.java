@@ -7,6 +7,8 @@ import org.lostfan.ktv.domain.RenderedService;
 
 public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
 
+    List<RenderedService> getByMonth(LocalDate date);
+
     List<RenderedService> getRenderedServicesByDate(LocalDate date);
 
     List<RenderedService> getRenderedServicesBySubscriberId(int subscriberId);
