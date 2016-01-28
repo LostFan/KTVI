@@ -8,6 +8,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
 
@@ -31,6 +32,11 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         }
 
         return renderedServices;
+    }
+
+    @Override
+    public List<RenderedService> getByMonth(LocalDate date) {
+        return null;
     }
 
     public RenderedService get(int id) {

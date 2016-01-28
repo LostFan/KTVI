@@ -7,7 +7,9 @@ import org.lostfan.ktv.utils.ConnectionManager;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
 
@@ -256,6 +258,24 @@ public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
         } else {
             throw new UnsupportedOperationException("Delete nonexistent element");
         }
+    }
+
+    public List<RenderedService> getByMonth(LocalDate date) {
+        List<RenderedService> renderedServices = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"date\" >= ? AND \"date\" < ?  order by \"date\" ");
+            preparedStatement.setDate(1, Date.valueOf(date));
+            preparedStatement.setDate(2, Date.valueOf(date.plusMonths(1)));
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                renderedServices.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return renderedServices;
     }
 
     @Override
