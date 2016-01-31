@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import static org.lostfan.ktv.utils.DatabaseUtils.executeSqlFile;
 /**
  * Created by Ihar_Niakhlebau on 23-Sep-15.
  */
+@Ignore
 public class HsqldbRenderedServiceDAOTest {
 
     private static RenderedServiceDAO renderedServiceDao;

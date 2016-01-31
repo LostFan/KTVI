@@ -1,6 +1,7 @@
 package org.lostfan.ktv.dao;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.List;
 
 import org.lostfan.ktv.domain.RenderedService;
@@ -18,6 +19,10 @@ public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
     List<RenderedService> getRenderedServicesByServiceIdAndDate(int serviceId, LocalDate date);
 
     List<RenderedService> getRenderedServicesByServiceIdInMonth(int serviceId, LocalDate date);
+
+    Map<Integer, Integer> getAllRenderedServicesPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date);
+
+    Map<Integer, Integer> getAllRenderedServicesPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date);
 
     List<RenderedService> getRenderedServicesByServiceIdAndSubscriberIdInMonth(int serviceId, int subscriberId, LocalDate date);
 

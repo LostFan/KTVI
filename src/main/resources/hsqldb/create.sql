@@ -54,7 +54,7 @@ CREATE TABLE "subscriber" (
   "balance" INTEGER DEFAULT 0 NOT NULL,
   "connected" BOOLEAN DEFAULT FALSE,
   "street_id" INTEGER,
-  "house" VARCHAR(16) DEFAULT '',
+  "house" INTEGER,
   "building" VARCHAR(16) DEFAULT '',
   "postcode" VARCHAR(16) DEFAULT '',
   "phone" VARCHAR(64) DEFAULT '',

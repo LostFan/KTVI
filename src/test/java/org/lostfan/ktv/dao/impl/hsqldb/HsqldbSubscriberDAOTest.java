@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao.impl.hsqldb;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 
 import static org.junit.Assert.*;
 import static org.lostfan.ktv.utils.DatabaseUtils.*;
-
+@Ignore
 public class HsqldbSubscriberDAOTest {
 
     private static SubscriberDAO subscriberDao;

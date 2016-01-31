@@ -209,6 +209,45 @@ public class PostGrePaymentDAO implements PaymentDAO {
         return payments;
     }
 
+    public Map<Integer, Integer> getAllPaymentsPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date) {
+        Map<Integer, Integer> subscribersPricesInMonth = new HashMap<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT \"subscriber_account\",sum(\"price\") as \"price\" FROM \"payment\" where \"service_id\" = ? AND \"date\" >= ? AND \"date\" < ? group by \"subscriber_account\"");
+            preparedStatement.setInt(1, serviceId);
+            preparedStatement.setDate(2, Date.valueOf(date.withDayOfMonth(1)));
+            preparedStatement.setDate(3, Date.valueOf(date.withDayOfMonth(1).plusMonths(1)));
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                subscribersPricesInMonth.put(rs.getInt("subscriber_account"), rs.getInt("price"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscribersPricesInMonth;
+    }
+
+    public Map<Integer, Integer> getAllPaymentsPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date) {
+        Map<Integer, Integer> subscribersPricesInMonth = new HashMap<>();
+        Long sum=0L;
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT \"subscriber_account\",sum(\"price\") as \"price\" FROM \"payment\" where \"service_id\" = ? AND \"date\" < ? group by \"subscriber_account\"");
+            preparedStatement.setInt(1, serviceId);
+            preparedStatement.setDate(2, Date.valueOf(date.withDayOfMonth(1)));
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                sum+=rs.getLong("price");
+//                System.out.println(rs.getInt("subscriber_account") + "   " + rs.getInt("price"));
+                subscribersPricesInMonth.put(rs.getInt("subscriber_account"), rs.getInt("price"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+//        System.out.println("sum = " + sum);
+        return subscribersPricesInMonth;
+    }
 
     public List<PaymentType> getAllPaymentTypes() {
         List<PaymentType> paymentTypes = new ArrayList<>();

@@ -1,9 +1,7 @@
 package org.lostfan.ktv.model.transform;
 
 import org.lostfan.ktv.domain.Payment;
-import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.model.dto.PaymentExt;
-import org.lostfan.ktv.model.dto.RenderedServiceExt;
 
 public class PaymentTransformer implements EntityTransformer<Payment, PaymentExt> {
 

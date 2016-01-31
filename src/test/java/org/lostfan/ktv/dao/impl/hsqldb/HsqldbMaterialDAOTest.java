@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.MaterialConsumptionDAO;
@@ -21,6 +22,7 @@ import static org.lostfan.ktv.utils.DatabaseUtils.executeSqlFile;
 /**
  * Created by Ihar_Niakhlebau on 24-Sep-15.
  */
+@Ignore
 public class HsqldbMaterialDAOTest {
 
     private static MaterialDAO materialDao;

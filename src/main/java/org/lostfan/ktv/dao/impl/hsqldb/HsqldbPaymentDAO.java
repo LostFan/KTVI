@@ -282,4 +282,14 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         payment.setServicePaymentId(rs.getInt("service_id"));
         return payment;
     }
+
+    @Override
+    public Map<Integer, Integer> getAllPaymentsPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date) {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, Integer> getAllPaymentsPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date) {
+        return null;
+    }
 }

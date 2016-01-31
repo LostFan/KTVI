@@ -1,6 +1,7 @@
 package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.model.FixedServices;
+import org.lostfan.ktv.model.TurnoverReportModel;
 import org.lostfan.ktv.model.dto.AdditionalRenderedService;
 import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
@@ -64,6 +65,11 @@ public class MainController {
                 }
                 entityView.hide();
             });
+        });
+        this.view.setMenuReportActionListener(args -> {
+            String code = (String) args;
+            TurnoverReportModel reportModel = new TurnoverReportModel();
+            TurnoverReportView reportView = new TurnoverReportView(reportModel);
         });
 
         this.model.addObserver(args -> {

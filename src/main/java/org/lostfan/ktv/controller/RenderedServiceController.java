@@ -13,6 +13,8 @@ import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.RenderedServiceTableView;
 import org.lostfan.ktv.view.components.EntityViewFactory;
 
+import java.time.LocalDate;
+
 public class RenderedServiceController extends EntityController {
 
     private RenderedServiceEntityModel model;
@@ -23,6 +25,7 @@ public class RenderedServiceController extends EntityController {
         view.setDisconnectionActionListener(this::addDisconnectionActionPerformed);
         view.setChangeOfTariffActionListener(this::addChangeOfTariffActionPerformed);
         view.setAdditionalServiceActionListener(this::addAdditionalServiceActionPerformed);
+        view.newDateActionListener(this::newDateActionPerformed);
         this.model = model;
     }
 
@@ -113,5 +116,10 @@ public class RenderedServiceController extends EntityController {
             }
             entityView.hide();
         });
+    }
+
+    private void newDateActionPerformed(Object args) {
+        LocalDate date = (LocalDate) args;
+        this.model.setDate(date);
     }
 }

@@ -2,6 +2,7 @@ package org.lostfan.ktv.dao;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.domain.PaymentType;
@@ -15,6 +16,10 @@ public interface PaymentDAO extends EntityDAO<Payment> {
     List<Payment> getPaymentsBySubscriberId(int subscriberId);
 
     List<Payment> getPaymentsByBankFileName(String bankFileName);
+
+    Map<Integer, Integer> getAllPaymentsPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date);
+
+    Map<Integer, Integer> getAllPaymentsPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date);
 
     List<PaymentType> getAllPaymentTypes();
 

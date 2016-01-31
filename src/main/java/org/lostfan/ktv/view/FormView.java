@@ -67,6 +67,16 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
             this.errorLabel.setVisible(false);
         }
 
+        public void setVisible(boolean isVisible) {
+            this.label.setVisible(isVisible);
+            getInputComponent().setVisible(isVisible);
+            this.errorLabel.setVisible(false);
+        }
+
+        public boolean isVisible() {
+            return this.label.isVisible();
+        }
+
         /**
          * Returns a Component that represents the source for entering a value
          */

@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.PaymentDAO;
@@ -17,7 +18,7 @@ import org.lostfan.ktv.utils.TestHsqldbConnectionManager;
 import static org.junit.Assert.assertEquals;
 import static org.lostfan.ktv.utils.DatabaseUtils.executeQuery;
 import static org.lostfan.ktv.utils.DatabaseUtils.executeSqlFile;
-
+@Ignore
 public class HsqldbPaymentDAOTest {
 
     private static PaymentDAO paymentDao;

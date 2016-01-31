@@ -24,6 +24,7 @@ public class SubscriptionFeeController implements MainInnerController{
         view.setFindActionListener(this::findActionPerformed);
         view.setCountWithActionListener(this::addCountWithActionPerformed);
         view.setCountAllWithActionListener(this::addCountAllWithActionPerformed);
+        view.newDateActionListener(this::newDateActionPerformed);
     }
 
     @Override
@@ -80,5 +81,10 @@ public class SubscriptionFeeController implements MainInnerController{
             model.createSubscriptionFeeBySubscriber(dateAndSubscriberId.getSubscriberId(), dateAndSubscriberId.getDate());
             entityView.hide();
         });
+    }
+
+    private void newDateActionPerformed(Object args) {
+        LocalDate date = (LocalDate) args;
+        this.model.setDate(date);
     }
 }

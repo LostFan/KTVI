@@ -12,23 +12,33 @@ import javax.swing.*;
 
 public class MainView extends FrameView {
 
+    private enum MenuType {
+        ENTITY_MENU,
+        SERVICE_MENU,
+        REPORT_MENU
+    }
+
     private class MenuActionListener implements ActionListener {
 
-        private boolean isEntityMenu;
+        private MenuType menuType;
 
-        public MenuActionListener(boolean isEntityMenu) {
-            this.isEntityMenu = isEntityMenu;
+        public MenuActionListener(MenuType menuType) {
+            this.menuType = menuType;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
             String name = ((JMenuItem) e.getSource()).getName();
-            if (this.isEntityMenu && MainView.this.menuEntityActionListener != null) {
+            if (this.menuType == MenuType.ENTITY_MENU && MainView.this.menuEntityActionListener != null) {
                 MainView.this.menuEntityActionListener.actionPerformed(name);
             }
 
-            if (!this.isEntityMenu && MainView.this.menuServiceActionListener != null) {
+            if (this.menuType == MenuType.SERVICE_MENU && MainView.this.menuServiceActionListener != null) {
                 MainView.this.menuServiceActionListener.actionPerformed(name);
+            }
+
+            if (this.menuType == MenuType.REPORT_MENU && MainView.this.menuReportActionListener != null) {
+                MainView.this.menuReportActionListener.actionPerformed(name);
             }
         }
     }
@@ -38,6 +48,7 @@ public class MainView extends FrameView {
 
     private ViewActionListener menuEntityActionListener;
     private ViewActionListener menuServiceActionListener;
+    private ViewActionListener menuReportActionListener;
 
     public MainView(MainModel model) {
         super("KTV");
@@ -61,7 +72,7 @@ public class MainView extends FrameView {
             MainView.this.getFrame().dispatchEvent(new WindowEvent(MainView.this.getFrame(), WindowEvent.WINDOW_CLOSING)));
         fileMenu.add(exitMenuItem);
 
-        MenuActionListener menuActionListener = new MenuActionListener(true);
+        MenuActionListener menuActionListener = new MenuActionListener(MenuType.ENTITY_MENU);
         for (String code : model.getEntityItems()) {
             JMenuItem entityMenuItem = new JMenuItem(getEntityString(code));
             entityMenuItem.setName(code);
@@ -76,11 +87,19 @@ public class MainView extends FrameView {
             entityMenuItem.addActionListener(menuActionListener);
         }
 
-        menuActionListener = new MenuActionListener(false);
+        menuActionListener = new MenuActionListener(MenuType.SERVICE_MENU);
         for (String code : model.getServicesItems()) {
             JMenuItem entityMenuItem = new JMenuItem(getEntityString(code));
             entityMenuItem.setName(code);
             serviceMenu.add(entityMenuItem);
+            entityMenuItem.addActionListener(menuActionListener);
+        }
+
+        menuActionListener = new MenuActionListener(MenuType.REPORT_MENU);
+        for (String code : model.getReportsItems()) {
+            JMenuItem entityMenuItem = new JMenuItem(getEntityString(code));
+            entityMenuItem.setName(code);
+            reportMenu.add(entityMenuItem);
             entityMenuItem.addActionListener(menuActionListener);
         }
 
@@ -111,5 +130,9 @@ public class MainView extends FrameView {
 
     public void setMenuServiceActionListener(ViewActionListener menuServiceActionListener) {
         this.menuServiceActionListener = menuServiceActionListener;
+    }
+
+    public void setMenuReportActionListener(ViewActionListener menuReportActionListener) {
+        this.menuReportActionListener = menuReportActionListener;
     }
 }

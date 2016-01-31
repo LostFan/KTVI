@@ -287,4 +287,14 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         renderedService.setDate(rs.getDate("date").toLocalDate());
         return renderedService;
     }
+
+    @Override
+    public Map<Integer, Integer> getAllRenderedServicesPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date) {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, Integer> getAllRenderedServicesPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date) {
+        return null;
+    }
 }
