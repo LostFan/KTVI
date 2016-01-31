@@ -1,15 +1,7 @@
 package org.lostfan.ktv.model.entity;
 
-import org.lostfan.ktv.dao.DAOFactory;
-import org.lostfan.ktv.dao.EntityDAO;
-import org.lostfan.ktv.dao.MaterialConsumptionDAO;
-import org.lostfan.ktv.dao.RenderedServiceDAO;
-import org.lostfan.ktv.dao.ServiceDAO;
-import org.lostfan.ktv.dao.SubscriberDAO;
-import org.lostfan.ktv.domain.MaterialConsumption;
-import org.lostfan.ktv.domain.RenderedService;
-import org.lostfan.ktv.domain.SubscriberSession;
-import org.lostfan.ktv.domain.SubscriberTariff;
+import org.lostfan.ktv.dao.*;
+import org.lostfan.ktv.domain.*;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.dto.AdditionalRenderedService;
 import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
@@ -24,6 +16,7 @@ import org.lostfan.ktv.validation.Validator;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService> {
@@ -42,6 +35,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
 
     private MaterialConsumptionDAO materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
+    private MaterialDAO materialDAO = DAOFactory.getDefaultDAOFactory().getMaterialDAO();
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
     private ServiceDAO serviceDAO = DAOFactory.getDefaultDAOFactory().getServiceDAO();
 
@@ -63,7 +57,28 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         this.fullFields = new ArrayList<>();
 
         FullEntityField materialConsumptionField = new FullEntityField("materialConsumption", EntityFieldTypes.MaterialConsumption, MaterialsDTO::getMaterialConsumption, MaterialsDTO::setMaterialConsumption, MaterialConsumption::new);
-        materialConsumptionField.setEntityFields(MainModel.getMaterialConsumptionEntityModel().getFields().stream().filter(e -> !e.getTitleKey().equals("renderedService")).filter(e -> !e.getTitleKey().equals("materialConsumption.id")).collect(Collectors.toList()));
+        List<EntityField> entityFields = MainModel.getMaterialConsumptionEntityModel().getFields().stream().filter(e -> !e.getTitleKey().equals("renderedService")).filter(e -> !e.getTitleKey().equals("materialConsumption.id")).collect(Collectors.toList());
+        entityFields.add(new EntityField("materialConsumption.price", EntityFieldTypes.Integer,  new Function<MaterialConsumption, Integer>() {
+            @Override
+            public Integer apply(MaterialConsumption materialConsumption) {
+                if(materialConsumption.getMaterialId() == null) {
+                    return null;
+                }
+                return materialDAO.get(materialConsumption.getMaterialId()).getPrice();
+            }
+        }, (e1,e2) -> {}));
+        entityFields.add(new EntityField("materialConsumption.allPrice", EntityFieldTypes.Integer,  new Function<MaterialConsumption, Integer>() {
+            @Override
+            public Integer apply(MaterialConsumption materialConsumption) {
+                if(materialConsumption.getMaterialId() == null
+                        || materialConsumption.getAmount() == null) {
+                    return null;
+                }
+                return ((Double) (materialDAO.get(materialConsumption.getMaterialId()).getPrice() * materialConsumption.getAmount())).intValue();
+            }
+        }, (e1,e2) -> {}));
+        materialConsumptionField.setEntityFields(entityFields);
+
         this.fullFields.add(materialConsumptionField);
     }
 

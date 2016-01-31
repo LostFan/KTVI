@@ -170,7 +170,7 @@ public class EntityInnerTableModel extends DefaultTableModel {
         } else {
             this.entityFieldList.get(columnIndex - 1).set(list.get(rowIndex), value);
         }
-
+        this.fireTableDataChanged();
     }
 
     public List<Entity> getEntityList() {
