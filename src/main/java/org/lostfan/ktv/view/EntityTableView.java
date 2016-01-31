@@ -122,13 +122,6 @@ public class EntityTableView extends View {
         this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
         addStringActionTableCellEditorToColumns();
         JScrollPane tableScrollPane = new JScrollPane(this.table);
-        tableScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent e) {
-                System.out.println(e);
-                System.out.println(tableScrollPane.getVerticalScrollBar().getMaximum());
-            }
-        });
 
         getContentPanel().add(tableScrollPane, BorderLayout.CENTER);
 

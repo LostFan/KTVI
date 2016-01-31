@@ -39,32 +39,34 @@ public class ActionTableCellEditor implements TableCellEditor {
         Entity entity = (Entity) value;
         JPanel panel = new JPanel(new BorderLayout());
         this.entityPanel = EntityPanelFactory.createEntityPanel(entityFieldTypes);
-        panel.add(this.entityPanel);
-        new DefaultContextMenu().add((JTextField)  this.entityPanel.getComboBox().getEditor().getEditorComponent());
+
+        new DefaultContextMenu().add((JTextField) this.entityPanel.getComboBox().getEditor().getEditorComponent());
         if(entity != null) {
             this.entityPanel.setSelectedEntity(entity);
             ((JTextField) (this.entityPanel.getComboBox().getEditor().getEditorComponent())).setText(entity.getName());
         }
         entityPanel.getTableButton().addActionListener(e -> {
-                EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityFieldTypes);
-                DialogView.open(entitySelectionView);
-                if (entitySelectionView.get() != null) {
-                    this.entityPanel.setSelectedEntity(entitySelectionView.get());
-                    ((JTextField) (entityPanel.getComboBox().getEditor().getEditorComponent())).setText(entitySelectionView.get().getName());
-                    this.entityPanel.invalidate();
-                    this.entityPanel.repaint();
-                }
-                editor.stopCellEditing();
+            EntitySelectionView entitySelectionView = EntitySelectionFactory.createForm(entityFieldTypes);
+            DialogView.open(entitySelectionView);
+            if (entitySelectionView.get() != null) {
+                this.entityPanel.setSelectedEntity(entitySelectionView.get());
+                ((JTextField) (entityPanel.getComboBox().getEditor().getEditorComponent())).setText(entitySelectionView.get().getName());
+                this.entityPanel.invalidate();
+                this.entityPanel.repaint();
+            }
+            editor.stopCellEditing();
 
-            });
+        });
         this.table = table;
         this.row = row;
         this.column = column;
 
         //TODO Need find best solution
-        entityPanel.getEntityButton().setMaximumSize(new Dimension(1,1));
+        entityPanel.getTableButton().setPreferredSize(new Dimension(15,10));
+        entityPanel.getEntityButton().setPreferredSize(new Dimension(15,10));
         entityPanel.getTableButton().setEnabled(false);
         entityPanel.getEntityButton().setEnabled(false);
+        panel.add(this.entityPanel);
 
         SwingUtilities.invokeLater(new Thread() {
 
