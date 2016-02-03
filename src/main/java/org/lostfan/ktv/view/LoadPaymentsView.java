@@ -69,7 +69,7 @@ public class LoadPaymentsView extends FrameView {
                 fileOpen.setFileFilter(new FileFilter() {
 
                     public String getDescription() {
-                        return "*.210";
+                        return "*.210,*.dat";
                     }
 
                     public boolean accept(File f) {
@@ -77,10 +77,12 @@ public class LoadPaymentsView extends FrameView {
                             return true;
                         } else {
                             String filename = f.getName().toLowerCase();
-                            return filename.endsWith(".210");
+                            return filename.endsWith(".210") || filename.endsWith(".dat");
                         }
                     }
                 });
+                Action details = fileOpen.getActionMap().get("viewTypeDetails");
+                details.actionPerformed(null);
                 int ret = fileOpen.showDialog(null, getGuiString("buttons.openFile"));
                 if (ret == JFileChooser.APPROVE_OPTION) {
                     File[] files = fileOpen.getSelectedFiles();

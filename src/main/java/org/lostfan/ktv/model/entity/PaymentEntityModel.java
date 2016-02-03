@@ -136,6 +136,9 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
             if(price == 0) {
                 break;
             }
+            if(hashMap.get(serviceId) == 0) {
+                continue;
+            }
             if(serviceId == FixedServices.SUBSCRIPTION_FEE.getId()) {
                 continue;
             }
@@ -167,19 +170,20 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
                 payment.setDate(date);
                 payment.setPaymentTypeId(null);
                 payment.setBankFileName(loadPayment.getBankFileName());
-                if(price >= paymentPrice) {
+                if(price > paymentPrice) {
                     payment.setPrice(paymentPrice);
                     price -= paymentPrice;
                 } else {
                     payment.setPrice(price);
                     price = 0;
+                    payment.setServicePaymentId(serviceId);
+                    payment.setRenderedServicePaymentId(id);
+                    payments.add(payment);
+                    return payments;
                 }
                 payment.setServicePaymentId(serviceId);
                 payment.setRenderedServicePaymentId(id);
                 payments.add(payment);
-            }
-            if(price == 0) {
-                return payments;
             }
 //            Payment payment = new Payment();
 //            payment.setSubscriberAccount(loadPayment.getSubscriberAccount());

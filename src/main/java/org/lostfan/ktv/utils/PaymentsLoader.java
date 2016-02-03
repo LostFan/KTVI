@@ -21,6 +21,18 @@ public class PaymentsLoader {
 
     public List<Payment> loadPayments() {
         List<Payment> payments = new ArrayList<>();
+        if(file.getName().endsWith(".210")) {
+            payments = loadERIP();
+        }
+        if(file.getName().endsWith(".dat")) {
+            payments = loadPost();
+        }
+
+        return payments;
+    }
+
+    private List<Payment> loadERIP() {
+        List<Payment> payments = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String sCurrentLine;
@@ -40,7 +52,30 @@ public class PaymentsLoader {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        return payments;
+    }
 
+    private List<Payment> loadPost() {
+        List<Payment> payments = new ArrayList<>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                String str[] = sCurrentLine.split(";");
+                try {
+                    Payment payment = new Payment();
+                    payment.setSubscriberAccount(Integer.parseInt(str[0]));
+//                    payment.setDate(createDate(str[9]));
+                    payment.setBankFileName(file.getName());
+                    payment.setPrice(Integer.parseInt(str[5]));
+                    payments.add(payment);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
         return payments;
     }
 
