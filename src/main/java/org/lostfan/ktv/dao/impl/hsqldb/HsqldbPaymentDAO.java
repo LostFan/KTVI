@@ -292,4 +292,9 @@ public class HsqldbPaymentDAO implements PaymentDAO {
     public Map<Integer, Integer> getAllPaymentsPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date) {
         return null;
     }
+
+    @Override
+    public Map<Integer, Payment> getPaymentsForNotClosedRenderedServicesBySubscriberIdAndServiceId(Integer subscriberAccount, Integer serviceId) {
+        return null;
+    }
 }

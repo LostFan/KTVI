@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view;
 
 
+import org.lostfan.ktv.controller.PaymentController;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
@@ -29,6 +30,7 @@ public class LoadPaymentsView extends FrameView {
 
     protected ViewActionListener addActionListener;
     protected ViewActionListener cancelActionListener;
+    private ViewActionListener loadPaymentFileListener;
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 550;
@@ -92,23 +94,13 @@ public class LoadPaymentsView extends FrameView {
                         } else {
                             bankFileNames.add(file.getName());
                         }
-                        try {
-                            BufferedReader br = new BufferedReader(new FileReader(file));
-                            String sCurrentLine;
-                            while ((sCurrentLine = br.readLine()) != null) {
-                                String str[] = sCurrentLine.split("\\^");
-                                try {
-                                    payments.addAll(LoadPaymentsView.this.model.
-                                            createPayments(Integer.parseInt(str[2]), createDate(str[9]), Integer.parseInt(str[6].split("\\.")[0]), file.getName(), payments));
-                                } catch (Exception ex) {
-                                    ex.printStackTrace();
-                                }
-                            }
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                        if (LoadPaymentsView.this.loadPaymentFileListener != null) {
+                            LoadPaymentsView.this.loadPaymentFileListener.actionPerformed(new PaymentController.FileAndPayments(file, payments));
                         }
+//                        payments.addAll(LoadPaymentsView.this.model.
+//                                createPayments(file, payments));
                     }
-                    entityInnerTableView.revalidate();
+
                 }
             }
         });
@@ -118,6 +110,11 @@ public class LoadPaymentsView extends FrameView {
         buildLayout();
 
         show();
+    }
+
+    public void addPayments(List<Payment> payments) {
+        entityInnerTableView.getEntityList().addAll(payments);
+        entityInnerTableView.revalidate();
     }
 
     private void buildLayout() {
@@ -152,6 +149,12 @@ public class LoadPaymentsView extends FrameView {
     public void setCancelActionListener(ViewActionListener cancelActionListener) {
         this.cancelActionListener = cancelActionListener;
     }
+
+
+    public void setLoadPaymentFileListener(ViewActionListener loadPaymentFileListener) {
+        this.loadPaymentFileListener = loadPaymentFileListener;
+    }
+
 
     private LocalDate createDate(String s) {
         return LocalDate.of(Integer.parseInt(s.substring(0, 4)), Integer.parseInt(s.substring(4, 6)), Integer.parseInt(s.substring(6, 8)));

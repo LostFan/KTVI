@@ -152,7 +152,7 @@ public class PostGrePaymentDAO implements PaymentDAO {
         if(get(payment.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"payment\" set \"subscriber_account\" = ?, \"service_id\" = ?, \"rendered_service_id\" = ?, \"payment_type_id\" = ?, \"price\" = ?, \"date\" = ?, \"bank_file_name\" where \"id\" = ?");
+                        "UPDATE \"payment\" set \"subscriber_account\" = ?, \"service_id\" = ?, \"rendered_service_id\" = ?, \"payment_type_id\" = ?, \"price\" = ?, \"date\" = ?, \"bank_file_name\" = ? where \"id\" = ?");
                 preparedStatement.setInt(1, payment.getSubscriberAccount());
                 preparedStatement.setInt(2, payment.getServicePaymentId());
                 if( payment.getRenderedServicePaymentId() != null) {
@@ -160,6 +160,8 @@ public class PostGrePaymentDAO implements PaymentDAO {
                 }
                 if( payment.getPaymentTypeId() != null) {
                     preparedStatement.setInt(4, payment.getPaymentTypeId());
+                } else {
+                    preparedStatement.setNull(4, Types.INTEGER);
                 }
                 preparedStatement.setInt(5, payment.getPrice());
                 preparedStatement.setDate(6, Date.valueOf(payment.getDate()));
@@ -247,6 +249,36 @@ public class PostGrePaymentDAO implements PaymentDAO {
         }
 //        System.out.println("sum = " + sum);
         return subscribersPricesInMonth;
+    }
+
+    @Override
+    public Map<Integer, Payment> getPaymentsForNotClosedRenderedServicesBySubscriberIdAndServiceId(Integer subscriberAccount, Integer serviceId) {
+        Map<Integer, Payment> hashMap = new HashMap<>();
+
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "select * from \"rendered_service\" \n" +
+                            "LEFT JOIN (\n" +
+                            "select \"payment\".\"rendered_service_id\" , sum(\"payment\".\"price\") as \"payment_price\" from payment group by \"payment\".\"rendered_service_id\") as payment\n" +
+                            "ON (\"payment\".\"rendered_service_id\" = \"rendered_service\".\"id\")\n" +
+                            "where \"rendered_service\".\"service_id\" = ? AND\n" +
+                            "\"rendered_service\".\"subscriber_account\" = ? AND (\"payment\".\"payment_price\" < \"rendered_service\".\"price\" OR \"payment\".\"payment_price\" is null)" +
+                            " order by \"rendered_service\".\"date\"");
+            preparedStatement.setInt(1, serviceId);
+            preparedStatement.setInt(2, subscriberAccount);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Payment payment = new Payment();
+                payment.setServicePaymentId(rs.getInt("service_id"));
+                payment.setRenderedServicePaymentId(rs.getInt("id"));
+                payment.setSubscriberAccount(rs.getInt("subscriber_account"));
+                payment.setPrice(rs.getInt("price") - rs.getInt("payment_price"));
+                hashMap.put(rs.getInt("id"), payment);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hashMap;
     }
 
     public List<PaymentType> getAllPaymentTypes() {
@@ -357,7 +389,7 @@ public class PostGrePaymentDAO implements PaymentDAO {
         payment.setId(rs.getInt("id"));
         payment.setPrice(rs.getInt("price"));
         payment.setDate(rs.getDate("date").toLocalDate());
-        if(rs.getObject("rendered_service_id") != null) {
+        if(rs.getObject("payment_type_id") != null) {
             payment.setPaymentTypeId(rs.getInt("payment_type_id"));
         }
         payment.setSubscriberAccount(rs.getInt("subscriber_account"));

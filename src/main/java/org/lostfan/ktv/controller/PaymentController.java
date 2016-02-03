@@ -6,10 +6,31 @@ import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.LoadPaymentsView;
 import org.lostfan.ktv.view.PaymentTableView;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 
 public class PaymentController extends EntityController{
+
+    public static class FileAndPayments {
+
+        private File file;
+
+        private List<Payment> payments;
+
+        public FileAndPayments(File file, List<Payment> payments) {
+            this.file = file;
+            this.payments = payments;
+        }
+
+        public File getFile() {
+            return file;
+        }
+
+        public List<Payment> getPayments() {
+            return payments;
+        }
+    }
 
     private PaymentEntityModel model;
     private PaymentTableView view;
@@ -36,6 +57,14 @@ public class PaymentController extends EntityController{
             }
 
             loadPaymentsView.hide();
+        });
+
+
+
+        loadPaymentsView.setLoadPaymentFileListener(args_ -> {
+            FileAndPayments fileAndPayments = (FileAndPayments) args_;
+            loadPaymentsView.addPayments(
+                    model.createPayments(fileAndPayments.getFile(), fileAndPayments.getPayments()));
         });
 //        this.loadPaymentsView.setSaveActionListener(this::saveTariffPriceActionPerformed);
     }
