@@ -31,6 +31,13 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     private Validator<SubscriberTariff> validatorSubscriberTariff = new SubscriberTariffValidator();
     private Validator<RenderedService> connectionAdditionValidator = new ConnectionAdditionValidator();
     private ConnectionEditValidator connectionEditValidator = new ConnectionEditValidator();
+    private DisconnectionAdditionValidator disconnectionAdditionValidator = new DisconnectionAdditionValidator();
+    private DisconnectionEditValidator disconnectionEditValidator = new DisconnectionEditValidator();
+    private ChangeTariffAdditionValidator changeTariffAdditionValidator = new ChangeTariffAdditionValidator();
+    private ChangeTariffEditValidator changeTariffEditValidator = new ChangeTariffEditValidator();
+    private ConnectionDeleteValidator connectionDeleteValidator = new ConnectionDeleteValidator();
+    private DisconnectionDeleteValidator disconnectionDeleteValidator = new DisconnectionDeleteValidator();
+    private ChangeTariffDeleteValidator changeTariffDeleteValidator = new ChangeTariffDeleteValidator();
 
     private MaterialConsumptionDAO materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
     private MaterialDAO materialDAO = DAOFactory.getDefaultDAOFactory().getMaterialDAO();
@@ -56,25 +63,27 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
         FullEntityField materialConsumptionField = new FullEntityField("materialConsumption", EntityFieldTypes.MaterialConsumption, MaterialsDTO::getMaterialConsumption, MaterialsDTO::setMaterialConsumption, MaterialConsumption::new);
         List<EntityField> entityFields = MainModel.getMaterialConsumptionEntityModel().getFields().stream().filter(e -> !e.getTitleKey().equals("renderedService")).filter(e -> !e.getTitleKey().equals("materialConsumption.id")).collect(Collectors.toList());
-        entityFields.add(new EntityField("materialConsumption.price", EntityFieldTypes.Integer,  new Function<MaterialConsumption, Integer>() {
+        entityFields.add(new EntityField("materialConsumption.price", EntityFieldTypes.Integer, new Function<MaterialConsumption, Integer>() {
             @Override
             public Integer apply(MaterialConsumption materialConsumption) {
-                if(materialConsumption.getMaterialId() == null) {
+                if (materialConsumption.getMaterialId() == null) {
                     return null;
                 }
                 return materialDAO.get(materialConsumption.getMaterialId()).getPrice();
             }
-        }, (e1,e2) -> {}));
-        entityFields.add(new EntityField("materialConsumption.allPrice", EntityFieldTypes.Integer,  new Function<MaterialConsumption, Integer>() {
+        }, (e1, e2) -> {
+        }));
+        entityFields.add(new EntityField("materialConsumption.allPrice", EntityFieldTypes.Integer, new Function<MaterialConsumption, Integer>() {
             @Override
             public Integer apply(MaterialConsumption materialConsumption) {
-                if(materialConsumption.getMaterialId() == null
+                if (materialConsumption.getMaterialId() == null
                         || materialConsumption.getAmount() == null) {
                     return null;
                 }
                 return ((Double) (materialDAO.get(materialConsumption.getMaterialId()).getPrice() * materialConsumption.getAmount())).intValue();
             }
-        }, (e1,e2) -> {}));
+        }, (e1, e2) -> {
+        }));
         materialConsumptionField.setEntityFields(entityFields);
 
         this.fullFields.add(materialConsumptionField);
@@ -89,7 +98,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     public ConnectionRenderedService getConnectionRenderedService(RenderedService renderedService) {
-        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndConnectionDate(renderedService.getSubscriberAccount(), renderedService.getDate());
+        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(renderedService.getSubscriberAccount(), renderedService.getDate());
         List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(renderedService.getId());
         return ConnectionRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
     }
@@ -99,12 +108,12 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     public ChangeOfTariffRenderedService getChangeOfTariffRenderedService(RenderedService renderedService) {
-        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndConnectionDate(renderedService.getSubscriberAccount(), renderedService.getDate());
+        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(renderedService.getSubscriberAccount(), renderedService.getDate());
         return ChangeOfTariffRenderedService.build(renderedService, subscriberTariff);
     }
 
     public AdditionalRenderedService getAdditionalRenderedService(RenderedService renderedService) {
-        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndConnectionDate(renderedService.getSubscriberAccount(), renderedService.getDate());
+        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(renderedService.getSubscriberAccount(), renderedService.getDate());
         List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(renderedService.getId());
         return AdditionalRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
     }
@@ -123,6 +132,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     public EntityField getConnectionTariffField() {
         return connectionTariffField;
     }
+
     public EntityField getChangeTariffField() {
         return changeTariffField;
     }
@@ -171,12 +181,15 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
                 return result;
             }
             getDao().save(entity);
-            subscriberDAO.saveSubscriberTariff(subscriberTariff);
-            subscriberDAO.saveSubscriberSession(subscriberSession);
-            for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
-                materialConsumption.setRenderedServiceId(entity.getId());
-                materialConsumptionDAO.save(materialConsumption);
+            SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+            if (oldSubscriberTariff == null) {
+                subscriberDAO.saveSubscriberTariff(subscriberTariff);
             }
+            subscriberDAO.saveSubscriberSession(subscriberSession);
+//            for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+//                materialConsumption.setRenderedServiceId(entity.getId());
+//                materialConsumptionDAO.save(materialConsumption);
+//            }
             updateEntitiesList();
             return result;
         }
@@ -184,21 +197,26 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         RenderedService prevRenderedService = getDao().get(entity.getId());
         if (!prevRenderedService.getSubscriberAccount().equals(entity.getSubscriberAccount())) {
             result = this.connectionAdditionValidator.validate(entity, result);
-        } else {
-            result = this.connectionEditValidator.validate(entity, prevRenderedService, result);
         }
+        result = this.connectionEditValidator.validate(entity, prevRenderedService, result);
+
         if (result.hasErrors()) {
             return result;
         }
 
         subscriberDAO.deleteSubscriberSession(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        if (prevRenderedService.getDate().equals(oldSubscriberTariff.getConnectTariff())) {
+            subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        }
         getDao().update(entity);
         subscriberDAO.saveSubscriberSession(subscriberSession);
-        subscriberDAO.saveSubscriberTariff(subscriberTariff);
-        updateMaterials(entity);
+        if (subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate()) == null) {
+            subscriberDAO.saveSubscriberTariff(subscriberTariff);
+        }
+//        updateMaterials(entity);
         updateEntitiesList();
-        return  result;
+        return result;
     }
 
     public ValidationResult save(DisconnectionRenderedService entity) {
@@ -208,90 +226,40 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
 
         if (entity.getId() == null) {
+            result = this.disconnectionAdditionValidator.validate(entity, result);
+            if (result.hasErrors()) {
+                return result;
+            }
             SubscriberSession subscriberSession = subscriberDAO.getNotClosedSubscriberSessionByDate(entity.getSubscriberAccount(), entity.getDate());
-            if(subscriberSession == null) {
-                result.addError("errors.noCurrentSession");
-                return result;
-            }
             subscriberSession.setDisconnectionDate(entity.getDate());
-            SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
-            if(subscriberTariff == null) {
-                result.addError("errors.noCurrentTariff");
-                return result;
-            }
-            subscriberTariff.setDisconnectTariff(entity.getDate());
-            getDao().save(entity);
 
+            getDao().save(entity);
             subscriberDAO.updateSubscriberSession(subscriberSession);
-            subscriberDAO.updateSubscriberTariff(subscriberTariff);
             updateEntitiesList();
             return result;
         }
 
         RenderedService prevRenderedService = getDao().get(entity.getId());
 
-        if(prevRenderedService.getSubscriberAccount() != entity.getSubscriberAccount()) {
-
-            SubscriberSession SubscriberSessionNewSubscriber = subscriberDAO.getNotClosedSubscriberSessionByDate(entity.getSubscriberAccount(), entity.getDate());
-            if (SubscriberSessionNewSubscriber == null) {
-                result.addError("errors.noCurrentSession");
-                return result;
-            }
-            SubscriberSessionNewSubscriber.setDisconnectionDate(entity.getDate());
-
-            SubscriberTariff SubscriberTariffNewSubscriber = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
-            if (SubscriberTariffNewSubscriber == null) {
-                result.addError("errors.noCurrentTariff");
-                return result;
-            }
-            SubscriberTariffNewSubscriber.setDisconnectTariff(entity.getDate());
-
-            SubscriberSession subscriberSessionAfter = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-            if (subscriberSessionAfter != null) {
-                result.addError("errors.getSessionAfterDate");
-                return result;
-            }
-
-            SubscriberSession currentSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-            currentSession.setDisconnectionDate(null);
-            currentSession.setDisconnectionReasonId(null);
-            subscriberDAO.updateSubscriberSession(currentSession);
-
-            SubscriberTariff currentTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-            currentTariff.setDisconnectTariff(null);
-            subscriberDAO.updateSubscriberTariff(currentTariff);
-
-            getDao().update(entity);
-            subscriberDAO.updateSubscriberSession(SubscriberSessionNewSubscriber);
-            subscriberDAO.updateSubscriberTariff(SubscriberTariffNewSubscriber);
-
-            updateEntitiesList();
-            return result;
+        if (!prevRenderedService.getSubscriberAccount().equals(entity.getSubscriberAccount())) {
+            result = this.disconnectionAdditionValidator.validate(entity, result);
         }
+        result = this.disconnectionEditValidator.validate(entity, prevRenderedService, result) ;
 
-        SubscriberSession subscriberSessionAfter = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        if (subscriberSessionAfter != null) {
-            result.addError("errors.getSessionAfterDate");
+        if (result.hasErrors()) {
             return result;
-        }
-        if(prevRenderedService.getDate().isAfter(entity.getDate())) {
-            SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
-            if (!prevRenderedService.getDate().equals(subscriberTariff.getDisconnectTariff())) {
-                result.addError("errors.noCurrentTariff");
-                return result;
-            }
         }
 
         SubscriberSession currentSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        currentSession.setDisconnectionDate(entity.getDate());
+        currentSession.setDisconnectionDate(null);
         currentSession.setDisconnectionReasonId(null);
         subscriberDAO.updateSubscriberSession(currentSession);
-
-        SubscriberTariff currentTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        currentTariff.setDisconnectTariff(entity.getDate());
-        subscriberDAO.updateSubscriberTariff(currentTariff);
-
+        SubscriberSession newSession = subscriberDAO.getNotClosedSubscriberSessionByDate(entity.getSubscriberAccount(), entity.getDate());
+        newSession.setDisconnectionDate(entity.getDate());
         getDao().update(entity);
+        subscriberDAO.updateSubscriberSession(newSession);
+
+
         updateEntitiesList();
         return result;
     }
@@ -308,14 +276,16 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         newSubscriberTariff.setConnectTariff(entity.getDate());
 
         if (entity.getId() == null) {
-            SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
-            if(subscriberTariff == null) {
-                result.addError("errors.noCurrentTariff");
+
+            result = this.changeTariffAdditionValidator.validate(entity, result);
+            if (result.hasErrors()) {
                 return result;
             }
-            subscriberTariff.setDisconnectTariff(entity.getDate());
-            getDao().save(entity);
 
+            SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
+            subscriberTariff.setDisconnectTariff(entity.getDate());
+
+            getDao().save(entity);
             subscriberDAO.updateSubscriberTariff(subscriberTariff);
             subscriberDAO.saveSubscriberTariff(newSubscriberTariff);
             updateEntitiesList();
@@ -324,49 +294,24 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
         RenderedService prevRenderedService = getDao().get(entity.getId());
 
-        if(prevRenderedService.getSubscriberAccount() != entity.getSubscriberAccount()) {
+        if (!(prevRenderedService.getSubscriberAccount().equals(entity.getSubscriberAccount()))) {
+            result = this.changeTariffAdditionValidator.validate(entity, result);
+        }
+        result = this.changeTariffEditValidator.validate(entity, prevRenderedService, result);
 
-            SubscriberTariff notClosedSubscriberTariffNewSubscriber = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
-            if (notClosedSubscriberTariffNewSubscriber == null) {
-                result.addError("errors.noCurrentTariff");
-                return result;
-            }
-            notClosedSubscriberTariffNewSubscriber.setDisconnectTariff(entity.getDate());
-
-            SubscriberTariff subscriberTariffAfter = subscriberDAO.getSubscriberTariffBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
-            if (subscriberTariffAfter != null) {
-                result.addError("errors.getTariffAfterDate");
-                return result;
-            }
-
-            subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-            SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-            oldSubscriberTariff.setDisconnectTariff(null);
-            subscriberDAO.updateSubscriberTariff(oldSubscriberTariff);
-            getDao().update(entity);
-            subscriberDAO.updateSubscriberTariff(notClosedSubscriberTariffNewSubscriber);
-            subscriberDAO.saveSubscriberTariff(newSubscriberTariff);
-            updateEntitiesList();
+        if (result.hasErrors()) {
             return result;
         }
 
-        SubscriberTariff prevSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndConnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        if (prevSubscriberTariff.getDisconnectTariff() != null) {
-            result.addError("errors.getTariffAfterDate");
-            return result;
-        }
-        prevSubscriberTariff.setConnectTariff(entity.getDate());
-        prevSubscriberTariff.setTariffId(entity.getTariffId());
-
-        if(prevRenderedService.getDate().isAfter(entity.getDate())) {
-            SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
-            if (!prevRenderedService.getDate().equals(subscriberTariff.getDisconnectTariff())) {
-                result.addError("errors.noCurrentTariff");
-                return result;
-            }
-        }
-        subscriberDAO.updateSubscriberTariff(prevSubscriberTariff);
+        subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        oldSubscriberTariff.setDisconnectTariff(null);
+        subscriberDAO.updateSubscriberTariff(oldSubscriberTariff);
         getDao().update(entity);
+        SubscriberTariff notClosedSubscriberTariffNewSubscriber = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
+        notClosedSubscriberTariffNewSubscriber.setDisconnectTariff(newSubscriberTariff.getConnectTariff());
+        subscriberDAO.updateSubscriberTariff(notClosedSubscriberTariffNewSubscriber);
+        subscriberDAO.saveSubscriberTariff(newSubscriberTariff);
         updateEntitiesList();
         return result;
     }
@@ -381,16 +326,96 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
         if (entity.getId() == null) {
             getDao().save(entity);
-            for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
-                materialConsumption.setRenderedServiceId(entity.getId());
-                materialConsumptionDAO.save(materialConsumption);
-            }
+//            for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+//                materialConsumption.setRenderedServiceId(entity.getId());
+//                materialConsumptionDAO.save(materialConsumption);
+//            }
             return result;
         }
         getDao().update(entity);
-        updateMaterials(entity);
+//        updateMaterials(entity);
         updateEntitiesList();
-        return  result;
+        return result;
+    }
+
+
+    public ValidationResult deleteRenderedServicesById(List<Integer> ids) {
+        ValidationResult result = ValidationResult.createEmpty();
+        if (ids.size() == 0) {
+            return result;
+        }
+
+        for (Integer id : ids) {
+            RenderedService entity = getDao().get(id);
+            if(entity.getServiceId().equals(FixedServices.CONNECTION.getId())) {
+                isDeleteConnection(entity, result);
+            }
+            if(entity.getServiceId().equals(FixedServices.DISCONNECTION.getId())) {
+                isDeleteDisconnection(entity, result);
+            }
+            if(entity.getServiceId().equals(FixedServices.CHANGE_OF_TARIFF.getId())) {
+                isDeleteChangeTariff(entity, result);
+            }
+//            getDao().delete(id);
+        }
+        if (result.hasErrors()) {
+            return result;
+        }
+        for (Integer id : ids) {
+            RenderedService entity = getDao().get(id);
+            if(entity.getServiceId().equals(FixedServices.CONNECTION.getId())) {
+                deleteConnection(entity);
+            }
+            if(entity.getServiceId().equals(FixedServices.DISCONNECTION.getId())) {
+                deleteDisconnection(entity);
+            }
+            if(entity.getServiceId().equals(FixedServices.CHANGE_OF_TARIFF.getId())) {
+                deleteChangeTariff(entity);
+            }
+
+        }
+        updateEntitiesList();
+        return result;
+    }
+
+    private ValidationResult isDeleteConnection(RenderedService entity, ValidationResult result) {
+        connectionDeleteValidator.validate(entity, result);
+        return result;
+    }
+
+    private void deleteConnection(RenderedService entity) {
+        subscriberDAO.deleteSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+        if (entity.getDate().equals(oldSubscriberTariff.getConnectTariff())) {
+            subscriberDAO.deleteSubscriberTariff(entity.getSubscriberAccount(), entity.getDate());
+        }
+        getDao().delete(entity.getId());
+    }
+
+    private ValidationResult isDeleteDisconnection(RenderedService entity, ValidationResult result) {
+        disconnectionDeleteValidator.validate(entity, result);
+        return result;
+    }
+
+    private void deleteDisconnection(RenderedService entity) {
+        SubscriberSession currentSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndDisconnectionDate(entity.getSubscriberAccount(), entity.getDate());
+        currentSession.setDisconnectionDate(null);
+        currentSession.setDisconnectionReasonId(null);
+        subscriberDAO.updateSubscriberSession(currentSession);
+        getDao().delete(entity.getId());
+    }
+
+    private ValidationResult isDeleteChangeTariff(RenderedService entity, ValidationResult result) {
+        changeTariffDeleteValidator.validate(entity, result);
+        return result;
+    }
+
+    private void deleteChangeTariff(RenderedService entity) {
+        subscriberDAO.deleteSubscriberTariff(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndDisconnectionDate(entity.getSubscriberAccount(), entity.getDate());
+        oldSubscriberTariff.setDisconnectTariff(null);
+        subscriberDAO.updateSubscriberTariff(oldSubscriberTariff);
+        getDao().delete(entity.getId());
     }
 
     @Override
@@ -412,13 +437,13 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(entity.getId());
 
         for (MaterialConsumption materialConsumption : materialConsumptionList) {
-            if(!entity.getMaterialConsumption().contains(materialConsumption)) {
+            if (!entity.getMaterialConsumption().contains(materialConsumption)) {
                 materialConsumptionDAO.delete(materialConsumption.getId());
             }
         }
 
         for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
-            if(materialConsumption.getId() != null) {
+            if (materialConsumption.getId() != null) {
                 materialConsumptionDAO.update(materialConsumption);
             } else {
                 materialConsumption.setRenderedServiceId(entity.getId());
@@ -429,14 +454,14 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     public void setServiceFieldEditable(boolean editable) {
         for (EntityField field : fields) {
-            if(field.getTitleKey().equals("service")) {
+            if (field.getTitleKey().equals("service")) {
                 field.setEditable(editable);
             }
         }
     }
 
     public Integer getRenderedServicePriceByDate(Integer serviceId, LocalDate date) {
-        if(serviceId != null && date != null) {
+        if (serviceId != null && date != null) {
             return serviceDAO.getPriceByDate(serviceId, date);
         }
         return 0;

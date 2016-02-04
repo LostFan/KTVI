@@ -21,21 +21,21 @@ public class ConnectionAdditionValidator implements Validator<RenderedService> {
             result.addError("errors.alreadyGetSession");
             return result;
         }
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
-        if(oldSubscriberTariff != null) {
-            result.addError("errors.alreadyGetTariff");
-            return result;
-        }
+//        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+//        if(oldSubscriberTariff != null) {
+//            result.addError("errors.alreadyGetTariff");
+//            return result;
+//        }
         oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession != null) {
             result.addError("errors.getSessionAfterDate");
             return result;
         }
-        oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
-        if(oldSubscriberTariff != null) {
-            result.addError("errors.getTariffAfterDate");
-            return result;
-        }
+//        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
+//        if(oldSubscriberTariff != null) {
+//            result.addError("errors.getTariffAfterDate");
+//            return result;
+//        }
         return result;
     }
 }

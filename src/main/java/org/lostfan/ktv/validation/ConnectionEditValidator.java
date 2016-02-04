@@ -21,12 +21,23 @@ public class ConnectionEditValidator implements Validator<RenderedService> {
 
     public ValidationResult validate(RenderedService entity, RenderedService prevRenderedService, ValidationResult result) {
 
-        SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndConnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
+        if(oldSubscriberSession != null && !oldSubscriberSession.getConnectionDate().equals(prevRenderedService.getDate())) {
+            result.addError("errors.getSessionAfterDate");
+            return result;
+        }
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
+        if(oldSubscriberTariff != null && !oldSubscriberTariff.getConnectTariff().equals(prevRenderedService.getDate())) {
+            result.addError("errors.getTariffAfterDate");
+            return result;
+        }
+
+        oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndConnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         if(oldSubscriberSession.getDisconnectionDate() != null) {
             result.addError("errors.alreadySessionClosed");
             return result;
         }
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndConnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         if(oldSubscriberTariff.getDisconnectTariff() != null) {
             result.addError("errors.alreadyTariffClosed");
             return result;
@@ -38,11 +49,11 @@ public class ConnectionEditValidator implements Validator<RenderedService> {
                 result.addError("errors.alreadyGetSession");
                 return result;
             }
-            oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
-            if(oldSubscriberTariff != null) {
-                result.addError("errors.alreadyGetTariff");
-                return result;
-            }
+//            oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+//            if(oldSubscriberTariff != null  ) {
+//                result.addError("errors.alreadyGetTariff");
+//                return result;
+//            }
         }
 
         return result;

@@ -15,6 +15,7 @@ import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.validation.Error;
 
 public class RenderedServiceTableView extends EntityTableView {
 
@@ -155,5 +156,23 @@ public class RenderedServiceTableView extends EntityTableView {
 
     public void newDateActionListener(ViewActionListener newDateActionListener) {
         this.newDateActionListener = newDateActionListener;
+    }
+
+    public void errorWindow(Iterable<Error> errors) {
+        int optionType = JOptionPane.OK_CANCEL_OPTION;
+        int messageType = JOptionPane.ERROR_MESSAGE;
+        Object[] selValues = { getGuiString("buttons.ok") };
+        String message = getGuiString("window.deleteFailed");
+        StringBuffer stringBuffer = new StringBuffer();
+        for (Error error : errors) {
+            if (error.getField() == null) {
+                stringBuffer.append(error.getMessage());
+                stringBuffer.append("\n");
+            }
+        }
+        JOptionPane.showOptionDialog(null,
+                stringBuffer, message,
+                optionType, messageType, null, selValues,
+                selValues[0]);
     }
 }

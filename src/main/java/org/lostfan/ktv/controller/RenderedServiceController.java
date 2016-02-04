@@ -14,10 +14,13 @@ import org.lostfan.ktv.view.RenderedServiceTableView;
 import org.lostfan.ktv.view.components.EntityViewFactory;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class RenderedServiceController extends EntityController {
 
     private RenderedServiceEntityModel model;
+
+    private RenderedServiceTableView view;
 
     public RenderedServiceController(RenderedServiceEntityModel model, RenderedServiceTableView view) {
         super(model, view);
@@ -27,6 +30,7 @@ public class RenderedServiceController extends EntityController {
         view.setAdditionalServiceActionListener(this::addAdditionalServiceActionPerformed);
         view.newDateActionListener(this::newDateActionPerformed);
         this.model = model;
+        this.view = view;
     }
 
 
@@ -121,5 +125,13 @@ public class RenderedServiceController extends EntityController {
     private void newDateActionPerformed(Object args) {
         LocalDate date = (LocalDate) args;
         this.model.setDate(date);
+    }
+
+    protected void deleteActionPerformed(Object args) {
+        List<Integer> selectedIds = (List<Integer>) args;
+        ValidationResult result = this.model.deleteRenderedServicesById(selectedIds);
+        if (result.hasErrors()) {
+            view.errorWindow(result.getErrors());
+        }
     }
 }
