@@ -11,10 +11,16 @@ public class SimpleValidationResult implements ValidationResult {
 
         private String message;
         private String field;
+        private Object[] params;
 
-        public GeneralError(String message, String field) {
+        public GeneralError(String message, String field, Object[] params) {
             this.message = message;
             this.field = field;
+            if (params == null) {
+                this.params = new Object[0];
+            } else {
+                this.params = params;
+            }
         }
 
         @Override
@@ -25,6 +31,11 @@ public class SimpleValidationResult implements ValidationResult {
         @Override
         public String getField() {
             return this.field;
+        }
+
+        @Override
+        public Object[] getParams() {
+            return this.params;
         }
     }
 
@@ -43,12 +54,22 @@ public class SimpleValidationResult implements ValidationResult {
 
     @Override
     public void addError(String message) {
-        addError(new GeneralError(message, null));
+        addError(new GeneralError(message, null, null));
+    }
+
+    @Override
+    public void addError(String message, Object... params) {
+        addError(new GeneralError(message, null, params));
     }
 
     @Override
     public void addError(String message, String field) {
-        addError(new GeneralError(message, field));
+        addError(new GeneralError(message, field, null));
+    }
+
+    @Override
+    public void addError(String message, String field, Object... params) {
+        addError(new GeneralError(message, field, params));
     }
 
     @Override

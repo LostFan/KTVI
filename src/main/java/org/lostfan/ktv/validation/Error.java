@@ -5,4 +5,6 @@ public interface Error {
     String getMessage();
 
     String getField();
+
+    Object[] getParams();
 }

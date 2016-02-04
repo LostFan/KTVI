@@ -8,7 +8,11 @@ public interface ValidationResult extends Iterable<Error> {
 
     void addError(String message);
 
+    void addError(String message, Object... params);
+
     void addError(String message, String field);
+
+    void addError(String message, String field, Object... params);
 
     List<Error> getErrors();
 

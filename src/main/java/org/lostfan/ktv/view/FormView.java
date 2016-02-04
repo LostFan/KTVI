@@ -390,7 +390,11 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
 
         for (Error error : errors) {
             if (error.getField() == null) {
-                JLabel errorLabel = new JLabel(getGuiString(error.getMessage()));
+                String message = getGuiString(error.getMessage());
+                if (error.getParams().length != 0) {
+                    message = String.format(message, error.getParams());
+                }
+                JLabel errorLabel = new JLabel(message);
                 errorLabel.setForeground(Color.RED);
                 this.globalErrorPanel.add(errorLabel);
                 this.revalidate();
