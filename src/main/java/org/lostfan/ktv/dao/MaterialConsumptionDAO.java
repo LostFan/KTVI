@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface MaterialConsumptionDAO extends EntityDAO<MaterialConsumption> {
 
-    List<MaterialConsumption> getMaterialConsumptionsByRenderedServiceId(int renderedServiceId);
+    List<MaterialConsumption> getByRenderedServiceId(int renderedServiceId);
 }

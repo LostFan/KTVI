@@ -9,13 +9,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.lostfan.ktv.dao.DAOFactory;
-import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.dao.PaymentDAO;
 import org.lostfan.ktv.dao.RenderedServiceDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
-import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.Payment;
-import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.utils.PaymentsLoader;
 import org.lostfan.ktv.validation.PaymentValidator;
@@ -95,7 +92,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
         if (subscriberDAO.get(subscriberId) == null) {
             return null;
         }
-        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalanceBySubscriberId(subscriberId);
+        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalance(subscriberId);
         payment.setSubscriberAccount(subscriberId);
         payment.setDate(date);
         payment.setPaymentTypeId(null);
@@ -131,7 +128,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
             }
         }
 
-        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalanceBySubscriberId(loadPayment.getSubscriberAccount());
+        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalance(loadPayment.getSubscriberAccount());
         for (Integer serviceId : hashMap.keySet()) {
             if(price == 0) {
                 break;
@@ -154,7 +151,7 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
 //            }
 
             Map<Integer,Payment> paymentsForNotClosedRenderedServices =
-                    getDao().getPaymentsForNotClosedRenderedServicesBySubscriberIdAndServiceId(loadPayment.getSubscriberAccount(), serviceId);
+                    getDao().getForNotClosedRenderedServices(loadPayment.getSubscriberAccount(), serviceId);
             for (Integer id : paymentsForNotClosedRenderedServices.keySet()) {
                 Integer paymentPrice;
                 if(paymentMapFromTable.get(id) == null) {
@@ -233,6 +230,6 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
     }
 
     public List<Payment> getPaymentsByBankFileName(String bankFileName) {
-        return getDao().getPaymentsByBankFileName(bankFileName);
+        return getDao().getByBankFileName(bankFileName);
     }
 }

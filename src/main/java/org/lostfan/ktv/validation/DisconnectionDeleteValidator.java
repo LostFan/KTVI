@@ -20,12 +20,12 @@ public class DisconnectionDeleteValidator implements Validator<RenderedService> 
 
         SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession != null) {
-            result.addError(ResourceBundles.getGuiBundle().getString("errors.getSessionAfterDate") + ". Id: " + entity.getId());
+            result.addError(ResourceBundles.getGuiBundle().getString("errors.hasSessionAfterDate") + ". Id: " + entity.getId());
             return result;
         }
         SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberTariff != null ) {
-            result.addError(ResourceBundles.getGuiBundle().getString("errors.getTariffAfterDate") + ". Id: " + entity.getId());
+            result.addError(ResourceBundles.getGuiBundle().getString("errors.hasTariffAfterDate") + ". Id: " + entity.getId());
             return result;
         }
 

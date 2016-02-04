@@ -20,15 +20,15 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     List<SubscriberTariff> getSubscriberTariffs(int subscriberId);
 
-    SubscriberSession getSubscriberSessionBySubscriberIdAndConnectionDate(Integer subscriberId, LocalDate localDate);
+    SubscriberSession getSubscriberSessionByConnectionDate(Integer subscriberAccount, LocalDate connectionDate);
 
-    SubscriberSession getSubscriberSessionBySubscriberIdAndDisconnectionDate(Integer subscriberId, LocalDate localDate);
+    SubscriberSession getSubscriberSessionByDisconnectionDate(Integer subscriberAccount, LocalDate disconnectionDate);
 
     void saveSubscriberSession(SubscriberSession subscriberSession);
 
     SubscriberSession getSubscriberSessionBySubscriberIdAndAfterDate(Integer subscriberId, LocalDate localDate);
 
-    SubscriberSession getNotClosedSubscriberSessionByDate(Integer subscriberId, LocalDate localDate);
+    SubscriberSession getNotClosedSubscriberSession(Integer subscriberAccount, LocalDate connectionDate);
 
     SubscriberSession getSubscriberSessionBySubscriberIdAndContainDate(Integer subscriberId, LocalDate localDate);
 
@@ -68,5 +68,5 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     HashMap<Integer, Integer> getServicesBalanceBySubscriberIdAndDate(Integer subscriberId, LocalDate date);
 
-    HashMap<Integer, Integer> getServicesBalanceBySubscriberId(Integer subscriberId);
+    HashMap<Integer, Integer> getServicesBalance(Integer subscriberAccount);
 }

@@ -10,21 +10,21 @@ public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
 
     List<RenderedService> getByMonth(LocalDate date);
 
-    List<RenderedService> getRenderedServicesByDate(LocalDate date);
+    List<RenderedService> getByDate(LocalDate date);
 
-    List<RenderedService> getRenderedServicesBySubscriberId(int subscriberId);
+    List<RenderedService> getBySubscriber(int subscriberAccount);
 
-    List<RenderedService> getRenderedServicesByServiceId(int serviceId);
+    List<RenderedService> getByService(int serviceId);
 
-    List<RenderedService> getRenderedServicesByServiceIdAndDate(int serviceId, LocalDate date);
+    List<RenderedService> getAll(int serviceId, LocalDate date);
 
-    List<RenderedService> getRenderedServicesByServiceIdInMonth(int serviceId, LocalDate date);
+    List<RenderedService> getAllForMonth(int serviceId, LocalDate date);
+
+    List<RenderedService> getAllForMonth(int serviceId, int subscriberAccount, LocalDate date);
 
     Map<Integer, Integer> getAllRenderedServicesPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date);
 
     Map<Integer, Integer> getAllRenderedServicesPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date);
 
-    List<RenderedService> getRenderedServicesByServiceIdAndSubscriberIdInMonth(int serviceId, int subscriberId, LocalDate date);
-
-    RenderedService getFirstRenderedServiceLessDate(int serviceId, int subscriberId, LocalDate date);
+    RenderedService getFirstRenderedServiceLessDate(int serviceId, int subscriberAccount, LocalDate date);
 }

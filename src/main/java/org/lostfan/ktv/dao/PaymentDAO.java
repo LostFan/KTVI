@@ -11,21 +11,21 @@ public interface PaymentDAO extends EntityDAO<Payment> {
 
     List<Payment> getByMonth(LocalDate date);
 
-    List<Payment> getPaymentsByDate(LocalDate date);
+    List<Payment> getByDate(LocalDate date);
 
-    List<Payment> getPaymentsBySubscriberId(int subscriberId);
+    List<Payment> getBySubscriber(int subscriberAccount);
 
-    List<Payment> getPaymentsByBankFileName(String bankFileName);
+    List<Payment> getByBankFileName(String bankFileName);
 
     Map<Integer, Integer> getAllPaymentsPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date);
 
-    Map<Integer, Integer> getAllPaymentsPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date);
+    Map<Integer, Integer> getAllPaymentsPriceForSubscriberToDate(int serviceId, LocalDate date);
 
-    Map<Integer,Payment> getPaymentsForNotClosedRenderedServicesBySubscriberIdAndServiceId(Integer subscriberAccount, Integer serviceId);
+    Map<Integer, Payment> getForNotClosedRenderedServices(Integer subscriberAccount, Integer serviceId);
 
     List<PaymentType> getAllPaymentTypes();
 
-    PaymentType getPaymentType(int id);
+    PaymentType getPaymentType(int paymentTypeId);
 
     void savePaymentType(PaymentType paymentType);
 

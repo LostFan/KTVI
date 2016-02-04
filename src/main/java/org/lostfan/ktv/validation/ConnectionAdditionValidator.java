@@ -4,7 +4,6 @@ import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.SubscriberSession;
-import org.lostfan.ktv.domain.SubscriberTariff;
 
 public class ConnectionAdditionValidator implements Validator<RenderedService> {
 
@@ -18,7 +17,7 @@ public class ConnectionAdditionValidator implements Validator<RenderedService> {
     public ValidationResult validate(RenderedService entity, ValidationResult result) {
         SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession != null) {
-            result.addError("errors.alreadyGetSession");
+            result.addError("errors.alreadyGotSession");
             return result;
         }
 //        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
@@ -28,7 +27,7 @@ public class ConnectionAdditionValidator implements Validator<RenderedService> {
 //        }
         oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession != null) {
-            result.addError("errors.getSessionAfterDate");
+            result.addError("errors.hasSessionAfterDate");
             return result;
         }
 //        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());

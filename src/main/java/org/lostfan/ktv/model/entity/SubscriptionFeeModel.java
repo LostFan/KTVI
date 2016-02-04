@@ -99,7 +99,7 @@ public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
     }
 
     private void createSubscriptionFeeInMouthBySubscriber(Integer subscriberId, LocalDate date) {
-        List<RenderedService> renderedServices = ((RenderedServiceDAO) getDao()).getRenderedServicesByServiceIdAndSubscriberIdInMonth(FixedServices.SUBSCRIPTION_FEE.getId(), subscriberId, date);
+        List<RenderedService> renderedServices = ((RenderedServiceDAO) getDao()).getAllForMonth(FixedServices.SUBSCRIPTION_FEE.getId(), subscriberId, date);
         for (RenderedService renderedService : renderedServices) {
             getDao().delete(renderedService.getId());
         }
@@ -109,7 +109,7 @@ public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
 
     private void createSubscriptionFeesInMouth(LocalDate date) {
         List<Subscriber> subscribers = subscriberDAO.getAll();
-        List<RenderedService> renderedServices = ((RenderedServiceDAO) getDao()).getRenderedServicesByServiceIdInMonth(FixedServices.SUBSCRIPTION_FEE.getId(), date);
+        List<RenderedService> renderedServices = ((RenderedServiceDAO) getDao()).getAllForMonth(FixedServices.SUBSCRIPTION_FEE.getId(), date);
         for (RenderedService renderedService : renderedServices) {
             getDao().delete(renderedService.getId());
         }

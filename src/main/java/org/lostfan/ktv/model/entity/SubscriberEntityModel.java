@@ -109,7 +109,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
     public List<RenderedServiceExt> getRenderedServicesExtBySubscriberId(Integer id) {
         List<RenderedServiceExt> renderedServicesExt = new ArrayList<>();
-        for (RenderedService renderedService : renderedServiceDAO.getRenderedServicesBySubscriberId(id)) {
+        for (RenderedService renderedService : renderedServiceDAO.getBySubscriber(id)) {
             RenderedServiceExt renderedServiceExt = renderedServiceTransformer.transformTo(renderedService);
             renderedServiceExt.setService(serviceDAO.get(renderedServiceExt.getServiceId()));
             renderedServicesExt.add(renderedServiceExt);
@@ -119,7 +119,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
     public List<PaymentExt> getPaymentsExtBySubscriberId(Integer id) {
         List<PaymentExt> paymentsExt = new ArrayList<>();
-        for (Payment payment : paymentDAO.getPaymentsBySubscriberId(id)) {
+        for (Payment payment : paymentDAO.getBySubscriber(id)) {
             PaymentExt paymentExt = paymentTransformer.transformTo(payment);
             paymentExt.setService(serviceDAO.get(paymentExt.getServicePaymentId()));
             paymentsExt.add(paymentExt);

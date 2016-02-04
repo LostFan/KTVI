@@ -4,7 +4,6 @@ import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.SubscriberSession;
-import org.lostfan.ktv.domain.SubscriberTariff;
 
 public class DisconnectionEditValidator implements Validator<RenderedService> {
 
@@ -23,7 +22,7 @@ public class DisconnectionEditValidator implements Validator<RenderedService> {
 
         SubscriberSession subscriberSessionAfter = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         if (subscriberSessionAfter != null) {
-            result.addError("errors.getSessionAfterDate");
+            result.addError("errors.hasSessionAfterDate");
             return result;
         }
         if (prevRenderedService.getDate().isAfter(entity.getDate())) {

@@ -145,31 +145,31 @@ public class HsqldbPaymentDAOTest {
     @Test
     public void getAllPaymentsBySubscriberIdShouldReturnsCorrectCountTest() throws SQLException {
         insertStubData();
-        assertEquals(paymentDao.getPaymentsBySubscriberId(1).size(), 2);
-        assertEquals(paymentDao.getPaymentsBySubscriberId(2).size(), 1);
-        assertEquals(paymentDao.getPaymentsBySubscriberId(3).size(), 0);
+        assertEquals(paymentDao.getBySubscriber(1).size(), 2);
+        assertEquals(paymentDao.getBySubscriber(2).size(), 1);
+        assertEquals(paymentDao.getBySubscriber(3).size(), 0);
     }
 
     @Test
     public void getAllPaymentsBySubscriberIdShouldReturnsCorrectDataTest() throws SQLException {
         insertStubData();
-        assertEquals(paymentDao.getPaymentsBySubscriberId(1).get(0).getRenderedServicePaymentId().intValue(), 1);
-        assertEquals(paymentDao.getPaymentsBySubscriberId(2).get(0).getRenderedServicePaymentId().intValue(), 3);
+        assertEquals(paymentDao.getBySubscriber(1).get(0).getRenderedServicePaymentId().intValue(), 1);
+        assertEquals(paymentDao.getBySubscriber(2).get(0).getRenderedServicePaymentId().intValue(), 3);
     }
 
     @Test
     public void getAllPaymentsByDateShouldReturnsCorrectCountTest() throws SQLException {
         insertStubData();
-        assertEquals(paymentDao.getPaymentsByDate(LocalDate.of(2015, 8, 3)).size(), 2);
-        assertEquals(paymentDao.getPaymentsByDate(LocalDate.of(2015, 6, 27)).size(), 1);
-        assertEquals(paymentDao.getPaymentsByDate(LocalDate.of(2015, 1, 1)).size(), 0);
+        assertEquals(paymentDao.getByDate(LocalDate.of(2015, 8, 3)).size(), 2);
+        assertEquals(paymentDao.getByDate(LocalDate.of(2015, 6, 27)).size(), 1);
+        assertEquals(paymentDao.getByDate(LocalDate.of(2015, 1, 1)).size(), 0);
     }
 
     @Test
     public void getAllPaymentsByDateShouldReturnsCorrectDataTest() throws SQLException {
         insertStubData();
-        assertEquals(paymentDao.getPaymentsByDate(LocalDate.of(2015, 6, 27)).get(0).getRenderedServicePaymentId().intValue(), 2);
-        assertEquals(paymentDao.getPaymentsByDate(LocalDate.of(2015, 6, 27)).get(0).getSubscriberAccount().intValue(), 1);
+        assertEquals(paymentDao.getByDate(LocalDate.of(2015, 6, 27)).get(0).getRenderedServicePaymentId().intValue(), 2);
+        assertEquals(paymentDao.getByDate(LocalDate.of(2015, 6, 27)).get(0).getSubscriberAccount().intValue(), 1);
     }
 
     @Test

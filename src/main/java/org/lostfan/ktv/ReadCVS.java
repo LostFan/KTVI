@@ -79,7 +79,7 @@ public class ReadCVS {
 //        createFirstSessionAndSubscriberTariff();
 
 
-//        for (Payment payment :  DAOFactory.getDefaultDAOFactory().getPaymentDAO().getPaymentsByDate(LocalDate.of(2003,03,30))) {
+//        for (Payment payment :  DAOFactory.getDefaultDAOFactory().getPaymentDAO().getByDate(LocalDate.of(2003,03,30))) {
 //            DAOFactory.getDefaultDAOFactory().getPaymentDAO().delete(payment.getId());
 //
 //        }
@@ -144,7 +144,7 @@ public class ReadCVS {
                     payment.setSubscriberAccount(integer);
                     payment.setPrice(mapBase.get(integer).intValue() * -1);
                     RenderedService renderedService = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO()
-                            .getRenderedServicesBySubscriberId(integer)
+                            .getBySubscriber(integer)
                             .stream().filter(renderedServiceIn -> renderedServiceIn.getServiceId() == 2)
                             .findFirst().get();
                     payment.setDate(renderedService.getDate());
@@ -323,7 +323,7 @@ public class ReadCVS {
 
     }
     public void getPayments() {
-        List<RenderedService> renderedServiceList = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getRenderedServicesByServiceId(2);
+        List<RenderedService> renderedServiceList = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getByService(2);
 //        renderedServiceList.stream()
 //        SELECT * FROM "subscriber"
 //        inner join "service" on ("account"="id" +10)
@@ -881,7 +881,7 @@ public class ReadCVS {
                 continue;
             }
             if(!DAOFactory.getDefaultDAOFactory().getPaymentDAO()
-                    .getPaymentsBySubscriberId(subscriber.getId()).stream()
+                    .getBySubscriber(subscriber.getId()).stream()
                     .filter(payment1 -> payment1.getServicePaymentId() == 2)
                     .findFirst().isPresent()) {
 
@@ -889,7 +889,7 @@ public class ReadCVS {
                 payment.setSubscriberAccount(subscriber.getId());
                 payment.setPrice(41050);
                 RenderedService renderedService = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO()
-                        .getRenderedServicesBySubscriberId(subscriber.getId())
+                        .getBySubscriber(subscriber.getId())
                         .stream().filter(renderedServiceIn -> renderedServiceIn.getServiceId() == 2)
                         .findFirst().get();
                 payment.setDate(renderedService.getDate());
@@ -901,7 +901,7 @@ public class ReadCVS {
     }
 
     private void createFirstSessionAndSubscriberTariff() {
-        List<RenderedService> connections =  DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getRenderedServicesByServiceId(2);
+        List<RenderedService> connections =  DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getByService(2);
         for (RenderedService connection : connections) {
             SubscriberSession subscriberSession = new SubscriberSession();
             subscriberSession.setSubscriberAccount(connection.getSubscriberAccount());

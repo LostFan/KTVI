@@ -152,16 +152,16 @@ public class HsqldbMaterialDAOTest {
     @Test
     public void getAllByRenderedServiceIdShouldReturnsCorrectCountTest() throws SQLException {
         insertStubData();
-        assertEquals(materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(1).size(), 2);
-        assertEquals(materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(2).size(), 1);
-        assertEquals(materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(3).size(), 0);
+        assertEquals(materialConsumptionDAO.getByRenderedServiceId(1).size(), 2);
+        assertEquals(materialConsumptionDAO.getByRenderedServiceId(2).size(), 1);
+        assertEquals(materialConsumptionDAO.getByRenderedServiceId(3).size(), 0);
     }
 
     @Test
     public void getAllByRenderedServiceIdShouldReturnsCorrectDataTest() throws SQLException {
         insertStubData();
-        assertEquals(materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(1).get(0).getId().intValue(), 1);
-        assertEquals(materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(2).get(0).getId().intValue(), 3);
+        assertEquals(materialConsumptionDAO.getByRenderedServiceId(1).get(0).getId().intValue(), 1);
+        assertEquals(materialConsumptionDAO.getByRenderedServiceId(2).get(0).getId().intValue(), 3);
     }
 
     @Test

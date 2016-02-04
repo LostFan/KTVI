@@ -62,7 +62,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         return payment;
     }
 
-    public List<Payment> getPaymentsByDate(LocalDate date) {
+    public List<Payment> getByDate(LocalDate date) {
         List<Payment> payments = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"payment\" where \"date\" = ?");
@@ -81,11 +81,11 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         return payments;
     }
 
-    public List<Payment> getPaymentsBySubscriberId(int paymentId) {
+    public List<Payment> getBySubscriber(int subscriberAccount) {
         List<Payment> payments = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"payment\" where \"subscriber_account\" = ?");
-            preparedStatement.setInt(1, paymentId);
+            preparedStatement.setInt(1, subscriberAccount);
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -182,11 +182,11 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         return paymentTypes;
     }
 
-    public PaymentType getPaymentType(int id) {
+    public PaymentType getPaymentType(int paymentTypeId) {
         PaymentType paymentType = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"payment_type\" where \"id\" = ?");
-            preparedStatement.setInt(1, id);
+            preparedStatement.setInt(1, paymentTypeId);
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -267,7 +267,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
     }
 
     @Override
-    public List<Payment> getPaymentsByBankFileName(String bankFileName) {
+    public List<Payment> getByBankFileName(String bankFileName) {
         return null;
     }
 
@@ -284,7 +284,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
     }
 
     @Override
-    public Map<Integer, Integer> getAllPaymentsPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date) {
+    public Map<Integer, Integer> getAllPaymentsPriceForSubscriberToDate(int serviceId, LocalDate date) {
         return null;
     }
 
@@ -294,7 +294,7 @@ public class HsqldbPaymentDAO implements PaymentDAO {
     }
 
     @Override
-    public Map<Integer, Payment> getPaymentsForNotClosedRenderedServicesBySubscriberIdAndServiceId(Integer subscriberAccount, Integer serviceId) {
+    public Map<Integer, Payment> getForNotClosedRenderedServices(Integer subscriberAccount, Integer serviceId) {
         return null;
     }
 }

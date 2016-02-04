@@ -1,15 +1,9 @@
 package org.lostfan.ktv.model.dto;
 
-
-import java.util.List;
-
-import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
-import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.FixedServices;
 
 public class DisconnectionRenderedService extends RenderedService {
-
 
     @Override
     public Integer getServiceId() {

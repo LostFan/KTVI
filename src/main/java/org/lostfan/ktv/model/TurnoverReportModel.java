@@ -72,7 +72,7 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
                     tableDTOHashMap.put(k, turnoverSheetTableDTO);
                 }
         );
-        Map<Integer, Integer> beginPeriodCredit = paymentDAO.getAllPaymentsPriceForSubscriberByServiceIdBeforeDate(serviceId, date);
+        Map<Integer, Integer> beginPeriodCredit = paymentDAO.getAllPaymentsPriceForSubscriberToDate(serviceId, date);
         beginPeriodCredit.forEach((k, v) -> {
             if (tableDTOHashMap.containsKey(k)) {
                 Integer broughtForwardBalanceDebit = tableDTOHashMap.get(k).getBroughtForwardBalanceDebit();
@@ -133,7 +133,7 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
             }
                 }
         );
-        Map<Integer, Integer> endPeriodCredit = paymentDAO.getAllPaymentsPriceForSubscriberByServiceIdBeforeDate(serviceId, date.plusMonths(1));
+        Map<Integer, Integer> endPeriodCredit = paymentDAO.getAllPaymentsPriceForSubscriberToDate(serviceId, date.plusMonths(1));
         endPeriodCredit.forEach((k, v) -> {
                     if (tableDTOHashMap.containsKey(k)) {
                         Integer carriedForwardBalanceDebit = tableDTOHashMap.get(k).getCarriedForwardBalanceDebit();

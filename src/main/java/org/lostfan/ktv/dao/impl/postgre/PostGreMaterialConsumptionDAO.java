@@ -116,7 +116,7 @@ public class PostGreMaterialConsumptionDAO implements MaterialConsumptionDAO {
         }
     }
 
-    public List<MaterialConsumption> getMaterialConsumptionsByRenderedServiceId(int materialConsumptionId) {
+    public List<MaterialConsumption> getByRenderedServiceId(int materialConsumptionId) {
         List<MaterialConsumption> materialConsumptions = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"material_consumption\" WHERE \"rendered_service_id\" = ?");

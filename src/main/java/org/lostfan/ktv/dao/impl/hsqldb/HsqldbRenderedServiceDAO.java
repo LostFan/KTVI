@@ -57,7 +57,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedService;
     }
 
-    public List<RenderedService> getRenderedServicesByDate(LocalDate date) {
+    public List<RenderedService> getByDate(LocalDate date) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"date\" = ?");
@@ -75,11 +75,11 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
-    public List<RenderedService> getRenderedServicesBySubscriberId(int subscriberId) {
+    public List<RenderedService> getBySubscriber(int subscriberAccount) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"subscriber_account\" = ?");
-            preparedStatement.setInt(1, subscriberId);
+            preparedStatement.setInt(1, subscriberAccount);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 RenderedService renderedService = constructEntity(rs);
@@ -93,7 +93,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
-    public List<RenderedService> getRenderedServicesByServiceId(int serviceId) {
+    public List<RenderedService> getByService(int serviceId) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"service_id\" = ?");
@@ -111,7 +111,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
-    public List<RenderedService> getRenderedServicesByServiceIdAndDate(int serviceId, LocalDate date) {
+    public List<RenderedService> getAll(int serviceId, LocalDate date) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"service_id\" = ? AND \"date\" = ?");
@@ -130,7 +130,7 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
-    public List<RenderedService> getRenderedServicesByServiceIdInMonth(int serviceId, LocalDate date) {
+    public List<RenderedService> getAllForMonth(int serviceId, LocalDate date) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"service_id\" = ? AND \"date\" >= ? AND \"date\" < ?");
@@ -150,12 +150,12 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
-    public List<RenderedService> getRenderedServicesByServiceIdAndSubscriberIdInMonth(int serviceId, int subscriberId, LocalDate date) {
+    public List<RenderedService> getAllForMonth(int serviceId, int subscriberAccount, LocalDate date) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"service_id\" = ? AND \"subscriber_account\" = ? AND \"date\" >= ? AND \"date\" < ?");
             preparedStatement.setInt(1, serviceId);
-            preparedStatement.setInt(2, subscriberId);
+            preparedStatement.setInt(2, subscriberAccount);
             preparedStatement.setDate(3, Date.valueOf(date.withDayOfMonth(1)));
             preparedStatement.setDate(4, Date.valueOf(date.withDayOfMonth(1).plusMonths(1)));
             ResultSet rs = preparedStatement.executeQuery();
@@ -171,12 +171,12 @@ public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
-    public RenderedService getFirstRenderedServiceLessDate(int serviceId, int subscriberId, LocalDate date) {
+    public RenderedService getFirstRenderedServiceLessDate(int serviceId, int subscriberAccount, LocalDate date) {
         RenderedService renderedService = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM \"rendered_service\" where \"service_id\" = ? AND \"subscriber_account\" = ? AND \"date\" <= ? ORDER BY \"date\" DESC");
             preparedStatement.setInt(1, serviceId);
-            preparedStatement.setInt(2, subscriberId);
+            preparedStatement.setInt(2, subscriberAccount);
             preparedStatement.setDate(3, Date.valueOf(date));;
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {

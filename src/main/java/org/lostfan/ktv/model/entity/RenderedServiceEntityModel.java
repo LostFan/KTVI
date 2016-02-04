@@ -99,7 +99,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     public ConnectionRenderedService getConnectionRenderedService(RenderedService renderedService) {
         SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(renderedService.getSubscriberAccount(), renderedService.getDate());
-        List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(renderedService.getId());
+        List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getByRenderedServiceId(renderedService.getId());
         return ConnectionRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
     }
 
@@ -114,7 +114,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     public AdditionalRenderedService getAdditionalRenderedService(RenderedService renderedService) {
         SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(renderedService.getSubscriberAccount(), renderedService.getDate());
-        List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(renderedService.getId());
+        List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getByRenderedServiceId(renderedService.getId());
         return AdditionalRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
     }
 
@@ -230,7 +230,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             if (result.hasErrors()) {
                 return result;
             }
-            SubscriberSession subscriberSession = subscriberDAO.getNotClosedSubscriberSessionByDate(entity.getSubscriberAccount(), entity.getDate());
+            SubscriberSession subscriberSession = subscriberDAO.getNotClosedSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
             subscriberSession.setDisconnectionDate(entity.getDate());
 
             getDao().save(entity);
@@ -250,11 +250,11 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             return result;
         }
 
-        SubscriberSession currentSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        SubscriberSession currentSession = subscriberDAO.getSubscriberSessionByDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         currentSession.setDisconnectionDate(null);
         currentSession.setDisconnectionReasonId(null);
         subscriberDAO.updateSubscriberSession(currentSession);
-        SubscriberSession newSession = subscriberDAO.getNotClosedSubscriberSessionByDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberSession newSession = subscriberDAO.getNotClosedSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
         newSession.setDisconnectionDate(entity.getDate());
         getDao().update(entity);
         subscriberDAO.updateSubscriberSession(newSession);
@@ -398,7 +398,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     private void deleteDisconnection(RenderedService entity) {
-        SubscriberSession currentSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndDisconnectionDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberSession currentSession = subscriberDAO.getSubscriberSessionByDisconnectionDate(entity.getSubscriberAccount(), entity.getDate());
         currentSession.setDisconnectionDate(null);
         currentSession.setDisconnectionReasonId(null);
         subscriberDAO.updateSubscriberSession(currentSession);
@@ -434,7 +434,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     private void updateMaterials(MaterialsDTO entity) {
-        List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(entity.getId());
+        List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getByRenderedServiceId(entity.getId());
 
         for (MaterialConsumption materialConsumption : materialConsumptionList) {
             if (!entity.getMaterialConsumption().contains(materialConsumption)) {

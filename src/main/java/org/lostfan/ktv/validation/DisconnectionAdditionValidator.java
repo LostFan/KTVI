@@ -4,7 +4,6 @@ import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.SubscriberSession;
-import org.lostfan.ktv.domain.SubscriberTariff;
 
 public class DisconnectionAdditionValidator implements Validator<RenderedService> {
 
@@ -16,7 +15,7 @@ public class DisconnectionAdditionValidator implements Validator<RenderedService
 
     @Override
     public ValidationResult validate(RenderedService entity, ValidationResult result) {
-        SubscriberSession subscriberSession = subscriberDAO.getNotClosedSubscriberSessionByDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberSession subscriberSession = subscriberDAO.getNotClosedSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
         if (subscriberSession == null) {
             result.addError("errors.noCurrentSession");
             return result;

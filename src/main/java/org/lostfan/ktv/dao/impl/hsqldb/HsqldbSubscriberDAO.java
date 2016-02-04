@@ -302,12 +302,12 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         return subscriberTariffs;
     }
 
-    public SubscriberSession getSubscriberSessionBySubscriberIdAndConnectionDate(Integer subscriberId, LocalDate localDate) {
+    public SubscriberSession getSubscriberSessionByConnectionDate(Integer subscriberAccount, LocalDate connectionDate) {
         SubscriberSession subscriberSession = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber_session\" where \"subscriber_account\" = ? AND \"connection_date\" = ?");
-            preparedStatement.setInt(1, subscriberId);
-            preparedStatement.setDate(2, Date.valueOf(localDate));
+            preparedStatement.setInt(1, subscriberAccount);
+            preparedStatement.setDate(2, Date.valueOf(connectionDate));
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -346,12 +346,12 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public SubscriberSession getNotClosedSubscriberSessionByDate(Integer subscriberId, LocalDate localDate) {
+    public SubscriberSession getNotClosedSubscriberSession(Integer subscriberAccount, LocalDate connectionDate) {
         SubscriberSession subscriberSession = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<? AND \"disconnection_date\" IS NULL ORDER BY \"connection_date\" desc");
-            preparedStatement.setInt(1, subscriberId);
-            preparedStatement.setDate(2, Date.valueOf(localDate));
+            preparedStatement.setInt(1, subscriberAccount);
+            preparedStatement.setDate(2, Date.valueOf(connectionDate));
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -393,7 +393,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     public void updateSubscriberSession(SubscriberSession subscriberSession) {
-        if(getSubscriberSessionBySubscriberIdAndConnectionDate(subscriberSession.getSubscriberAccount(), subscriberSession.getConnectionDate()) != null) {
+        if(getSubscriberSessionByConnectionDate(subscriberSession.getSubscriberAccount(), subscriberSession.getConnectionDate()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"subscriber_session\" set \"disconnection_date\" = ?  where \"subscriber_account\" = ? AND \"connection_date\" = ?");
@@ -417,7 +417,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
 
     @Override
     public void deleteSubscriberSession(Integer subscriberId, LocalDate localDate) {
-        if(getSubscriberSessionBySubscriberIdAndConnectionDate(subscriberId, localDate) != null) {
+        if(getSubscriberSessionByConnectionDate(subscriberId, localDate) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "DELETE FROM  \"subscriber_session\" where \"subscriber_account\" = ? AND \"connection_date\" = ?");
@@ -780,7 +780,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public SubscriberSession getSubscriberSessionBySubscriberIdAndDisconnectionDate(Integer subscriberId, LocalDate localDate) {
+    public SubscriberSession getSubscriberSessionByDisconnectionDate(Integer subscriberAccount, LocalDate disconnectionDate) {
         return null;
     }
 
@@ -795,7 +795,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public HashMap<Integer, Integer> getServicesBalanceBySubscriberId(Integer subscriberId) {
+    public HashMap<Integer, Integer> getServicesBalance(Integer subscriberAccount) {
         return null;
     }
 

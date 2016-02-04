@@ -146,31 +146,31 @@ public class HsqldbRenderedServiceDAOTest {
     @Test
     public void getAllRenderedServicesBySubscriberIdShouldReturnsCorrectCountTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getRenderedServicesBySubscriberId(1).size(), 2);
-        assertEquals(renderedServiceDao.getRenderedServicesBySubscriberId(2).size(), 1);
-        assertEquals(renderedServiceDao.getRenderedServicesBySubscriberId(3).size(), 0);
+        assertEquals(renderedServiceDao.getBySubscriber(1).size(), 2);
+        assertEquals(renderedServiceDao.getBySubscriber(2).size(), 1);
+        assertEquals(renderedServiceDao.getBySubscriber(3).size(), 0);
     }
 
     @Test
     public void getAllRenderedServicesBySubscriberIdShouldReturnsCorrectDataTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getRenderedServicesBySubscriberId(1).get(0).getServiceId().intValue(), 1);
-        assertEquals(renderedServiceDao.getRenderedServicesBySubscriberId(2).get(0).getServiceId().intValue(), 3);
+        assertEquals(renderedServiceDao.getBySubscriber(1).get(0).getServiceId().intValue(), 1);
+        assertEquals(renderedServiceDao.getBySubscriber(2).get(0).getServiceId().intValue(), 3);
     }
 
     @Test
     public void getAllRenderedServicesByDateShouldReturnsCorrectCountTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getRenderedServicesByDate(LocalDate.of(2015, 8, 3)).size(), 2);
-        assertEquals(renderedServiceDao.getRenderedServicesByDate(LocalDate.of(2015, 6, 27)).size(), 1);
-        assertEquals(renderedServiceDao.getRenderedServicesByDate(LocalDate.of(2015, 1, 1)).size(), 0);
+        assertEquals(renderedServiceDao.getByDate(LocalDate.of(2015, 8, 3)).size(), 2);
+        assertEquals(renderedServiceDao.getByDate(LocalDate.of(2015, 6, 27)).size(), 1);
+        assertEquals(renderedServiceDao.getByDate(LocalDate.of(2015, 1, 1)).size(), 0);
     }
 
     @Test
     public void getAllRenderedServicesByDateShouldReturnsCorrectDataTest() throws SQLException {
         insertStubData();
-        assertEquals(renderedServiceDao.getRenderedServicesByDate(LocalDate.of(2015, 6, 27)).get(0).getServiceId().intValue(), 2);
-        assertEquals(renderedServiceDao.getRenderedServicesByDate(LocalDate.of(2015, 6, 27)).get(0).getSubscriberAccount().intValue(), 1);
+        assertEquals(renderedServiceDao.getByDate(LocalDate.of(2015, 6, 27)).get(0).getServiceId().intValue(), 2);
+        assertEquals(renderedServiceDao.getByDate(LocalDate.of(2015, 6, 27)).get(0).getSubscriberAccount().intValue(), 1);
     }
 
     private void insertStubDataServices() throws SQLException {

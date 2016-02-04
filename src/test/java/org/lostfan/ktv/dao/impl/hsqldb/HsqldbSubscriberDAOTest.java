@@ -201,17 +201,17 @@ public class HsqldbSubscriberDAOTest {
     public void updateExistingSubscriberSessionShouldMatchUpdatedValuesTest() throws SQLException {
         insertStubDataSubscribers();
         insertStubDataSessions();
-        SubscriberSession subscriberSession = subscriberDao.getSubscriberSessionBySubscriberIdAndConnectionDate(700111, LocalDate.of(2015, 4, 2));
+        SubscriberSession subscriberSession = subscriberDao.getSubscriberSessionByConnectionDate(700111, LocalDate.of(2015, 4, 2));
         subscriberSession.setDisconnectionDate(LocalDate.of(2015, 1, 1));
         subscriberDao.updateSubscriberSession(subscriberSession);
-        assertEquals(subscriberDao.getSubscriberSessionBySubscriberIdAndConnectionDate(700111, LocalDate.of(2015, 4, 2)).getDisconnectionDate(), LocalDate.of(2015, 1, 1));
+        assertEquals(subscriberDao.getSubscriberSessionByConnectionDate(700111, LocalDate.of(2015, 4, 2)).getDisconnectionDate(), LocalDate.of(2015, 1, 1));
     }
 
     @Test
     public void updateExistingSubscriberSessionCorrectSubscriberCountTest() throws SQLException {
         insertStubDataSubscribers();
         insertStubDataSessions();
-        SubscriberSession subscriberSession = subscriberDao.getSubscriberSessionBySubscriberIdAndConnectionDate(700111, LocalDate.of(2015, 4, 2));
+        SubscriberSession subscriberSession = subscriberDao.getSubscriberSessionByConnectionDate(700111, LocalDate.of(2015, 4, 2));
         subscriberSession.setDisconnectionDate(LocalDate.of(2015, 1, 1));
         subscriberDao.updateSubscriberSession(subscriberSession);
         assertEquals(subscriberDao.getSubscriberSessions(700111).size(), 1);
@@ -221,10 +221,10 @@ public class HsqldbSubscriberDAOTest {
     public void updateExistingSubscriberSessionShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubDataSubscribers();
         insertStubDataSessions();
-        SubscriberSession subscriberSession = subscriberDao.getSubscriberSessionBySubscriberIdAndConnectionDate(700111, LocalDate.of(2015, 4, 2));
+        SubscriberSession subscriberSession = subscriberDao.getSubscriberSessionByConnectionDate(700111, LocalDate.of(2015, 4, 2));
         subscriberSession.setDisconnectionDate(LocalDate.of(2015, 1, 1));
         subscriberDao.updateSubscriberSession(subscriberSession);
-        assertEquals(subscriberDao.getSubscriberSessionBySubscriberIdAndConnectionDate(700111, LocalDate.of(2015, 4, 2)).getDisconnectionDate(), LocalDate.of(2015,1,1));
+        assertEquals(subscriberDao.getSubscriberSessionByConnectionDate(700111, LocalDate.of(2015, 4, 2)).getDisconnectionDate(), LocalDate.of(2015,1,1));
     }
 
     @Test

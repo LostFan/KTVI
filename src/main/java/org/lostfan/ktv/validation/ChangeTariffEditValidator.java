@@ -22,7 +22,7 @@ public class ChangeTariffEditValidator implements Validator<RenderedService> {
 
         SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndConnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         if (oldSubscriberTariff.getDisconnectTariff() != null) {
-            result.addError("errors.getTariffAfterDate");
+            result.addError("errors.hasTariffAfterDate");
             return result;
         }
 
