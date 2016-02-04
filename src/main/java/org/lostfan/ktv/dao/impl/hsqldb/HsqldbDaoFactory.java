@@ -1,6 +1,8 @@
 package org.lostfan.ktv.dao.impl.hsqldb;
 
 import org.lostfan.ktv.dao.*;
+import org.lostfan.ktv.utils.ConnectionManager;
+import org.lostfan.ktv.utils.HsqldbConnectionManager;
 
 public class HsqldbDaoFactory extends DAOFactory {
 
@@ -15,6 +17,8 @@ public class HsqldbDaoFactory extends DAOFactory {
     private MaterialConsumptionDAO materialConsumptionDAO;
 
     public HsqldbDaoFactory() {
+        ConnectionManager.setManager(new HsqldbConnectionManager());
+
         this.disconnectionReasonDAO = new HsqldbDisconnectionReasonDAO();
         this.materialDAO = new HsqldbMaterialDAO();
         this.paymentDAO = new HsqldbPaymentDAO();

@@ -8,10 +8,7 @@ import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
 import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
 import org.lostfan.ktv.model.dto.MaterialsDTO;
-import org.lostfan.ktv.validation.RenderedServiceValidator;
-import org.lostfan.ktv.validation.SubscriberTariffValidator;
-import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.validation.Validator;
+import org.lostfan.ktv.validation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,7 +29,8 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     private Validator<RenderedService> validator = new RenderedServiceValidator();
     private Validator<SubscriberTariff> validatorSubscriberTariff = new SubscriberTariffValidator();
-
+    private Validator<RenderedService> connectionAdditionValidator = new ConnectionAdditionValidator();
+    private ConnectionEditValidator connectionEditValidator = new ConnectionEditValidator();
 
     private MaterialConsumptionDAO materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
     private MaterialDAO materialDAO = DAOFactory.getDefaultDAOFactory().getMaterialDAO();
@@ -168,7 +166,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         subscriberSession.setConnectionDate(entity.getDate());
         subscriberSession.setSubscriberAccount(entity.getSubscriberAccount());
         if (entity.getId() == null) {
-            result = addConnectionValidation(result, entity);
+            result = this.connectionAdditionValidator.validate(entity, result);
             if (result.hasErrors()) {
                 return result;
             }
@@ -184,7 +182,11 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
 
         RenderedService prevRenderedService = getDao().get(entity.getId());
-        result = editConnectionValidation(result, entity, prevRenderedService);
+        if (!prevRenderedService.getSubscriberAccount().equals(entity.getSubscriberAccount())) {
+            result = this.connectionAdditionValidator.validate(entity, result);
+        } else {
+            result = this.connectionEditValidator.validate(entity, prevRenderedService, result);
+        }
         if (result.hasErrors()) {
             return result;
         }
@@ -290,8 +292,6 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         subscriberDAO.updateSubscriberTariff(currentTariff);
 
         getDao().update(entity);
-
-
         updateEntitiesList();
         return result;
     }
@@ -408,26 +408,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         return this.validator;
     }
 
-    private void updateMaterials(ConnectionRenderedService entity) {
-        List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(entity.getId());
-
-        for (MaterialConsumption materialConsumption : materialConsumptionList) {
-            if(!entity.getMaterialConsumption().contains(materialConsumption)) {
-                materialConsumptionDAO.delete(materialConsumption.getId());
-            }
-        }
-
-        for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
-            if(materialConsumption.getId() != null) {
-                materialConsumptionDAO.update(materialConsumption);
-            } else {
-                materialConsumption.setRenderedServiceId(entity.getId());
-                materialConsumptionDAO.save(materialConsumption);
-            }
-        }
-    }
-
-    private void updateMaterials(AdditionalRenderedService entity) {
+    private void updateMaterials(MaterialsDTO entity) {
         List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getMaterialConsumptionsByRenderedServiceId(entity.getId());
 
         for (MaterialConsumption materialConsumption : materialConsumptionList) {
@@ -473,63 +454,5 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     public LocalDate getDate() {
         return this.date;
-    }
-
-    private ValidationResult addConnectionValidation(ValidationResult result, RenderedService entity) {
-        SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
-        if(oldSubscriberSession != null) {
-            result.addError("errors.alreadyGetSession");
-            return result;
-        }
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
-        if(oldSubscriberTariff != null) {
-            result.addError("errors.alreadyGetTariff");
-            return result;
-        }
-        oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
-        if(oldSubscriberSession != null) {
-            result.addError("errors.getSessionAfterDate");
-            return result;
-        }
-        oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
-        if(oldSubscriberTariff != null) {
-            result.addError("errors.getTariffAfterDate");
-            return result;
-        }
-        return result;
-    }
-
-    private ValidationResult editConnectionValidation(ValidationResult result, RenderedService entity, RenderedService prevRenderedService) {
-
-        if(prevRenderedService.getSubscriberAccount() != entity.getSubscriberAccount()) {
-            result = addConnectionValidation(result, entity);
-            return result;
-        }
-
-        SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndConnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        if(oldSubscriberSession.getDisconnectionDate() != null) {
-            result.addError("errors.alreadySessionClosed");
-            return result;
-        }
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndConnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        if(oldSubscriberTariff.getDisconnectTariff() != null) {
-            result.addError("errors.alreadyTariffClosed");
-            return result;
-        }
-
-        if(prevRenderedService.getDate().isAfter(entity.getDate())) {
-            oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
-            if(oldSubscriberSession != null) {
-                result.addError("errors.alreadyGetSession");
-                return result;
-            }
-            oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
-            if(oldSubscriberTariff != null) {
-                result.addError("errors.alreadyGetTariff");
-                return result;
-            }
-        }
-
-        return result;
     }
 }

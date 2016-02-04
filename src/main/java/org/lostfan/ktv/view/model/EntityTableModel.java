@@ -45,11 +45,11 @@ public class EntityTableModel<T extends Entity> extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Object value = this.model.getFields().get(columnIndex).get(this.model.getList().get(rowIndex));
         EntityFieldTypes thisType = this.model.getFields().get(columnIndex).getType();
-        if(thisType.getValueClass() == Integer.class && value ==null) {
+        if (thisType.getValueClass() == Integer.class && value == null) {
             return 0;
         }
-        if( thisType.isEntityClass()) {
-            if(value != null) {
+        if (thisType.isEntityClass()) {
+            if (value != null) {
                 value = thisType.getDAO().get((Integer) value);
             }
         }

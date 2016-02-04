@@ -52,8 +52,8 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
     }
 
     public TariffWithPrices getTariffWithPrices(Integer tariffId) {
-        TariffWithPrices tarrif = tariffWithPricesTransformer.transformTo(getEntity(tariffId));
-        tarrif.setArchivePrices(new ArrayList<>());
+        TariffWithPrices tariff = tariffWithPricesTransformer.transformTo(getEntity(tariffId));
+        tariff.setArchivePrices(new ArrayList<>());
         List<TariffPrice> prices = getDao().getTariffPrices(tariffId);
         // Sort by date DESC
         prices.stream()
@@ -68,18 +68,17 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
                 })
                 .forEach(tariffPrice -> {
                     if (tariffPrice.getDate().isAfter(LocalDate.now())) {
-                        tarrif.setNewPrice(tariffPrice);
-                    } else if (tarrif.getCurrentPrice() == null) {
-                        tarrif.setCurrentPrice(tariffPrice);
+                        tariff.setNewPrice(tariffPrice);
+                    } else if (tariff.getCurrentPrice() == null) {
+                        tariff.setCurrentPrice(tariffPrice);
                     } else {
-                        tarrif.getArchivePrices().add(tariffPrice);
+                        tariff.getArchivePrices().add(tariffPrice);
                     }
                 });
-        return tarrif;
+        return tariff;
     }
 
     public ValidationResult save(TariffPrice price) {
-        // TODO: validate and save the new price
         ValidationResult result = this.tariffPriceValidator.validate(price);
         if (!result.hasErrors()) {
             TariffWithPrices tariffWithPrices = getTariffWithPrices(price.getTariffId());

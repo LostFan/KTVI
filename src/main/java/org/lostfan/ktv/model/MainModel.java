@@ -138,7 +138,7 @@ public class MainModel extends BaseObservable {
     }
 
     public void setCurrentModel(String code) {
-        if(code == getSubscriptionFeeModel().getEntityNameKey()) {
+        if(getSubscriptionFeeModel().getEntityNameKey().equals(code)) {
             this.currentModel = getSubscriptionFeeModel();
             notifyObservers(getSubscriptionFeeModel());
             return;

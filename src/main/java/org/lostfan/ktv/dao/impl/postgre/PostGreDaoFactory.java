@@ -1,6 +1,8 @@
 package org.lostfan.ktv.dao.impl.postgre;
 
 import org.lostfan.ktv.dao.*;
+import org.lostfan.ktv.utils.ConnectionManager;
+import org.lostfan.ktv.utils.PostgreConnectionManager;
 
 public class PostGreDaoFactory extends DAOFactory {
 
@@ -15,6 +17,8 @@ public class PostGreDaoFactory extends DAOFactory {
     private MaterialConsumptionDAO materialConsumptionDAO;
 
     public PostGreDaoFactory() {
+        ConnectionManager.setManager(new PostgreConnectionManager());
+
         this.disconnectionReasonDAO = new PostGreDisconnectionReasonDAO();
         this.materialDAO = new PostGreMaterialDAO();
         this.paymentDAO = new PostGrePaymentDAO();

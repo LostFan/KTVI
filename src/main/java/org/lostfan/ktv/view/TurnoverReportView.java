@@ -407,9 +407,6 @@ public class TurnoverReportView extends FormView {
                 i++;
             }
 
-
-
-
             if(isAdditionalField.getValue()) {
                 List <Service> services = model.getAllServices().stream().filter(e -> e.isAdditionalService()).collect(Collectors.toList());
                 for (Service service : services) {

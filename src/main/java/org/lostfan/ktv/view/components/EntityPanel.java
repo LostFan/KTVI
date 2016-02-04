@@ -45,7 +45,7 @@ public class EntityPanel extends JPanel {
     public EntityPanel(EntitySearcherModel model, FrameView parentView) {
 
 
-        this.comboBox = new JComboBox() {
+        this.comboBox = new JComboBox<String>() {
             @Override
             public void updateUI() {
                 // Hide arrow button

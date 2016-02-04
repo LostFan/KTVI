@@ -5,8 +5,7 @@ public enum FixedServices {
     DISCONNECTION (4, "disconnection"),
     CHANGE_OF_TARIFF (5, "changeOfTariff"),
     SUBSCRIPTION_FEE (1, "subscriptionFee"),
-    ADDITIONAL_SERVICE(6,"additionalService"),;
-
+    ADDITIONAL_SERVICE(6,"additionalService");
 
     public static FixedServices of(String code) {
         for (FixedServices service : FixedServices.values()) {

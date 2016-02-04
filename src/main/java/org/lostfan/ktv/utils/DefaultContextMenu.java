@@ -17,7 +17,6 @@ import javax.swing.KeyStroke;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 
-@SuppressWarnings("serial")
 public class DefaultContextMenu extends JPopupMenu {
 
     private Clipboard clipboard;
@@ -34,30 +33,21 @@ public class DefaultContextMenu extends JPopupMenu {
 
     private JTextComponent jTextComponent;
 
-    public DefaultContextMenu()
-    {
+    public DefaultContextMenu() {
         undoManager = new UndoManager();
         clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
         undo = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.undo"));
         undo.setEnabled(false);
         undo.setAccelerator(KeyStroke.getKeyStroke("control Z"));
-        undo.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                undoManager.undo();
-            }
-        });
+        undo.addActionListener(e -> undoManager.undo());
 
         add(undo);
 
         redo = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.redo"));
         redo.setEnabled(false);
         redo.setAccelerator(KeyStroke.getKeyStroke("control Y"));
-        redo.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                undoManager.redo();
-            }
-        });
+        redo.addActionListener(e -> undoManager.redo());
 
         add(redo);
 
@@ -66,46 +56,28 @@ public class DefaultContextMenu extends JPopupMenu {
         cut = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.cut"));
         cut.setEnabled(false);
         cut.setAccelerator(KeyStroke.getKeyStroke("control X"));
-        cut.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                jTextComponent.cut();
-            }
-        });
+        cut.addActionListener(e -> jTextComponent.cut());
 
         add(cut);
 
         copy = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.copy"));
         copy.setEnabled(false);
         copy.setAccelerator(KeyStroke.getKeyStroke("control C"));
-        copy.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                jTextComponent.copy();
-            }
-        });
+        copy.addActionListener(e -> jTextComponent.copy());
 
         add(copy);
 
         paste = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.paste"));
         paste.setEnabled(false);
         paste.setAccelerator(KeyStroke.getKeyStroke("control V"));
-        paste.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-                jTextComponent.paste();
-            }
-        });
+        paste.addActionListener(e -> jTextComponent.paste());
 
         add(paste);
 
         delete = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.delete"));
         delete.setEnabled(false);
         delete.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-        delete.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                jTextComponent.replaceSelection("");
-            }
-        });
+        delete.addActionListener(e -> jTextComponent.replaceSelection(""));
 
         add(delete);
 
@@ -114,19 +86,12 @@ public class DefaultContextMenu extends JPopupMenu {
         selectAll = new JMenuItem(ResourceBundles.getGuiBundle().getString("contexmenu.selectall"));
         selectAll.setEnabled(false);
         selectAll.setAccelerator(KeyStroke.getKeyStroke("control A"));
-        selectAll.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent event)
-            {
-                jTextComponent.selectAll();
-            }
-        });
+        selectAll.addActionListener(e -> jTextComponent.selectAll());
 
         add(selectAll);
     }
 
-    public void add(JTextComponent jTextComponent)
-    {
+    public void add(JTextComponent jTextComponent) {
         jTextComponent.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent pressedEvent) {
@@ -155,9 +120,7 @@ public class DefaultContextMenu extends JPopupMenu {
             }
         });
 
-        jTextComponent.getDocument().addUndoableEditListener(event -> {
-            undoManager.addEdit(event.getEdit());
-        });
+        jTextComponent.getDocument().addUndoableEditListener(event -> undoManager.addEdit(event.getEdit()));
     }
 
     private void processClick(MouseEvent event) {
