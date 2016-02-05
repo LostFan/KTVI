@@ -20,14 +20,14 @@ public class ChangeTariffEditValidator implements Validator<RenderedService> {
 
     public ValidationResult validate(RenderedService entity, RenderedService prevRenderedService, ValidationResult result) {
 
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndConnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffByConnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         if (oldSubscriberTariff.getDisconnectTariff() != null) {
             result.addError("errors.hasTariffAfterDate");
             return result;
         }
 
         if (prevRenderedService.getDate().isAfter(entity.getDate())) {
-            SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+            SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffAtDate(entity.getSubscriberAccount(), entity.getDate());
             if (subscriberTariff == null) {
                 result.addError("errors.noCurrentTariff");
                 return result;
@@ -41,7 +41,7 @@ public class ChangeTariffEditValidator implements Validator<RenderedService> {
                 return result;
             }
 
-            subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndConnectionDate(entity.getSubscriberAccount(), entity.getDate());
+            subscriberTariff = subscriberDAO.getSubscriberTariffByConnectionDate(entity.getSubscriberAccount(), entity.getDate());
             if(subscriberTariff != null && entity.getDate().equals(subscriberTariff.getConnectTariff())) {
                 result.addError("errors.getOlderTariffByDate");
                 return result;

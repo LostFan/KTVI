@@ -271,17 +271,17 @@ public class HsqldbSubscriberDAOTest {
     public void updateExistingSubscriberTariffShouldMatchUpdatedValuesTest() throws SQLException {
         insertStubDataSubscribers();
         insertStubDataTariffs();
-        SubscriberTariff subscriberTariff = subscriberDao.getSubscriberTariffBySubscriberIdAndConnectionDate(700111, LocalDate.of(2015, 4, 2));
+        SubscriberTariff subscriberTariff = subscriberDao.getSubscriberTariffByConnectionDate(700111, LocalDate.of(2015, 4, 2));
         subscriberTariff.setDisconnectTariff(LocalDate.of(2015, 1, 1));
         subscriberDao.updateSubscriberTariff(subscriberTariff);
-        assertEquals(subscriberDao.getSubscriberTariffBySubscriberIdAndConnectionDate(700111, LocalDate.of(2015, 4, 2)).getDisconnectTariff(), LocalDate.of(2015, 1, 1));
+        assertEquals(subscriberDao.getSubscriberTariffByConnectionDate(700111, LocalDate.of(2015, 4, 2)).getDisconnectTariff(), LocalDate.of(2015, 1, 1));
     }
 
     @Test
     public void updateExistingSubscriberTariffCorrectSubscriberCountTest() throws SQLException {
         insertStubDataSubscribers();
         insertStubDataTariffs();
-        SubscriberTariff subscriberTariff = subscriberDao.getSubscriberTariffBySubscriberIdAndConnectionDate(700111, LocalDate.of(2015, 4, 2));
+        SubscriberTariff subscriberTariff = subscriberDao.getSubscriberTariffByConnectionDate(700111, LocalDate.of(2015, 4, 2));
         subscriberTariff.setDisconnectTariff(LocalDate.of(2015, 1, 1));
         subscriberDao.updateSubscriberTariff(subscriberTariff);
         assertEquals(subscriberDao.getSubscriberTariffs(700111).size(), 1);
@@ -291,9 +291,9 @@ public class HsqldbSubscriberDAOTest {
     public void updateExistingSubscriberTariffShouldMatchNotUpdatedValuesTest() throws SQLException {
         insertStubDataSubscribers();
         insertStubDataTariffs();
-        SubscriberTariff subscriberTariff = subscriberDao.getSubscriberTariffBySubscriberIdAndConnectionDate(700111, LocalDate.of(2015, 4, 2));
+        SubscriberTariff subscriberTariff = subscriberDao.getSubscriberTariffByConnectionDate(700111, LocalDate.of(2015, 4, 2));
         subscriberDao.updateSubscriberTariff(subscriberTariff);
-        assertEquals(subscriberDao.getSubscriberTariffBySubscriberIdAndConnectionDate(700111, LocalDate.of(2015, 4, 2)).getDisconnectTariff(), LocalDate.of(2015,7,28));
+        assertEquals(subscriberDao.getSubscriberTariffByConnectionDate(700111, LocalDate.of(2015, 4, 2)).getDisconnectTariff(), LocalDate.of(2015,7,28));
     }
 
     @Test

@@ -98,7 +98,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     public ConnectionRenderedService getConnectionRenderedService(RenderedService renderedService) {
-        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(renderedService.getSubscriberAccount(), renderedService.getDate());
+        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffAtDate(renderedService.getSubscriberAccount(), renderedService.getDate());
         List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getByRenderedServiceId(renderedService.getId());
         return ConnectionRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
     }
@@ -108,12 +108,12 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     }
 
     public ChangeOfTariffRenderedService getChangeOfTariffRenderedService(RenderedService renderedService) {
-        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(renderedService.getSubscriberAccount(), renderedService.getDate());
+        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffAtDate(renderedService.getSubscriberAccount(), renderedService.getDate());
         return ChangeOfTariffRenderedService.build(renderedService, subscriberTariff);
     }
 
     public AdditionalRenderedService getAdditionalRenderedService(RenderedService renderedService) {
-        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(renderedService.getSubscriberAccount(), renderedService.getDate());
+        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffAtDate(renderedService.getSubscriberAccount(), renderedService.getDate());
         List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getByRenderedServiceId(renderedService.getId());
         return AdditionalRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
     }
@@ -181,7 +181,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
                 return result;
             }
             getDao().save(entity);
-            SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+            SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAtDate(entity.getSubscriberAccount(), entity.getDate());
             if (oldSubscriberTariff == null) {
                 subscriberDAO.saveSubscriberTariff(subscriberTariff);
             }
@@ -205,13 +205,13 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
 
         subscriberDAO.deleteSubscriberSession(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAtDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         if (prevRenderedService.getDate().equals(oldSubscriberTariff.getConnectTariff())) {
             subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         }
         getDao().update(entity);
         subscriberDAO.saveSubscriberSession(subscriberSession);
-        if (subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate()) == null) {
+        if (subscriberDAO.getNotClosedSubscriberTariff(entity.getSubscriberAccount(), entity.getDate()) == null) {
             subscriberDAO.saveSubscriberTariff(subscriberTariff);
         }
 //        updateMaterials(entity);
@@ -282,7 +282,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
                 return result;
             }
 
-            SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
+            SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariff(entity.getSubscriberAccount(), entity.getDate());
             subscriberTariff.setDisconnectTariff(entity.getDate());
 
             getDao().save(entity);
@@ -304,11 +304,11 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
 
         subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffByDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         oldSubscriberTariff.setDisconnectTariff(null);
         subscriberDAO.updateSubscriberTariff(oldSubscriberTariff);
         getDao().update(entity);
-        SubscriberTariff notClosedSubscriberTariffNewSubscriber = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberTariff notClosedSubscriberTariffNewSubscriber = subscriberDAO.getNotClosedSubscriberTariff(entity.getSubscriberAccount(), entity.getDate());
         notClosedSubscriberTariffNewSubscriber.setDisconnectTariff(newSubscriberTariff.getConnectTariff());
         subscriberDAO.updateSubscriberTariff(notClosedSubscriberTariffNewSubscriber);
         subscriberDAO.saveSubscriberTariff(newSubscriberTariff);
@@ -385,7 +385,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     private void deleteConnection(RenderedService entity) {
         subscriberDAO.deleteSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAtDate(entity.getSubscriberAccount(), entity.getDate());
         if (entity.getDate().equals(oldSubscriberTariff.getConnectTariff())) {
             subscriberDAO.deleteSubscriberTariff(entity.getSubscriberAccount(), entity.getDate());
         }
@@ -412,7 +412,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     private void deleteChangeTariff(RenderedService entity) {
         subscriberDAO.deleteSubscriberTariff(entity.getSubscriberAccount(), entity.getDate());
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndDisconnectionDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffByDisconnectionDate(entity.getSubscriberAccount(), entity.getDate());
         oldSubscriberTariff.setDisconnectTariff(null);
         subscriberDAO.updateSubscriberTariff(oldSubscriberTariff);
         getDao().delete(entity.getId());

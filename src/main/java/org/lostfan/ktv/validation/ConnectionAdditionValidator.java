@@ -15,22 +15,22 @@ public class ConnectionAdditionValidator implements Validator<RenderedService> {
 
     @Override
     public ValidationResult validate(RenderedService entity, ValidationResult result) {
-        SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionAtDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession != null) {
             result.addError("errors.alreadyGotSession");
             return result;
         }
-//        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+//        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAtDate(entity.getSubscriberAccount(), entity.getDate());
 //        if(oldSubscriberTariff != null) {
 //            result.addError("errors.alreadyGetTariff");
 //            return result;
 //        }
-        oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
+        oldSubscriberSession = subscriberDAO.getSubscriberSessionAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession != null) {
             result.addError("errors.hasSessionAfterDate");
             return result;
         }
-//        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
+//        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAfterDate(entity.getSubscriberAccount(), entity.getDate());
 //        if(oldSubscriberTariff != null) {
 //            result.addError("errors.getTariffAfterDate");
 //            return result;

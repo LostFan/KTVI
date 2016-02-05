@@ -20,13 +20,13 @@ public class DisconnectionEditValidator implements Validator<RenderedService> {
 
     public ValidationResult validate(RenderedService entity, RenderedService prevRenderedService, ValidationResult result) {
 
-        SubscriberSession subscriberSessionAfter = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        SubscriberSession subscriberSessionAfter = subscriberDAO.getSubscriberSessionAfterDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         if (subscriberSessionAfter != null) {
             result.addError("errors.hasSessionAfterDate");
             return result;
         }
         if (prevRenderedService.getDate().isAfter(entity.getDate())) {
-            SubscriberSession subscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+            SubscriberSession subscriberSession = subscriberDAO.getSubscriberSessionAtDate(entity.getSubscriberAccount(), entity.getDate());
             if (subscriberSession == null || subscriberSession.getDisconnectionDate() != null) {
                 result.addError("errors.noCurrentSession");
                 return result;

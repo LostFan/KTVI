@@ -18,12 +18,12 @@ public class ConnectionDeleteValidator implements Validator<RenderedService> {
     @Override
     public ValidationResult validate(RenderedService entity, ValidationResult result) {
 
-        SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession != null) {
             result.addError(ResourceBundles.getGuiBundle().getString("errors.hasSessionAfterDate") + ". Id: " + entity.getId());
             return result;
         }
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberTariff != null ) {
             result.addError(ResourceBundles.getGuiBundle().getString("errors.hasTariffAfterDate") + ". Id: " + entity.getId());
             return result;

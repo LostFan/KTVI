@@ -21,12 +21,12 @@ public class ConnectionEditValidator implements Validator<RenderedService> {
 
     public ValidationResult validate(RenderedService entity, RenderedService prevRenderedService, ValidationResult result) {
 
-        SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession != null && !oldSubscriberSession.getConnectionDate().equals(prevRenderedService.getDate())) {
             result.addError("errors.hasSessionAfterDate");
             return result;
         }
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndAfterDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberTariff != null && !oldSubscriberTariff.getConnectTariff().equals(prevRenderedService.getDate())) {
             result.addError("errors.hasTariffAfterDate");
             return result;
@@ -37,19 +37,19 @@ public class ConnectionEditValidator implements Validator<RenderedService> {
             result.addError("errors.sessionAlreadyClosed");
             return result;
         }
-        oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        oldSubscriberTariff = subscriberDAO.getSubscriberTariffAtDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         if(oldSubscriberTariff.getDisconnectTariff() != null) {
             result.addError("errors.tariffAlreadyClosed");
             return result;
         }
 
         if(prevRenderedService.getDate().isAfter(entity.getDate())) {
-            oldSubscriberSession = subscriberDAO.getSubscriberSessionBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+            oldSubscriberSession = subscriberDAO.getSubscriberSessionAtDate(entity.getSubscriberAccount(), entity.getDate());
             if(oldSubscriberSession != null) {
                 result.addError("errors.alreadyGotSession");
                 return result;
             }
-//            oldSubscriberTariff = subscriberDAO.getSubscriberTariffBySubscriberIdAndContainDate(entity.getSubscriberAccount(), entity.getDate());
+//            oldSubscriberTariff = subscriberDAO.getSubscriberTariffAtDate(entity.getSubscriberAccount(), entity.getDate());
 //            if(oldSubscriberTariff != null  ) {
 //                result.addError("errors.alreadyGetTariff");
 //                return result;

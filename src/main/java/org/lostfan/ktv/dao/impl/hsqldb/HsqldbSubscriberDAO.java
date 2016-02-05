@@ -369,7 +369,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public SubscriberSession getSubscriberSessionBySubscriberIdAndContainDate(Integer subscriberId, LocalDate localDate) {
+    public SubscriberSession getSubscriberSessionAtDate(Integer subscriberId, LocalDate localDate) {
         SubscriberSession subscriberSession = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<=? AND \"disconnection_date\" IS NULL OR \"disconnection_date\" > ? ORDER BY \"connection_date\" desc");
@@ -433,7 +433,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
         }
     }
 
-    public SubscriberTariff getSubscriberTariffBySubscriberIdAndConnectionDate(Integer subscriberId, LocalDate localDate) {
+    public SubscriberTariff getSubscriberTariffByConnectionDate(Integer subscriberId, LocalDate localDate) {
         SubscriberTariff subscriberTariff = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber_tariff\" where \"subscriber_account\" = ? AND \"connection_date\" = ?");
@@ -459,7 +459,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public SubscriberTariff getNotClosedSubscriberTariffByDate(Integer subscriberId, LocalDate localDate) {
+    public SubscriberTariff getNotClosedSubscriberTariff(Integer subscriberId, LocalDate localDate) {
         SubscriberTariff subscriberTariff = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<? AND \"disconnection_date\" IS NULL ORDER BY \"connection_date\" desc");
@@ -483,7 +483,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public SubscriberTariff getSubscriberTariffBySubscriberIdAndContainDate(Integer subscriberId, LocalDate localDate) {
+    public SubscriberTariff getSubscriberTariffAtDate(Integer subscriberId, LocalDate localDate) {
         SubscriberTariff subscriberTariff = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT TOP 1 * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<? AND \"disconnection_date\" IS NULL OR \"disconnection_date\">= ? ORDER BY \"connection_date\" desc");
@@ -508,9 +508,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public List<SubscriberTariff> getSubscriberTariffsBySubscriberIdInMonth(Integer subscriberId, LocalDate localDate) {
-        LocalDate beginDate = localDate.withDayOfMonth(1);
-        LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
+    public List<SubscriberTariff> getSubscriberTariffsForInterval(Integer subscriberId, LocalDate beginDate, LocalDate endDate) {
         List<SubscriberTariff> subscriberTariffs = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND" +
@@ -539,7 +537,12 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public SubscriberTariff getSubscriberTariffBySubscriberIdInAllMonth(Integer subscriberId, LocalDate localDate) {
+    public List<SubscriberSession> getSubscriberSessionsForMonth(Integer subscriberId, LocalDate localDate) {
+        return null;
+    }
+
+    @Override
+    public SubscriberTariff getSubscriberTariffAllMonth(Integer subscriberId, LocalDate localDate) {
         LocalDate beginDate = localDate.withDayOfMonth(1);
         LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
         SubscriberTariff subscriberTariff = null;
@@ -565,8 +568,14 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
 
         return subscriberTariff;
     }
+
     @Override
-    public SubscriberTariff getSubscriberTariffBySubscriberIdInMonthBeginInPrevMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate) {
+    public SubscriberSession getSubscriberSessionAllMonth(Integer subscriberId, LocalDate localDate) {
+        return null;
+    }
+
+    @Override
+    public SubscriberTariff getSubscriberTariffBeginInPrevMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate) {
         LocalDate beginDate = localDate.withDayOfMonth(1);
         LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
         SubscriberTariff subscriberTariff = null;
@@ -596,7 +605,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public SubscriberTariff getSubscriberTariffBySubscriberIdInMonthBeginInCurrentMonth(Integer subscriberId, LocalDate localDate) {
+    public SubscriberTariff getSubscriberTariffBeginInCurrentMonth(Integer subscriberId, LocalDate localDate) {
         LocalDate beginDate = localDate.withDayOfMonth(1);
         LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
         SubscriberTariff subscriberTariff = null;
@@ -625,7 +634,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public List<SubscriberTariff> getSubscriberTariffsBySubscriberIdInMonthBeginInCurrentMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate) {
+    public List<SubscriberTariff> getSubscriberTariffsBeginInCurrentMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate) {
         LocalDate beginDate = localDate.withDayOfMonth(1);
         LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
         List<SubscriberTariff> subscriberTariffs = new ArrayList<>();
@@ -674,7 +683,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     public void updateSubscriberTariff(SubscriberTariff subscriberTariff) {
-        if(getSubscriberTariffBySubscriberIdAndConnectionDate(subscriberTariff.getSubscriberAccount(), subscriberTariff.getConnectTariff()) != null) {
+        if(getSubscriberTariffByConnectionDate(subscriberTariff.getSubscriberAccount(), subscriberTariff.getConnectTariff()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"subscriber_tariff\" set  \"disconnection_date\" = ?, \"tariff_id\" = ?  where \"subscriber_account\" = ? AND \"connection_date\" = ?");
@@ -699,7 +708,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
 
     @Override
     public void deleteSubscriberTariff(Integer subscriberId, LocalDate localDate) {
-        if(getSubscriberTariffBySubscriberIdAndConnectionDate(subscriberId, localDate) != null) {
+        if(getSubscriberTariffByConnectionDate(subscriberId, localDate) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "DELETE FROM  \"subscriber_tariff\" where \"subscriber_account\" = ? AND \"connection_date\" = ?");
@@ -770,12 +779,12 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public SubscriberSession getSubscriberSessionBySubscriberIdAndAfterDate(Integer subscriberId, LocalDate localDate) {
+    public SubscriberSession getSubscriberSessionAfterDate(Integer subscriberId, LocalDate localDate) {
         return null;
     }
 
     @Override
-    public SubscriberTariff getSubscriberTariffBySubscriberIdAndAfterDate(Integer subscriberId, LocalDate localDate) {
+    public SubscriberTariff getSubscriberTariffAfterDate(Integer subscriberId, LocalDate localDate) {
         return null;
     }
 
@@ -785,7 +794,7 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     }
 
     @Override
-    public SubscriberTariff getSubscriberTariffBySubscriberIdAndDisconnectionDate(Integer subscriberId, LocalDate localDate) {
+    public SubscriberTariff getSubscriberTariffByDisconnectionDate(Integer subscriberId, LocalDate localDate) {
         return null;
     }
 

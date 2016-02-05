@@ -26,35 +26,45 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     void saveSubscriberSession(SubscriberSession subscriberSession);
 
-    SubscriberSession getSubscriberSessionBySubscriberIdAndAfterDate(Integer subscriberId, LocalDate localDate);
+    SubscriberSession getSubscriberSessionAfterDate(Integer subscriberId, LocalDate localDate);
 
     SubscriberSession getNotClosedSubscriberSession(Integer subscriberAccount, LocalDate connectionDate);
 
-    SubscriberSession getSubscriberSessionBySubscriberIdAndContainDate(Integer subscriberId, LocalDate localDate);
+    SubscriberSession getSubscriberSessionAtDate(Integer subscriberId, LocalDate localDate);
 
     void updateSubscriberSession(SubscriberSession subscriberSession);
 
     void deleteSubscriberSession(Integer subscriberId, LocalDate localDate);
 
-    SubscriberTariff getSubscriberTariffBySubscriberIdAndConnectionDate(Integer subscriberId, LocalDate localDate);
+    SubscriberTariff getSubscriberTariffByConnectionDate(Integer subscriberId, LocalDate localDate);
 
-    SubscriberTariff getSubscriberTariffBySubscriberIdAndDisconnectionDate(Integer subscriberId, LocalDate localDate);
+    SubscriberTariff getSubscriberTariffByDisconnectionDate(Integer subscriberId, LocalDate localDate);
 
-    SubscriberTariff getSubscriberTariffBySubscriberIdAndContainDate(Integer subscriberId, LocalDate localDate);
+    SubscriberTariff getSubscriberTariffAtDate(Integer subscriberId, LocalDate localDate);
 
-    SubscriberTariff getSubscriberTariffBySubscriberIdAndAfterDate(Integer subscriberId, LocalDate localDate);
+    SubscriberTariff getSubscriberTariffAfterDate(Integer subscriberId, LocalDate localDate);
 
-    SubscriberTariff getNotClosedSubscriberTariffByDate(Integer subscriberId, LocalDate localDate);
+    SubscriberTariff getNotClosedSubscriberTariff(Integer subscriberId, LocalDate localDate);
 
-    List<SubscriberTariff> getSubscriberTariffsBySubscriberIdInMonth(Integer subscriberId, LocalDate localDate);
+    List<SubscriberTariff> getSubscriberTariffsForInterval(Integer subscriberId, LocalDate beginDate, LocalDate endDate);
 
-    SubscriberTariff getSubscriberTariffBySubscriberIdInAllMonth(Integer subscriberId, LocalDate localDate);
+    default List<SubscriberTariff> getSubscriberTariffsForMonth(Integer subscriberId, LocalDate localDate) {
+        LocalDate beginDate = localDate.withDayOfMonth(1);
+        LocalDate endDate = localDate.withDayOfMonth(1).plusMonths(1);
+        return getSubscriberTariffsForInterval(subscriberId ,beginDate ,endDate);
+    };
 
-    SubscriberTariff getSubscriberTariffBySubscriberIdInMonthBeginInPrevMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate);
+    List<SubscriberSession> getSubscriberSessionsForMonth(Integer subscriberId, LocalDate localDate);
 
-    List<SubscriberTariff> getSubscriberTariffsBySubscriberIdInMonthBeginInCurrentMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate);
+    SubscriberTariff getSubscriberTariffAllMonth(Integer subscriberId, LocalDate localDate);
 
-    SubscriberTariff getSubscriberTariffBySubscriberIdInMonthBeginInCurrentMonth(Integer subscriberId, LocalDate localDate);
+    SubscriberSession getSubscriberSessionAllMonth(Integer subscriberId, LocalDate localDate);
+
+    SubscriberTariff getSubscriberTariffBeginInPrevMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate);
+
+    List<SubscriberTariff> getSubscriberTariffsBeginInCurrentMonthEndInCurrentMonth(Integer subscriberId, LocalDate localDate);
+
+    SubscriberTariff getSubscriberTariffBeginInCurrentMonth(Integer subscriberId, LocalDate localDate);
 
     void saveSubscriberTariff(SubscriberTariff subscriberTariff);
 

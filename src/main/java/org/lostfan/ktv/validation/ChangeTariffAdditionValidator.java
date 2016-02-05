@@ -15,7 +15,7 @@ public class ChangeTariffAdditionValidator implements Validator<RenderedService>
 
     @Override
     public ValidationResult validate(RenderedService entity, ValidationResult result) {
-        SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariffByDate(entity.getSubscriberAccount(), entity.getDate());
+        SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariff(entity.getSubscriberAccount(), entity.getDate());
         if (subscriberTariff == null) {
             result.addError("errors.noCurrentTariff");
             return result;

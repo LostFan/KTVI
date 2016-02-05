@@ -3,6 +3,7 @@ package org.lostfan.ktv.model.entity;
 import org.lostfan.ktv.dao.*;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.Subscriber;
+import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
@@ -10,8 +11,8 @@ import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.utils.BaseObservable;
 
+import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,7 +102,7 @@ public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
     private void createSubscriptionFeeInMouthBySubscriber(Integer subscriberId, LocalDate date) {
         List<RenderedService> renderedServices = ((RenderedServiceDAO) getDao()).getAllForMonth(FixedServices.SUBSCRIPTION_FEE.getId(), subscriberId, date);
         for (RenderedService renderedService : renderedServices) {
-            getDao().delete(renderedService.getId());
+//            getDao().delete(renderedService.getId());
         }
         saveRenderedService(subscriberId, date);
 
@@ -111,7 +112,7 @@ public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
         List<Subscriber> subscribers = subscriberDAO.getAll();
         List<RenderedService> renderedServices = ((RenderedServiceDAO) getDao()).getAllForMonth(FixedServices.SUBSCRIPTION_FEE.getId(), date);
         for (RenderedService renderedService : renderedServices) {
-            getDao().delete(renderedService.getId());
+//            getDao().delete(renderedService.getId());
         }
         for (Subscriber subscriber : subscribers) {
             saveRenderedService(subscriber.getId(), date);
@@ -123,51 +124,81 @@ public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
         renderedService.setDate(date);
         renderedService.setServiceId(FixedServices.SUBSCRIPTION_FEE.getId());
         renderedService.setSubscriberAccount(subscriberId);
-        SubscriberTariff subscriberTariffAllMonth = subscriberDAO.getSubscriberTariffBySubscriberIdInAllMonth(subscriberId, date);
-        if(subscriberTariffAllMonth != null) {
-            Integer price = tariffDAO.getTariffPrice(subscriberTariffAllMonth.getTariffId(), date).getPrice();
-            renderedService.setPrice(price);
-            getDao().save(renderedService);
-            return;
+        getSubscriptionFeeByMouth(subscriberId, date);
+//        SubscriberSession subscriberSessionAllMonth = subscriberDAO.getSubscriberSessionAllMonth(subscriberId, date);
+//        SubscriberTariff subscriberTariffAllMonth = subscriberDAO.getSubscriberTariffAllMonth(subscriberId, date);
+//        if(subscriberSessionAllMonth != null) {
+//            Integer price = tariffDAO.getTariffPrice(subscriberTariffAllMonth.getTariffId(), date).getPrice();
+//            renderedService.setPrice(price);
+//            getDao().save(renderedService);
+//            return;
+//        }
+//        Integer allPrice = 0;
+//        SubscriberTariff subscriberTariffBeginOfMonth = subscriberDAO.getSubscriberTariffBeginInPrevMonthEndInCurrentMonth(subscriberId, date);
+//        if(subscriberTariffBeginOfMonth != null) {
+//            int days = Period.between(date, subscriberTariffBeginOfMonth.getDisconnectTariff()).getDays();
+//            Integer tariffPrice = tariffDAO.getTariffPrice(subscriberTariffBeginOfMonth.getTariffId(), date).getPrice();
+//            Integer price = rounding(tariffPrice * days / date.getMonth().length(date.isLeapYear()));
+//            allPrice += price;
+//        }
+//        List<SubscriberTariff> subscriberTariffs = subscriberDAO.getSubscriberTariffsBeginInCurrentMonthEndInCurrentMonth(subscriberId, date);
+//        for (SubscriberTariff subscriberTariff : subscriberTariffs) {
+//            int days = Period.between(subscriberTariff.getConnectTariff(), subscriberTariff.getDisconnectTariff()).getDays();
+//            Integer tariffPrice = tariffDAO.getTariffPrice(subscriberTariff.getTariffId(), date).getPrice();
+//            Integer price = rounding(tariffPrice * days / date.getMonth().length(date.isLeapYear()));
+//            allPrice += price;
+//        }
+//        SubscriberTariff subscriberTariffEndOfMonth = subscriberDAO.getSubscriberTariffBeginInCurrentMonth(subscriberId, date);
+//        if(subscriberTariffEndOfMonth != null) {
+//            renderedService.setDate(subscriberTariffEndOfMonth.getConnectTariff());
+//            int days = Period.between(subscriberTariffEndOfMonth.getConnectTariff(), date.plusMonths(1)).getDays();
+//            Integer tariffPrice = tariffDAO.getTariffPrice(subscriberTariffEndOfMonth.getTariffId(), date).getPrice();
+//            Integer price = rounding(tariffPrice * days / date.getMonth().length(date.isLeapYear()));
+//            allPrice += price;
+//        }
+//        renderedService.setPrice(allPrice);
+//        if(allPrice > 0) {
+//            getDao().save(renderedService);
+//        }
+    }
+
+    private SubscriberSession getSubscriptionFeeByMouth(Integer subscriberId, LocalDate date) {
+        SubscriberSession subscriberSessionAllMonth = subscriberDAO.getSubscriberSessionAllMonth(subscriberId, date);
+        List<SubscriberSession> subscriberSessions = subscriberDAO.getSubscriberSessionsForMonth(subscriberId, date);
+        for (SubscriberSession subscriberSession : subscriberSessions) {
+            LocalDate beginDate = date.withDayOfMonth(1).equals(subscriberSession.getConnectionDate().withDayOfMonth(1))
+                    ? subscriberSession.getConnectionDate() : date.withDayOfMonth(1);
+            LocalDate endDate = subscriberSession.getDisconnectionDate() == null
+                    || !date.withDayOfMonth(date.lengthOfMonth()).equals(subscriberSession.getDisconnectionDate().withDayOfMonth(subscriberSession.getDisconnectionDate().lengthOfMonth()))
+                    ? date.withDayOfMonth(1).plusMonths(1) : subscriberSession.getDisconnectionDate();
+            List<SubscriberTariff> subscriberTariffs = subscriberDAO.getSubscriberTariffsForInterval(subscriberId, beginDate, endDate);
+            for (SubscriberTariff subscriberTariff : subscriberTariffs) {
+                LocalDate beginTariffDate = date.withDayOfMonth(1).equals(subscriberTariff.getConnectTariff().withDayOfMonth(1))
+                        ? subscriberTariff.getConnectTariff() : date.withDayOfMonth(1);
+                beginTariffDate = beginTariffDate.isAfter(beginDate) ? beginTariffDate : beginDate;
+                LocalDate endTariffDate = subscriberTariff.getDisconnectTariff() == null
+                        || !date.withDayOfMonth(date.lengthOfMonth()).equals(subscriberTariff.getDisconnectTariff().withDayOfMonth(subscriberTariff.getDisconnectTariff().lengthOfMonth()))
+                        ? date.withDayOfMonth(1).plusMonths(1) : subscriberTariff.getDisconnectTariff();
+                endTariffDate = subscriberSession.getDisconnectionDate() == null ||
+                        subscriberSession.getDisconnectionDate().isAfter(endTariffDate) ? endTariffDate
+                        : subscriberSession.getDisconnectionDate();
+                System.out.println(Duration.between(beginTariffDate.atTime(0, 0), endTariffDate.atTime(0, 0)).toDays());
+            }
         }
-        Integer allPrice = 0;
-        SubscriberTariff subscriberTariffBeginOfMonth = subscriberDAO.getSubscriberTariffBySubscriberIdInMonthBeginInPrevMonthEndInCurrentMonth(subscriberId, date);
-        if(subscriberTariffBeginOfMonth != null) {
-            int days = Period.between(date, subscriberTariffBeginOfMonth.getDisconnectTariff()).getDays();
-            Integer tariffPrice = tariffDAO.getTariffPrice(subscriberTariffBeginOfMonth.getTariffId(), date).getPrice();
-            Integer price = rounding(tariffPrice * days / date.getMonth().length(date.isLeapYear()));
-            allPrice += price;
-        }
-        List<SubscriberTariff> subscriberTariffs = subscriberDAO.getSubscriberTariffsBySubscriberIdInMonthBeginInCurrentMonthEndInCurrentMonth(subscriberId, date);
-        for (SubscriberTariff subscriberTariff : subscriberTariffs) {
-            int days = Period.between(subscriberTariff.getConnectTariff(), subscriberTariff.getDisconnectTariff()).getDays();
-            Integer tariffPrice = tariffDAO.getTariffPrice(subscriberTariff.getTariffId(), date).getPrice();
-            Integer price = rounding(tariffPrice * days / date.getMonth().length(date.isLeapYear()));
-            allPrice += price;
-        }
-        SubscriberTariff subscriberTariffEndOfMonth = subscriberDAO.getSubscriberTariffBySubscriberIdInMonthBeginInCurrentMonth(subscriberId, date);
-        if(subscriberTariffEndOfMonth != null) {
-            renderedService.setDate(subscriberTariffEndOfMonth.getConnectTariff());
-            int days = Period.between(subscriberTariffEndOfMonth.getConnectTariff(), date.plusMonths(1)).getDays();
-            Integer tariffPrice = tariffDAO.getTariffPrice(subscriberTariffEndOfMonth.getTariffId(), date).getPrice();
-            Integer price = rounding(tariffPrice * days / date.getMonth().length(date.isLeapYear()));
-            allPrice += price;
-        }
-        renderedService.setPrice(allPrice);
-        if(allPrice > 0) {
-            getDao().save(renderedService);
-        }
+
+        return null;
+    }
+
+    private SubscriberTariff getAllMonthSubscriberTariff(Integer subscriberId, LocalDate date) {
+        return null;
     }
 
     private Integer rounding(Integer number) {
         if(number == null) {
             return null;
         }
-        if(number % 100 < 50) {
-            return number / 100 * 100;
-        } else {
-            return (number + 50) / 100 * 100;
-        }
+        return (number + 50) / 100 * 100;
+
     }
 
     public void setSearchCriteria(List<FieldSearchCriterion> criteria) {
