@@ -1,6 +1,7 @@
 package org.lostfan.ktv.validation;
 
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.model.dto.TariffField;
 
 public class RenderedServiceValidator implements Validator<RenderedService> {
 
@@ -20,6 +21,11 @@ public class RenderedServiceValidator implements Validator<RenderedService> {
 
         if (entity.getSubscriberAccount() == null) {
             result.addError("errors.empty", "subscriber");
+        }
+        if(entity instanceof TariffField) {
+            if(((TariffField) entity).getTariffId() == null) {
+                result.addError("errors.empty", "tariff");
+            }
         }
 
         return result;

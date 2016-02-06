@@ -22,7 +22,7 @@ public class ChangeOfTariffEntityView extends EntityView {
         dateField.addValueListener(e ->
                 priceField.setValue(model.getRenderedServicePriceByDate(FixedServices.CHANGE_OF_TARIFF.getId(), (LocalDate)dateField.getValue())));
 
-        addFormField(createFormField(model.getChangeTariffField(), entity), model.getChangeTariffField());
+        addFormField(createFormField(model.getTariffField(), entity), model.getTariffField());
 
         revalidate();
     }

@@ -216,4 +216,16 @@ public class EntityPanel extends JPanel {
     public void setParentView(FrameView parentView) {
        this.parentView = parentView;
     }
+
+    @Override
+    public void setEnabled(boolean isEnabled) {
+        this.comboBox.setEnabled(isEnabled);
+        ((JTextField)this.comboBox.getEditor().getEditorComponent()).setDisabledTextColor(Color.BLACK);
+        this.tableButton.setVisible(isEnabled);
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.comboBox.isEnabled();
+    }
 }

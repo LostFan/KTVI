@@ -1,26 +1,17 @@
 package org.lostfan.ktv.model.dto;
 
 
-import java.util.List;
-
 import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.FixedServices;
 
-public class ConnectionRenderedService  extends RenderedService implements MaterialsDTO, TariffField {
+import java.util.List;
 
-    private List<MaterialConsumption> materialConsumption;
+public class ReconnectionRenderedService extends RenderedService implements TariffField {
 
     private Integer tariffId;
 
-    public List<MaterialConsumption> getMaterialConsumption() {
-        return materialConsumption;
-    }
-
-    public void setMaterialConsumption(List<MaterialConsumption> materialConsumption) {
-        this.materialConsumption = materialConsumption;
-    }
 
     public Integer getTariffId() {
         return tariffId;
@@ -32,18 +23,17 @@ public class ConnectionRenderedService  extends RenderedService implements Mater
 
     @Override
     public Integer getServiceId() {
-        return FixedServices.CONNECTION.getId();
+        return FixedServices.RECONNECTION.getId();
     }
 
-    public static ConnectionRenderedService build(RenderedService renderedService, SubscriberTariff subscriberTariff, List<MaterialConsumption> materialConsumptions) {
-        ConnectionRenderedService dto = new ConnectionRenderedService();
+    public static ReconnectionRenderedService build(RenderedService renderedService, SubscriberTariff subscriberTariff) {
+        ReconnectionRenderedService dto = new ReconnectionRenderedService();
         dto.setId(renderedService.getId());
         dto.setDate(renderedService.getDate());
         dto.setPrice(renderedService.getPrice());
         dto.setSubscriberAccount(renderedService.getSubscriberAccount());
         dto.setServiceId(renderedService.getServiceId());
         dto.setTariffId(subscriberTariff.getTariffId());
-        dto.setMaterialConsumption(materialConsumptions);
         return dto;
     }
 }

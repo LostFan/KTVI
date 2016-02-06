@@ -23,7 +23,7 @@ public class ConnectionEntityView extends EntityView {
         super(model, entity);
         setTitle(getEntityString(FixedServices.CONNECTION.getCode()));
 
-        addFormField(createFormField(model.getConnectionTariffField(), entity), model.getConnectionTariffField());
+        addFormField(createFormField(model.getTariffField(), entity), model.getTariffField());
 
         FormField dateField = getFormField("renderedService.date");
         FormField priceField = getFormField("renderedService.price");

@@ -22,7 +22,7 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
         List<Subscriber> subscribers = new ArrayList<>();
         try {
             Statement statement = getConnection().createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM \"subscriber\"");
+            ResultSet rs = statement.executeQuery("SELECT * FROM \"subscriber\" order by \"account\"");
             while (rs.next()) {
                 Subscriber subscriber = constructEntity(rs);
                 subscribers.add(subscriber);
@@ -364,7 +364,7 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
     public SubscriberSession getSubscriberSessionAfterDate(Integer subscriberId, LocalDate localDate) {
         SubscriberSession subscriberSession = null;
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\">=? ORDER BY \"connection_date\" LIMIT 1");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\">? ORDER BY \"connection_date\" LIMIT 1");
             preparedStatement.setInt(1, subscriberId);
             preparedStatement.setDate(2, Date.valueOf(localDate));
             ResultSet rs = preparedStatement.executeQuery();
@@ -387,7 +387,7 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
     public SubscriberSession getNotClosedSubscriberSession(Integer subscriberAccount, LocalDate connectionDate) {
         SubscriberSession subscriberSession = null;
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<? AND \"disconnection_date\" IS NULL ORDER BY \"connection_date\" desc LIMIT 1");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<=? AND \"disconnection_date\" IS NULL ORDER BY \"connection_date\" desc LIMIT 1");
             preparedStatement.setInt(1, subscriberAccount);
             preparedStatement.setDate(2, Date.valueOf(connectionDate));
             ResultSet rs = preparedStatement.executeQuery();
@@ -410,7 +410,7 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
     public SubscriberSession getSubscriberSessionAtDate(Integer subscriberId, LocalDate localDate) {
         SubscriberSession subscriberSession = null;
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<=? AND (\"disconnection_date\" IS NULL OR \"disconnection_date\" > ?)  ORDER BY \"connection_date\"  desc LIMIT 1");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<=? AND (\"disconnection_date\" IS NULL OR \"disconnection_date\" >= ?)  ORDER BY \"connection_date\"  desc LIMIT 1");
             preparedStatement.setInt(1, subscriberId);
             preparedStatement.setDate(2, Date.valueOf(localDate));
             preparedStatement.setDate(3, Date.valueOf(localDate));
@@ -525,7 +525,7 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
     public SubscriberTariff getSubscriberTariffAfterDate(Integer subscriberId, LocalDate localDate) {
         SubscriberTariff subscriberTariff = null;
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND \"connection_date\">=? ORDER BY \"connection_date\" LIMIT 1");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND \"connection_date\">? ORDER BY \"connection_date\" LIMIT 1");
             preparedStatement.setInt(1, subscriberId);
             preparedStatement.setDate(2, Date.valueOf(localDate));
             ResultSet rs = preparedStatement.executeQuery();
@@ -576,7 +576,7 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
     public SubscriberTariff getSubscriberTariffAtDate(Integer subscriberId, LocalDate localDate) {
         SubscriberTariff subscriberTariff = null;
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<? AND (\"disconnection_date\" IS NULL OR \"disconnection_date\">= ?) ORDER  BY \"connection_date\" desc LIMIT 1 ");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_tariff\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<=? AND (\"disconnection_date\" IS NULL OR \"disconnection_date\"> ?) ORDER  BY \"connection_date\" desc LIMIT 1 ");
             preparedStatement.setInt(1, subscriberId);
             preparedStatement.setDate(2, Date.valueOf(localDate));
             preparedStatement.setDate(3, Date.valueOf(localDate));

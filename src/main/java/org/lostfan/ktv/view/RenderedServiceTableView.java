@@ -20,6 +20,7 @@ import org.lostfan.ktv.validation.Error;
 public class RenderedServiceTableView extends EntityTableView {
 
     private ViewActionListener addConnectionActionListener;
+    private ViewActionListener addReconnectionActionListener;
     private ViewActionListener addDisconnectionActionListener;
     private ViewActionListener addChangeOfTariffActionListener;
     private ViewActionListener addAdditionalServiceActionListener;
@@ -32,6 +33,13 @@ public class RenderedServiceTableView extends EntityTableView {
             public void actionPerformed(ActionEvent e) {
                 if (addConnectionActionListener != null) {
                     addConnectionActionListener.actionPerformed(null);
+                }
+            }
+        }));
+        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.RECONNECTION.getCode())) {
+            public void actionPerformed(ActionEvent e) {
+                if (addReconnectionActionListener != null) {
+                    addReconnectionActionListener.actionPerformed(null);
                 }
             }
         }));
@@ -152,6 +160,10 @@ public class RenderedServiceTableView extends EntityTableView {
 
     public void setAdditionalServiceActionListener(ViewActionListener addAdditionalServiceActionListener) {
         this.addAdditionalServiceActionListener = addAdditionalServiceActionListener;
+    }
+
+    public void setReconnectionActionListener(ViewActionListener addReconnectionActionListener) {
+        this.addReconnectionActionListener = addReconnectionActionListener;
     }
 
     public void newDateActionListener(ViewActionListener newDateActionListener) {

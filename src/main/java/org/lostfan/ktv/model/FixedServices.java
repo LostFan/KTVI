@@ -2,6 +2,7 @@ package org.lostfan.ktv.model;
 
 public enum FixedServices {
     CONNECTION (2, "connection"),
+    RECONNECTION (3, "reconnection"),
     DISCONNECTION (4, "disconnection"),
     CHANGE_OF_TARIFF (5, "changeOfTariff"),
     SUBSCRIPTION_FEE (1, "subscriptionFee"),

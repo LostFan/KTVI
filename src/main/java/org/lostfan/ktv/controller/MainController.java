@@ -2,10 +2,7 @@ package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.TurnoverReportModel;
-import org.lostfan.ktv.model.dto.AdditionalRenderedService;
-import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
-import org.lostfan.ktv.model.dto.ConnectionRenderedService;
-import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
+import org.lostfan.ktv.model.dto.*;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
@@ -45,6 +42,10 @@ public class MainController {
                 ValidationResult result = ValidationResult.createEmpty();
                 if (FixedServices.of(code) == FixedServices.CONNECTION) {
                     ConnectionRenderedService entity = (ConnectionRenderedService) args_;
+                    result = renderedServiceModel.save(entity);
+                }
+                if (FixedServices.of(code) == FixedServices.RECONNECTION) {
+                    ReconnectionRenderedService entity = (ReconnectionRenderedService) args_;
                     result = renderedServiceModel.save(entity);
                 }
                 if (FixedServices.of(code) == FixedServices.DISCONNECTION) {

@@ -2,10 +2,7 @@ package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.model.FixedServices;
-import org.lostfan.ktv.model.dto.AdditionalRenderedService;
-import org.lostfan.ktv.model.dto.ChangeOfTariffRenderedService;
-import org.lostfan.ktv.model.dto.ConnectionRenderedService;
-import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
+import org.lostfan.ktv.model.dto.*;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.ConnectionEntityView;
@@ -25,6 +22,7 @@ public class RenderedServiceController extends EntityController {
     public RenderedServiceController(RenderedServiceEntityModel model, RenderedServiceTableView view) {
         super(model, view);
         view.setConnectionActionListener(this::addConnectionActionPerformed);
+        view.setReconnectionActionListener(this::addReconnectionActionPerformed);
         view.setDisconnectionActionListener(this::addDisconnectionActionPerformed);
         view.setChangeOfTariffActionListener(this::addChangeOfTariffActionPerformed);
         view.setAdditionalServiceActionListener(this::addAdditionalServiceActionPerformed);
@@ -39,6 +37,20 @@ public class RenderedServiceController extends EntityController {
         EntityView entityView = EntityViewFactory.createRenderedServiceForm(model, FixedServices.CONNECTION);
         entityView.setAddActionListener(args_ -> {
             ConnectionRenderedService entity = (ConnectionRenderedService) args_;
+            ValidationResult result = model.save(entity);
+            if (result.hasErrors()) {
+                entityView.showErrors(result.getErrors());
+                return;
+            }
+            entityView.hide();
+        });
+    }
+
+    private void addReconnectionActionPerformed(Object args) {
+        model.setServiceFieldEditable(false);
+        EntityView entityView = EntityViewFactory.createRenderedServiceForm(model, FixedServices.RECONNECTION);
+        entityView.setAddActionListener(args_ -> {
+            ReconnectionRenderedService entity = (ReconnectionRenderedService) args_;
             ValidationResult result = model.save(entity);
             if (result.hasErrors()) {
                 entityView.showErrors(result.getErrors());
@@ -100,6 +112,10 @@ public class RenderedServiceController extends EntityController {
             ValidationResult result = ValidationResult.createEmpty();
             if(entity.getServiceId() == FixedServices.CONNECTION.getId()) {
                 ConnectionRenderedService entity1 = (ConnectionRenderedService) args_;
+                result = model.save(entity1);
+            }
+            if(entity.getServiceId() == FixedServices.RECONNECTION.getId()) {
+                ReconnectionRenderedService entity1 = (ReconnectionRenderedService) args_;
                 result = model.save(entity1);
             }
             if(entity.getServiceId() == FixedServices.DISCONNECTION.getId()) {

@@ -10,13 +10,7 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
-import org.lostfan.ktv.view.AdditionalServiceEntityView;
-import org.lostfan.ktv.view.ChangeOfTariffEntityView;
-import org.lostfan.ktv.view.ConnectionEntityView;
-import org.lostfan.ktv.view.DisconnectionEntityView;
-import org.lostfan.ktv.view.EntityView;
-import org.lostfan.ktv.view.RenderedServiceEntityView;
-import org.lostfan.ktv.view.SubscriberEntityView;
+import org.lostfan.ktv.view.*;
 
 public class EntityViewFactory {
 
@@ -24,6 +18,11 @@ public class EntityViewFactory {
 
         if(service == FixedServices.CONNECTION) {
             ConnectionEntityView entityView = new ConnectionEntityView(renderedServiceEntityModel);
+            return entityView;
+        }
+
+        if(service == FixedServices.RECONNECTION) {
+            ReconnectionEntityView entityView = new ReconnectionEntityView(renderedServiceEntityModel);
             return entityView;
         }
 
@@ -52,6 +51,11 @@ public class EntityViewFactory {
 
         if(renderedService.getServiceId() == FixedServices.CONNECTION.getId()) {
             ConnectionEntityView entityView = new ConnectionEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getConnectionRenderedService(renderedService));
+            return entityView;
+        }
+
+        if(renderedService.getServiceId() == FixedServices.RECONNECTION.getId()) {
+            ReconnectionEntityView entityView = new ReconnectionEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getReconnectionRenderedService(renderedService));
             return entityView;
         }
 

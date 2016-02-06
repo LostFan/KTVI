@@ -4,7 +4,7 @@ import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.FixedServices;
 
-public class ChangeOfTariffRenderedService extends RenderedService {
+public class ChangeOfTariffRenderedService extends RenderedService implements TariffField {
 
     private Integer tariffId;
 

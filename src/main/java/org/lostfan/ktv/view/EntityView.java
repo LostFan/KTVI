@@ -53,7 +53,11 @@ public class EntityView extends FormView {
 
         @Override
         public void setValue(Integer value) {
-
+            if(value != null) {
+                this.panel.setSelectedId(value);
+                ((JTextField) ((this.panel.getComboBox()).getEditor().getEditorComponent()))
+                        .setText(this.panel.getSelectedEntity().getName());
+            }
         }
 
         @Override
