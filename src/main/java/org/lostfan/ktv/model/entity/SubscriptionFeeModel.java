@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
+public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
 
     private LocalDate date;
     private List<FieldSearchCriterion> searchCriteria;
@@ -45,6 +45,23 @@ public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
             this.entities = getAll();
         }
         return this.entities;
+    }
+
+    @Override
+    public String getEntityName() {
+        return null;
+    }
+
+    @Override
+    public RenderedService createNewEntity() {
+        RenderedService renderedService = new RenderedService();
+        renderedService.setServiceId(FixedServices.SUBSCRIPTION_FEE.getId());
+        return renderedService;
+    }
+
+    @Override
+    public List<EntityModel> getEntityModels() {
+        return null;
     }
 
 
@@ -199,11 +216,6 @@ public class SubscriptionFeeModel extends BaseObservable implements BaseModel {
         }
         return (number + 50) / 100 * 100;
 
-    }
-
-    public void setSearchCriteria(List<FieldSearchCriterion> criteria) {
-        this.searchCriteria = criteria;
-        updateEntitiesList();
     }
 
     public void setDate(LocalDate date) {

@@ -11,9 +11,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.entity.EntityModel;
-import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.model.EntityTableModel;
 
@@ -39,7 +37,7 @@ public class EntityTableView extends View {
 
     private EntityModel model;
 
-    private ViewActionListener findActionListener;
+    private ViewActionListener filterActionListener;
     private ViewActionListener addActionListener;
     private ViewActionListener changeActionListener;
     private ViewActionListener deleteActionListener;
@@ -51,6 +49,7 @@ public class EntityTableView extends View {
 
         this.table = new JTable(new EntityTableModel<>(model));
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+//        this.table.setRowSelectionAllowed(false);
         this.table.setAutoCreateRowSorter(true);
         this.table.setFillsViewportHeight(true);
         this.table.addMouseListener(new MouseAdapter() {
@@ -74,10 +73,10 @@ public class EntityTableView extends View {
             }
         });
 
-        JButton button = new JButton(getGuiString("buttons.find"));
+        JButton button = new JButton(getGuiString("buttons.filter"));
         button.addActionListener(e -> {
-            if (this.findActionListener != null) {
-                this.findActionListener.actionPerformed(null);
+            if (this.filterActionListener != null) {
+                this.filterActionListener.actionPerformed(null);
             }
         });
         addButton(button, false);
@@ -122,6 +121,7 @@ public class EntityTableView extends View {
         this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
         addStringActionTableCellEditorToColumns();
         JScrollPane tableScrollPane = new JScrollPane(this.table);
+//        System.out.println(model.getEntityName());
 
         getContentPanel().add(tableScrollPane, BorderLayout.CENTER);
 
@@ -175,8 +175,8 @@ public class EntityTableView extends View {
         super.revalidate();
     }
 
-    public void setFindActionListener(ViewActionListener findActionListener) {
-        this.findActionListener = findActionListener;
+    public void setFilterActionListener(ViewActionListener filterActionListener) {
+        this.filterActionListener = filterActionListener;
     }
 
     public void setAddActionListener(ViewActionListener addActionListener) {

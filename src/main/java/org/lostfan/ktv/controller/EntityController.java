@@ -21,7 +21,7 @@ public class EntityController implements MainInnerController {
         this.model = model;
         this.view = view;
 
-        view.setFindActionListener(this::findActionPerformed);
+        view.setFilterActionListener(this::filterActionPerformed);
         view.setAddActionListener(this::addActionPerformed);
         view.setChangeActionListener(this::changeActionPerformed);
         view.setDeleteActionListener(this::deleteActionPerformed);
@@ -35,7 +35,8 @@ public class EntityController implements MainInnerController {
         return view;
     }
 
-    protected void findActionPerformed(Object args) {
+
+    protected void filterActionPerformed(Object args) {
         if (this.entitySearchView == null) {
             this.entitySearchView = new EntitySearchView(model);
             this.entitySearchView.setFindActionListener(this::searchFindActionPerformed);

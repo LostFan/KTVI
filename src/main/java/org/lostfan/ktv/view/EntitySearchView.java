@@ -80,6 +80,7 @@ public class EntitySearchView extends FrameView {
                 case String:
                 case Service:
                 case Subscriber:
+                case Street:
                     return this.valueTextField.getText();
                 case Integer:
                     return this.integerTextField.getValue();
