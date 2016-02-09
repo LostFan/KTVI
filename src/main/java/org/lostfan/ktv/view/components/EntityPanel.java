@@ -12,7 +12,7 @@ import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ViewActionListener;
-import org.lostfan.ktv.view.EntitySearchView;
+import org.lostfan.ktv.view.EntityFilterView;
 import org.lostfan.ktv.view.EntitySelectionView;
 import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.FrameView;
@@ -79,7 +79,7 @@ public class EntityPanel extends JPanel {
                 return;
             }
             EntitySelectionView entitySelectionView;
-            entitySelectionView = new EntitySelectionView(model);
+            entitySelectionView = EntitySelectionFactory.createView(model.getEntityNameKey());
             this.parentView.openDialog(entitySelectionView);
             if (entitySelectionView.get() != null) {
                 this.setSelectedEntity(entitySelectionView.get());
@@ -90,7 +90,7 @@ public class EntityPanel extends JPanel {
         });
 
         this.entityButton = new JButton();
-        URL url = EntitySearchView.class.getClassLoader().getResource("images/search.png");
+        URL url = EntityFilterView.class.getClassLoader().getResource("images/search.png");
         if(url != null) {
             ImageIcon icon = new ImageIcon(url);
             Image image = icon.getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);

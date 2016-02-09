@@ -3,6 +3,7 @@ package org.lostfan.ktv.model.entity;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FullEntityField;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.validation.Validator;
 
@@ -37,5 +38,7 @@ public interface EntityModel<T extends Entity> extends BaseModel {
     Class getEntityClass();
 
     Validator<T> getValidator();
+
+    EntitySearcherModel<T> createSearchModel();
 
 }

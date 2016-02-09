@@ -11,17 +11,14 @@ import org.lostfan.ktv.utils.ResourceBundles;
 public class EntitySelectionModel<T extends Entity> implements TableModel {
 
     private EntitySearcherModel<T> model;
-    private int size = 0;
 
     public EntitySelectionModel(EntitySearcherModel<T> model) {
-
         this.model = model;
-        size = this.model.getList().size();
     }
 
     @Override
     public int getRowCount() {
-        return size;
+        return this.model.getList().size();
     }
 
     @Override

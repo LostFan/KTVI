@@ -4,7 +4,7 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.view.EntitySearchView;
+import org.lostfan.ktv.view.EntityFilterView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
 import org.lostfan.ktv.view.components.EntityViewFactory;
@@ -15,7 +15,7 @@ public class EntityController implements MainInnerController {
 
     private EntityModel model;
     private EntityTableView view;
-    private EntitySearchView entitySearchView;
+    private EntityFilterView entityFilterView;
 
     public EntityController(EntityModel model, EntityTableView view) {
         this.model = model;
@@ -37,15 +37,15 @@ public class EntityController implements MainInnerController {
 
 
     protected void filterActionPerformed(Object args) {
-        if (this.entitySearchView == null) {
-            this.entitySearchView = new EntitySearchView(model);
-            this.entitySearchView.setFindActionListener(this::searchFindActionPerformed);
+        if (this.entityFilterView == null) {
+            this.entityFilterView = new EntityFilterView(model);
+            this.entityFilterView.setFindActionListener(this::searchFindActionPerformed);
         }
-        this.entitySearchView.show();
+        this.entityFilterView.show();
     }
 
     protected void searchFindActionPerformed(Object args) {
-        List<FieldSearchCriterion> criteria = this.entitySearchView.getSearchCriteria();
+        List<FieldSearchCriterion> criteria = this.entityFilterView.getSearchCriteria();
         this.model.setSearchCriteria(criteria);
     }
 

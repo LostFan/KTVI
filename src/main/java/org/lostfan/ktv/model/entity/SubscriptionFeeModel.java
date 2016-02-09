@@ -9,6 +9,7 @@ import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FixedServices;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.utils.BaseObservable;
 
 import java.time.Duration;
@@ -230,5 +231,10 @@ public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
 
     public LocalDate getDate() {
         return this.date;
+    }
+
+    @Override
+    public EntitySearcherModel<RenderedService> createSearchModel() {
+        return null;
     }
 }

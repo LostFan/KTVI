@@ -9,8 +9,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.utils.Observer;
-import org.lostfan.ktv.utils.ResourceBundles;
-import org.lostfan.ktv.view.model.EntitySearchTableModel;
+import org.lostfan.ktv.view.components.TextField;
 import org.lostfan.ktv.view.model.EntitySelectionModel;
 
 public class EntitySelectionView extends DialogView<Entity> {
@@ -26,6 +25,7 @@ public class EntitySelectionView extends DialogView<Entity> {
     public static final int HEIGHT = 500;
 
     private JTable table;
+    private TextField queryTextField;
     private JScrollPane tableScrollPane;
     private JButton cancelButton;
     private JButton chooseButton;
@@ -35,6 +35,10 @@ public class EntitySelectionView extends DialogView<Entity> {
     public EntitySelectionView(EntitySearcherModel model) {
 
         setTitle(getGuiString("buttons.search") + ": " + getEntityString(model.getEntityNameKey()));
+
+        this.queryTextField = new TextField(20);
+        // TODO: submit the action to a controller
+        this.queryTextField.addTextChangeListener(model::setSearchQuery);
 
         this.table = new JTable(new EntitySelectionModel<>(model));
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -75,6 +79,11 @@ public class EntitySelectionView extends DialogView<Entity> {
 
         getContentPanel().setLayout(new BorderLayout(10, 10));
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        // Query field on the top of the frame
+        JPanel queryPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        queryPanel.add(this.queryTextField);
+        getContentPanel().add(queryPanel, BorderLayout.PAGE_START);
 
         // ID column values should be aligned to the left;
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();

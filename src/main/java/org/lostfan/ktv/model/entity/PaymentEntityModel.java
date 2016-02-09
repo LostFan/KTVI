@@ -14,6 +14,7 @@ import org.lostfan.ktv.dao.RenderedServiceDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.*;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.utils.PaymentsLoader;
 import org.lostfan.ktv.validation.PaymentValidator;
 import org.lostfan.ktv.validation.Validator;
@@ -231,5 +232,10 @@ public class PaymentEntityModel extends BaseEntityModel<Payment> {
 
     public List<Payment> getPaymentsByBankFileName(String bankFileName) {
         return getDao().getByBankFileName(bankFileName);
+    }
+
+    @Override
+    public EntitySearcherModel<Payment> createSearchModel() {
+        return null;
     }
 }

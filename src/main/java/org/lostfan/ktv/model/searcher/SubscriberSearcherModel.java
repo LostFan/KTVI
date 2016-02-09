@@ -9,9 +9,6 @@ import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 
-/**
- * Created by Ihar_Niakhlebau on 14-Oct-15.
- */
 public class SubscriberSearcherModel extends EntitySearcherModel<Subscriber> {
 
     private List<EntityField> fields;

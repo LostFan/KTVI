@@ -1,21 +1,18 @@
 package org.lostfan.ktv.controller;
 
-import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.entity.SubscriptionFeeModel;
 import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.view.EntitySearchView;
+import org.lostfan.ktv.view.EntityFilterView;
 import org.lostfan.ktv.view.SubscriptionFeeTableView;
 import org.lostfan.ktv.view.SubscriptionFeeView;
-import org.lostfan.ktv.view.View;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class SubscriptionFeeController extends EntityController{
 
     private SubscriptionFeeModel model;
     private SubscriptionFeeTableView view;
-    private EntitySearchView entitySearchView;
+    private EntityFilterView entityFilterView;
 
     public SubscriptionFeeController(SubscriptionFeeModel model, SubscriptionFeeTableView view) {
         super(model, view);

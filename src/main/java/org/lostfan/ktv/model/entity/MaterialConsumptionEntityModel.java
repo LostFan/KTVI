@@ -9,6 +9,7 @@ import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.MainModel;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.validation.MaterialConsumptionValidator;
 import org.lostfan.ktv.validation.Validator;
 
@@ -69,5 +70,10 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
     @Override
     public MaterialConsumption createNewEntity() {
         return new MaterialConsumption();
+    }
+
+    @Override
+    public EntitySearcherModel<MaterialConsumption> createSearchModel() {
+        return null;
     }
 }

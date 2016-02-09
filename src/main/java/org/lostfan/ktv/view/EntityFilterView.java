@@ -14,12 +14,12 @@ import org.lostfan.ktv.view.components.IntegerTextField;
 import org.lostfan.ktv.view.model.CriteriaComboBoxModel;
 import org.lostfan.ktv.view.model.FieldsComboBoxModel;
 
-public class EntitySearchView extends FrameView {
+public class EntityFilterView extends FrameView {
 
     private class ModelObserver implements org.lostfan.ktv.utils.Observer {
         @Override
         public void update(Object args) {
-            EntitySearchView.this.revalidate();
+            EntityFilterView.this.revalidate();
         }
     }
 
@@ -38,7 +38,7 @@ public class EntitySearchView extends FrameView {
             this.fieldComboBox.addActionListener(e -> {
                 criterionComboBox = new JComboBox<>(
                         new CriteriaComboBoxModel(SearchCriteria.getCritera(getSelectedFieldType())));
-                EntitySearchView.this.rebuildCriteriaPanel();
+                EntityFilterView.this.rebuildCriteriaPanel();
             });
 
             this.criterionComboBox = new JComboBox<>();
@@ -46,7 +46,7 @@ public class EntitySearchView extends FrameView {
             this.integerTextField = new IntegerTextField();
             this.datePicker = new DatePickerField();
             this.removeButton = new JButton();
-            URL url = EntitySearchView.class.getClassLoader().getResource("images/remove.png");
+            URL url = EntityFilterView.class.getClassLoader().getResource("images/remove.png");
             if(url != null) {
                 ImageIcon icon = new ImageIcon(url);
                 Image image = icon.getImage().getScaledInstance(10,10,Image.SCALE_SMOOTH);
@@ -55,8 +55,8 @@ public class EntitySearchView extends FrameView {
             }
 
             this.removeButton.addActionListener(e -> {
-                EntitySearchView.this.criteria.remove(CriterionComponents.this);
-                EntitySearchView.this.rebuildCriteriaPanel();
+                EntityFilterView.this.criteria.remove(CriterionComponents.this);
+                EntityFilterView.this.rebuildCriteriaPanel();
             });
         }
 
@@ -138,7 +138,7 @@ public class EntitySearchView extends FrameView {
 
     private ModelObserver modelObserver;
 
-    public EntitySearchView(BaseModel model) {
+    public EntityFilterView(BaseModel model) {
         this.model = model;
         setTitle(getGuiString("buttons.search") + ": " + getEntityString(model.getEntityNameKey()));
 

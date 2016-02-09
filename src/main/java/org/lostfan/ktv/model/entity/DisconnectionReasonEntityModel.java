@@ -5,6 +5,7 @@ import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.domain.DisconnectionReason;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,5 +53,10 @@ public class DisconnectionReasonEntityModel extends BaseEntityModel<Disconnectio
     @Override
     public Class getEntityClass() {
         return DisconnectionReason.class;
+    }
+
+    @Override
+    public EntitySearcherModel<DisconnectionReason> createSearchModel() {
+        return null;
     }
 }

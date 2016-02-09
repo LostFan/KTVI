@@ -5,6 +5,8 @@ import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.domain.Street;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
+import org.lostfan.ktv.model.searcher.StreetSearcherModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,5 +57,10 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
     @Override
     public Street createNewEntity() {
         return new Street();
+    }
+
+    @Override
+    public EntitySearcherModel<Street> createSearchModel() {
+        return new StreetSearcherModel();
     }
 }

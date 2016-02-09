@@ -13,6 +13,8 @@ import org.lostfan.ktv.domain.TariffPrice;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.dto.ServiceWithPrices;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
+import org.lostfan.ktv.model.searcher.ServiceSearcherModel;
 import org.lostfan.ktv.model.transform.ServiceWithPricesTransformer;
 import org.lostfan.ktv.validation.ServicePriceValidator;
 import org.lostfan.ktv.validation.ValidationResult;
@@ -116,5 +118,10 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
 
         }
         return result;
+    }
+
+    @Override
+    public EntitySearcherModel<Service> createSearchModel() {
+        return new ServiceSearcherModel();
     }
 }

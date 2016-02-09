@@ -4,6 +4,8 @@ import org.lostfan.ktv.dao.*;
 import org.lostfan.ktv.domain.*;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.dto.*;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
+import org.lostfan.ktv.model.searcher.RenderedServiceSearcherModel;
 import org.lostfan.ktv.validation.*;
 
 import java.time.LocalDate;
@@ -527,5 +529,10 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
     public LocalDate getDate() {
         return this.date;
+    }
+
+    @Override
+    public EntitySearcherModel<RenderedService> createSearchModel() {
+        return new RenderedServiceSearcherModel();
     }
 }

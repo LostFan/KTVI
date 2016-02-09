@@ -8,6 +8,8 @@ import org.lostfan.ktv.domain.Material;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.MainModel;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
+import org.lostfan.ktv.model.searcher.MaterialSearcherModel;
 import org.lostfan.ktv.validation.MaterialValidator;
 import org.lostfan.ktv.validation.Validator;
 
@@ -66,5 +68,10 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
     @Override
     public Validator<Material> getValidator() {
         return new MaterialValidator();
+    }
+
+    @Override
+    public EntitySearcherModel<Material> createSearchModel() {
+        return new MaterialSearcherModel();
     }
 }

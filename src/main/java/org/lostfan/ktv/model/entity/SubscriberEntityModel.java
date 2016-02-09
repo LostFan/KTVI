@@ -15,6 +15,8 @@ import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.model.dto.RenderedServiceExt;
+import org.lostfan.ktv.model.searcher.EntitySearcherModel;
+import org.lostfan.ktv.model.searcher.SubscriberSearcherModel;
 import org.lostfan.ktv.model.transform.PaymentTransformer;
 import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
 import org.lostfan.ktv.validation.SubscriberValidator;
@@ -125,5 +127,10 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
             paymentsExt.add(paymentExt);
         }
         return paymentsExt;
+    }
+
+    @Override
+    public EntitySearcherModel<Subscriber> createSearchModel() {
+        return new SubscriberSearcherModel();
     }
 }
