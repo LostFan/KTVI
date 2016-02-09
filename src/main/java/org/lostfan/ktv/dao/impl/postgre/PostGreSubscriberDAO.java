@@ -4,6 +4,7 @@ import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
+import org.lostfan.ktv.model.searcher.SubscriberSearchCriteria;
 import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.sql.*;
@@ -978,6 +979,81 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber\" where LOWER(\"name\") LIKE ?");
             preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                subscribers.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return subscribers;
+    }
+
+    @Override
+    public List<Subscriber> search(SubscriberSearchCriteria criteria) {
+        List<Subscriber> subscribers = new ArrayList<>();
+
+        try {
+            List<Object> params = new ArrayList<>();
+            StringBuilder query = new StringBuilder("SELECT * FROM \"subscriber\" ");
+
+            if (!criteria.getNameIn().isEmpty()) {
+                query.append("WHERE TRUE ");
+                for (String name : criteria.getNameIn()) {
+                    query.append("AND LOWER(\"name\") LIKE ? ");
+                    params.add("%" + name + "%");
+                }
+            }
+
+            if (!criteria.getStreetIn().isEmpty()) {
+                if (criteria.getNameIn().isEmpty()) {
+                    query.append("WHERE ");
+                } else {
+                    query.append("OR ");
+                }
+                query.append("\"street_id\" IN (SELECT \"id\" FROM \"street\" WHERE TRUE ");
+
+                for (String name : criteria.getStreetIn()) {
+                    query.append("AND LOWER(\"name\") LIKE ? ");
+                    params.add("%" + name + "%");
+                }
+                query.append(") ");
+
+                if (criteria.getHouse() != null) {
+                    query.append(" AND \"house\"=?");
+                    params.add(criteria.getHouse());
+                }
+
+                if (criteria.getIndex() != null) {
+                    query.append(" AND LOWER(\"index\")=?");
+                    params.add(criteria.getIndex());
+                }
+
+                if (criteria.getBuilding() != null) {
+                    query.append(" AND LOWER(\"building\")=?");
+                    params.add(criteria.getBuilding());
+                }
+
+                if (criteria.getFlat() != null) {
+                    query.append(" AND LOWER(\"flat\")=?");
+                    params.add(criteria.getFlat());
+                }
+            }
+
+            PreparedStatement preparedStatement = getConnection().prepareStatement(query.toString());
+            for (int i = 0; i <  params.size(); ++i) {
+                Object val = params.get(i);
+                if (val instanceof String) {
+                    preparedStatement.setString(i + 1, (String) val);
+                } else if (val instanceof Integer) {
+                    preparedStatement.setInt(i + 1, (Integer) val);
+                } else {
+                    preparedStatement.setObject(i + 1, val);
+                }
+            }
+
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 subscribers.add(constructEntity(rs));

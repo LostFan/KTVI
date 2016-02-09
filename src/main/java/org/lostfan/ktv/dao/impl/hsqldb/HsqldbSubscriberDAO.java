@@ -4,6 +4,7 @@ import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
+import org.lostfan.ktv.model.searcher.SubscriberSearchCriteria;
 import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.sql.*;
@@ -801,6 +802,12 @@ public class HsqldbSubscriberDAO implements SubscriberDAO {
     @Override
     public HashMap<Integer, Integer> getServicesBalanceBySubscriberIdAndDate(Integer subscriberId, LocalDate date) {
         return null;
+    }
+
+    @Override
+    public List<Subscriber> search(SubscriberSearchCriteria criteria) {
+        // TODO: implement me
+        return new ArrayList<>();
     }
 
     @Override

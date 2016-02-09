@@ -24,17 +24,16 @@ public class AdditionalServiceSearcherModel extends EntitySearcherModel<Service>
 
     @Override
     public List<Service> getList() {
-        if (this.entities == null) {
-            this.entities = getDao().getAll().stream().filter(e->e.isAdditionalService()).collect(Collectors.toList());
+        if (this.getList() == null) {
+            setList(getDao().getAll().stream().filter(Service::isAdditionalService).collect(Collectors.toList()));
         }
 
-        return this.entities;
+        return super.getList();
     }
 
     @Override
     public void setSearchQuery(String query) {
-        this.entities = getDao().getAllContainsInName(query).stream().filter(e->e.isAdditionalService()).collect(Collectors.toList());
-        this.notifyObservers(null);
+        setList(getDao().getAllContainsInName(query).stream().filter(Service::isAdditionalService).collect(Collectors.toList()));
     }
 
     @Override

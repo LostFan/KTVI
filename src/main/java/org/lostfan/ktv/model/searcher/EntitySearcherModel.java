@@ -9,7 +9,7 @@ import org.lostfan.ktv.utils.BaseObservable;
 
 public abstract class EntitySearcherModel<T extends Entity> extends BaseObservable {
 
-    protected List<T> entities;
+    private List<T> entities;
 
     protected abstract EntityDAO<T> getDao();
 
@@ -21,9 +21,13 @@ public abstract class EntitySearcherModel<T extends Entity> extends BaseObservab
         return this.entities;
     }
 
-    public void setSearchQuery(String query) {
-        this.entities = getDao().getAllContainsInName(query);
+    protected void setList(List<T> entities) {
+        this.entities = entities;
         this.notifyObservers(null);
+    }
+
+    public void setSearchQuery(String query) {
+        setList(getDao().getAllContainsInName(query));
     }
 
     public T getEntity(int id) {

@@ -7,6 +7,7 @@ import java.util.List;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
+import org.lostfan.ktv.model.searcher.SubscriberSearchCriteria;
 
 public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
@@ -79,4 +80,6 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
     HashMap<Integer, Integer> getServicesBalanceBySubscriberIdAndDate(Integer subscriberId, LocalDate date);
 
     HashMap<Integer, Integer> getServicesBalance(Integer subscriberAccount);
+
+    List<Subscriber> search(SubscriberSearchCriteria criteria);
 }
