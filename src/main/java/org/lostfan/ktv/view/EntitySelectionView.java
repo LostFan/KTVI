@@ -25,6 +25,7 @@ public class EntitySelectionView extends DialogView<Entity> {
     public static final int HEIGHT = 500;
 
     private JTable table;
+    private JLabel label;
     private TextField queryTextField;
     private JScrollPane tableScrollPane;
     private JButton cancelButton;
@@ -36,6 +37,7 @@ public class EntitySelectionView extends DialogView<Entity> {
 
         setTitle(getGuiString("buttons.search") + ": " + getEntityString(model.getEntityNameKey()));
 
+        this.label = new JLabel(getGuiString("label.search"));
         this.queryTextField = new TextField(20);
         // TODO: submit the action to a controller
         this.queryTextField.addTextChangeListener(model::setSearchQuery);
@@ -82,6 +84,7 @@ public class EntitySelectionView extends DialogView<Entity> {
 
         // Query field on the top of the frame
         JPanel queryPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        queryPanel.add(this.label);
         queryPanel.add(this.queryTextField);
         getContentPanel().add(queryPanel, BorderLayout.PAGE_START);
 

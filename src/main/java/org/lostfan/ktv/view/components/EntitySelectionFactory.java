@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view.components;
 
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.searcher.AdditionalServiceSearcherModel;
@@ -48,6 +49,9 @@ public class EntitySelectionFactory {
 
     public static EntitySelectionView createView(String entityKey) {
         EntityModel entityModel = MainModel.getEntityModel(entityKey);
+        if(entityKey.equals(FixedServices.ADDITIONAL_SERVICE.getCode())) {
+            return createAdditionalServiceForm();
+        }
         if (entityModel == null) {
             throw new IllegalArgumentException("Unknown entity name: " + entityKey);
         }

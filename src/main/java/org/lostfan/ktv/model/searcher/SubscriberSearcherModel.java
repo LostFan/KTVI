@@ -29,8 +29,10 @@ public class SubscriberSearcherModel extends EntitySearcherModel<Subscriber> {
         this.fields.add(new EntityField("subscriber.account", EntityFieldTypes.Integer, Subscriber::getAccount, Subscriber::setAccount));
         this.fields.add(new EntityField("subscriber.name", EntityFieldTypes.String, Subscriber::getName, Subscriber::setName));
         this.fields.add(new EntityField("subscriber.street_id", EntityFieldTypes.Street, Subscriber::getStreetId, Subscriber::setStreetId));
-        this.fields.add(new EntityField("subscriber.balance", EntityFieldTypes.Integer, Subscriber::getBalance, Subscriber::setBalance));
-        this.fields.add(new EntityField("subscriber.connected", EntityFieldTypes.Boolean, Subscriber::isConnected, Subscriber::setConnected));
+        this.fields.add(new EntityField("subscriber.house", EntityFieldTypes.Integer, Subscriber::getHouse, Subscriber::setHouse));
+        this.fields.add(new EntityField("subscriber.index", EntityFieldTypes.String, Subscriber::getIndex, Subscriber::setIndex));
+        this.fields.add(new EntityField("subscriber.building", EntityFieldTypes.String, Subscriber::getBuilding, Subscriber::setBuilding));
+        this.fields.add(new EntityField("subscriber.flat", EntityFieldTypes.String, Subscriber::getFlat, Subscriber::setFlat));
 
         this.subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
     }
@@ -39,7 +41,6 @@ public class SubscriberSearcherModel extends EntitySearcherModel<Subscriber> {
     public void setSearchQuery(String query) {
         // Replace commas with the space key
         query = query.toLowerCase().replaceAll(",", " ");
-
         setList(this.subscriberDAO.search(parseQuery(query)));
     }
 

@@ -24,7 +24,7 @@ public class AdditionalServiceSearcherModel extends EntitySearcherModel<Service>
 
     @Override
     public List<Service> getList() {
-        if (this.getList() == null) {
+        if (super.getList() == null) {
             setList(getDao().getAll().stream().filter(Service::isAdditionalService).collect(Collectors.toList()));
         }
 

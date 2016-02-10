@@ -31,6 +31,7 @@ public class EntityTableView extends View {
     }
 
     private JPanel buttonsPanel;
+    protected JPanel tablePanel;
     private JTable table;
 
     private List<ActionButton> buttons;
@@ -49,7 +50,7 @@ public class EntityTableView extends View {
 
         this.table = new JTable(new EntityTableModel<>(model));
         this.table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-//        this.table.setRowSelectionAllowed(false);
+        this.table.setRowSelectionAllowed(false);
         this.table.setAutoCreateRowSorter(true);
         this.table.setFillsViewportHeight(true);
         this.table.addMouseListener(new MouseAdapter() {
@@ -72,6 +73,29 @@ public class EntityTableView extends View {
                 actionButton.button.setEnabled(rowsSelected);
             }
         });
+
+        this.tablePanel = new JPanel();
+        this.tablePanel.setLayout(new BorderLayout(10, 10));
+//        JPanel searchPanel = new JPanel();
+//        JComboBox fieldComboBox = new JComboBox<String>(new FieldsComboBoxModel(model.getFields()));
+//
+//        searchPanel.add(fieldComboBox);
+//
+//        JTextField textField = new JTextField(15);
+//        searchPanel.add(textField);
+//
+//        JButton findButton = new JButton(getGuiString("buttons.find"));
+//        findButton.addActionListener(e -> {
+//            if (this.filterActionListener != null) {
+//                this.filterActionListener.actionPerformed(null);
+//            }
+//        });
+//        searchPanel.add(findButton);
+////        jPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        this.tablePanel.setLayout(new BorderLayout(10, 10));
+//        this.tablePanel.add(searchPanel, BorderLayout.NORTH);
+
+
 
         JButton button = new JButton(getGuiString("buttons.filter"));
         button.addActionListener(e -> {
@@ -121,9 +145,10 @@ public class EntityTableView extends View {
         this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
         addStringActionTableCellEditorToColumns();
         JScrollPane tableScrollPane = new JScrollPane(this.table);
-//        System.out.println(model.getEntityName());
+        System.out.println(model.getEntityName());
+        tablePanel.add(tableScrollPane, BorderLayout.CENTER);
+        getContentPanel().add(tablePanel, BorderLayout.CENTER);
 
-        getContentPanel().add(tableScrollPane, BorderLayout.CENTER);
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         getContentPanel().add(rightPanel, BorderLayout.LINE_END);
