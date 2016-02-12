@@ -50,7 +50,7 @@ public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
 
     @Override
     public String getEntityName() {
-        return null;
+        return "subscriptionFee";
     }
 
     @Override

@@ -20,8 +20,8 @@ public class RenderedServiceEntityView extends EntityView {
     //// TODO: 27-Nov-15 wrong logic
     public <E extends Entity> RenderedServiceEntityView(EntityModel model, Entity entity) {
         super(model, entity);
-        RenderedServiceEntityModel renderedServiceEntityModel = (RenderedServiceEntityModel) model;
-        FormField labelFieldInput = new EntityFormField(new EntityField("tariff", EntityFieldTypes.Tariff, Tariff::getId, Tariff::setId), null );
+//        RenderedServiceEntityModel renderedServiceEntityModel = (RenderedServiceEntityModel) model;
+//        FormField labelFieldInput = new EntityFormField(new EntityField("tariff", EntityFieldTypes.Tariff, Tariff::getId, Tariff::setId), null );
 
 //        tariffFormFields = new ArrayList<>();
 //        for (EntityField entityField : ((RenderedServiceEntityModel) model).getTariffFields()) {

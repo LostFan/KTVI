@@ -66,9 +66,6 @@ public class EntityView extends FormView {
         }
     }
 
-    public static final int WIDTH = 500;
-    public static final int HEIGHT = 550;
-
     private JButton addButton;
     private JButton cancelButton;
     private EntityInnerTableView innerTableView;
@@ -91,7 +88,7 @@ public class EntityView extends FormView {
         this.model = model;
 
         setTitle(getEntityString(model.getEntityNameKey()));
-        setSize(WIDTH, HEIGHT);
+        setSize();
 
         entityFormFieldMap = new HashMap<>();
 

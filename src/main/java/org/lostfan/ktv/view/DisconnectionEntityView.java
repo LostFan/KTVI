@@ -16,6 +16,7 @@ public class DisconnectionEntityView extends EntityView {
     public DisconnectionEntityView(RenderedServiceEntityModel model, DisconnectionRenderedService entity) {
         super(model, entity);
         setTitle(getEntityString(FixedServices.DISCONNECTION.getCode()));
+        setSize();
 
         FormField dateField = getFormField("renderedService.date");
         FormField priceField = getFormField("renderedService.price");

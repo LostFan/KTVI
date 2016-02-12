@@ -16,6 +16,7 @@ public class ChangeOfTariffEntityView extends EntityView {
     public ChangeOfTariffEntityView(RenderedServiceEntityModel model, ChangeOfTariffRenderedService entity) {
         super(model, entity);
         setTitle(getEntityString(FixedServices.CHANGE_OF_TARIFF.getCode()));
+        setSize();
 
         FormField dateField = getFormField("renderedService.date");
         FormField priceField = getFormField("renderedService.price");

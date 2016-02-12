@@ -130,9 +130,6 @@ public class TurnoverReportView extends FormView {
     }
 
 
-    public static final int WIDTH = 800;
-    public static final int HEIGHT = 800;
-
     private JButton addButton;
     private JButton cancelButton;
     private JButton excelButton;
@@ -162,7 +159,7 @@ public class TurnoverReportView extends FormView {
         this.reportTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
         setTitle(getEntityString(model.getEntityNameKey()));
-        setSize(WIDTH, HEIGHT);
+        setSize();
 
         dateField = new DateFormField("renderedService.date");
         addFormField(dateField);

@@ -11,10 +11,7 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +29,6 @@ public class LoadPaymentsView extends FrameView {
     protected ViewActionListener cancelActionListener;
     private ViewActionListener loadPaymentFileListener;
 
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 550;
-
     public LoadPaymentsView(PaymentEntityModel model) {
 
         this.model = model;
@@ -42,7 +36,7 @@ public class LoadPaymentsView extends FrameView {
         fileOpen.setMultiSelectionEnabled(true);
         List<String> bankFileNames = new ArrayList<>();
         setTitle(getGuiString("window.loadPayments"));
-        setSize(WIDTH, HEIGHT);
+        setSize();
 
 
         openFileButton = new JButton(getGuiString("buttons.openFile"));

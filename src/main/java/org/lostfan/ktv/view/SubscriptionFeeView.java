@@ -84,10 +84,6 @@ public class SubscriptionFeeView extends FrameView {
         }
     }
 
-
-    private static final int WIDTH = 450;
-    private static final int HEIGHT = 550;
-
     private DateLabelFieldInput dateLabelFieldInput;
     private SubscriberLabelFieldInput subscriberLabelFieldInput;
     private JButton addButton;
@@ -111,7 +107,7 @@ public class SubscriptionFeeView extends FrameView {
         this.model = model;
 
         setTitle(getEntityString(model.getEntityNameKey()));
-        setSize(WIDTH, HEIGHT);
+        setSize();
 
         this.addButton = new JButton(getGuiString("buttons.count"));
         this.addButton.addActionListener(e -> {

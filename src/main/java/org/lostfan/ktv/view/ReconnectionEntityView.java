@@ -16,6 +16,7 @@ public class ReconnectionEntityView extends EntityView {
     public ReconnectionEntityView(RenderedServiceEntityModel model, ReconnectionRenderedService entity) {
         super(model, entity);
         setTitle(getEntityString(FixedServices.RECONNECTION.getCode()));
+        setSize();
 
         addFormField(createFormField(model.getTariffField(), entity), model.getTariffField());
 

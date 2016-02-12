@@ -32,7 +32,7 @@ public class EntityTableView extends View {
 
     private JPanel buttonsPanel;
     protected JPanel tablePanel;
-    private JTable table;
+    protected JTable table;
 
     private List<ActionButton> buttons;
 

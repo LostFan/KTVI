@@ -15,9 +15,6 @@ import org.lostfan.ktv.utils.ViewActionListener;
 
 public class TariffPriceView extends FormView {
 
-    public static final int HEIGHT = 400;
-    public static final int WIDTH = 350;
-
     private static class ArchiveTableModel extends AbstractTableModel {
 
         private List<TariffPrice> prices;
@@ -80,7 +77,7 @@ public class TariffPriceView extends FormView {
         setTitle(getGuiString("tariffPrice.windowTitle"));
         this.tariff = tariff;
 
-        setSize(WIDTH, HEIGHT);
+        setSize();
 
         this.archiveTable = new JTable(new ArchiveTableModel(tariff.getArchivePrices()));
         // Align center

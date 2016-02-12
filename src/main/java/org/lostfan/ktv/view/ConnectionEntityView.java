@@ -22,6 +22,7 @@ public class ConnectionEntityView extends EntityView {
     public ConnectionEntityView(RenderedServiceEntityModel model, ConnectionRenderedService entity) {
         super(model, entity);
         setTitle(getEntityString(FixedServices.CONNECTION.getCode()));
+        setSize();
 
         addFormField(createFormField(model.getTariffField(), entity), model.getTariffField());
 
