@@ -33,7 +33,7 @@ public class EntityFilterView extends FrameView {
         private JButton removeButton;
 
         public CriterionComponents() {
-            this.fieldComboBox = new JComboBox<String>(new FieldsComboBoxModel(model.getFields()));
+            this.fieldComboBox = new JComboBox<>(new FieldsComboBoxModel(model.getFields()));
 
             this.fieldComboBox.addActionListener(e -> {
                 criterionComboBox = new JComboBox<>(

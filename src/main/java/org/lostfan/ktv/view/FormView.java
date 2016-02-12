@@ -1,13 +1,10 @@
 package org.lostfan.ktv.view;
 
-import org.lostfan.ktv.utils.DefaultContextMenu;
 import org.lostfan.ktv.validation.Error;
 import org.lostfan.ktv.view.components.*;
 import org.lostfan.ktv.view.components.TextField;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
