@@ -1,7 +1,5 @@
 package org.lostfan.ktv.view;
 
-import java.time.LocalDate;
-
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
@@ -17,11 +15,12 @@ public class DisconnectionEntityView extends EntityView {
         super(model, entity);
         setTitle(getEntityString(FixedServices.DISCONNECTION.getCode()));
 
-        FormField dateField = getFormField("renderedService.date");
-        FormField priceField = getFormField("renderedService.price");
-        dateField.addValueListener(e ->
-                priceField.setValue(model.getRenderedServicePriceByDate(FixedServices.DISCONNECTION.getId(), (LocalDate)dateField.getValue())));
-
+        DateFormField dateField = (DateFormField) getFormField("renderedService.date");
+        IntegerFormField priceField = (IntegerFormField) getFormField("renderedService.price");
+        dateField.addValueListener(e -> {
+            Integer price = model.getRenderedServicePriceByDate(FixedServices.DISCONNECTION.getId(), dateField.getValue());
+            priceField.setValue(price);
+        });
         revalidate();
     }
 

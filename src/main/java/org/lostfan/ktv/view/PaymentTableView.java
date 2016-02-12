@@ -15,6 +15,9 @@ public class PaymentTableView extends EntityTableView {
     private ViewActionListener loadActionListener;
     private ViewActionListener newDateActionListener;
 
+    private JLabel monthNumber;
+    private JLabel yearNumber;
+
     public PaymentTableView(PaymentEntityModel model) {
         super(model);
         JButton priceButton = new JButton(getGuiString("buttons.load"));
@@ -31,62 +34,34 @@ public class PaymentTableView extends EntityTableView {
         JButton plusMonth =  new JButton(">");
         JButton plusYear =  new JButton(">>");
         JButton endButton =  new JButton(">>>");
-        JTextArea numberOfMonth = new JTextArea();
-        numberOfMonth.setText(String.valueOf(model.getDate().getMonth().getValue()));
-        numberOfMonth.setOpaque(false);
-        numberOfMonth.setBackground(new Color(0,0,0,0));
-        JTextArea numberOfYear = new JTextArea();
-        numberOfYear.setText(String.valueOf(model.getDate().getYear()));
-        numberOfYear.setOpaque(false);
-        numberOfYear.setBackground(new Color(0,0,0,0));
-        numberOfYear.setForeground(null);
+        this.monthNumber = new JLabel(String.valueOf(model.getDate().getMonth().getValue()));
+        this.yearNumber = new JLabel(String.valueOf(model.getDate().getYear()));
 
-
-        minusMonth.addActionListener(e -> {
-            LocalDate date = model.getDate().minusMonths(1);
-            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
-            numberOfYear.setText(String.valueOf(date.getYear()));
-            if (newDateActionListener != null) {
-                newDateActionListener.actionPerformed(date);
-            }
-        });
-        minusYear.addActionListener(e -> {
-            LocalDate date = model.getDate().minusYears(1);
-            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
-            numberOfYear.setText(String.valueOf(date.getYear()));
-            if (newDateActionListener != null) {
-                newDateActionListener.actionPerformed(date);
-            }
-        });
-        plusMonth.addActionListener(e -> {
-            LocalDate date = model.getDate().plusMonths(1);
-            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
-            numberOfYear.setText(String.valueOf(date.getYear()));
-            if (newDateActionListener != null) {
-                newDateActionListener.actionPerformed(date);
-            }
-        });
-        plusYear.addActionListener(e -> {
-            LocalDate date = model.getDate().plusYears(1);
-            numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
-            numberOfYear.setText(String.valueOf(date.getYear()));
-            if (newDateActionListener != null) {
-                newDateActionListener.actionPerformed(date);
-            }
-        });
-
-
+        minusMonth.addActionListener(e -> updateDate(model.getDate().minusMonths(1)));
+        minusYear.addActionListener(e -> updateDate(model.getDate().minusYears(1)));
+        plusMonth.addActionListener(e -> updateDate(model.getDate().plusMonths(1)));
+        plusYear.addActionListener(e -> updateDate(model.getDate().plusYears(1)));
 
         JPanel newPanel = new JPanel();
         getContentPanel().add(newPanel,  BorderLayout.SOUTH);
         newPanel.add(beginButton);
         newPanel.add(minusYear);
         newPanel.add(minusMonth);
-        newPanel.add(numberOfMonth);
-        newPanel.add(numberOfYear);
+        newPanel.add(this.monthNumber);
+        newPanel.add(new JLabel("/"));
+        newPanel.add(this.yearNumber);
         newPanel.add(plusMonth);
         newPanel.add(plusYear);
         newPanel.add(endButton);
+    }
+
+    private void updateDate(LocalDate newDate) {
+        this.monthNumber.setText(String.valueOf(newDate.getMonth().getValue()));
+        this.yearNumber.setText(String.valueOf(newDate.getYear()));
+        if (newDateActionListener != null) {
+            newDateActionListener.actionPerformed(newDate);
+        }
+        revalidate();
     }
 
     public void loadActionListener(ViewActionListener loadActionListener) {

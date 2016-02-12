@@ -15,9 +15,6 @@ import org.lostfan.ktv.view.components.EntityPanel;
 import org.lostfan.ktv.view.components.EntityPanelFactory;
 import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
-/**
- * Created by Ihar_Niakhlebau on 30-Oct-15.
- */
 public class ActionTableCellEditor implements TableCellEditor {
 
     private TableCellEditor editor;
@@ -61,7 +58,7 @@ public class ActionTableCellEditor implements TableCellEditor {
         this.row = row;
         this.column = column;
 
-        //TODO Need find best solution
+        //TODO Need to find best solution
         entityPanel.getTableButton().setPreferredSize(new Dimension(15,10));
         entityPanel.getEntityButton().setPreferredSize(new Dimension(15,10));
         entityPanel.getTableButton().setEnabled(false);
@@ -77,12 +74,9 @@ public class ActionTableCellEditor implements TableCellEditor {
                 } catch (InterruptedException ex) {
                 }
 
-                SwingUtilities.invokeLater(new Runnable() {
-
-                    public void run() {
-                        entityPanel.getTableButton().setEnabled(true);
-                        entityPanel.getEntityButton().setEnabled(true);
-                    }
+                SwingUtilities.invokeLater(() -> {
+                    entityPanel.getTableButton().setEnabled(true);
+                    entityPanel.getEntityButton().setEnabled(true);
                 });
 
             }

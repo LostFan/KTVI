@@ -11,15 +11,30 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LoadPaymentsView extends FrameView {
+
+    private static class PaymentFileFilter extends FileFilter {
+
+        @Override
+        public boolean accept(File f) {
+            if (f.isDirectory()) {
+                return true;
+            }
+
+            String filename = f.getName().toLowerCase();
+            return filename.endsWith(".210") || filename.endsWith(".dat");
+        }
+
+        @Override
+        public String getDescription() {
+            return "*.210,*.dat";
+        }
+    }
 
     private JFileChooser fileOpen;
     private EntityInnerTableView<Payment> entityInnerTableView;
@@ -39,6 +54,7 @@ public class LoadPaymentsView extends FrameView {
 
         this.model = model;
         fileOpen = new JFileChooser();
+        fileOpen.setFileFilter(new PaymentFileFilter());
         fileOpen.setMultiSelectionEnabled(true);
         List<String> bankFileNames = new ArrayList<>();
         setTitle(getGuiString("window.loadPayments"));
@@ -64,46 +80,29 @@ public class LoadPaymentsView extends FrameView {
         });
 
 
-        openFileButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                fileOpen.setFileFilter(new FileFilter() {
-
-                    public String getDescription() {
-                        return "*.210,*.dat";
-                    }
-
-                    public boolean accept(File f) {
-                        if (f.isDirectory()) {
-                            return true;
-                        } else {
-                            String filename = f.getName().toLowerCase();
-                            return filename.endsWith(".210") || filename.endsWith(".dat");
+        openFileButton.addActionListener(e -> {
+            Action details = fileOpen.getActionMap().get("viewTypeDetails");
+            details.actionPerformed(null);
+            int ret = fileOpen.showDialog(null, getGuiString("buttons.openFile"));
+            if (ret == JFileChooser.APPROVE_OPTION) {
+                File[] files = fileOpen.getSelectedFiles();
+                List<Payment> payments = entityInnerTableView.getEntityList();
+                for (File file : files) {
+                    if(bankFileNames.contains(file.getName())
+                            || !LoadPaymentsView.this.model.getPaymentsByBankFileName(file.getName()).isEmpty()) {
+                        if(!confirmAdding()) {
+                            continue;
                         }
+                    } else {
+                        bankFileNames.add(file.getName());
                     }
-                });
-                Action details = fileOpen.getActionMap().get("viewTypeDetails");
-                details.actionPerformed(null);
-                int ret = fileOpen.showDialog(null, getGuiString("buttons.openFile"));
-                if (ret == JFileChooser.APPROVE_OPTION) {
-                    File[] files = fileOpen.getSelectedFiles();
-                    List<Payment> payments = entityInnerTableView.getEntityList();
-                    for (File file : files) {
-                        if(bankFileNames.contains(file.getName())
-                                || !LoadPaymentsView.this.model.getPaymentsByBankFileName(file.getName()).isEmpty()) {
-                            if(!confirmAdding()) {
-                                continue;
-                            }
-                        } else {
-                            bankFileNames.add(file.getName());
-                        }
-                        if (LoadPaymentsView.this.loadPaymentFileListener != null) {
-                            LoadPaymentsView.this.loadPaymentFileListener.actionPerformed(new PaymentController.FileAndPayments(file, payments));
-                        }
-//                        payments.addAll(LoadPaymentsView.this.model.
-//                                createPayments(file, payments));
+                    if (LoadPaymentsView.this.loadPaymentFileListener != null) {
+                        LoadPaymentsView.this.loadPaymentFileListener.actionPerformed(new PaymentController.FileAndPayments(file, payments));
                     }
-
+//                    payments.addAll(LoadPaymentsView.this.model.
+//                            createPayments(file, payments));
                 }
+
             }
         });
 

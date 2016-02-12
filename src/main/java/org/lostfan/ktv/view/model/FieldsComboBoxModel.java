@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class FieldsComboBoxModel<E> implements ComboBoxModel<String> {
+public class FieldsComboBoxModel implements ComboBoxModel<String> {
 
     private List<EntityField> fields;
     private Map<String, EntityField> titleFieldMap;
