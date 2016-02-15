@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS "service_price";
 DROP TABLE IF EXISTS "service";
 DROP TABLE IF EXISTS "material";
 DROP TABLE IF EXISTS "street";
+DROP TABLE IF EXISTS "period";
 DROP SEQUENCE IF EXISTS "serial_street";
 DROP SEQUENCE IF EXISTS "serial_material";
 DROP SEQUENCE IF EXISTS "serial_service";

@@ -64,6 +64,7 @@ public abstract class FrameView extends View {
 
     protected void setTitle(String title) {
         this.frame.setTitle(title);
+        this.setSize();
     }
 
     protected String getTitle() {

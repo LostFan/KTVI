@@ -1,11 +1,13 @@
 package org.lostfan.ktv.model.entity;
 
 import org.lostfan.ktv.dao.EntityDAO;
+import org.lostfan.ktv.domain.Document;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.utils.BaseObservable;
+import org.lostfan.ktv.validation.PeriodValidator;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.validation.Validator;
 
@@ -25,6 +27,8 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     private EntityModel parentModel;
 
     protected List<EntityModel> entityTableModels;
+
+    private PeriodValidator periodValidator = new PeriodValidator();
 
     public BaseEntityModel() {
         this.searchCriteria = new ArrayList<>();
@@ -62,6 +66,10 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     @Override
     public ValidationResult save(T entity) {
         ValidationResult result = this.getValidator().validate(entity);
+
+        if(entity instanceof Document) {
+            periodValidator.validate((Document) entity, result);
+        }
         if (result.hasErrors()) {
             return result;
         }

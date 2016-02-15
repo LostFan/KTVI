@@ -1,6 +1,9 @@
 package org.lostfan.ktv.controller;
 
+import org.lostfan.ktv.model.FileMenu;
 import org.lostfan.ktv.model.FixedServices;
+import org.lostfan.ktv.model.PeriodModel;
+import org.lostfan.ktv.model.Reports;
 import org.lostfan.ktv.model.TurnoverReportModel;
 import org.lostfan.ktv.model.dto.*;
 import org.lostfan.ktv.model.entity.EntityModel;
@@ -11,6 +14,7 @@ import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.*;
 import org.lostfan.ktv.view.components.EntityViewFactory;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,8 +73,25 @@ public class MainController {
         });
         this.view.setMenuReportActionListener(args -> {
             String code = (String) args;
-            TurnoverReportModel reportModel = new TurnoverReportModel();
-            TurnoverReportView reportView = new TurnoverReportView(reportModel);
+            switch (Reports.of(code)) {
+                case TURNOVER_SHEET:
+                    TurnoverReportModel reportModel = new TurnoverReportModel();
+                    TurnoverReportView reportView = new TurnoverReportView(reportModel);
+                    break;
+            };
+        });
+        this.view.setMenuFileActionListener(args -> {
+            String code = (String) args;
+            switch (FileMenu.of(code)) {
+                case EDIT_PERIOD:
+                    PeriodModel periodModel = new PeriodModel();
+                    PeriodView reportView = new PeriodView(periodModel);
+                    reportView.setChangeActionListener(args_ -> {
+                        LocalDate date = (LocalDate) args_;
+                        periodModel.savePeriod(date);
+                    });
+                    break;
+            };
         });
 
         this.model.addObserver(args -> {

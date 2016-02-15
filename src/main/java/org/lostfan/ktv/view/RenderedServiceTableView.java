@@ -178,7 +178,11 @@ public class RenderedServiceTableView extends EntityTableView {
         StringBuffer stringBuffer = new StringBuffer();
         for (Error error : errors) {
             if (error.getField() == null) {
-                stringBuffer.append(error.getMessage());
+                String err = getGuiString(error.getMessage());
+                if (error.getParams().length != 0) {
+                    err = String.format(err, error.getParams());
+                }
+                stringBuffer.append(err);
                 stringBuffer.append("\n");
             }
         }

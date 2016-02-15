@@ -159,7 +159,6 @@ public class TurnoverReportView extends FormView {
         this.reportTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
         setTitle(getEntityString(model.getEntityNameKey()));
-        setSize();
 
         dateField = new DateFormField("renderedService.date");
         addFormField(dateField);

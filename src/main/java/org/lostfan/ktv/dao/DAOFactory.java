@@ -29,4 +29,6 @@ public abstract class DAOFactory {
     public abstract StreetDAO getStreetDAO();
 
     public abstract MaterialConsumptionDAO getMaterialConsumptionDAO();
+
+    public abstract PeriodDAO getPeriodDAO();
 }

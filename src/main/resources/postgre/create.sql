@@ -142,3 +142,8 @@ CREATE TABLE "material_consumption" (
   FOREIGN KEY ("material_id") REFERENCES "material"("id"),
   FOREIGN KEY ("rendered_service_id") REFERENCES "rendered_service"("id")
 );
+
+CREATE TABLE "period" (
+  "date" DATE NOT NULL,
+  PRIMARY KEY("date")
+);

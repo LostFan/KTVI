@@ -2,7 +2,7 @@ package org.lostfan.ktv.domain;
 
 import java.time.LocalDate;
 
-public class RenderedService extends DefaultEntity {
+public class RenderedService extends DefaultEntity implements Document {
 
     private Integer id;
 

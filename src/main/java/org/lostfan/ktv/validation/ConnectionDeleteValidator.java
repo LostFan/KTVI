@@ -20,18 +20,18 @@ public class ConnectionDeleteValidator implements Validator<RenderedService> {
 
         SubscriberSession oldSubscriberSession = subscriberDAO.getSubscriberSessionAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession != null) {
-            result.addError(ResourceBundles.getGuiBundle().getString("errors.hasSessionAfterDate") + ". Id: " + entity.getId());
+            result.addError("errors.hasSessionAfterDateWithId", entity.getId());
             return result;
         }
         SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberTariff != null ) {
-            result.addError(ResourceBundles.getGuiBundle().getString("errors.hasTariffAfterDate") + ". Id: " + entity.getId());
+            result.addError("errors.hasTariffAfterDateWithId", entity.getId());
             return result;
         }
 
         oldSubscriberSession = subscriberDAO.getSubscriberSessionByConnectionDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession.getDisconnectionDate() != null) {
-            result.addError(ResourceBundles.getGuiBundle().getString("errors.sessionAlreadyClosed") + ". Id: " + entity.getId());
+            result.addError("errors.sessionAlreadyClosedWithId", entity.getId());
             return result;
         }
 

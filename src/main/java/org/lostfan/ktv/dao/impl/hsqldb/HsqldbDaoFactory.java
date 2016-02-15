@@ -74,4 +74,9 @@ public class HsqldbDaoFactory extends DAOFactory {
     public MaterialConsumptionDAO getMaterialConsumptionDAO() {
         return this.materialConsumptionDAO ;
     }
+
+    @Override
+    public PeriodDAO getPeriodDAO() {
+        return null;
+    }
 }

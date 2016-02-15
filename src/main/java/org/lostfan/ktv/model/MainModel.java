@@ -109,6 +109,7 @@ public class MainModel extends BaseObservable {
     private List<String> entityModelNames;
     private List<String> documentModelNames;
     private List<String> reportNames;
+    private List<String> fileNames;
     private List<String> servicesNames;
     private BaseModel currentModel;
 
@@ -131,6 +132,8 @@ public class MainModel extends BaseObservable {
         this.servicesNames = Arrays.stream(FixedServices.values()).filter(e -> e.getId() != 1).map(FixedServices::getCode).collect(Collectors.toList());
 
         this.reportNames = Arrays.stream(Reports.values()).map(Reports::getCode).collect(Collectors.toList());
+
+        this.fileNames = Arrays.stream(FileMenu.values()).map(FileMenu::getCode).collect(Collectors.toList());
     }
 
     public BaseModel getCurrentModel() {
@@ -166,5 +169,9 @@ public class MainModel extends BaseObservable {
 
     public List<String> getReportsItems() {
         return this.reportNames;
+    }
+
+    public List<String> getFileItems() {
+        return this.fileNames;
     }
 }

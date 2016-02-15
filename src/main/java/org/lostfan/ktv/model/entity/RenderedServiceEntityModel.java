@@ -36,6 +36,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     private ConnectionDeleteValidator connectionDeleteValidator = new ConnectionDeleteValidator();
     private DisconnectionDeleteValidator disconnectionDeleteValidator = new DisconnectionDeleteValidator();
     private ChangeTariffDeleteValidator changeTariffDeleteValidator = new ChangeTariffDeleteValidator();
+    private PeriodValidator periodValidator = new PeriodValidator();
 
     private MaterialConsumptionDAO materialConsumptionDAO = DAOFactory.getDefaultDAOFactory().getMaterialConsumptionDAO();
     private MaterialDAO materialDAO = DAOFactory.getDefaultDAOFactory().getMaterialDAO();
@@ -164,12 +165,18 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         subscriberTariff.setConnectTariff(entity.getDate());
         result = validatorSubscriberTariff.validate(subscriberTariff, result);
 
-        for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
-            result = MainModel.getMaterialConsumptionEntityModel().getValidator().validate(materialConsumption, result);
-        }
+//        for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+//            result = MainModel.getMaterialConsumptionEntityModel().getValidator().validate(materialConsumption, result);
+//        }
         if (result.hasErrors()) {
             return result;
         }
+
+        result = periodValidator.validate(entity, result);
+        if (result.hasErrors()) {
+            return result;
+        }
+
         SubscriberSession subscriberSession = new SubscriberSession();
         subscriberSession.setConnectionDate(entity.getDate());
         subscriberSession.setSubscriberAccount(entity.getSubscriberAccount());
@@ -186,6 +193,12 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
 
         RenderedService prevRenderedService = getDao().get(entity.getId());
+
+        result = periodValidator.validate(prevRenderedService, result);
+        if (result.hasErrors()) {
+            return result;
+        }
+
         if (!prevRenderedService.getSubscriberAccount().equals(entity.getSubscriberAccount())) {
             result = this.connectionAdditionValidator.validate(entity, result);
         }
@@ -209,10 +222,15 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
     public ValidationResult save(ReconnectionRenderedService entity) {
         ValidationResult result = this.getValidator().validate(entity);
 
-
         if (result.hasErrors()) {
             return result;
         }
+
+        result = periodValidator.validate(entity, result);
+        if (result.hasErrors()) {
+            return result;
+        }
+
         SubscriberSession subscriberSession = new SubscriberSession();
         subscriberSession.setConnectionDate(entity.getDate());
         subscriberSession.setSubscriberAccount(entity.getSubscriberAccount());
@@ -228,6 +246,12 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
 
         RenderedService prevRenderedService = getDao().get(entity.getId());
+
+        result = periodValidator.validate(prevRenderedService, result);
+        if (result.hasErrors()) {
+            return result;
+        }
+
         if (!prevRenderedService.getSubscriberAccount().equals(entity.getSubscriberAccount())) {
             result = this.reconnectionAdditionValidator.validate(entity, result);
         }
@@ -251,6 +275,11 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             return result;
         }
 
+        result = periodValidator.validate(entity, result);
+        if (result.hasErrors()) {
+            return result;
+        }
+
         if (entity.getId() == null) {
             result = this.disconnectionAdditionValidator.validate(entity, result);
             if (result.hasErrors()) {
@@ -266,6 +295,11 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
 
         RenderedService prevRenderedService = getDao().get(entity.getId());
+
+        result = periodValidator.validate(prevRenderedService, result);
+        if (result.hasErrors()) {
+            return result;
+        }
 
         if (!prevRenderedService.getSubscriberAccount().equals(entity.getSubscriberAccount())) {
             result = this.disconnectionAdditionValidator.validate(entity, result);
@@ -296,6 +330,11 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
             return result;
         }
 
+        result = periodValidator.validate(entity, result);
+        if (result.hasErrors()) {
+            return result;
+        }
+
         SubscriberTariff newSubscriberTariff = new SubscriberTariff();
         newSubscriberTariff.setTariffId(entity.getTariffId());
         newSubscriberTariff.setSubscriberAccount(entity.getSubscriberAccount());
@@ -319,6 +358,11 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         }
 
         RenderedService prevRenderedService = getDao().get(entity.getId());
+
+        result = periodValidator.validate(prevRenderedService, result);
+        if (result.hasErrors()) {
+            return result;
+        }
 
         if (!(prevRenderedService.getSubscriberAccount().equals(entity.getSubscriberAccount()))) {
             result = this.changeTariffAdditionValidator.validate(entity, result);
@@ -350,6 +394,12 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
         if (result.hasErrors()) {
             return result;
         }
+
+        result = periodValidator.validate(entity, result);
+        if (result.hasErrors()) {
+            return result;
+        }
+
         if (entity.getId() == null) {
             getDao().save(entity);
 //            for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
@@ -358,6 +408,14 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 //            }
             return result;
         }
+
+        RenderedService prevRenderedService = getDao().get(entity.getId());
+
+        result = periodValidator.validate(prevRenderedService, result);
+        if (result.hasErrors()) {
+            return result;
+        }
+
         getDao().update(entity);
 //        updateMaterials(entity);
         updateEntitiesList();
@@ -373,6 +431,7 @@ public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService>
 
         for (Integer id : ids) {
             RenderedService entity = getDao().get(id);
+            periodValidator.validate(entity, result);
             if(entity.getServiceId().equals(FixedServices.CONNECTION.getId())) {
                 isDeleteConnection(entity, result);
             }

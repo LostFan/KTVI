@@ -15,7 +15,8 @@ public class MainView extends FrameView {
     private enum MenuType {
         ENTITY_MENU,
         SERVICE_MENU,
-        REPORT_MENU
+        REPORT_MENU,
+        FILE_MENU
     }
 
     private class MenuActionListener implements ActionListener {
@@ -40,6 +41,11 @@ public class MainView extends FrameView {
             if (this.menuType == MenuType.REPORT_MENU && MainView.this.menuReportActionListener != null) {
                 MainView.this.menuReportActionListener.actionPerformed(name);
             }
+
+            if (this.menuType == MenuType.FILE_MENU && MainView.this.menuFileActionListener != null) {
+                MainView.this.menuFileActionListener.actionPerformed(name);
+            }
+
         }
     }
 
@@ -49,6 +55,7 @@ public class MainView extends FrameView {
     private ViewActionListener menuEntityActionListener;
     private ViewActionListener menuServiceActionListener;
     private ViewActionListener menuReportActionListener;
+    private ViewActionListener menuFileActionListener;
 
     public MainView(MainModel model) {
         super("KTV");
@@ -67,12 +74,20 @@ public class MainView extends FrameView {
         menuBar.add(serviceMenu);
         menuBar.add(reportMenu);
 
+        MenuActionListener menuActionListener = new MenuActionListener(MenuType.FILE_MENU);
+        for (String code : model.getFileItems()) {
+            JMenuItem entityMenuItem = new JMenuItem(getGuiString(code));
+            entityMenuItem.setName(code);
+            fileMenu.add(entityMenuItem);
+            entityMenuItem.addActionListener(menuActionListener);
+        }
+
         JMenuItem exitMenuItem = new JMenuItem(getGuiString("menu.file.exit"));
         exitMenuItem.addActionListener(e ->
             MainView.this.getFrame().dispatchEvent(new WindowEvent(MainView.this.getFrame(), WindowEvent.WINDOW_CLOSING)));
         fileMenu.add(exitMenuItem);
 
-        MenuActionListener menuActionListener = new MenuActionListener(MenuType.ENTITY_MENU);
+        menuActionListener = new MenuActionListener(MenuType.ENTITY_MENU);
         for (String code : model.getEntityItems()) {
             JMenuItem entityMenuItem = new JMenuItem(getEntityString(code));
             entityMenuItem.setName(code);
@@ -134,5 +149,9 @@ public class MainView extends FrameView {
 
     public void setMenuReportActionListener(ViewActionListener menuReportActionListener) {
         this.menuReportActionListener = menuReportActionListener;
+    }
+
+    public void setMenuFileActionListener(ViewActionListener menuFileActionListener) {
+        this.menuFileActionListener = menuFileActionListener;
     }
 }
