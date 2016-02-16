@@ -24,7 +24,6 @@ public class AdditionalServiceEntityView extends EntityView {
     public AdditionalServiceEntityView(RenderedServiceEntityModel model, AdditionalRenderedService entity) {
         super(model, entity);
         setTitle(getEntityString(FixedServices.ADDITIONAL_SERVICE.getCode()));
-        setSize();
 
         Service service = new Service();
         if(entity != null) {

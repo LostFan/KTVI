@@ -168,7 +168,6 @@ public class EntityFilterView extends FrameView {
     }
 
     private void buildLayout() {
-        setSize();
 
         getContentPanel().setLayout(new BorderLayout(10, 10));
         getContentPanel().getRootPane().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));

@@ -77,8 +77,6 @@ public class ServicePriceView extends FormView {
         setTitle(getGuiString("servicePrice.windowTitle"));
         this.service = service;
 
-        setSize();
-
         this.archiveTable = new JTable(new ArchiveTableModel(service.getArchivePrices()));
         // Align center
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();

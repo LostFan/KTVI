@@ -45,7 +45,7 @@ public abstract class FrameView extends View {
         this.frame.setSize(new Dimension(width, height));
     }
 
-    protected void setSize() {
+    protected void resize() {
         FormSize formSize = FormSize.getFormSize(getTitle());
         if(formSize != null) {
             setSize(formSize.getWidth(), formSize.getHeight());
@@ -64,7 +64,7 @@ public abstract class FrameView extends View {
 
     protected void setTitle(String title) {
         this.frame.setTitle(title);
-        this.setSize();
+        this.resize();
     }
 
     protected String getTitle() {

@@ -88,7 +88,6 @@ public class EntityView extends FormView {
         this.model = model;
 
         setTitle(getEntityString(model.getEntityNameKey()));
-        setSize();
 
         entityFormFieldMap = new HashMap<>();
 

@@ -107,7 +107,6 @@ public class SubscriptionFeeView extends FrameView {
         this.model = model;
 
         setTitle(getEntityString(model.getEntityNameKey()));
-        setSize();
 
         this.addButton = new JButton(getGuiString("buttons.count"));
         this.addButton.addActionListener(e -> {

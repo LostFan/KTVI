@@ -77,8 +77,6 @@ public class TariffPriceView extends FormView {
         setTitle(getGuiString("tariffPrice.windowTitle"));
         this.tariff = tariff;
 
-        setSize();
-
         this.archiveTable = new JTable(new ArchiveTableModel(tariff.getArchivePrices()));
         // Align center
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();

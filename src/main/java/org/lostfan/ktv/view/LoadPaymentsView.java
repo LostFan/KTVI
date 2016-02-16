@@ -9,8 +9,6 @@ import org.lostfan.ktv.utils.ViewActionListener;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -55,7 +53,6 @@ public class LoadPaymentsView extends FrameView {
         fileOpen.setMultiSelectionEnabled(true);
         List<String> bankFileNames = new ArrayList<>();
         setTitle(getGuiString("window.loadPayments"));
-        setSize();
 
 
         openFileButton = new JButton(getGuiString("buttons.openFile"));
