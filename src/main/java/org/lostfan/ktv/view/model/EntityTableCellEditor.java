@@ -15,7 +15,7 @@ import org.lostfan.ktv.view.components.EntityPanel;
 import org.lostfan.ktv.view.components.EntityPanelFactory;
 import org.lostfan.ktv.view.components.EntitySelectionFactory;
 
-public class ActionTableCellEditor implements TableCellEditor {
+public class EntityTableCellEditor implements TableCellEditor {
 
     private TableCellEditor editor;
     private EntityFieldTypes entityFieldTypes;
@@ -25,7 +25,7 @@ public class ActionTableCellEditor implements TableCellEditor {
     protected int row, column;
     private EntityPanel entityPanel;
 
-    public ActionTableCellEditor(TableCellEditor editor, EntityFieldTypes entityFieldTypes){
+    public EntityTableCellEditor(TableCellEditor editor, EntityFieldTypes entityFieldTypes){
 
         this.entityFieldTypes = entityFieldTypes;
         this.editor = editor;
@@ -59,8 +59,8 @@ public class ActionTableCellEditor implements TableCellEditor {
         this.column = column;
 
         //TODO Need to find best solution
-        entityPanel.getTableButton().setPreferredSize(new Dimension(15,10));
-        entityPanel.getEntityButton().setPreferredSize(new Dimension(15,10));
+        entityPanel.getTableButton().setPreferredSize(new Dimension(15,table.getRowHeight(row)));
+        entityPanel.getEntityButton().setPreferredSize(new Dimension(15,table.getRowHeight(row)));
         entityPanel.getTableButton().setEnabled(false);
         entityPanel.getEntityButton().setEnabled(false);
         panel.add(this.entityPanel);

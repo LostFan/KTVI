@@ -5,7 +5,8 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ViewActionListener;
-import org.lostfan.ktv.view.model.ActionTableCellEditor;
+import org.lostfan.ktv.view.model.EntityTableCellEditor;
+import org.lostfan.ktv.view.model.DateTableCellEditor;
 import org.lostfan.ktv.view.model.EntityInnerTableModel;
 
 import javax.swing.*;
@@ -163,8 +164,13 @@ public class EntityInnerTableView<T extends Entity> extends View {
         for (int columnIndex=0;columnIndex< this.table.getColumnCount(); columnIndex++) {
             if(EntityFieldTypes.getEntityClass(this.table.getColumnClass(columnIndex)).isEntityClass()) {
                 this.table.getColumn(this.table.getColumnName(columnIndex))
-                        .setCellEditor(new ActionTableCellEditor(
+                        .setCellEditor(new EntityTableCellEditor(
                                 editor, EntityFieldTypes.getEntityClass(this.table.getColumnClass(columnIndex))));
+            }
+            if(EntityFieldTypes.getEntityClass(this.table.getColumnClass(columnIndex)) == EntityFieldTypes.Date) {
+                this.table.getColumn(this.table.getColumnName(columnIndex))
+                        .setCellEditor(new DateTableCellEditor(
+                                editor, EntityFieldTypes.Date));
             }
         }
     }

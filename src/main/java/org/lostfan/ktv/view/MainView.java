@@ -67,7 +67,7 @@ public class MainView extends FrameView {
         JMenu entityMenu = new JMenu(getGuiString("menu.entities"));
         JMenu documentMenu = new JMenu(getGuiString("menu.documents"));
         JMenu reportMenu = new JMenu(getGuiString("menu.reports"));
-        JMenu serviceMenu = new JMenu(getGuiString("menu.services"));
+        JMenu serviceMenu = new JMenu(getGuiString("menu.add"));
         menuBar.add(fileMenu);
         menuBar.add(entityMenu);
         menuBar.add(documentMenu);

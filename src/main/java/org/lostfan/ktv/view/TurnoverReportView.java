@@ -102,11 +102,11 @@ public class TurnoverReportView extends FormView {
         }
     }
 
-    private class EntityFormField extends FormField<Integer> {
+    private class ServiceFormField extends FormField<Integer> {
 
         private EntityPanel panel;
 
-        public EntityFormField(String fieldKey) {
+        public ServiceFormField(String fieldKey) {
             super(fieldKey);
             this.panel = EntityPanelFactory.createEntityPanel(EntityFieldTypes.Service);
 
@@ -143,7 +143,7 @@ public class TurnoverReportView extends FormView {
 
     private DateFormField dateField;
     private BooleanFormField isAdditionalField;
-    private EntityFormField serviceField;
+    private ServiceFormField serviceField;
 
     private Entity entity;
     private Map<EntityField, FormView.FormField> entityFormFieldMap;
@@ -164,7 +164,7 @@ public class TurnoverReportView extends FormView {
         addFormField(dateField);
         isAdditionalField = new BooleanFormField("service.additional");
         addFormField(isAdditionalField);
-        serviceField = new EntityFormField("service");
+        serviceField = new ServiceFormField("service");
         addFormField(serviceField);
 
         entityFormFieldMap = new HashMap<>();
