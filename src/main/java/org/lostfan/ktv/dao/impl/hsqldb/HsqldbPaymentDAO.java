@@ -100,6 +100,11 @@ public class HsqldbPaymentDAO implements PaymentDAO {
         return payments;
     }
 
+    @Override
+    public List<Payment> getList(Integer subscriberId, LocalDate date, String bankFileName) {
+        return null;
+    }
+
     public void save(Payment payment) {
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(

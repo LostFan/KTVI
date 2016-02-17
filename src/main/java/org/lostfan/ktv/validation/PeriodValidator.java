@@ -28,4 +28,16 @@ public class PeriodValidator implements Validator<Document> {
 
         return result;
     }
+
+    public ValidationResult validate(LocalDate date, ValidationResult result) {
+        LocalDate periodDate = this.periodDAO.getPeriod();
+        if (periodDate.isAfter(date)) {
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("d.MM.yyyy");
+            result.addError("errors.periodAlreadyClosed", (Object) periodDate.format(formatter));
+            return result;
+        }
+
+        return result;
+    }
 }

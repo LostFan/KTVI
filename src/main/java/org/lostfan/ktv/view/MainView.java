@@ -154,4 +154,9 @@ public class MainView extends FrameView {
     public void setMenuFileActionListener(ViewActionListener menuFileActionListener) {
         this.menuFileActionListener = menuFileActionListener;
     }
+
+    @Override
+    protected void setTitle(String title) {
+        this.getFrame().setTitle(title);
+    }
 }

@@ -3,8 +3,10 @@ package org.lostfan.ktv.controller;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.view.FormView;
 import org.lostfan.ktv.view.LoadPaymentsView;
 import org.lostfan.ktv.view.PaymentTableView;
+import org.lostfan.ktv.view.PaymentView;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -47,16 +49,7 @@ public class PaymentController extends EntityController{
         LoadPaymentsView loadPaymentsView = new LoadPaymentsView(model);
         loadPaymentsView.setAddActionListener(args_ -> {
             List<Payment> payments = (List<Payment>) args_;
-            ValidationResult result = ValidationResult.createEmpty();
-            for (Payment payment : payments) {
-                result = model.save(payment);
-            }
-            if (result.hasErrors()) {
-                loadPaymentsView.showErrors(result.getErrors());
-                return;
-            }
-
-            loadPaymentsView.hide();
+            savePayments(payments, loadPaymentsView);
         });
 
 
@@ -74,4 +67,90 @@ public class PaymentController extends EntityController{
         this.model.setDate(date);
     }
 
+    @Override
+    public void addActionPerformed(Object args) {
+        PaymentView entityView = new PaymentView(model);
+        entityView.setAddPaymentsInTableListener(args1 -> {
+            Payment payment = (Payment) args1;
+            entityView.addPayments(model.loadPayments(payment, null));
+        });
+        entityView.setAddActionListener(args_ -> {
+            List<Payment> payments = (List<Payment>) args_;
+            savePayments(payments, entityView);
+        });
+    }
+
+    private void savePayments(List<Payment> payments, FormView view) {
+        ValidationResult result = ValidationResult.createEmpty();
+        for (Payment payment : payments) {
+            result = model.getValidator().validate(payment, result);
+            result = model.getPeriodValidator().validate(payment, result);
+            if (result.hasErrors()) {
+                view.showErrors(result.getErrors());
+                return;
+            }
+        }
+
+        for (Payment payment : payments) {
+            model.save(payment);
+        }
+        view.hide();
+    }
+
+    protected void changeActionPerformed(Object args) {
+        int selectedId = (Integer) args;
+
+        Payment entity = model.getEntity(selectedId);
+        PaymentView entityView = new PaymentView(model, entity);
+
+        entityView.setAddPaymentsInTableListener(args1 -> {
+            Payment payment = (Payment) args1;
+            entityView.addPayments(model.loadPayments(payment, entity));
+        });
+        entityView.setAddActionListener(args_ -> {
+            List<Payment> payments = (List<Payment>) args_;
+            updatePayments(payments,
+                    model.getList(entity.getSubscriberAccount(),entity.getDate(),entity.getBankFileName()),
+                    entityView);
+        });
+    }
+
+    private void updatePayments(List<Payment> payments, List<Payment> oldPayments, FormView view) {
+        ValidationResult result = ValidationResult.createEmpty();
+
+        for (Payment payment : oldPayments) {
+            result = model.getValidator().validate(payment, result);
+            result = model.getPeriodValidator().validate(payment, result);
+            if (result.hasErrors()) {
+                view.showErrors(result.getErrors());
+                return;
+            }
+
+        }
+
+
+        for (Payment payment : payments) {
+            result = model.getValidator().validate(payment, result);
+            result = model.getPeriodValidator().validate(payment, result);
+            if (result.hasErrors()) {
+                view.showErrors(result.getErrors());
+                return;
+            }
+        }
+
+        model.update(payments, oldPayments);
+
+        view.hide();
+    }
+
+
+
+    @Override
+    protected void deleteActionPerformed(Object args) {
+        List<Integer> selectedIds = (List<Integer>) args;
+        ValidationResult result = model.deleteEntityById(selectedIds);
+        if (result.hasErrors()) {
+            view.errorWindow(result.getErrors());
+        }
+    }
 }

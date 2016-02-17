@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadPaymentsView extends FrameView {
+public class LoadPaymentsView extends FormView {
 
     private static class PaymentFileFilter extends FileFilter {
 

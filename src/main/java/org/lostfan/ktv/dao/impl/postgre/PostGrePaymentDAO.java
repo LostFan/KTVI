@@ -211,6 +211,30 @@ public class PostGrePaymentDAO implements PaymentDAO {
         return payments;
     }
 
+    public List<Payment> getList(Integer subscriberId, LocalDate date, String bankFileName) {
+        List<Payment> payments = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"payment\" where \"subscriber_account\" = ? AND \"date\" = ? AND \"bank_file_name\" = ?");
+            preparedStatement.setInt(1, subscriberId);
+            preparedStatement.setDate(2, Date.valueOf(date));
+            if(bankFileName == null) {
+                preparedStatement.setNull(3, Types.VARCHAR);
+            } else {
+                preparedStatement.setString(3, bankFileName);
+            }
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                payments.add(constructEntity(rs));
+
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return payments;
+    }
+
     public Map<Integer, Integer> getAllPaymentsPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date) {
         Map<Integer, Integer> subscribersPricesInMonth = new HashMap<>();
         try {

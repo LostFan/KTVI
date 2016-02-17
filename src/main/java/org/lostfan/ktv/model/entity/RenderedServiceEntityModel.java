@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class RenderedServiceEntityModel extends BaseEntityModel<RenderedService> {
+public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedService> {
 
     private LocalDate date;
     private List<EntityField> fields;

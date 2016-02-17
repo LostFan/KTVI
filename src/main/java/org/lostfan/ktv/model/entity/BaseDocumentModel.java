@@ -1,26 +1,30 @@
 package org.lostfan.ktv.model.entity;
 
-import org.lostfan.ktv.dao.EntityDAO;
-import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.FieldSearchCriterion;
-import org.lostfan.ktv.model.FullEntityField;
-import org.lostfan.ktv.utils.BaseObservable;
-import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.validation.Validator;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class BaseEntityModel<T extends Entity> extends BaseObservable implements EntityModel<T> {
+import org.lostfan.ktv.dao.EntityDAO;
+import org.lostfan.ktv.domain.Document;
+import org.lostfan.ktv.domain.Entity;
+import org.lostfan.ktv.model.FieldSearchCriterion;
+import org.lostfan.ktv.model.FullEntityField;
+import org.lostfan.ktv.utils.BaseObservable;
+import org.lostfan.ktv.validation.PeriodValidator;
+import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.validation.Validator;
+
+public abstract class BaseDocumentModel<T extends Document> extends BaseObservable implements EntityModel<T> {
 
     protected List<FieldSearchCriterion<T>> searchCriteria;
 
     protected List<T> entities;
 
-    public BaseEntityModel() {
+    protected PeriodValidator periodValidator = new PeriodValidator();
+
+    public BaseDocumentModel() {
         this.searchCriteria = new ArrayList<>();
     }
 
@@ -57,6 +61,8 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     public ValidationResult save(T entity) {
         ValidationResult result = this.getValidator().validate(entity);
 
+        periodValidator.validate(entity, result);
+
         if (result.hasErrors()) {
             return result;
         }
@@ -76,22 +82,36 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
 
     @Override
     public ValidationResult deleteEntityById(Integer id) {
+        T document = getDao().get(id);
+        ValidationResult result = periodValidator.validate(document);
+        if(result.hasErrors()) {
+            return result;
+        }
         getDao().delete(id);
         updateEntitiesList();
-        return null;
+        return result;
     }
 
     @Override
     public ValidationResult deleteEntityById(List<Integer> ids) {
+        ValidationResult result = ValidationResult.createEmpty();
         if (ids.size() == 0) {
-            return null;
+            return result;
         }
 
+        for (Integer id : ids) {
+            T document = getDao().get(id);
+            result = periodValidator.validate(document);
+        }
+
+        if(result.hasErrors()) {
+            return result;
+        }
         for (Integer id : ids) {
             getDao().delete(id);
         }
         updateEntitiesList();
-        return null;
+        return result;
     }
 
 
@@ -121,5 +141,9 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     @Override
     public Validator<T> getValidator() {
         return (entity, result) -> result;
+    }
+
+    public PeriodValidator getPeriodValidator() {
+        return periodValidator;
     }
 }

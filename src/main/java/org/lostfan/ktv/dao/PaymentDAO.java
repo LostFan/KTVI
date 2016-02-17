@@ -17,6 +17,8 @@ public interface PaymentDAO extends EntityDAO<Payment> {
 
     List<Payment> getByBankFileName(String bankFileName);
 
+    List<Payment> getList(Integer subscriberId, LocalDate date, String bankFileName);
+
     Map<Integer, Integer> getAllPaymentsPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date);
 
     Map<Integer, Integer> getAllPaymentsPriceForSubscriberToDate(int serviceId, LocalDate date);

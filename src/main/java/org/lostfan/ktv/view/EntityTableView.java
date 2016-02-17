@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.validation.Error;
 import org.lostfan.ktv.view.model.EntityTableModel;
 
 public class EntityTableView extends View {
@@ -244,5 +245,27 @@ public class EntityTableView extends View {
             }
         }
         return null;
+    }
+
+    public void errorWindow(Iterable<Error> errors) {
+        int optionType = JOptionPane.OK_CANCEL_OPTION;
+        int messageType = JOptionPane.ERROR_MESSAGE;
+        Object[] selValues = { getGuiString("buttons.ok") };
+        String message = getGuiString("window.deleteFailed");
+        StringBuffer stringBuffer = new StringBuffer();
+        for (Error error : errors) {
+            if (error.getField() == null) {
+                String err = getGuiString(error.getMessage());
+                if (error.getParams().length != 0) {
+                    err = String.format(err, error.getParams());
+                }
+                stringBuffer.append(err);
+                stringBuffer.append("\n");
+            }
+        }
+        JOptionPane.showOptionDialog(null,
+                stringBuffer, message,
+                optionType, messageType, null, selValues,
+                selValues[0]);
     }
 }

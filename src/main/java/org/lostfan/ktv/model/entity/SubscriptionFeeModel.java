@@ -10,19 +10,19 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
-import org.lostfan.ktv.utils.BaseObservable;
+import org.lostfan.ktv.model.searcher.RenderedServiceSearcherModel;
+import org.lostfan.ktv.validation.ValidationResult;
 
-import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
+public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
 
     private LocalDate date;
-    private List<FieldSearchCriterion> searchCriteria;
     private List<RenderedService> entities;
     private List<EntityField> fields;
 
@@ -83,7 +83,12 @@ public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
         return RenderedService.class;
     }
 
-    public void createSubscriptionFeeBySubscriber(Integer subscriberId, LocalDate date) {
+    public ValidationResult createSubscriptionFeeBySubscriber(Integer subscriberId, LocalDate date) {
+        ValidationResult result = ValidationResult.createEmpty();
+        result = periodValidator.validate(date, result);
+        if(result.hasErrors()) {
+            return result;
+        }
         LocalDate beginDate = date.withDayOfMonth(1);
         LocalDate endDate = LocalDate.now().withDayOfMonth(1).plusMonths(1);
         while(beginDate.isBefore(endDate)){
@@ -92,6 +97,7 @@ public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
             beginDate = beginDate.plusMonths(1);
         }
         updateEntitiesList();
+        return result;
     }
 
     protected void updateEntitiesList() {
@@ -106,7 +112,12 @@ public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
         this.notifyObservers(null);
     }
 
-    public void createSubscriptionFees(LocalDate date) {
+    public ValidationResult createSubscriptionFees(LocalDate date) {
+        ValidationResult result = ValidationResult.createEmpty();
+        result = periodValidator.validate(date, result);
+        if(result.hasErrors()) {
+            return result;
+        }
         LocalDate beginDate = date.withDayOfMonth(1);
         LocalDate endDate = LocalDate.now().withDayOfMonth(1).plusMonths(1);
         while(beginDate.isBefore(endDate)){
@@ -115,12 +126,13 @@ public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
             beginDate = beginDate.plusMonths(1);
         }
         updateEntitiesList();
+        return result;
     }
 
     private void createSubscriptionFeeInMouthBySubscriber(Integer subscriberId, LocalDate date) {
         List<RenderedService> renderedServices = ((RenderedServiceDAO) getDao()).getAllForMonth(FixedServices.SUBSCRIPTION_FEE.getId(), subscriberId, date);
         for (RenderedService renderedService : renderedServices) {
-//            getDao().delete(renderedService.getId());
+            getDao().delete(renderedService.getId());
         }
         saveRenderedService(subscriberId, date);
 
@@ -130,7 +142,7 @@ public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
         List<Subscriber> subscribers = subscriberDAO.getAll();
         List<RenderedService> renderedServices = ((RenderedServiceDAO) getDao()).getAllForMonth(FixedServices.SUBSCRIPTION_FEE.getId(), date);
         for (RenderedService renderedService : renderedServices) {
-//            getDao().delete(renderedService.getId());
+            getDao().delete(renderedService.getId());
         }
         for (Subscriber subscriber : subscribers) {
             saveRenderedService(subscriber.getId(), date);
@@ -138,54 +150,23 @@ public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
     }
 
     private void saveRenderedService(Integer subscriberId, LocalDate date) {
-        RenderedService renderedService = new RenderedService();
-        renderedService.setDate(date);
-        renderedService.setServiceId(FixedServices.SUBSCRIPTION_FEE.getId());
-        renderedService.setSubscriberAccount(subscriberId);
-        getSubscriptionFeeByMouth(subscriberId, date);
-//        SubscriberSession subscriberSessionAllMonth = subscriberDAO.getSubscriberSessionAllMonth(subscriberId, date);
-//        SubscriberTariff subscriberTariffAllMonth = subscriberDAO.getSubscriberTariffAllMonth(subscriberId, date);
-//        if(subscriberSessionAllMonth != null) {
-//            Integer price = tariffDAO.getTariffPrice(subscriberTariffAllMonth.getTariffId(), date).getPrice();
-//            renderedService.setPrice(price);
-//            getDao().save(renderedService);
-//            return;
-//        }
-//        Integer allPrice = 0;
-//        SubscriberTariff subscriberTariffBeginOfMonth = subscriberDAO.getSubscriberTariffBeginInPrevMonthEndInCurrentMonth(subscriberId, date);
-//        if(subscriberTariffBeginOfMonth != null) {
-//            int days = Period.between(date, subscriberTariffBeginOfMonth.getDisconnectTariff()).getDays();
-//            Integer tariffPrice = tariffDAO.getTariffPrice(subscriberTariffBeginOfMonth.getTariffId(), date).getPrice();
-//            Integer price = rounding(tariffPrice * days / date.getMonth().length(date.isLeapYear()));
-//            allPrice += price;
-//        }
-//        List<SubscriberTariff> subscriberTariffs = subscriberDAO.getSubscriberTariffsBeginInCurrentMonthEndInCurrentMonth(subscriberId, date);
-//        for (SubscriberTariff subscriberTariff : subscriberTariffs) {
-//            int days = Period.between(subscriberTariff.getConnectTariff(), subscriberTariff.getDisconnectTariff()).getDays();
-//            Integer tariffPrice = tariffDAO.getTariffPrice(subscriberTariff.getTariffId(), date).getPrice();
-//            Integer price = rounding(tariffPrice * days / date.getMonth().length(date.isLeapYear()));
-//            allPrice += price;
-//        }
-//        SubscriberTariff subscriberTariffEndOfMonth = subscriberDAO.getSubscriberTariffBeginInCurrentMonth(subscriberId, date);
-//        if(subscriberTariffEndOfMonth != null) {
-//            renderedService.setDate(subscriberTariffEndOfMonth.getConnectTariff());
-//            int days = Period.between(subscriberTariffEndOfMonth.getConnectTariff(), date.plusMonths(1)).getDays();
-//            Integer tariffPrice = tariffDAO.getTariffPrice(subscriberTariffEndOfMonth.getTariffId(), date).getPrice();
-//            Integer price = rounding(tariffPrice * days / date.getMonth().length(date.isLeapYear()));
-//            allPrice += price;
-//        }
-//        renderedService.setPrice(allPrice);
-//        if(allPrice > 0) {
-//            getDao().save(renderedService);
-//        }
+        RenderedService renderedService = getSubscriptionFeeByMouth(subscriberId, date);
+        if (renderedService != null) {
+            getDao().save(renderedService);
+        }
     }
 
-    private SubscriberSession getSubscriptionFeeByMouth(Integer subscriberId, LocalDate date) {
-        SubscriberSession subscriberSessionAllMonth = subscriberDAO.getSubscriberSessionAllMonth(subscriberId, date);
+    private RenderedService getSubscriptionFeeByMouth(Integer subscriberId, LocalDate date) {
+        RenderedService renderedService = new RenderedService();
+        renderedService.setServiceId(FixedServices.SUBSCRIPTION_FEE.getId());
+        renderedService.setSubscriberAccount(subscriberId);
+        renderedService.setDate(date.withDayOfMonth(1));
+
         List<SubscriberSession> subscriberSessions = subscriberDAO.getSubscriberSessionsForMonth(subscriberId, date);
+        Integer allPrice = 0;
         for (SubscriberSession subscriberSession : subscriberSessions) {
             LocalDate beginDate = date.withDayOfMonth(1).equals(subscriberSession.getConnectionDate().withDayOfMonth(1))
-                    ? subscriberSession.getConnectionDate() : date.withDayOfMonth(1);
+                    ? subscriberSession.getConnectionDate().plusDays(1) : date.withDayOfMonth(1);
             LocalDate endDate = subscriberSession.getDisconnectionDate() == null
                     || !date.withDayOfMonth(date.lengthOfMonth()).equals(subscriberSession.getDisconnectionDate().withDayOfMonth(subscriberSession.getDisconnectionDate().lengthOfMonth()))
                     ? date.withDayOfMonth(1).plusMonths(1) : subscriberSession.getDisconnectionDate();
@@ -200,15 +181,28 @@ public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
                 endTariffDate = subscriberSession.getDisconnectionDate() == null ||
                         subscriberSession.getDisconnectionDate().isAfter(endTariffDate) ? endTariffDate
                         : subscriberSession.getDisconnectionDate();
-                System.out.println(Duration.between(beginTariffDate.atTime(0, 0), endTariffDate.atTime(0, 0)).toDays());
+                Integer months =  Period.between(beginTariffDate, endTariffDate).getMonths();
+                if(months == 1) {
+                    allPrice = tariffDAO.getPriceByDate(subscriberTariff.getTariffId(), beginTariffDate);
+                    if(allPrice == 0) {
+                        return null;
+                    }
+                    renderedService.setPrice(allPrice);
+                    return renderedService;
+                }
+                Integer days =  Period.between(beginTariffDate, endTariffDate).getDays();
+                if(days > 0) {
+                    Integer price = rounding(tariffDAO.getPriceByDate(subscriberTariff.getTariffId(), beginTariffDate) / beginTariffDate.lengthOfMonth() * days);
+                    allPrice += price;
+                }
             }
         }
+        if(allPrice == 0) {
+            return null;
+        }
+        renderedService.setPrice(allPrice);
 
-        return null;
-    }
-
-    private SubscriberTariff getAllMonthSubscriberTariff(Integer subscriberId, LocalDate date) {
-        return null;
+        return renderedService;
     }
 
     private Integer rounding(Integer number) {
@@ -235,6 +229,6 @@ public class SubscriptionFeeModel extends BaseEntityModel<RenderedService> {
 
     @Override
     public EntitySearcherModel<RenderedService> createSearchModel() {
-        return null;
+        return new RenderedServiceSearcherModel();
     }
 }

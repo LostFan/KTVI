@@ -7,6 +7,7 @@ import org.lostfan.ktv.view.SubscriptionFeeTableView;
 import org.lostfan.ktv.view.SubscriptionFeeView;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class SubscriptionFeeController extends EntityController{
 
@@ -29,13 +30,17 @@ public class SubscriptionFeeController extends EntityController{
             LocalDate date = (LocalDate) args_;
             ValidationResult result = ValidationResult.createEmpty();
             if(date == null) {
-                result.addError("empty", "renderedService.date");
+                result.addError("errors.empty", "renderedService.date");
             }
             if (result.hasErrors()) {
                 entityView.showErrors(result.getErrors());
                 return;
             }
-            model.createSubscriptionFees(date);
+            result = model.createSubscriptionFees(date);
+            if (result.hasErrors()) {
+                entityView.showErrors(result.getErrors());
+                return;
+            }
             entityView.hide();
         });
     }
@@ -46,17 +51,21 @@ public class SubscriptionFeeController extends EntityController{
             SubscriptionFeeView.DateAndSubscriberId dateAndSubscriberId = (SubscriptionFeeView.DateAndSubscriberId) args_;
             ValidationResult result = ValidationResult.createEmpty();
             if(dateAndSubscriberId.getDate() == null) {
-                result.addError("empty", "renderedService.date");
+                result.addError("errors.empty", "renderedService.date");
             }
             if(dateAndSubscriberId.getSubscriberId() == null) {
-                result.addError("empty", "subscriber");
+                result.addError("errors.empty", "subscriber");
             }
 
             if (result.hasErrors()) {
                 entityView.showErrors(result.getErrors());
                 return;
             }
-            model.createSubscriptionFeeBySubscriber(dateAndSubscriberId.getSubscriberId(), dateAndSubscriberId.getDate());
+            result = model.createSubscriptionFeeBySubscriber(dateAndSubscriberId.getSubscriberId(), dateAndSubscriberId.getDate());
+            if (result.hasErrors()) {
+                entityView.showErrors(result.getErrors());
+                return;
+            }
             entityView.hide();
         });
     }
@@ -64,5 +73,14 @@ public class SubscriptionFeeController extends EntityController{
     private void newDateActionPerformed(Object args) {
         LocalDate date = (LocalDate) args;
         this.model.setDate(date);
+    }
+
+    @Override
+    protected void deleteActionPerformed(Object args) {
+        List<Integer> selectedIds = (List<Integer>) args;
+        ValidationResult result = model.deleteEntityById(selectedIds);
+        if (result.hasErrors()) {
+            view.errorWindow(result.getErrors());
+        }
     }
 }

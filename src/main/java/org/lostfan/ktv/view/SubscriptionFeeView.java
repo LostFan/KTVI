@@ -183,15 +183,17 @@ public class SubscriptionFeeView extends FrameView {
 
     public void showErrors(java.util.List<org.lostfan.ktv.validation.Error> errors) {
         // TODO: add appropriate implementation of visualising the errors
+        StringBuffer message = new StringBuffer();
         for (Error error : errors) {
-            String message = error.getField() != null ? getEntityString(error.getField()) + " " : "";
-            if (error.getMessage().equals("empty")) {
-                message += "should not be empty";
-            } else {
-                message += error.getMessage();
+            message.append(error.getField() != null ? getEntityString(error.getField()) + " " : "");
+            String err = getGuiString(error.getMessage());
+            if (error.getParams().length != 0) {
+                err = String.format(err, error.getParams());
             }
-            JOptionPane.showMessageDialog(getFrame(), message, "Error", JOptionPane.ERROR_MESSAGE);
+            message.append(err);
+            message.append("\n");
         }
+        JOptionPane.showMessageDialog(getFrame(), message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
 }
