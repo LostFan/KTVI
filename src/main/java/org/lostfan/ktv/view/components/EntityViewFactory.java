@@ -41,6 +41,11 @@ public class EntityViewFactory {
             return entityView;
         }
 
+        if(service == FixedServices.MATERIALS) {
+            MaterialsServiceEntityView entityView = new MaterialsServiceEntityView(renderedServiceEntityModel);
+            return entityView;
+        }
+
         throw new IllegalArgumentException("Wrong model.");
     }
 
@@ -65,6 +70,10 @@ public class EntityViewFactory {
         }
         if(renderedService.getServiceId() == FixedServices.CHANGE_OF_TARIFF.getId()) {
             ChangeOfTariffEntityView entityView = new ChangeOfTariffEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getChangeOfTariffRenderedService(renderedService));
+            return entityView;
+        }
+        if(renderedService.getServiceId() == FixedServices.MATERIALS.getId()) {
+            MaterialsServiceEntityView entityView = new MaterialsServiceEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getMaterialsRenderedService(renderedService));
             return entityView;
         }
 

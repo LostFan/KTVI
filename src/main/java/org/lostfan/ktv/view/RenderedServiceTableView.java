@@ -24,6 +24,7 @@ public class RenderedServiceTableView extends EntityTableView {
     private ViewActionListener addDisconnectionActionListener;
     private ViewActionListener addChangeOfTariffActionListener;
     private ViewActionListener addAdditionalServiceActionListener;
+    private ViewActionListener addMaterialsServiceActionListener;
     private ViewActionListener newDateActionListener;
 
     public RenderedServiceTableView(RenderedServiceEntityModel model) {
@@ -54,6 +55,13 @@ public class RenderedServiceTableView extends EntityTableView {
             public void actionPerformed(ActionEvent e) {
                 if (addChangeOfTariffActionListener != null) {
                     addChangeOfTariffActionListener.actionPerformed(null);
+                }
+            }
+        }));
+        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.MATERIALS.getCode())) {
+            public void actionPerformed(ActionEvent e) {
+                if (addMaterialsServiceActionListener != null) {
+                    addMaterialsServiceActionListener.actionPerformed(null);
                 }
             }
         }));
@@ -164,6 +172,10 @@ public class RenderedServiceTableView extends EntityTableView {
 
     public void setReconnectionActionListener(ViewActionListener addReconnectionActionListener) {
         this.addReconnectionActionListener = addReconnectionActionListener;
+    }
+
+    public void setMaterialsServiceActionListener(ViewActionListener addMaterialsServiceActionListener) {
+        this.addMaterialsServiceActionListener = addMaterialsServiceActionListener;
     }
 
     public void newDateActionListener(ViewActionListener newDateActionListener) {

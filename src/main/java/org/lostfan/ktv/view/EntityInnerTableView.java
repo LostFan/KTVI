@@ -213,4 +213,8 @@ public class EntityInnerTableView<T extends Entity> extends View {
             table.changeSelection(row, col, false, false);
         }
     }
+
+    public JTable getTable() {
+        return this.table;
+    }
 }

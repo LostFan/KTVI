@@ -135,7 +135,7 @@ CREATE TABLE "payment" (
 CREATE SEQUENCE serial_material_consumption START 1;
 
 CREATE TABLE "material_consumption" (
-  "id" INTEGER PRIMARY KEY DEFAULT nextval('material_consumption'),
+  "id" INTEGER PRIMARY KEY DEFAULT nextval('serial_material_consumption'),
   "material_id" INTEGER NOT NULL,
   "rendered_service_id" INTEGER NOT NULL,
   "amount" DOUBLE PRECISION DEFAULT 0 NOT NULL,

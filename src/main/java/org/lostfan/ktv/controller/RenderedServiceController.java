@@ -26,6 +26,7 @@ public class RenderedServiceController extends EntityController {
         view.setDisconnectionActionListener(this::addDisconnectionActionPerformed);
         view.setChangeOfTariffActionListener(this::addChangeOfTariffActionPerformed);
         view.setAdditionalServiceActionListener(this::addAdditionalServiceActionPerformed);
+        view.setMaterialsServiceActionListener(this::addMaterialsServiceActionPerformed);
         view.newDateActionListener(this::newDateActionPerformed);
         this.model = model;
         this.view = view;
@@ -102,6 +103,20 @@ public class RenderedServiceController extends EntityController {
         });
     }
 
+    private void addMaterialsServiceActionPerformed(Object args) {
+        model.setServiceFieldEditable(false);
+        EntityView entityView = EntityViewFactory.createRenderedServiceForm(model, FixedServices.MATERIALS);
+        entityView.setAddActionListener(args_ -> {
+            MaterialsRenderedService entity = (MaterialsRenderedService) args_;
+            ValidationResult result = model.save(entity);
+            if (result.hasErrors()) {
+                entityView.showErrors(result.getErrors());
+                return;
+            }
+            entityView.hide();
+        });
+    }
+
     @Override
     protected void changeActionPerformed(Object args) {
         int selectedId = (Integer) args;
@@ -113,20 +128,19 @@ public class RenderedServiceController extends EntityController {
             if(entity.getServiceId() == FixedServices.CONNECTION.getId()) {
                 ConnectionRenderedService entity1 = (ConnectionRenderedService) args_;
                 result = model.save(entity1);
-            }
-            if(entity.getServiceId() == FixedServices.RECONNECTION.getId()) {
+            } else if(entity.getServiceId() == FixedServices.RECONNECTION.getId()) {
                 ReconnectionRenderedService entity1 = (ReconnectionRenderedService) args_;
                 result = model.save(entity1);
-            }
-            if(entity.getServiceId() == FixedServices.DISCONNECTION.getId()) {
+            } else if(entity.getServiceId() == FixedServices.DISCONNECTION.getId()) {
                 DisconnectionRenderedService entity1 = (DisconnectionRenderedService) args_;
                 result = model.save(entity1);
-            }
-            if(entity.getServiceId() == FixedServices.CHANGE_OF_TARIFF.getId()) {
+            } else if(entity.getServiceId() == FixedServices.CHANGE_OF_TARIFF.getId()) {
                 ChangeOfTariffRenderedService entity1 = (ChangeOfTariffRenderedService) args_;
                 result = model.save(entity1);
-            }
-            if(entity.getServiceId() == FixedServices.ADDITIONAL_SERVICE.getId()) {
+            } else if(entity.getServiceId() == FixedServices.MATERIALS.getId()) {
+                MaterialsRenderedService entity1 = (MaterialsRenderedService) args_;
+                result = model.save(entity1);
+            } else {
                 AdditionalRenderedService entity1 = (AdditionalRenderedService) args_;
                 result = model.save(entity1);
             }

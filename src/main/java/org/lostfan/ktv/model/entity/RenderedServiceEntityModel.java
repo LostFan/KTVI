@@ -71,14 +71,14 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
             }
         }, (e1, e2) -> {
         }));
-        entityFields.add(new EntityField("materialConsumption.allPrice", EntityFieldTypes.Integer, new Function<MaterialConsumption, Integer>() {
+        entityFields.add(new EntityField("materialConsumption.allPrice", EntityFieldTypes.Double, new Function<MaterialConsumption, Double>() {
             @Override
-            public Integer apply(MaterialConsumption materialConsumption) {
+            public Double apply(MaterialConsumption materialConsumption) {
                 if (materialConsumption.getMaterialId() == null
                         || materialConsumption.getAmount() == null) {
                     return null;
                 }
-                return ((Double) (materialDAO.get(materialConsumption.getMaterialId()).getPrice() * materialConsumption.getAmount())).intValue();
+                return ((materialDAO.get(materialConsumption.getMaterialId()).getPrice() * materialConsumption.getAmount()));
             }
         }, (e1, e2) -> {
         }));
@@ -119,6 +119,11 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffAtDate(renderedService.getSubscriberAccount(), renderedService.getDate());
         List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getByRenderedServiceId(renderedService.getId());
         return AdditionalRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
+    }
+
+    public MaterialsRenderedService getMaterialsRenderedService(RenderedService renderedService) {
+        List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getByRenderedServiceId(renderedService.getId());
+        return MaterialsRenderedService.build(renderedService, materialConsumptions);
     }
 
     @Override
@@ -422,6 +427,42 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         return result;
     }
 
+    public ValidationResult save(MaterialsRenderedService entity) {
+        ValidationResult result = this.getValidator().validate(entity);
+        for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+            result = MainModel.getMaterialConsumptionEntityModel().getValidator().validate(materialConsumption, result);
+        }
+        if (result.hasErrors()) {
+            return result;
+        }
+
+        result = periodValidator.validate(entity, result);
+        if (result.hasErrors()) {
+            return result;
+        }
+
+        if (entity.getId() == null) {
+            getDao().save(entity);
+            for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+                materialConsumption.setRenderedServiceId(entity.getId());
+                materialConsumptionDAO.save(materialConsumption);
+            }
+            return result;
+        }
+
+        RenderedService prevRenderedService = getDao().get(entity.getId());
+
+        result = periodValidator.validate(prevRenderedService, result);
+        if (result.hasErrors()) {
+            return result;
+        }
+
+        getDao().update(entity);
+        updateMaterials(entity);
+        updateEntitiesList();
+        return result;
+    }
+
 
     public ValidationResult deleteRenderedServicesById(List<Integer> ids) {
         ValidationResult result = ValidationResult.createEmpty();
@@ -453,15 +494,16 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
             RenderedService entity = getDao().get(id);
             if(entity.getServiceId().equals(FixedServices.CONNECTION.getId())) {
                 deleteConnection(entity);
-            }
-            if(entity.getServiceId().equals(FixedServices.DISCONNECTION.getId())) {
+            } else if(entity.getServiceId().equals(FixedServices.DISCONNECTION.getId())) {
                 deleteDisconnection(entity);
-            }
-            if(entity.getServiceId().equals(FixedServices.CHANGE_OF_TARIFF.getId())) {
+            } else if(entity.getServiceId().equals(FixedServices.CHANGE_OF_TARIFF.getId())) {
                 deleteChangeTariff(entity);
-            }
-            if(entity.getServiceId().equals(FixedServices.RECONNECTION.getId())) {
+            } else if(entity.getServiceId().equals(FixedServices.RECONNECTION.getId())) {
                 deleteReconnection(entity);
+            } else if(entity.getServiceId().equals(FixedServices.MATERIALS.getId())) {
+                deleteMaterials(entity);
+            } else {
+                getDao().delete(entity.getId());
             }
 
         }
@@ -518,6 +560,15 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         subscriberDAO.updateSubscriberTariff(oldSubscriberTariff);
         getDao().delete(entity.getId());
     }
+
+    private void deleteMaterials(RenderedService entity) {
+        List<MaterialConsumption> materialConsumptionList = materialConsumptionDAO.getByRenderedServiceId(entity.getId());
+        for (MaterialConsumption materialConsumption : materialConsumptionList) {
+            materialConsumptionDAO.delete(materialConsumption.getId());
+        }
+        getDao().delete(entity.getId());
+    }
+
 
     @Override
     protected RenderedServiceDAO getDao() {

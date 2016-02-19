@@ -64,6 +64,10 @@ public class MainController {
                     AdditionalRenderedService entity = (AdditionalRenderedService) args_;
                     result = renderedServiceModel.save(entity);
                 }
+                if (FixedServices.of(code) == FixedServices.MATERIALS) {
+                    MaterialsRenderedService entity = (MaterialsRenderedService) args_;
+                    result = renderedServiceModel.save(entity);
+                }
                 if (result.hasErrors()) {
                     entityView.showErrors(result.getErrors());
                     return;
