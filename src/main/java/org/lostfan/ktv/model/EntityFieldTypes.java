@@ -8,6 +8,7 @@ import org.lostfan.ktv.dao.EntityDAO;
 public enum EntityFieldTypes {
 
     String(java.lang.String.class, false, null),
+    StringSeveralLines(java.lang.String.class, false, null),
     Integer(java.lang.Integer.class, false, null),
     Boolean(java.lang.Boolean.class, false, null),
     Date(LocalDate.class, false, null),
@@ -19,6 +20,7 @@ public enum EntityFieldTypes {
     Payment(org.lostfan.ktv.domain.Payment.class, true, DAOFactory.getDefaultDAOFactory().getPaymentDAO()),
     Tariff(org.lostfan.ktv.domain.Tariff.class, true, DAOFactory.getDefaultDAOFactory().getTariffDAO()),
     RenderedService(org.lostfan.ktv.domain.RenderedService.class, true, DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO()),
+    DisconnectionReason(org.lostfan.ktv.domain.DisconnectionReason.class, true, DAOFactory.getDefaultDAOFactory().getDisconnectionReasonDAO()),
     MaterialConsumption(org.lostfan.ktv.domain.MaterialConsumption.class, true, null);
 
     private Class valueClass;

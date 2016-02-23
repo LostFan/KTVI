@@ -33,6 +33,8 @@ public class Subscriber extends DefaultEntity {
 
     private LocalDate contractDate;
 
+    private String information;
+
     public Integer getId() {
         return account;
     }
@@ -151,5 +153,13 @@ public class Subscriber extends DefaultEntity {
 
     public void setContractDate(LocalDate contractDate) {
         this.contractDate = contractDate;
+    }
+
+    public String getInformation() {
+        return information;
+    }
+
+    public void setInformation(String information) {
+        this.information = information;
     }
 }

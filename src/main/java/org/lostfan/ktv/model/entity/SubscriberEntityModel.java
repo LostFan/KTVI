@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.lostfan.ktv.dao.DAOFactory;
-import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.dao.PaymentDAO;
 import org.lostfan.ktv.dao.RenderedServiceDAO;
 import org.lostfan.ktv.dao.ServiceDAO;
@@ -57,6 +56,12 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.fields.add(new EntityField("subscriber.index", EntityFieldTypes.String, Subscriber::getIndex, Subscriber::setIndex));
         this.fields.add(new EntityField("subscriber.building", EntityFieldTypes.String, Subscriber::getBuilding, Subscriber::setBuilding));
         this.fields.add(new EntityField("subscriber.flat", EntityFieldTypes.String, Subscriber::getFlat, Subscriber::setFlat));
+        this.fields.add(new EntityField("subscriber.phone", EntityFieldTypes.String, Subscriber::getPhone, Subscriber::setPhone));
+        this.fields.add(new EntityField("subscriber.passportNumber", EntityFieldTypes.String, Subscriber::getPassportNumber, Subscriber::setPassportNumber));
+        this.fields.add(new EntityField("subscriber.passportAuthority", EntityFieldTypes.String, Subscriber::getPassportAuthority, Subscriber::setPassportAuthority));
+        this.fields.add(new EntityField("subscriber.passportDate", EntityFieldTypes.Date, Subscriber::getPassportDate, Subscriber::setPassportDate));
+        this.fields.add(new EntityField("subscriber.contractDate", EntityFieldTypes.Date, Subscriber::getContractDate, Subscriber::setContractDate));
+        this.fields.add(new EntityField("subscriber.information", EntityFieldTypes.StringSeveralLines, Subscriber::getInformation, Subscriber::setInformation));
 //        this.fields.add(new EntityField("subscriber.balance", EntityFieldTypes.Integer, Subscriber::getBalance, Subscriber::setBalance));
 //        this.fields.add(new EntityField("subscriber.connected", EntityFieldTypes.Boolean, Subscriber::isConnected, Subscriber::setConnected));
     }

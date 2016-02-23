@@ -73,6 +73,7 @@ CREATE TABLE "subscriber" (
   "passport_authority" VARCHAR(128) DEFAULT '',
   "passport_date" DATE DEFAULT NULL,
   "date_of_contract" DATE DEFAULT NULL,
+  "information" VARCHAR(1000) DEFAULT '',
   FOREIGN KEY ("street_id") REFERENCES "street"("id")
 );
 

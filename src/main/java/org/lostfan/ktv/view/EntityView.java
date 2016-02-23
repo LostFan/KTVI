@@ -140,6 +140,9 @@ public class EntityView extends FormView {
             case String:
                 formField = new StringFormField(entityField.getTitleKey());
                 break;
+            case StringSeveralLines:
+                formField = new StringSeveralLinesFormField(entityField.getTitleKey());
+                break;
             case Integer:
                 formField = new IntegerFormField(entityField.getTitleKey());
                 break;

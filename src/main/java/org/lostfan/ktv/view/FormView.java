@@ -5,11 +5,8 @@ import org.lostfan.ktv.view.components.*;
 import org.lostfan.ktv.view.components.TextField;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -143,6 +140,45 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
             this.textField.setText(value);
         }
     }
+
+    public static class StringSeveralLinesFormField extends FormField<String> {
+
+        private JTextArea textArea;
+
+        public StringSeveralLinesFormField(String fieldKey) {
+            super(fieldKey);
+            this.textArea = new JTextArea();
+            this.textArea.setBorder(LineBorder.createGrayLineBorder());
+        }
+
+        @Override
+        protected void setError(String errorCode) {
+            super.setError(errorCode);
+            this.textArea.setBackground(new Color(250, 234, 234));
+        }
+
+        @Override
+        protected void clearError() {
+            super.clearError();
+            this.textArea.setBackground(UIManager.getColor("TextField.background"));
+        }
+
+        @Override
+        public JComponent getInputComponent() {
+            return this.textArea;
+        }
+
+        @Override
+        public String getValue() {
+            return this.textArea.getText();
+        }
+
+        @Override
+        public void setValue(String value) {
+            this.textArea.setText(value);
+        }
+    }
+
 
     public static class IntegerFormField extends FormField<Integer> {
 
