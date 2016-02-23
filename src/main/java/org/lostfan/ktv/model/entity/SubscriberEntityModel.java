@@ -61,7 +61,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.fields.add(new EntityField("subscriber.passportAuthority", EntityFieldTypes.String, Subscriber::getPassportAuthority, Subscriber::setPassportAuthority));
         this.fields.add(new EntityField("subscriber.passportDate", EntityFieldTypes.Date, Subscriber::getPassportDate, Subscriber::setPassportDate));
         this.fields.add(new EntityField("subscriber.contractDate", EntityFieldTypes.Date, Subscriber::getContractDate, Subscriber::setContractDate));
-        this.fields.add(new EntityField("subscriber.information", EntityFieldTypes.StringSeveralLines, Subscriber::getInformation, Subscriber::setInformation));
+        this.fields.add(new EntityField("subscriber.information", EntityFieldTypes.MultilineString, Subscriber::getInformation, Subscriber::setInformation));
 //        this.fields.add(new EntityField("subscriber.balance", EntityFieldTypes.Integer, Subscriber::getBalance, Subscriber::setBalance));
 //        this.fields.add(new EntityField("subscriber.connected", EntityFieldTypes.Boolean, Subscriber::isConnected, Subscriber::setConnected));
     }

@@ -8,7 +8,7 @@ import org.lostfan.ktv.dao.EntityDAO;
 public enum EntityFieldTypes {
 
     String(java.lang.String.class, false, null),
-    StringSeveralLines(java.lang.String.class, false, null),
+    MultilineString(java.lang.String.class, false, null),
     Integer(java.lang.Integer.class, false, null),
     Boolean(java.lang.Boolean.class, false, null),
     Date(LocalDate.class, false, null),

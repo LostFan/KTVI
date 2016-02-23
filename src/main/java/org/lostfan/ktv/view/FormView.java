@@ -141,11 +141,11 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
         }
     }
 
-    public static class StringSeveralLinesFormField extends FormField<String> {
+    public static class MultilineStringFormField extends FormField<String> {
 
         private JTextArea textArea;
 
-        public StringSeveralLinesFormField(String fieldKey) {
+        public MultilineStringFormField(String fieldKey) {
             super(fieldKey);
             this.textArea = new JTextArea();
             this.textArea.setBorder(LineBorder.createGrayLineBorder());
