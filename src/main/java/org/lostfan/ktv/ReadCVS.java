@@ -711,13 +711,13 @@ public class ReadCVS {
                 subscriberTariff.setSubscriberAccount(renderedService.getSubscriberAccount());
                 subscriberTariff.setConnectTariff(renderedService.getDate());
                 subscriberTariff.setTariffId(parseInt(row[18]));
-                if(parseInt(row[18]) == 0) {
-                    if(row.length == 20) {
-                        subscriberTariff.setDisconnectTariff(parseDateHyphen(row[19]));
-                    } else {
-                        subscriberTariff.setDisconnectTariff(parseDateHyphen(row[17]).plusDays(1));
-                    }
-                }
+//                if(parseInt(row[18]) == 0) {
+//                    if(row.length == 20) {
+//                        subscriberTariff.setDisconnectTariff(parseDateHyphen(row[19]));
+//                    } else {
+//                        subscriberTariff.setDisconnectTariff(parseDateHyphen(row[17]).plusDays(1));
+//                    }
+//                }
 
                 DAOFactory.getDefaultDAOFactory().getSubscriberDAO().saveSubscriberTariff(subscriberTariff);
 

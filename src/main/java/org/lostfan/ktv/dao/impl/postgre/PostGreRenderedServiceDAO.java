@@ -232,10 +232,10 @@ public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
             if(renderedService.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"rendered_service\" (\"subscriber_account\", \"service_id\", \"date\",  \"price\", \"id\")" +
-                                " VALUES(?, ?, ?, ?, ?); " +
-                                "ALTER SEQUENCE serial_rendered_service RESTART WITH ?;");
+                                " VALUES(?, ?, ?, ?, ?); ");
+//                                "ALTER SEQUENCE serial_rendered_service RESTART WITH ?;");
                 preparedStatement.setInt(5, renderedService.getId());
-                preparedStatement.setInt(6, renderedService.getId() + 1);
+//                preparedStatement.setInt(6, renderedService.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"rendered_service\" (\"subscriber_account\", \"service_id\", \"date\",  \"price\")" +
@@ -253,10 +253,10 @@ public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
             if(renderedService.getId() != null) {
                 return;
             }
-            Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
-            resultSet.next();
-            renderedService.setId(resultSet.getInt(1));
+//            Statement statement = getConnection().createStatement();
+//            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+//            resultSet.next();
+//            renderedService.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             System.out.println(renderedService.getSubscriberAccount());
             ex.printStackTrace();

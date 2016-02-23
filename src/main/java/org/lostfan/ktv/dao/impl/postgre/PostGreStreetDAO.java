@@ -56,9 +56,10 @@ public class PostGreStreetDAO implements StreetDAO {
             if (street.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"street\" (\"name\", \"id\") VALUES(?, ?); " +
-                                "ALTER SEQUENCE serial_street RESTART WITH ?;");
+//                                "ALTER SEQUENCE serial_street RESTART WITH ?;");
+                                "");
                 preparedStatement.setInt(2, street.getId());
-                preparedStatement.setInt(3, street.getId() + 1);
+//                preparedStatement.setInt(3, street.getId() + 1);
             }
              else {
                 preparedStatement = getConnection().prepareStatement(
@@ -69,11 +70,11 @@ public class PostGreStreetDAO implements StreetDAO {
             if(street.getId() != null) {
                 return;
             }
-            Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT lastval() ");
-            if (resultSet.next()) {
-                street.setId(resultSet.getInt(1));
-            }
+//            Statement statement = getConnection().createStatement();
+//            ResultSet resultSet = statement.executeQuery("SELECT lastval() ");
+//            if (resultSet.next()) {
+//                street.setId(resultSet.getInt(1));
+//            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

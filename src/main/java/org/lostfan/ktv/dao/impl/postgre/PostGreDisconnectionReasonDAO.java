@@ -49,9 +49,10 @@ public class PostGreDisconnectionReasonDAO implements DisconnectionReasonDAO {
             if (disconnectionReason.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"disconnection_reason\" (\"name\", \"id\") VALUES(?, ?); " +
-                                "ALTER SEQUENCE serial_disconnection_reason RESTART WITH ?;");
+//                                "ALTER SEQUENCE serial_disconnection_reason RESTART WITH ?;");
+                "");
                 preparedStatement.setInt(2, disconnectionReason.getId());
-                preparedStatement.setInt(3, disconnectionReason.getId() + 1);
+//                preparedStatement.setInt(3, disconnectionReason.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"disconnection_reason\" (\"name\") VALUES(?)");
@@ -61,11 +62,11 @@ public class PostGreDisconnectionReasonDAO implements DisconnectionReasonDAO {
             if(disconnectionReason.getId() != null) {
                 return;
             }
-            Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
-            if (resultSet.next()) {
-                disconnectionReason.setId(resultSet.getInt(1));
-            }
+//            Statement statement = getConnection().createStatement();
+//            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+//            if (resultSet.next()) {
+//                disconnectionReason.setId(resultSet.getInt(1));
+//            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -100,7 +101,20 @@ public class PostGreDisconnectionReasonDAO implements DisconnectionReasonDAO {
 
     @Override
     public List<DisconnectionReason> getAllContainsInName(String str) {
-        throw new UnsupportedOperationException("getAllContainsInName is not implemented");
+        List<DisconnectionReason> materials = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"disconnection_reason\" where LOWER(\"name\") LIKE ?");
+            preparedStatement.setString(1, ("%" + str + "%").toLowerCase());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                materials.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return materials;
     }
 
     private DisconnectionReason constructEntity(ResultSet resultSet) throws SQLException{

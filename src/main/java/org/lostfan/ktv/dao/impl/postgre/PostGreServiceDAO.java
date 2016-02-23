@@ -78,11 +78,11 @@ public class PostGreServiceDAO implements ServiceDAO {
             if (service.getId() != null) {
                 return;
             }
-            Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
-            if (resultSet.next()) {
-                service.setId(resultSet.getInt(1));
-            }
+//            Statement statement = getConnection().createStatement();
+//            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+//            if (resultSet.next()) {
+//                service.setId(resultSet.getInt(1));
+//            }
 
 
         } catch (SQLException ex) {

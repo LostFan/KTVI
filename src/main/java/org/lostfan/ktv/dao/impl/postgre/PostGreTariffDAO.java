@@ -74,9 +74,10 @@ public class PostGreTariffDAO implements TariffDAO {
             if(tariff.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"tariff\" (\"name\", \"channels\", \"digital\", \"id\") VALUES(?, ?, ?, ?); " +
-                                "ALTER SEQUENCE serial_tariff RESTART WITH ?;");
+//                                "ALTER SEQUENCE serial_tariff RESTART WITH ?;");
+                                "");
                 preparedStatement.setInt(4, tariff.getId());
-                preparedStatement.setInt(5, tariff.getId() + 1);
+//                preparedStatement.setInt(5, tariff.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"tariff\" (\"name\", \"channels\", \"digital\") VALUES(?, ?, ?)");
@@ -89,10 +90,10 @@ public class PostGreTariffDAO implements TariffDAO {
             if(tariff.getId() != null) {
                 return;
             }
-            Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
-            resultSet.next();
-            tariff.setId(resultSet.getInt(1));
+//            Statement statement = getConnection().createStatement();
+//            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+//            resultSet.next();
+//            tariff.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

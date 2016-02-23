@@ -26,6 +26,9 @@ public class EntityPanelFactory {
             case Tariff:
                 model = new TariffSearcherModel();
                 break;
+            case DisconnectionReason:
+                model = new DisconnectionReasonSearcherModel();
+                break;
             default:
                 throw new IllegalArgumentException("Wrong type: " + type.toString());
         }

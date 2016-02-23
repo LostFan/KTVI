@@ -21,6 +21,7 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
 
     private EntityField tariffField;
     private EntityField serviceEntityField;
+    private EntityField disconnectionReasonField;
 
     private List<FullEntityField> fullFields;
 
@@ -56,6 +57,7 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
 
         this.serviceEntityField = new EntityField("service", EntityFieldTypes.Service, AdditionalRenderedService::getServiceId, AdditionalRenderedService::setServiceId, false);
         this.tariffField = new EntityField("tariff", EntityFieldTypes.Tariff, TariffField::getTariffId, TariffField::setTariffId);
+        this.disconnectionReasonField = new EntityField("disconnectionReason", EntityFieldTypes.DisconnectionReason, DisconnectionRenderedService::getDisconnectionReasonId, DisconnectionRenderedService::setDisconnectionReasonId);
 
         this.fullFields = new ArrayList<>();
 
@@ -107,7 +109,8 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
     }
 
     public DisconnectionRenderedService getDisconnectionRenderedService(RenderedService renderedService) {
-        return DisconnectionRenderedService.build(renderedService);
+        SubscriberSession subscriberSession = subscriberDAO.getSubscriberSessionByDisconnectionDate(renderedService.getSubscriberAccount(), renderedService.getDate());
+        return DisconnectionRenderedService.build(renderedService , subscriberSession);
     }
 
     public ChangeOfTariffRenderedService getChangeOfTariffRenderedService(RenderedService renderedService) {
@@ -143,6 +146,10 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
 
     public EntityField getServiceField() {
         return this.serviceEntityField;
+    }
+
+    public EntityField getDisconnectionReasonField() {
+        return this.disconnectionReasonField;
     }
 
     @Override
@@ -292,6 +299,7 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
             }
             SubscriberSession subscriberSession = subscriberDAO.getNotClosedSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
             subscriberSession.setDisconnectionDate(entity.getDate());
+            subscriberSession.setDisconnectionReasonId(entity.getDisconnectionReasonId());
 
             getDao().save(entity);
             subscriberDAO.updateSubscriberSession(subscriberSession);
@@ -321,6 +329,7 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         subscriberDAO.updateSubscriberSession(currentSession);
         SubscriberSession newSession = subscriberDAO.getNotClosedSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
         newSession.setDisconnectionDate(entity.getDate());
+        newSession.setDisconnectionReasonId(entity.getDisconnectionReasonId());
         getDao().update(entity);
         subscriberDAO.updateSubscriberSession(newSession);
 

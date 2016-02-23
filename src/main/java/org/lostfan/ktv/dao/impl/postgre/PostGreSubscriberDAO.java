@@ -333,6 +333,9 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberSession.setDisconnectionDate(rs.getDate("disconnection_date").toLocalDate());
                 }
+                if (rs.getObject("disconnection_reason_id") != null) {
+                    subscriberSession.setDisconnectionReasonId(rs.getInt("disconnection_reason_id"));
+                }
 
             }
 
@@ -435,15 +438,20 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
         if(getSubscriberSessionByConnectionDate(subscriberSession.getSubscriberAccount(), subscriberSession.getConnectionDate()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"subscriber_session\" set \"disconnection_date\" = ?  where \"subscriber_account\" = ? AND \"connection_date\" = ?");
+                        "UPDATE \"subscriber_session\" set \"disconnection_date\" = ?, \"disconnection_reason_id\" = ?  where \"subscriber_account\" = ? AND \"connection_date\" = ?");
 
                 if (subscriberSession.getDisconnectionDate() != null) {
                     preparedStatement.setDate(1, Date.valueOf(subscriberSession.getDisconnectionDate()));
                 } else {
                     preparedStatement.setDate(1, null);
                 }
-                preparedStatement.setInt(2, subscriberSession.getSubscriberAccount());
-                preparedStatement.setDate(3, Date.valueOf(subscriberSession.getConnectionDate()));
+                if (subscriberSession.getDisconnectionReasonId() != null) {
+                    preparedStatement.setInt(2, subscriberSession.getDisconnectionReasonId());
+                } else {
+                    preparedStatement.setNull(2, Types.INTEGER);
+                }
+                preparedStatement.setInt(3, subscriberSession.getSubscriberAccount());
+                preparedStatement.setDate(4, Date.valueOf(subscriberSession.getConnectionDate()));
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {

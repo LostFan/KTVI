@@ -55,10 +55,10 @@ public class PostGreMaterialConsumptionDAO implements MaterialConsumptionDAO {
             if (materialConsumption.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"material_consumption\" (\"material_id\", \"rendered_service_id\", \"amount\", \"id\")" +
-                                " VALUES(?, ?, ?, ?); " +
-                                "ALTER SEQUENCE serial_material_consumption RESTART WITH ?;");
+                                " VALUES(?, ?, ?, ?); ");
+//                                "ALTER SEQUENCE serial_material_consumption RESTART WITH ?;");
                 preparedStatement.setInt(4, materialConsumption.getId());
-                preparedStatement.setInt(5, materialConsumption.getId() + 1);
+//                preparedStatement.setInt(5, materialConsumption.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"material_consumption\" (\"material_id\", \"rendered_service_id\", \"amount\")" +
@@ -71,10 +71,10 @@ public class PostGreMaterialConsumptionDAO implements MaterialConsumptionDAO {
             if (materialConsumption.getId() != null) {
                 return;
             }
-            Statement statement = getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
-            resultSet.next();
-            materialConsumption.setId(resultSet.getInt(1));
+//            Statement statement = getConnection().createStatement();
+//            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+//            resultSet.next();
+//            materialConsumption.setId(resultSet.getInt(1));
 
         } catch (SQLException ex) {
             ex.printStackTrace();
