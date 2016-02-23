@@ -24,14 +24,4 @@ public interface PaymentDAO extends EntityDAO<Payment> {
     Map<Integer, Integer> getAllPaymentsPriceForSubscriberToDate(int serviceId, LocalDate date);
 
     Map<Integer, Payment> getForNotClosedRenderedServices(Integer subscriberAccount, Integer serviceId);
-
-    List<PaymentType> getAllPaymentTypes();
-
-    PaymentType getPaymentType(int paymentTypeId);
-
-    void savePaymentType(PaymentType paymentType);
-
-    void updatePaymentType(PaymentType paymentType);
-
-    void deletePaymentType(int paymentTypeId);
 }

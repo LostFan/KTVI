@@ -16,6 +16,7 @@ public class PostGreDaoFactory extends DAOFactory {
     private StreetDAO streetDAO;
     private MaterialConsumptionDAO materialConsumptionDAO;
     private PeriodDAO periodDAO;
+    private PaymentTypeDAO paymentTypeDAO;
 
     public PostGreDaoFactory() {
         ConnectionManager.setManager(new PostgreConnectionManager());
@@ -30,6 +31,7 @@ public class PostGreDaoFactory extends DAOFactory {
         this.streetDAO = new PostGreStreetDAO();
         this.materialConsumptionDAO = new PostGreMaterialConsumptionDAO();
         this.periodDAO = new PostGrePeriodDAO();
+        this.paymentTypeDAO = new PostGrePaymentTypeDAO();
     }
 
     @Override
@@ -80,5 +82,10 @@ public class PostGreDaoFactory extends DAOFactory {
     @Override
     public PeriodDAO getPeriodDAO() {
         return this.periodDAO ;
+    }
+
+    @Override
+    public PaymentTypeDAO getPaymentTypeDAO() {
+        return this.paymentTypeDAO;
     }
 }

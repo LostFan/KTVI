@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lostfan.ktv.domain.Payment;
-import org.lostfan.ktv.model.entity.PaymentEntityModel;
+import org.lostfan.ktv.model.PaymentTypes;
 
 public class PaymentsLoader {
 
@@ -44,6 +44,7 @@ public class PaymentsLoader {
                     payment.setDate(createDate(str[9]));
                     payment.setBankFileName(file.getName());
                     payment.setPrice(Integer.parseInt(str[6].split("\\.")[0]));
+                    payment.setPaymentTypeId(PaymentTypes.BANK.getId());
                     payments.add(payment);
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -68,6 +69,7 @@ public class PaymentsLoader {
 //                    payment.setDate(createDate(str[9]));
                     payment.setBankFileName(file.getName());
                     payment.setPrice(Integer.parseInt(str[5]));
+                    payment.setPaymentTypeId(PaymentTypes.POST.getId());
                     payments.add(payment);
                 } catch (Exception ex) {
                     ex.printStackTrace();

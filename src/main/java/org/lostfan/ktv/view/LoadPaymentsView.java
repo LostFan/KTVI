@@ -98,6 +98,7 @@ public class LoadPaymentsView extends FormView {
                 }
 
             }
+            this.entityInnerTableView.getTable().revalidate();
         });
 
         this.entityInnerTableView = new EntityInnerTableView<>(model.getLoadFullEntityField(), new ArrayList<>());

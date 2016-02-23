@@ -41,6 +41,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         this.fields.add(new EntityField("renderedService", EntityFieldTypes.RenderedService, Payment::getRenderedServicePaymentId, Payment::setRenderedServicePaymentId));
         this.fields.add(new EntityField("payment.price", EntityFieldTypes.Integer, Payment::getPrice, Payment::setPrice));
         this.fields.add(new EntityField("payment.bankFileName", EntityFieldTypes.String, Payment::getBankFileName, Payment::setBankFileName));
+        this.fields.add(new EntityField("paymentType", EntityFieldTypes.PaymentType, Payment::getPaymentTypeId, Payment::setPaymentTypeId));
 
         loadFullEntityField = new FullEntityField("payment", EntityFieldTypes.Payment, null, null, Payment::new);
         loadFullEntityField.setEntityFields(getFields().stream().filter(e -> !e.getTitleKey().equals("payment.id")).collect(Collectors.toList()));
@@ -156,7 +157,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
                 Payment payment = new Payment();
                 payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
                 payment.setDate(date);
-                payment.setPaymentTypeId(null);
+                payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
                 payment.setBankFileName(loadPayment.getBankFileName());
                 if (price > paymentPrice) {
                     payment.setPrice(paymentPrice);
@@ -178,7 +179,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
         payment.setDate(date);
         payment.setBankFileName(loadPayment.getBankFileName());
-        payment.setPaymentTypeId(null);
+        payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
         payment.setPrice(price);
         payment.setServicePaymentId(FixedServices.SUBSCRIPTION_FEE.getId());
         payments.add(payment);
@@ -197,7 +198,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
                 payment.setId(payment1.getId());
                 payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
                 payment.setDate(loadPayment.getDate());
-                payment.setPaymentTypeId(null);
+                payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
                 payment.setBankFileName(loadPayment.getBankFileName());
                 if (price > paymentPrice) {
                     payment.setPrice(paymentPrice);
@@ -235,7 +236,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
                 Payment payment = new Payment();
                 payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
                 payment.setDate(date);
-                payment.setPaymentTypeId(null);
+                payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
                 payment.setBankFileName(loadPayment.getBankFileName());
                 if (price > paymentPrice) {
                     payment.setPrice(paymentPrice);
@@ -257,7 +258,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
         payment.setDate(date);
         payment.setBankFileName(loadPayment.getBankFileName());
-        payment.setPaymentTypeId(null);
+        payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
         payment.setPrice(price);
         payment.setServicePaymentId(FixedServices.SUBSCRIPTION_FEE.getId());
         payments.add(payment);

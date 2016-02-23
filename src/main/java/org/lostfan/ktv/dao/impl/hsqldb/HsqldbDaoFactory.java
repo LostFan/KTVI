@@ -79,4 +79,9 @@ public class HsqldbDaoFactory extends DAOFactory {
     public PeriodDAO getPeriodDAO() {
         return null;
     }
+
+    @Override
+    public PaymentTypeDAO getPaymentTypeDAO() {
+        return null;
+    }
 }

@@ -29,6 +29,9 @@ public class EntityPanelFactory {
             case DisconnectionReason:
                 model = new DisconnectionReasonSearcherModel();
                 break;
+            case PaymentType:
+                model = new PaymentTypeSearcherModel();
+                break;
             default:
                 throw new IllegalArgumentException("Wrong type: " + type.toString());
         }

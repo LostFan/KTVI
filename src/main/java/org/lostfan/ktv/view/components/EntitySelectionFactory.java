@@ -5,8 +5,10 @@ import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.searcher.AdditionalServiceSearcherModel;
+import org.lostfan.ktv.model.searcher.DisconnectionReasonSearcherModel;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.model.searcher.MaterialSearcherModel;
+import org.lostfan.ktv.model.searcher.PaymentTypeSearcherModel;
 import org.lostfan.ktv.model.searcher.RenderedServiceSearcherModel;
 import org.lostfan.ktv.model.searcher.ServiceSearcherModel;
 import org.lostfan.ktv.model.searcher.StreetSearcherModel;
@@ -36,6 +38,12 @@ public class EntitySelectionFactory {
                 break;
             case Tariff:
                 model = new TariffSearcherModel();
+                break;
+            case DisconnectionReason:
+                model = new DisconnectionReasonSearcherModel();
+                break;
+            case PaymentType:
+                model = new PaymentTypeSearcherModel();
                 break;
             default:
                 throw new IllegalArgumentException("Wrong type: " + type.toString());

@@ -21,6 +21,7 @@ public class MainModel extends BaseObservable {
     private static StreetEntityModel streetEntityModel;
     private static SubscriberEntityModel subscriberEntityModel;
     private static TariffEntityModel tariffEntityModel;
+    private static PaymentTypeEntityModel paymentTypeEntityModel;
 
     static {
         disconnectionReasonEntityModel = new DisconnectionReasonEntityModel();
@@ -33,6 +34,7 @@ public class MainModel extends BaseObservable {
         streetEntityModel = new StreetEntityModel();
         subscriberEntityModel = new SubscriberEntityModel();
         tariffEntityModel = new TariffEntityModel();
+        paymentTypeEntityModel = new PaymentTypeEntityModel();
 
         nameEntityModels = new HashMap<>();
         nameEntityModels.put(disconnectionReasonEntityModel.getEntityNameKey(), disconnectionReasonEntityModel);
@@ -45,6 +47,7 @@ public class MainModel extends BaseObservable {
         nameEntityModels.put(streetEntityModel.getEntityNameKey(), streetEntityModel);
         nameEntityModels.put(subscriberEntityModel.getEntityNameKey(), subscriberEntityModel);
         nameEntityModels.put(tariffEntityModel.getEntityNameKey(), tariffEntityModel);
+        nameEntityModels.put(paymentTypeEntityModel.getEntityNameKey(), paymentTypeEntityModel);
 
         classEntityModels = new HashMap<>();
         classEntityModels.put(disconnectionReasonEntityModel.getEntityClass(), disconnectionReasonEntityModel);
@@ -56,6 +59,7 @@ public class MainModel extends BaseObservable {
         classEntityModels.put(streetEntityModel.getEntityClass(), streetEntityModel);
         classEntityModels.put(subscriberEntityModel.getEntityClass(), subscriberEntityModel);
         classEntityModels.put(tariffEntityModel.getEntityClass(), tariffEntityModel);
+        classEntityModels.put(paymentTypeEntityModel.getEntityClass(), paymentTypeEntityModel);
     }
 
     public static EntityModel getEntityModel(String entityName) {
@@ -106,6 +110,10 @@ public class MainModel extends BaseObservable {
         return tariffEntityModel;
     }
 
+    public static PaymentTypeEntityModel getPaymentTypeEntityModel() {
+        return paymentTypeEntityModel;
+    }
+
     private List<String> entityModelNames;
     private List<String> documentModelNames;
     private List<String> reportNames;
@@ -123,6 +131,7 @@ public class MainModel extends BaseObservable {
         this.entityModelNames.add(getTariffEntityModel().getEntityNameKey());
         this.entityModelNames.add(getStreetEntityModel().getEntityNameKey());
         this.entityModelNames.add(getDisconnectionReasonEntityModel().getEntityNameKey());
+        this.entityModelNames.add(getPaymentTypeEntityModel().getEntityNameKey());
 
         this.documentModelNames.add(getPaymentEntityModel().getEntityNameKey());
         this.documentModelNames.add(getRenderedServiceEntityModel().getEntityNameKey());

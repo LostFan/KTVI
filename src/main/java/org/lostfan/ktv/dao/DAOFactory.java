@@ -31,4 +31,6 @@ public abstract class DAOFactory {
     public abstract MaterialConsumptionDAO getMaterialConsumptionDAO();
 
     public abstract PeriodDAO getPeriodDAO();
+
+    public abstract PaymentTypeDAO getPaymentTypeDAO();
 }

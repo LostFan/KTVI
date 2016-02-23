@@ -172,87 +172,87 @@ public class HsqldbPaymentDAOTest {
         assertEquals(paymentDao.getByDate(LocalDate.of(2015, 6, 27)).get(0).getSubscriberAccount().intValue(), 1);
     }
 
-    @Test
-    public void emptyPaymentTypesTest() {
-        assertEquals(paymentDao.getAllPaymentTypes().size(), 0);
-    }
-
-    @Test
-    public void getAllServicesReturnsCorrectPaymentTypeCountTest() throws SQLException {
-        insertStubDataPaymentTypes();
-        assertEquals(paymentDao.getAllPaymentTypes().size(), 2);
-    }
-
-    @Test
-    public void getAllServicesReturnsAllExistingPaymentTypesTest() throws SQLException {
-        insertStubDataPaymentTypes();
-        assertEquals(paymentDao.getAllPaymentTypes().get(0).getId().intValue(), 1);
-    }
-
-    @Test
-    public void getExistingPaymentTypeByIdTest() throws SQLException {
-        insertStubDataPaymentTypes();
-        assertEquals(paymentDao.getPaymentType(1).getId().intValue(), 1);
-    }
-
-    @Test
-    public void createNewPaymentTypeCorrectServiceCountTest() throws SQLException {
-        insertStubDataPaymentTypes();
-        PaymentType paymentType = new PaymentType();
-        paymentType.setName("New");
-        paymentDao.savePaymentType(paymentType);
-        assertEquals(paymentDao.getAllPaymentTypes().size(), 3);
-    }
-
-    @Test
-    public void createNewPaymentTypeShouldMatchInsertedValuesTest() throws SQLException {
-        insertStubDataPaymentTypes();
-        PaymentType paymentType = new PaymentType();
-        paymentType.setName("New");
-        paymentDao.savePaymentType(paymentType);
-        assertEquals(paymentDao.getAllPaymentTypes().get(2).getName(), "New");
-    }
-
-    @Test
-    public void createNewPaymentTypeShouldHaveIncrementedIdTest() throws SQLException {
-        insertStubDataPaymentTypes();
-        PaymentType paymentType = new PaymentType();
-        paymentType.setName("New");
-        paymentDao.savePaymentType(paymentType);
-        assertEquals(paymentDao.getAllPaymentTypes().get(2).getId().intValue(), 3);
-    }
-
-    @Test
-    public void updateExistingPaymentTypeByIdShouldMatchUpdatedValuesTest() throws SQLException {
-        insertStubDataPaymentTypes();
-        PaymentType paymentType = paymentDao.getPaymentType(1);
-        paymentType.setName("New");
-        paymentDao.updatePaymentType(paymentType);
-        assertEquals(paymentDao.getPaymentType(1).getName(), "New");
-    }
-
-    @Test
-    public void updateExistingPaymentTypeByIdCorrectServiceCountTest() throws SQLException {
-        insertStubDataPaymentTypes();
-        PaymentType paymentType = paymentDao.getPaymentType(1);
-        paymentType.setName("New");
-        paymentDao.updatePaymentType(paymentType);
-        assertEquals(paymentDao.getAllPaymentTypes().size(), 2);
-    }
-
-    @Test
-    public void deletePaymentTypeByIdCorrectServiceCountTest() throws SQLException {
-        insertStubDataPaymentTypes();
-        paymentDao.deletePaymentType(1);
-        assertEquals(paymentDao.getAllPaymentTypes().size(), 1);
-    }
-
-    @Test
-    public void deletePaymentTypeByIdShouldDeleteCorrectDataTest() throws SQLException {
-        insertStubDataPaymentTypes();
-        paymentDao.deletePaymentType(1);
-        assertEquals(paymentDao.getPaymentType(1), null);
-    }
+//    @Test
+//    public void emptyPaymentTypesTest() {
+//        assertEquals(paymentDao.getAllPaymentTypes().size(), 0);
+//    }
+//
+//    @Test
+//    public void getAllServicesReturnsCorrectPaymentTypeCountTest() throws SQLException {
+//        insertStubDataPaymentTypes();
+//        assertEquals(paymentDao.getAllPaymentTypes().size(), 2);
+//    }
+//
+//    @Test
+//    public void getAllServicesReturnsAllExistingPaymentTypesTest() throws SQLException {
+//        insertStubDataPaymentTypes();
+//        assertEquals(paymentDao.getAllPaymentTypes().get(0).getId().intValue(), 1);
+//    }
+//
+//    @Test
+//    public void getExistingPaymentTypeByIdTest() throws SQLException {
+//        insertStubDataPaymentTypes();
+//        assertEquals(paymentDao.getPaymentType(1).getId().intValue(), 1);
+//    }
+//
+//    @Test
+//    public void createNewPaymentTypeCorrectServiceCountTest() throws SQLException {
+//        insertStubDataPaymentTypes();
+//        PaymentType paymentType = new PaymentType();
+//        paymentType.setName("New");
+//        paymentDao.savePaymentType(paymentType);
+//        assertEquals(paymentDao.getAllPaymentTypes().size(), 3);
+//    }
+//
+//    @Test
+//    public void createNewPaymentTypeShouldMatchInsertedValuesTest() throws SQLException {
+//        insertStubDataPaymentTypes();
+//        PaymentType paymentType = new PaymentType();
+//        paymentType.setName("New");
+//        paymentDao.savePaymentType(paymentType);
+//        assertEquals(paymentDao.getAllPaymentTypes().get(2).getName(), "New");
+//    }
+//
+//    @Test
+//    public void createNewPaymentTypeShouldHaveIncrementedIdTest() throws SQLException {
+//        insertStubDataPaymentTypes();
+//        PaymentType paymentType = new PaymentType();
+//        paymentType.setName("New");
+//        paymentDao.savePaymentType(paymentType);
+//        assertEquals(paymentDao.getAllPaymentTypes().get(2).getId().intValue(), 3);
+//    }
+//
+//    @Test
+//    public void updateExistingPaymentTypeByIdShouldMatchUpdatedValuesTest() throws SQLException {
+//        insertStubDataPaymentTypes();
+//        PaymentType paymentType = paymentDao.getPaymentType(1);
+//        paymentType.setName("New");
+//        paymentDao.updatePaymentType(paymentType);
+//        assertEquals(paymentDao.getPaymentType(1).getName(), "New");
+//    }
+//
+//    @Test
+//    public void updateExistingPaymentTypeByIdCorrectServiceCountTest() throws SQLException {
+//        insertStubDataPaymentTypes();
+//        PaymentType paymentType = paymentDao.getPaymentType(1);
+//        paymentType.setName("New");
+//        paymentDao.updatePaymentType(paymentType);
+//        assertEquals(paymentDao.getAllPaymentTypes().size(), 2);
+//    }
+//
+//    @Test
+//    public void deletePaymentTypeByIdCorrectServiceCountTest() throws SQLException {
+//        insertStubDataPaymentTypes();
+//        paymentDao.deletePaymentType(1);
+//        assertEquals(paymentDao.getAllPaymentTypes().size(), 1);
+//    }
+//
+//    @Test
+//    public void deletePaymentTypeByIdShouldDeleteCorrectDataTest() throws SQLException {
+//        insertStubDataPaymentTypes();
+//        paymentDao.deletePaymentType(1);
+//        assertEquals(paymentDao.getPaymentType(1), null);
+//    }
 
     private void insertStubDataServices() throws SQLException {
         executeQuery("INSERT INTO \"service\" (\"id\", \"name\", \"additional\") VALUES(1, 'Service 1 name', false);");

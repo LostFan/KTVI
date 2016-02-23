@@ -21,6 +21,7 @@ public enum EntityFieldTypes {
     Tariff(org.lostfan.ktv.domain.Tariff.class, true, DAOFactory.getDefaultDAOFactory().getTariffDAO()),
     RenderedService(org.lostfan.ktv.domain.RenderedService.class, true, DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO()),
     DisconnectionReason(org.lostfan.ktv.domain.DisconnectionReason.class, true, DAOFactory.getDefaultDAOFactory().getDisconnectionReasonDAO()),
+    PaymentType(org.lostfan.ktv.domain.PaymentType.class, true, DAOFactory.getDefaultDAOFactory().getPaymentTypeDAO()),
     MaterialConsumption(org.lostfan.ktv.domain.MaterialConsumption.class, true, null);
 
     private Class valueClass;
