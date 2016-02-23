@@ -5,12 +5,22 @@ import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.impl.postgre.PostGreDaoFactory;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.utils.ConnectionManager;
+import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.view.MainView;
+
+import javax.swing.*;
 
 public class Application {
 
     public static void main(String[] args) {
-        DAOFactory.setDefaultDAOFactory(new PostGreDaoFactory());
+        try {
+            DAOFactory.setDefaultDAOFactory(new PostGreDaoFactory());
+        } catch (ApplicationException ex) {
+            // TODO: show this message over the main view
+            JOptionPane.showMessageDialog(null, ResourceBundles.getGuiBundle().getString(ex.getCode()),
+                    "Application Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         // Close connections and save all the changes
         Runtime.getRuntime().addShutdownHook(new Thread() {
