@@ -1,14 +1,101 @@
 package org.lostfan.ktv.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 public class FormSize {
 
-    private static final File FILE = new File("form sizes.txt");;
+    private static final String FILE_NAME = "form_sizes";
+
+    private static Map<String, FormSize> formSizes;
+
+    public static void setFormSize(String formName, int width, int height) {
+        if (formSizes == null) {
+            load();
+        }
+
+        FormSize formSize = formSizes.get(formName);
+        if (formSize == null) {
+            formSize = new FormSize();
+            formSizes.put(formName, formSize);
+            formSize.formName = formName;
+        }
+
+        formSize.width = width;
+        formSize.height = height;
+
+        save();
+    }
+
+    public static FormSize getFormSize(String formName) {
+        if (formSizes == null) {
+            load();
+        }
+
+        return formSizes.get(formName);
+    }
+
+    private static void load() {
+        formSizes = new HashMap<>();
+
+        File formSizesFile = new File(FILE_NAME);
+        if (formSizesFile.exists() && !formSizesFile.isDirectory()) {
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new FileReader(formSizesFile));
+                String line;
+                while((line = br.readLine()) != null) {
+                    StringTokenizer tokenizer = new StringTokenizer(line, "=:");
+                    if (tokenizer.countTokens() < 3) {
+                        continue;
+                    }
+                    FormSize formSize = new FormSize();
+                    formSize.formName = tokenizer.nextToken();
+                    try {
+                        formSize.width = Integer.parseInt(tokenizer.nextToken());
+                        formSize.height = Integer.parseInt(tokenizer.nextToken());
+                    } catch (NumberFormatException ex) {
+                        continue;
+                    }
+
+                    formSizes.put(formSize.formName, formSize);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    private static void save() {
+        BufferedWriter bw = null;
+        try {
+            bw = new BufferedWriter(new FileWriter(FILE_NAME));
+            for (FormSize formSize : formSizes.values()) {
+                bw.write(String.format("%s=%d:%d", formSize.getFormName(), formSize.getWidth(), formSize.getHeight()));
+                bw.newLine();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (bw != null) {
+                try {
+                    bw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     private String user;
     private String formName;
@@ -19,105 +106,15 @@ public class FormSize {
         return user;
     }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
-
     public String getFormName() {
         return formName;
-    }
-
-    public void setFormName(String formName) {
-        this.formName = formName;
     }
 
     public int getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
     public int getHeight() {
         return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public static void saveFormSize(String formName, Integer width, Integer height) {
-        FileOutputStream fop;
-        String content = new StringBuffer(formName)
-                .append(";")
-                .append(width)
-                .append(";")
-                .append(height)
-                .toString();
-        if(!FILE.exists()) {
-            try {
-                FILE.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (FILE.exists() && !FILE.isDirectory()) {
-            try {
-
-                FileReader fr = new FileReader(FILE);
-                BufferedReader br = new BufferedReader(fr);
-                StringBuffer lines = new StringBuffer();
-                String line;
-                while((line = br.readLine()) != null) {
-                    if(line.split(";")[0].equals(formName)) {
-                        lines.append(content);
-                    } else {
-                        lines.append(line);
-                    }
-                    lines.append("\n");
-                }
-                if(!lines.toString().contains(content)) {
-                    lines.append(content);
-                    lines.append("\n");
-                }
-                byte[] contentInBytes = lines.toString().getBytes();
-                br.close();
-
-                fop = new FileOutputStream(FILE);
-                fop.write(contentInBytes);
-                fop.flush();
-                fop.close();
-
-                System.out.println("Done");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static FormSize getFormSize(String formName) {
-        if (FILE.exists() && !FILE.isDirectory()) {
-            try {
-                FileReader fr = new FileReader(FILE);
-                BufferedReader br = new BufferedReader(fr);
-                String line;
-                while((line = br.readLine()) != null) {
-                    if (line.split(";")[0].equals(formName)) {
-                        FormSize formSize = new FormSize();
-                        formSize.setFormName(formName);
-                        formSize.setWidth(Integer.parseInt(line.split(";")[1]));
-                        formSize.setHeight(Integer.parseInt(line.split(";")[2]));
-                        return formSize;
-                    }
-                }
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 }
