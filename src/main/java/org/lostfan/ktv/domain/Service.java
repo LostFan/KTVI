@@ -16,6 +16,7 @@ public class Service extends DefaultEntity  {
 
     private boolean isDisconnectionService;
 
+    @Override
     public String getName() {
         return name;
     }
@@ -32,6 +33,7 @@ public class Service extends DefaultEntity  {
         this.additionalService = additionalService;
     }
 
+    @Override
     public Integer getId() {return id;}
 
     public void setId(Integer id) {

@@ -52,8 +52,6 @@ public class PaymentController extends EntityController{
             savePayments(payments, loadPaymentsView);
         });
 
-
-
         loadPaymentsView.setLoadPaymentFileListener(args_ -> {
             FileAndPayments fileAndPayments = (FileAndPayments) args_;
             loadPaymentsView.addPayments(
@@ -128,7 +126,6 @@ public class PaymentController extends EntityController{
 
         }
 
-
         for (Payment payment : payments) {
             result = model.getValidator().validate(payment, result);
             result = model.getPeriodValidator().validate(payment, result);
@@ -142,8 +139,6 @@ public class PaymentController extends EntityController{
 
         view.hide();
     }
-
-
 
     @Override
     protected void deleteActionPerformed(Object args) {

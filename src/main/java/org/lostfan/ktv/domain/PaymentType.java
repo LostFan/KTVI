@@ -6,6 +6,7 @@ public class PaymentType extends DefaultEntity {
 
     private String name;
 
+    @Override
     public Integer getId() {
         return id;
     }
@@ -14,6 +15,7 @@ public class PaymentType extends DefaultEntity {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }

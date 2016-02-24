@@ -7,6 +7,7 @@ import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.EntityFilterView;
 import org.lostfan.ktv.view.EntityTableView;
 import org.lostfan.ktv.view.EntityView;
+import org.lostfan.ktv.view.View;
 import org.lostfan.ktv.view.components.EntityViewFactory;
 
 import java.util.List;
@@ -31,10 +32,10 @@ public class EntityController implements MainInnerController {
         return model;
     }
 
+    @Override
     public EntityTableView getView() {
         return view;
     }
-
 
     protected void filterActionPerformed(Object args) {
         if (this.entityFilterView == null) {

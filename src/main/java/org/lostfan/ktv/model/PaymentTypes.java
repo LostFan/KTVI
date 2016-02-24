@@ -1,6 +1,7 @@
 package org.lostfan.ktv.model;
 
 public enum PaymentTypes {
+
     POST(1, "post"),
     BANK(2, "bank");
 
@@ -19,11 +20,6 @@ public enum PaymentTypes {
 
     PaymentTypes(int id, String code) {
         this.id = id;
-        this.code = code;
-    }
-
-    PaymentTypes(String code) {
-        id = 0;
         this.code = code;
     }
 

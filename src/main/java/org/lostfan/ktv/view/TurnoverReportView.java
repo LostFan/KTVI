@@ -467,6 +467,7 @@ public class TurnoverReportView extends FormView {
             e.printStackTrace();
         }
     }
+
     private void exceptionWindow (Exception e) {
         int optionType = JOptionPane.OK_OPTION;
         int messageType = JOptionPane.WARNING_MESSAGE;

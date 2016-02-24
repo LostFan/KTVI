@@ -35,6 +35,7 @@ public class Subscriber extends DefaultEntity {
 
     private String information;
 
+    @Override
     public Integer getId() {
         return account;
     }
@@ -51,6 +52,7 @@ public class Subscriber extends DefaultEntity {
         return account;
     }
 
+    @Override
     public String getName() {
         return name;
     }

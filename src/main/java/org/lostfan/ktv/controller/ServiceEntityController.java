@@ -38,6 +38,5 @@ public class ServiceEntityController extends EntityController {
         ServicePrice servicePrice = (ServicePrice) args;
         this.model.delete(servicePrice);
         this.servicePriceView.hide();
-
     }
 }

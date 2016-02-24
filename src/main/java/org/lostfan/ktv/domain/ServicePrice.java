@@ -12,6 +12,7 @@ public class ServicePrice extends DefaultEntity {
 
     private LocalDate date;
 
+    @Override
     public Integer getId() {
         return id;
     }

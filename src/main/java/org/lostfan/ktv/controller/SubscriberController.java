@@ -1,6 +1,5 @@
 package org.lostfan.ktv.controller;
 
-
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
 import org.lostfan.ktv.view.SubscriberTableView;
 

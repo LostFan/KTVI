@@ -6,10 +6,12 @@ public class Street extends DefaultEntity {
 
     private String name;
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }

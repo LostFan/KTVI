@@ -19,7 +19,6 @@ public class AdditionalRenderedService extends RenderedService implements Materi
         this.materialConsumption = materialConsumption;
     }
 
-
     public static AdditionalRenderedService build(RenderedService renderedService, SubscriberTariff subscriberTariff, List<MaterialConsumption> materialConsumptions) {
         AdditionalRenderedService dto = new AdditionalRenderedService();
         dto.setId(renderedService.getId());

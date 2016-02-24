@@ -333,7 +333,6 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         getDao().update(entity);
         subscriberDAO.updateSubscriberSession(newSession);
 
-
         updateEntitiesList();
         return result;
     }
@@ -577,7 +576,6 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         }
         getDao().delete(entity.getId());
     }
-
 
     @Override
     protected RenderedServiceDAO getDao() {

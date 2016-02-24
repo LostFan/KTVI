@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 
 import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.domain.Document;
-import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.utils.BaseObservable;
@@ -32,6 +31,7 @@ public abstract class BaseDocumentModel<T extends Document> extends BaseObservab
     public List<FieldSearchCriterion<T>> getSearchCriteria() {
         return this.searchCriteria;
     }
+
     @Override
     public void setSearchCriteria(List<FieldSearchCriterion<T>> criteria) {
         this.searchCriteria = criteria;

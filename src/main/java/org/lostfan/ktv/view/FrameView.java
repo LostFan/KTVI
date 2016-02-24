@@ -25,7 +25,7 @@ public abstract class FrameView extends View {
             public void windowDeactivated(WindowEvent e) {
                 super.windowDeactivated(e);
                 if(FrameView.this.frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
-                    FormSize.saveFormSize(getTitle(), getWidth(), getHeight());
+                    FormSize.setFormSize(getTitle(), getWidth(), getHeight());
                 }
 
             }

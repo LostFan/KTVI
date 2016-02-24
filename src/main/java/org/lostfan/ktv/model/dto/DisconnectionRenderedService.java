@@ -6,14 +6,15 @@ import org.lostfan.ktv.model.FixedServices;
 
 public class DisconnectionRenderedService extends RenderedService {
 
-    Integer disconnectionReasonId;
+    private Integer disconnectionReasonId;
+
     @Override
     public Integer getServiceId() {
         return FixedServices.DISCONNECTION.getId();
     }
 
     public Integer getDisconnectionReasonId() {
-        return disconnectionReasonId;
+        return this.disconnectionReasonId;
     }
 
     public void setDisconnectionReasonId(Integer disconnectionReasonId) {

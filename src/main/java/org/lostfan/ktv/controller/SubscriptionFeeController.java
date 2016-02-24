@@ -13,7 +13,6 @@ public class SubscriptionFeeController extends EntityController{
 
     private SubscriptionFeeModel model;
     private SubscriptionFeeTableView view;
-    private EntityFilterView entityFilterView;
 
     public SubscriptionFeeController(SubscriptionFeeModel model, SubscriptionFeeTableView view) {
         super(model, view);
