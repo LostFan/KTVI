@@ -8,6 +8,7 @@ import jxl.write.Number;
 import jxl.write.biff.RowsExceededException;
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.Service;
+import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.TurnoverReportModel;
@@ -28,9 +29,6 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by 1 on 23.01.2016.
- */
 public class TurnoverReportView extends FormView {
 
     private class ReportTableModel extends AbstractTableModel {
@@ -129,7 +127,6 @@ public class TurnoverReportView extends FormView {
         }
     }
 
-
     private JButton addButton;
     private JButton cancelButton;
     private JButton excelButton;
@@ -145,15 +142,11 @@ public class TurnoverReportView extends FormView {
     private BooleanFormField isAdditionalField;
     private ServiceFormField serviceField;
 
-    private Entity entity;
-    private Map<EntityField, FormView.FormField> entityFormFieldMap;
-
     public TurnoverReportView(TurnoverReportModel model) {
         this(model, null);
     }
 
     public TurnoverReportView(TurnoverReportModel model, Entity entity) {
-        this.entity = entity;
         this.model = model;
         reportTable = new JTable(new ReportTableModel());
         this.reportTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -166,8 +159,6 @@ public class TurnoverReportView extends FormView {
         addFormField(isAdditionalField);
         serviceField = new ServiceFormField("service");
         addFormField(serviceField);
-
-        entityFormFieldMap = new HashMap<>();
 
         this.addButton = new JButton(getGuiString("buttons.shape"));
         this.addButton.addActionListener(e -> {
@@ -387,10 +378,9 @@ public class TurnoverReportView extends FormView {
 
 
             for (TurnoverSheetTableDTO turnoverSheetTableDTO : turnoverSheetTableDTOs) {
-                turnoverSheetTableDTO.getAbbreviatedName();
                 sheet.addCell(new Number(SUBSCRIBER_ID_COLUMN, i, turnoverSheetTableDTO.getSubscriberAccount()));
-                sheet.addCell(new Label(SUBSCRIBER_ADDRESS_COLUMN, i, turnoverSheetTableDTO.getFullSubscriberAddress()));
-                sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, i, turnoverSheetTableDTO.getAbbreviatedName()));
+                sheet.addCell(new Label(SUBSCRIBER_ADDRESS_COLUMN, i, getFullSubscriberAddress(turnoverSheetTableDTO)));
+                sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, i, getAbbreviatedName(turnoverSheetTableDTO)));
                 if(isAdditionalField.getValue()) {
                     sheet.addCell(new Number(SERVICE_COLUMN, i, turnoverSheetTableDTO.getServiceId()));
                 }
@@ -466,6 +456,44 @@ public class TurnoverReportView extends FormView {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    private String getFullSubscriberAddress(TurnoverSheetTableDTO dto) {
+        Subscriber subscriber = dto.getSubscriber();
+        if (subscriber == null || dto.getSubscriberStreet() == null) {
+            return "";
+        }
+        StringBuilder address = new StringBuilder(dto.getSubscriberStreet().getName())
+                .append(",")
+                .append(subscriber.getHouse())
+                .append(subscriber.getIndex());
+        if (!subscriber.getBuilding().isEmpty()) {
+            address.append(",")
+                    .append(getGuiString("buildingAbbreviated"))
+                    .append(subscriber.getBuilding());
+        }
+        address.append(",")
+                .append(getGuiString("flatAbbreviated"))
+                .append(subscriber.getFlat());
+        return address.toString();
+    }
+
+    private String getAbbreviatedName(TurnoverSheetTableDTO dto) {
+        String abbreviatedName = dto.getSubscriber().getName();
+        String[] strings = abbreviatedName.split("\\s+");
+        if (strings.length < 2) {
+            return dto.getSubscriber().getName();
+        }
+        StringBuilder name = new StringBuilder()
+                .append(strings[0])
+                .append(" ")
+                .append(strings[1].charAt(0))
+                .append(".");
+        if (strings.length > 2) {
+            name.append(strings[2].charAt(0))
+                    .append(". ");
+        }
+        return name.toString();
     }
 
     private void exceptionWindow (Exception e) {

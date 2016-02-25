@@ -1,6 +1,5 @@
 package org.lostfan.ktv.view.model;
 
-
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.SubscriptionFeeModel;
 import org.lostfan.ktv.utils.ResourceBundles;
@@ -9,8 +8,8 @@ import javax.swing.table.AbstractTableModel;
 
 public class SubscriptionFeeTableModel extends AbstractTableModel {
 
-
     private SubscriptionFeeModel model;
+
     public SubscriptionFeeTableModel(SubscriptionFeeModel model) {
         this.model = model;
         this.model.addObserver(args -> fireTableDataChanged());

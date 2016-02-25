@@ -10,7 +10,6 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class LoadPaymentsView extends FormView {
         }
     }
 
-    private JFileChooser fileOpen;
+    private JFileChooser fileChooser;
     private EntityInnerTableView<Payment> entityInnerTableView;
     private PaymentEntityModel model;
     private JButton openFileButton;
@@ -42,20 +41,17 @@ public class LoadPaymentsView extends FormView {
     private JButton cancelButton;
 
     protected ViewActionListener addActionListener;
-    protected ViewActionListener cancelActionListener;
     private ViewActionListener loadPaymentFileListener;
 
     public LoadPaymentsView(PaymentEntityModel model) {
-
         this.model = model;
-        fileOpen = new JFileChooser();
-        fileOpen.setFileFilter(new PaymentFileFilter());
-        fileOpen.setMultiSelectionEnabled(true);
+
+        this.fileChooser = new JFileChooser();
+        this.fileChooser.setFileFilter(new PaymentFileFilter());
+        this.fileChooser.setMultiSelectionEnabled(true);
+
         List<String> bankFileNames = new ArrayList<>();
         setTitle(getGuiString("window.loadPayments"));
-
-
-        openFileButton = new JButton(getGuiString("buttons.openFile"));
 
         this.addButton = new JButton(getGuiString("buttons.add"));
         this.addButton.addActionListener(e -> {
@@ -66,20 +62,15 @@ public class LoadPaymentsView extends FormView {
         });
 
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
-        this.cancelButton.addActionListener(e -> {
-            if (this.cancelActionListener != null) {
-                this.cancelActionListener.actionPerformed(null);
-            }
-            hide();
-        });
+        this.cancelButton.addActionListener(e -> hide());
 
-
+        this.openFileButton = new JButton(getGuiString("buttons.openFile"));
         openFileButton.addActionListener(e -> {
-            Action details = fileOpen.getActionMap().get("viewTypeDetails");
+            Action details = fileChooser.getActionMap().get("viewTypeDetails");
             details.actionPerformed(null);
-            int ret = fileOpen.showDialog(null, getGuiString("buttons.openFile"));
+            int ret = fileChooser.showDialog(null, getGuiString("buttons.openFile"));
             if (ret == JFileChooser.APPROVE_OPTION) {
-                File[] files = fileOpen.getSelectedFiles();
+                File[] files = fileChooser.getSelectedFiles();
                 List<Payment> payments = entityInnerTableView.getEntityList();
                 for (File file : files) {
                     if(bankFileNames.contains(file.getName())
@@ -142,18 +133,8 @@ public class LoadPaymentsView extends FormView {
         this.addActionListener = addActionListener;
     }
 
-    public void setCancelActionListener(ViewActionListener cancelActionListener) {
-        this.cancelActionListener = cancelActionListener;
-    }
-
-
     public void setLoadPaymentFileListener(ViewActionListener loadPaymentFileListener) {
         this.loadPaymentFileListener = loadPaymentFileListener;
-    }
-
-
-    private LocalDate createDate(String s) {
-        return LocalDate.of(Integer.parseInt(s.substring(0, 4)), Integer.parseInt(s.substring(4, 6)), Integer.parseInt(s.substring(6, 8)));
     }
 
     private boolean confirmAdding(){

@@ -93,7 +93,6 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
                 }
                 tableDTOHashMap.put(k, turnoverSheetTableDTO);
             }
-
                 }
         );
         Map<Integer,Integer> allRenderedServicesPriceInMonthForSubscriberByServiceId = renderedServiceDAO.getAllRenderedServicesPriceInMonthForSubscriberByServiceId(serviceId, date);
@@ -135,13 +134,14 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
         );
         Map<Integer, Integer> endPeriodCredit = paymentDAO.getAllPaymentsPriceForSubscriberToDate(serviceId, date.plusMonths(1));
         endPeriodCredit.forEach((k, v) -> {
-                    if (tableDTOHashMap.containsKey(k)) {
-                        Integer carriedForwardBalanceDebit = tableDTOHashMap.get(k).getCarriedForwardBalanceDebit();
+                    TurnoverSheetTableDTO dto = tableDTOHashMap.get(k);
+                    if (dto != null) {
+                        Integer carriedForwardBalanceDebit = dto.getCarriedForwardBalanceDebit();
                         if(carriedForwardBalanceDebit <= v) {
-                            tableDTOHashMap.get(k).setCarriedForwardBalanceDebit(0);
-                            tableDTOHashMap.get(k).setCarriedForwardBalanceCredit(v - carriedForwardBalanceDebit);
+                            dto.setCarriedForwardBalanceDebit(0);
+                            dto.setCarriedForwardBalanceCredit(v - carriedForwardBalanceDebit);
                         } else {
-                            tableDTOHashMap.get(k).setCarriedForwardBalanceDebit(carriedForwardBalanceDebit - v);
+                            dto.setCarriedForwardBalanceDebit(carriedForwardBalanceDebit - v);
                         }
                     } else {
                         TurnoverSheetTableDTO turnoverSheetTableDTO = new TurnoverSheetTableDTO();
@@ -154,13 +154,7 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
                 }
         );
 
-
-        turnoverSheetTableDTOs = tableDTOHashMap.values().stream().sorted(new Comparator<TurnoverSheetTableDTO>() {
-            @Override
-            public int compare(TurnoverSheetTableDTO o1, TurnoverSheetTableDTO o2) {
-                return o1.getSubscriberAccount() - o2.getSubscriberAccount();
-            }
-        })
+        turnoverSheetTableDTOs = tableDTOHashMap.values().stream().sorted((dto1, dto2) -> dto1.getSubscriberAccount() - dto2.getSubscriberAccount())
                 .filter(e -> isAddAllNullUsers
                         ||  e.getBroughtForwardBalanceDebit() - e.getBroughtForwardBalanceCredit() != 0
                         ||  e.getTurnoverBalanceDebit() != 0

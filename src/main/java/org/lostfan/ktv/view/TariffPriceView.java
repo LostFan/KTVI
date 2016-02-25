@@ -113,8 +113,6 @@ public class TariffPriceView extends FormView {
             }
         });
 
-
-
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> hide());
 
