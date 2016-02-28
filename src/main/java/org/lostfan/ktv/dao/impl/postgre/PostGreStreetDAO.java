@@ -70,11 +70,11 @@ public class PostGreStreetDAO implements StreetDAO {
             if(street.getId() != null) {
                 return;
             }
-//            Statement statement = getConnection().createStatement();
-//            ResultSet resultSet = statement.executeQuery("SELECT lastval() ");
-//            if (resultSet.next()) {
-//                street.setId(resultSet.getInt(1));
-//            }
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT lastval() ");
+            if (resultSet.next()) {
+                street.setId(resultSet.getInt(1));
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

@@ -62,11 +62,11 @@ public class PostGreDisconnectionReasonDAO implements DisconnectionReasonDAO {
             if(disconnectionReason.getId() != null) {
                 return;
             }
-//            Statement statement = getConnection().createStatement();
-//            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
-//            if (resultSet.next()) {
-//                disconnectionReason.setId(resultSet.getInt(1));
-//            }
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+            if (resultSet.next()) {
+                disconnectionReason.setId(resultSet.getInt(1));
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

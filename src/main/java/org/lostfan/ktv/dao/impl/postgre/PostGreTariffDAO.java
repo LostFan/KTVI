@@ -90,10 +90,10 @@ public class PostGreTariffDAO implements TariffDAO {
             if(tariff.getId() != null) {
                 return;
             }
-//            Statement statement = getConnection().createStatement();
-//            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
-//            resultSet.next();
-//            tariff.setId(resultSet.getInt(1));
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+            resultSet.next();
+            tariff.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

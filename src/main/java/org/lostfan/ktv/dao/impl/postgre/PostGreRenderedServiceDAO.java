@@ -107,6 +107,25 @@ public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
         return renderedServices;
     }
 
+    public List<RenderedService> getAll(int serviceId, int subscriberAccount) {
+        List<RenderedService> renderedServices = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"service_id\" = ? AND \"subscriber_account\" = ?");
+            preparedStatement.setInt(1, serviceId);
+            preparedStatement.setInt(2, subscriberAccount);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                RenderedService renderedService = constructEntity(rs);
+                renderedServices.add(renderedService);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return renderedServices;
+    }
+
     public List<RenderedService> getAll(int serviceId, LocalDate date) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
@@ -253,10 +272,10 @@ public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
             if(renderedService.getId() != null) {
                 return;
             }
-//            Statement statement = getConnection().createStatement();
-//            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
-//            resultSet.next();
-//            renderedService.setId(resultSet.getInt(1));
+            Statement statement = getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT lastval()");
+            resultSet.next();
+            renderedService.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             System.out.println(renderedService.getSubscriberAccount());
             ex.printStackTrace();
