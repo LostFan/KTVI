@@ -19,7 +19,7 @@ public class PaymentsLoader {
         this.file = file;
     }
 
-    public List<Payment> loadPayments() {
+    public List<Payment> load() {
         List<Payment> payments = new ArrayList<>();
         if(file.getName().endsWith(".210")) {
             payments = loadERIP();

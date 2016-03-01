@@ -4,7 +4,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.swing.*;
@@ -28,6 +30,51 @@ public class EntityTableView extends View {
         public ActionButton(JButton button, boolean entityRequired) {
             this.button = button;
             this.entityRequired = entityRequired;
+        }
+    }
+
+    class MultiKeyPressListener implements KeyListener {
+
+        // Set of currently pressed keys
+        private final Set<Integer> pressed = new HashSet<>();
+
+        @Override
+        public synchronized void keyPressed(KeyEvent e) {
+            pressed.add(e.getKeyCode());
+            // "Delete" key
+            if (e.getKeyCode() == 127) {
+                List<Integer> selectedIds = getSelectedEntityIds();
+                if (selectedIds.size() != 0 && confirmDeletion() && EntityTableView.this.deleteActionListener != null) {
+                    EntityTableView.this.deleteActionListener.actionPerformed(selectedIds);
+                }
+            }
+            // "Insert" key
+            if (e.getKeyCode() == 155) {
+                if (EntityTableView.this.addActionListener != null) {
+                    EntityTableView.this.addActionListener.actionPerformed(null);
+                }
+            }
+            // More than one key is currently pressed.
+            // Iterate over pressed to get the keys.
+            if (pressed.size() > 1) {
+                // "ALT + F2" keys
+                if (pressed.contains(18) && pressed.contains(113)) {
+                    int selectedId = getSelectedEntityId();
+                    if (selectedId != -1 && EntityTableView.this.changeActionListener != null) {
+                        EntityTableView.this.changeActionListener.actionPerformed(selectedId);
+                    }
+                }
+                pressed.clear();
+            }
+        }
+
+        @Override
+        public synchronized void keyReleased(KeyEvent e) {
+            pressed.remove(e.getKeyCode());
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
         }
     }
 
@@ -133,6 +180,8 @@ public class EntityTableView extends View {
         addButton(button, true);
 
         this.buttonsPanel = new JPanel();
+
+        this.table.addKeyListener(new MultiKeyPressListener());
 
         buildLayout();
     }

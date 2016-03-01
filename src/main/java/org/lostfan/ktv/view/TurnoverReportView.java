@@ -160,7 +160,7 @@ public class TurnoverReportView extends FormView {
         serviceField = new ServiceFormField("service");
         addFormField(serviceField);
 
-        this.addButton = new JButton(getGuiString("buttons.shape"));
+        this.addButton = new JButton(getGuiString("buttons.generateReport"));
         this.addButton.addActionListener(e -> {
             ReportTableModel reportTableModel;
             if(isAdditionalField.getValue()) {
@@ -176,7 +176,7 @@ public class TurnoverReportView extends FormView {
 
             }
         });
-        this.excelButton = new JButton(getGuiString("buttons.shapeExcel"));
+        this.excelButton = new JButton(getGuiString("buttons.generateExcelReport"));
         this.excelButton.addActionListener(e -> {
             if(dateField.getValue() == null) {
                 dateField.setError("errors.empty");
