@@ -55,7 +55,7 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberAccount, RenderedService::setSubscriberAccount));
         this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
 
-        this.serviceEntityField = new EntityField("service", EntityFieldTypes.Service, AdditionalRenderedService::getServiceId, AdditionalRenderedService::setServiceId, false);
+        this.serviceEntityField = new EntityField("service", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId, false);
         this.tariffField = new EntityField("tariff", EntityFieldTypes.Tariff, TariffField::getTariffId, TariffField::setTariffId);
         this.disconnectionReasonField = new EntityField("disconnectionReason", EntityFieldTypes.DisconnectionReason, DisconnectionRenderedService::getDisconnectionReasonId, DisconnectionRenderedService::setDisconnectionReasonId);
 
@@ -99,8 +99,7 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
 
     public ConnectionRenderedService getConnectionRenderedService(RenderedService renderedService) {
         SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffAtDate(renderedService.getSubscriberAccount(), renderedService.getDate());
-        List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getByRenderedServiceId(renderedService.getId());
-        return ConnectionRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
+        return ConnectionRenderedService.build(renderedService, subscriberTariff);
     }
 
     public ReconnectionRenderedService getReconnectionRenderedService(RenderedService renderedService) {
@@ -116,12 +115,6 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
     public ChangeOfTariffRenderedService getChangeOfTariffRenderedService(RenderedService renderedService) {
         SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffByConnectionDate(renderedService.getSubscriberAccount(), renderedService.getDate());
         return ChangeOfTariffRenderedService.build(renderedService, subscriberTariff);
-    }
-
-    public AdditionalRenderedService getAdditionalRenderedService(RenderedService renderedService) {
-        SubscriberTariff subscriberTariff = subscriberDAO.getSubscriberTariffAtDate(renderedService.getSubscriberAccount(), renderedService.getDate());
-        List<MaterialConsumption> materialConsumptions = materialConsumptionDAO.getByRenderedServiceId(renderedService.getId());
-        return AdditionalRenderedService.build(renderedService, subscriberTariff, materialConsumptions);
     }
 
     public MaterialsRenderedService getMaterialsRenderedService(RenderedService renderedService) {
@@ -399,11 +392,9 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         return result;
     }
 
-    public ValidationResult save(AdditionalRenderedService entity) {
+    public ValidationResult save(RenderedService entity) {
         ValidationResult result = this.getValidator().validate(entity);
-        for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
-            result = MainModel.getMaterialConsumptionEntityModel().getValidator().validate(materialConsumption, result);
-        }
+
         if (result.hasErrors()) {
             return result;
         }
@@ -415,10 +406,6 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
 
         if (entity.getId() == null) {
             getDao().save(entity);
-//            for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
-//                materialConsumption.setRenderedServiceId(entity.getId());
-//                materialConsumptionDAO.save(materialConsumption);
-//            }
             return result;
         }
 
@@ -430,7 +417,6 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         }
 
         getDao().update(entity);
-//        updateMaterials(entity);
         updateEntitiesList();
         return result;
     }

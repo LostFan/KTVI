@@ -12,10 +12,8 @@ import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.FullEntityField;
-import org.lostfan.ktv.model.dto.AdditionalRenderedService;
 import org.lostfan.ktv.model.dto.MaterialsRenderedService;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
-import org.lostfan.ktv.view.components.EntityPanelFactory;
 
 public class MaterialsServiceEntityView extends EntityView {
 

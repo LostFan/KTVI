@@ -77,7 +77,7 @@ public class EntityViewFactory {
             return entityView;
         }
 
-        AdditionalServiceEntityView entityView = new AdditionalServiceEntityView(renderedServiceEntityModel, renderedServiceEntityModel.getAdditionalRenderedService(renderedService));
+        AdditionalServiceEntityView entityView = new AdditionalServiceEntityView(renderedServiceEntityModel, renderedService);
         return entityView;
     }
 

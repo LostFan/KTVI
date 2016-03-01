@@ -28,14 +28,6 @@ public class ConnectionEntityView extends EntityView {
             priceField.setValue(price);
         });
 
-        for (FullEntityField fullEntityField : model.getFullFields()) {
-            List<Entity> list = new ArrayList<>();
-            if(entity != null) {
-                list = (List<Entity>) fullEntityField.get(entity);
-            }
-            this.setInnerTable(new EntityInnerTableView<>(fullEntityField, list));
-        }
-
         revalidate();
     }
 

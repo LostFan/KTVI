@@ -1,15 +1,12 @@
 package org.lostfan.ktv.view;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.MaterialConsumption;
+import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.model.FixedServices;
-import org.lostfan.ktv.model.FullEntityField;
-import org.lostfan.ktv.model.dto.AdditionalRenderedService;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.view.components.EntityPanelFactory;
 
@@ -21,7 +18,7 @@ public class AdditionalServiceEntityView extends EntityView {
         this(model, null);
     }
 
-    public AdditionalServiceEntityView(RenderedServiceEntityModel model, AdditionalRenderedService entity) {
+    public AdditionalServiceEntityView(RenderedServiceEntityModel model, RenderedService entity) {
         super(model, entity);
         setTitle(getEntityString(FixedServices.ADDITIONAL_SERVICE.getCode()));
 
@@ -41,21 +38,11 @@ public class AdditionalServiceEntityView extends EntityView {
             priceField.setValue(model.getRenderedServicePriceByDate((Integer) serviceField.getValue(), (LocalDate)dateField.getValue()));
         });
 
-
-        for (FullEntityField fullEntityField : model.getFullFields()) {
-            List<Entity> list = new ArrayList<>();
-            if(entity != null) {
-                list = (List<Entity>) fullEntityField.get(entity);
-            }
-            this.entityInnerTableView = new EntityInnerTableView<>(fullEntityField, list);
-            this.setInnerTable(this.entityInnerTableView);
-        }
-
         revalidate();
     }
 
     @Override
     protected Entity createNewEntity() {
-        return new AdditionalRenderedService();
+        return new RenderedService();
     }
 }

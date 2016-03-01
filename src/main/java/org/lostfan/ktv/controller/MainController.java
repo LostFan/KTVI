@@ -1,5 +1,6 @@
 package org.lostfan.ktv.controller;
 
+import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.model.FileMenu;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.PeriodModel;
@@ -61,7 +62,7 @@ public class MainController {
                     result = renderedServiceModel.save(entity);
                 }
                 if (FixedServices.of(code) == FixedServices.ADDITIONAL_SERVICE) {
-                    AdditionalRenderedService entity = (AdditionalRenderedService) args_;
+                    RenderedService entity = (RenderedService) args_;
                     result = renderedServiceModel.save(entity);
                 }
                 if (FixedServices.of(code) == FixedServices.MATERIALS) {

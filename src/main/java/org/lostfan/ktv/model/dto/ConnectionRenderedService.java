@@ -1,26 +1,13 @@
 package org.lostfan.ktv.model.dto;
 
 
-import java.util.List;
-
-import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.FixedServices;
 
-public class ConnectionRenderedService  extends RenderedService implements MaterialsDTO, TariffField {
-
-    private List<MaterialConsumption> materialConsumption;
+public class ConnectionRenderedService extends RenderedService implements TariffField {
 
     private Integer tariffId;
-
-    public List<MaterialConsumption> getMaterialConsumption() {
-        return materialConsumption;
-    }
-
-    public void setMaterialConsumption(List<MaterialConsumption> materialConsumption) {
-        this.materialConsumption = materialConsumption;
-    }
 
     public Integer getTariffId() {
         return tariffId;
@@ -35,7 +22,7 @@ public class ConnectionRenderedService  extends RenderedService implements Mater
         return FixedServices.CONNECTION.getId();
     }
 
-    public static ConnectionRenderedService build(RenderedService renderedService, SubscriberTariff subscriberTariff, List<MaterialConsumption> materialConsumptions) {
+    public static ConnectionRenderedService build(RenderedService renderedService, SubscriberTariff subscriberTariff) {
         ConnectionRenderedService dto = new ConnectionRenderedService();
         dto.setId(renderedService.getId());
         dto.setDate(renderedService.getDate());
@@ -43,7 +30,6 @@ public class ConnectionRenderedService  extends RenderedService implements Mater
         dto.setSubscriberAccount(renderedService.getSubscriberAccount());
         dto.setServiceId(renderedService.getServiceId());
         dto.setTariffId(subscriberTariff.getTariffId());
-        dto.setMaterialConsumption(materialConsumptions);
         return dto;
     }
 }

@@ -93,7 +93,7 @@ public class RenderedServiceController extends EntityController {
         model.setServiceFieldEditable(true);
         EntityView entityView = EntityViewFactory.createRenderedServiceForm(model, FixedServices.ADDITIONAL_SERVICE);
         entityView.setAddActionListener(args_ -> {
-            AdditionalRenderedService entity = (AdditionalRenderedService) args_;
+            RenderedService entity = (RenderedService) args_;
             ValidationResult result = model.save(entity);
             if (result.hasErrors()) {
                 entityView.showErrors(result.getErrors());
@@ -141,7 +141,7 @@ public class RenderedServiceController extends EntityController {
                 MaterialsRenderedService entity1 = (MaterialsRenderedService) args_;
                 result = model.save(entity1);
             } else {
-                AdditionalRenderedService entity1 = (AdditionalRenderedService) args_;
+                RenderedService entity1 = (RenderedService) args_;
                 result = model.save(entity1);
             }
             if (result.hasErrors()) {
