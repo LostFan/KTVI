@@ -54,9 +54,15 @@ public class SubscriberSearcherModel extends EntitySearcherModel<Subscriber> {
 
         // The query contains just one word
         if (tokenizer.countTokens() == 1) {
-            String name = tokenizer.nextToken();
-            criteria.addName(name);
-            criteria.addStreet(name);
+            String value = tokenizer.nextToken();
+            // A number means an account number
+            try {
+                criteria.setAccount(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                // Otherwise, It's the name or the street name
+                criteria.addName(value);
+                criteria.addStreet(value);
+            }
             return criteria;
         }
 

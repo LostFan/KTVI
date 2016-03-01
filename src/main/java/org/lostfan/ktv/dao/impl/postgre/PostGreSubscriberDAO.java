@@ -1007,7 +1007,12 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
             List<Object> params = new ArrayList<>();
             StringBuilder query = new StringBuilder("SELECT * FROM \"subscriber\" ");
 
-            if (!criteria.getNameIn().isEmpty()) {
+            if (criteria.getAccount() != null) {
+                query.append("WHERE \"account\"=?");
+                params.add(criteria.getAccount());
+            }
+
+            if (criteria.getAccount() == null && !criteria.getNameIn().isEmpty()) {
                 query.append("WHERE TRUE ");
                 for (String name : criteria.getNameIn()) {
                     query.append("AND LOWER(\"name\") LIKE ? ");
@@ -1015,7 +1020,7 @@ public class PostGreSubscriberDAO implements SubscriberDAO {
                 }
             }
 
-            if (!criteria.getStreetIn().isEmpty()) {
+            if (criteria.getAccount() == null && !criteria.getStreetIn().isEmpty()) {
                 if (criteria.getNameIn().isEmpty()) {
                     query.append("WHERE ");
                 } else {
