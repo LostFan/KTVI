@@ -5,6 +5,7 @@ import java.util.List;
 
 public class SubscriberSearchCriteria {
 
+    private Integer account;
     private List<String> nameIn;
     private List<String> streetIn;
     private Integer house;
@@ -15,6 +16,14 @@ public class SubscriberSearchCriteria {
     public SubscriberSearchCriteria() {
         this.nameIn = new ArrayList<>();
         this.streetIn = new ArrayList<>();
+    }
+
+    public Integer getAccount() {
+        return account;
+    }
+
+    public void setAccount(Integer account) {
+        this.account = account;
     }
 
     public List<String> getNameIn() {
