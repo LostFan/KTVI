@@ -5,6 +5,7 @@ import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.model.dto.TurnoverSheetTableDTO;
 import org.lostfan.ktv.model.entity.BaseModel;
 import org.lostfan.ktv.utils.BaseObservable;
+import org.lostfan.ktv.utils.TurnoverReportExcel;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -189,6 +190,14 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
         System.out.println(turnoverSheetTableDTOs.stream().mapToInt(i -> i.getCarriedForwardBalanceCredit()).sum());
         System.out.println(turnoverSheetTableDTOs.stream().mapToInt(i -> i.getCarriedForwardBalanceDebit()).sum());
         return turnoverSheetTableDTOs;
+    }
+
+    public String generateExcelReport(Boolean isAdditional,
+                                      Integer serviceId, LocalDate date) {
+        TurnoverReportExcel turnoverReportExcel = new TurnoverReportExcel(this);
+        return turnoverReportExcel.generate(isAdditional, serviceId, date);
+
+
     }
 
 }
