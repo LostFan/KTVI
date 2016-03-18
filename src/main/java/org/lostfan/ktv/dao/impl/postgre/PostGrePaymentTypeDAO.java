@@ -19,12 +19,8 @@ import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.domain.PaymentType;
 import org.lostfan.ktv.utils.ConnectionManager;
 
-public class PostGrePaymentTypeDAO implements PaymentTypeDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
-
+public class PostGrePaymentTypeDAO extends PostgreBaseDao implements PaymentTypeDAO {
+    
     public List<PaymentType> getAll() {
         List<PaymentType> paymentTypes = new ArrayList<>();
         try {

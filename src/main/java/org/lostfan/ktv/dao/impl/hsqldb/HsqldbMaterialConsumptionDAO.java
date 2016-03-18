@@ -8,11 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HsqldbMaterialConsumptionDAO implements MaterialConsumptionDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class HsqldbMaterialConsumptionDAO extends HsqldbBaseDao implements MaterialConsumptionDAO {
 
     public List<MaterialConsumption> getAll() {
         List<MaterialConsumption> materialConsumptions = new ArrayList<>();

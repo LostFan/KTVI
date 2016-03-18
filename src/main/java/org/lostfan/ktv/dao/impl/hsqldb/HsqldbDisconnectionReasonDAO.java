@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HsqldbDisconnectionReasonDAO implements DisconnectionReasonDAO {
+public class HsqldbDisconnectionReasonDAO extends HsqldbBaseDao implements DisconnectionReasonDAO {
 
     @Override
     public List<DisconnectionReason> getAll() {
@@ -99,9 +99,5 @@ public class HsqldbDisconnectionReasonDAO implements DisconnectionReasonDAO {
         disconnectionReason.setId(resultSet.getInt("id"));
         disconnectionReason.setName(resultSet.getString("name"));
         return disconnectionReason;
-    }
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
     }
 }

@@ -8,11 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostGreMaterialDAO implements MaterialDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class PostGreMaterialDAO extends PostgreBaseDao implements MaterialDAO {
 
     public List<Material> getAll() {
         List<Material> materials = new ArrayList<>();

@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostGreDisconnectionReasonDAO implements DisconnectionReasonDAO {
+public class PostGreDisconnectionReasonDAO extends PostgreBaseDao implements DisconnectionReasonDAO {
 
     @Override
     public List<DisconnectionReason> getAll() {
@@ -124,7 +124,4 @@ public class PostGreDisconnectionReasonDAO implements DisconnectionReasonDAO {
         return disconnectionReason;
     }
 
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
 }

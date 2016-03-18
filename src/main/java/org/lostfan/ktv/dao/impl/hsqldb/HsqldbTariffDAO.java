@@ -15,11 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HsqldbTariffDAO implements TariffDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class HsqldbTariffDAO extends HsqldbBaseDao implements TariffDAO {
 
     public List<Tariff> getAll() {
 

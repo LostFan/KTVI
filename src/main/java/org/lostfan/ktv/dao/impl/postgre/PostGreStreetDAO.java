@@ -8,11 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostGreStreetDAO implements StreetDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
 
     public List<Street> getAll() {
         List<Street> streets = new ArrayList<>();

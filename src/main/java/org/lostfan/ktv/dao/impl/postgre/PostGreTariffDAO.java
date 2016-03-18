@@ -10,11 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostGreTariffDAO implements TariffDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
     public List<Tariff> getAll() {
 

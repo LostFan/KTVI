@@ -11,11 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PostGreRenderedServiceDAO implements RenderedServiceDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class PostGreRenderedServiceDAO extends PostgreBaseDao implements RenderedServiceDAO {
 
     public List<RenderedService> getAll() {
         List<RenderedService> renderedServices = new ArrayList<>();

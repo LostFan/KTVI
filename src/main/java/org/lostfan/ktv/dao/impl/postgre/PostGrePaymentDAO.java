@@ -12,11 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PostGrePaymentDAO implements PaymentDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
     public List<Payment> getAll() {
         List<Payment> payments = new ArrayList<>();

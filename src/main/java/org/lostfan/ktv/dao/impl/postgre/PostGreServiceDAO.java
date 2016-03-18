@@ -10,11 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostGreServiceDAO implements ServiceDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
     public List<Service> getAll() {
         List<Service> services = new ArrayList<>();

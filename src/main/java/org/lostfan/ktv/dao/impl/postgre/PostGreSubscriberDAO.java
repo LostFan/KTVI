@@ -13,11 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PostGreSubscriberDAO implements SubscriberDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDAO {
 
     public List<Subscriber> getAll() {
         List<Subscriber> subscribers = new ArrayList<>();

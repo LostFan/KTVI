@@ -10,11 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HsqldbServiceDAO implements ServiceDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class HsqldbServiceDAO extends HsqldbBaseDao implements ServiceDAO {
 
     public List<Service> getAll() {
         List<Service> services = new ArrayList<>();

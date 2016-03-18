@@ -12,11 +12,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HsqldbMaterialDAO implements MaterialDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class HsqldbMaterialDAO extends HsqldbBaseDao implements MaterialDAO {
 
     public List<Material> getAll() {
         List<Material> materials = new ArrayList<>();

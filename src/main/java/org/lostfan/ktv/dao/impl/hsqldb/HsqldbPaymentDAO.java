@@ -16,11 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class HsqldbPaymentDAO implements PaymentDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class HsqldbPaymentDAO extends HsqldbBaseDao implements PaymentDAO {
 
     public List<Payment> getAll() {
         List<Payment> payments = new ArrayList<>();

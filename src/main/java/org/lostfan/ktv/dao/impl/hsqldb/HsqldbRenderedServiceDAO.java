@@ -10,11 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class HsqldbRenderedServiceDAO implements RenderedServiceDAO {
-
-    private Connection getConnection() {
-        return ConnectionManager.getManager().getConnection();
-    }
+public class HsqldbRenderedServiceDAO extends HsqldbBaseDao implements RenderedServiceDAO {
 
     public List<RenderedService> getAll() {
         List<RenderedService> renderedServices = new ArrayList<>();

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.lostfan.ktv.domain.Entity;
 
-public interface EntityDAO<T extends Entity> {
+public interface EntityDAO<T extends Entity> extends Transactional {
 
     List<T> getAll();
 
