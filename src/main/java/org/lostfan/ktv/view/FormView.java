@@ -301,7 +301,7 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
 
             datePicker.addActionListener(e -> fireValueChanged(getValue()));
             // TODO: something with the manual date entering
-            // datePicker.getModel().addChangeListener(e -> fireValueChanged(getValue()));
+            datePicker.getModel().addChangeListener(e -> fireValueChanged(getValue()));
         }
 
         @Override

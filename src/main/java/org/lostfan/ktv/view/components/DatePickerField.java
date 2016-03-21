@@ -1,8 +1,9 @@
 package org.lostfan.ktv.view.components;
 
-import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
-import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
-import net.sourceforge.jdatepicker.impl.UtilDateModel;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import java.text.ParseException;
@@ -10,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Properties;
 
 public class DatePickerField extends JDatePickerImpl {
 
@@ -42,7 +44,7 @@ public class DatePickerField extends JDatePickerImpl {
     }
 
     public DatePickerField() {
-        super(new JDatePanelImpl(new UtilDateModel()), new DateLabelFormatter());
+        super(new JDatePanelImpl(new UtilDateModel(), new Properties()), new DateLabelFormatter());
         setTextEditable(true);
     }
 
