@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao.impl.postgre;
 
+import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.PaymentDAO;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.domain.PaymentType;
@@ -25,6 +26,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return payments;
@@ -43,6 +45,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return payments;
@@ -62,6 +65,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return payment;
@@ -81,6 +85,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return payments;
@@ -100,6 +105,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return payments;
@@ -141,6 +147,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
             payment.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -167,9 +174,10 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
+//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -183,9 +191,10 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Delete nonexistent element");
+//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 
@@ -203,6 +212,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
         return payments;
     }
@@ -227,6 +237,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
         return payments;
     }
@@ -245,6 +256,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscribersPricesInMonth;
@@ -266,8 +278,8 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
-//        System.out.println("sum = " + sum);
         return subscribersPricesInMonth;
     }
 
@@ -297,6 +309,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DAOException();
         }
         return hashMap;
     }
@@ -314,6 +327,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return payments;

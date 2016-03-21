@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao.impl.postgre;
 
+import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.StreetDAO;
 import org.lostfan.ktv.domain.Street;
 import org.lostfan.ktv.utils.ConnectionManager;
@@ -23,6 +24,7 @@ public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return streets;
@@ -41,6 +43,7 @@ public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return street;
@@ -73,6 +76,7 @@ public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -87,9 +91,10 @@ public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new IllegalArgumentException("Update nonexistent element");
+//            throw new IllegalArgumentException("Update nonexistent element");
         }
     }
 
@@ -103,9 +108,10 @@ public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Delete nonexistent element");
+//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 
@@ -121,6 +127,7 @@ public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return streets;
@@ -139,6 +146,7 @@ public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return streets;

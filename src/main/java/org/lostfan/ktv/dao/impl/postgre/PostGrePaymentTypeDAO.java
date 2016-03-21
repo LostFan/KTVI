@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.PaymentDAO;
 import org.lostfan.ktv.dao.PaymentTypeDAO;
 import org.lostfan.ktv.domain.Payment;
@@ -32,6 +33,7 @@ public class PostGrePaymentTypeDAO extends PostgreBaseDao implements PaymentType
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return paymentTypes;
@@ -53,6 +55,7 @@ public class PostGrePaymentTypeDAO extends PostgreBaseDao implements PaymentType
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return paymentType;
@@ -67,6 +70,7 @@ public class PostGrePaymentTypeDAO extends PostgreBaseDao implements PaymentType
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -81,9 +85,10 @@ public class PostGrePaymentTypeDAO extends PostgreBaseDao implements PaymentType
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
+//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -97,9 +102,10 @@ public class PostGrePaymentTypeDAO extends PostgreBaseDao implements PaymentType
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Delete nonexistent element");
+//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 
@@ -116,6 +122,7 @@ public class PostGrePaymentTypeDAO extends PostgreBaseDao implements PaymentType
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return paymentTypes;

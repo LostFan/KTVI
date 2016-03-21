@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao.impl.postgre;
 
+import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
@@ -401,6 +402,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberSession;
@@ -425,6 +427,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberSession;
@@ -452,9 +455,10 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
+//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -470,9 +474,10 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new IllegalArgumentException("Delete nonexistent element");
+//            throw new IllegalArgumentException("Delete nonexistent element");
         }
     }
 
@@ -496,6 +501,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberTariff;
@@ -521,6 +527,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberTariff;
@@ -548,6 +555,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberTariff;
@@ -572,6 +580,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberTariff;
@@ -600,6 +609,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberTariff;
@@ -632,6 +642,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberTariffs;
@@ -665,6 +676,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberSessions;
@@ -696,6 +708,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberTariff;
@@ -726,6 +739,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberSession;
@@ -756,6 +770,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberTariff;
@@ -785,6 +800,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberTariff;
@@ -815,6 +831,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscriberTariffs;
@@ -836,6 +853,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -857,9 +875,10 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
+//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -875,9 +894,10 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new IllegalArgumentException("Delete nonexistent element");
+//            throw new IllegalArgumentException("Delete nonexistent element");
         }
     }
 
@@ -925,6 +945,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return hashMap;
@@ -972,6 +993,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscribers;
@@ -990,6 +1012,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscribers;
@@ -1070,6 +1093,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscribers;

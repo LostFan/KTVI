@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao.impl.postgre;
 
+import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.RenderedServiceDAO;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.utils.ConnectionManager;
@@ -26,6 +27,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedServices;
@@ -44,6 +46,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedService;
@@ -62,6 +65,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedServices;
@@ -80,6 +84,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedServices;
@@ -98,6 +103,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedServices;
@@ -117,6 +123,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedServices;
@@ -136,6 +143,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedServices;
@@ -156,6 +164,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedServices;
@@ -175,6 +184,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscribersPricesInMonth;
@@ -195,6 +205,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 //            System.out.println("ren_sum =" + sum);
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return subscribersPricesInMonth;
@@ -216,6 +227,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedServices;
@@ -235,6 +247,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedService;
@@ -273,8 +286,8 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
             resultSet.next();
             renderedService.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
-            System.out.println(renderedService.getSubscriberAccount());
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -292,9 +305,10 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
+//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -308,9 +322,10 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Delete nonexistent element");
+//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 
@@ -327,6 +342,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedServices;
@@ -345,6 +361,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return renderedServices;

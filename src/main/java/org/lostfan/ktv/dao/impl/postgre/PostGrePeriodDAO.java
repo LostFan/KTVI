@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 
+import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.PeriodDAO;
 import org.lostfan.ktv.utils.ConnectionManager;
 
@@ -26,6 +27,7 @@ public class PostGrePeriodDAO implements PeriodDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -40,6 +42,7 @@ public class PostGrePeriodDAO implements PeriodDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DAOException();
         }
         return date;
     }

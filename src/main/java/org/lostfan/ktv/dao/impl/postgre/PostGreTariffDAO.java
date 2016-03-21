@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao.impl.postgre;
 
+import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.TariffDAO;
 import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.domain.TariffPrice;
@@ -24,6 +25,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return tariffs;
@@ -42,6 +44,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return tariff;
@@ -59,6 +62,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return tariffs;
@@ -92,6 +96,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
             tariff.setId(resultSet.getInt(1));
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -108,9 +113,10 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
+//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -124,9 +130,10 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Delete nonexistent element");
+//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 
@@ -143,6 +150,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return tariffPrice;
@@ -159,6 +167,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return tariffPrices;
@@ -177,6 +186,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return tariffPrices;
@@ -193,6 +203,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -206,6 +217,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -222,6 +234,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
         return price;
     }
@@ -239,6 +252,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return tariffs;

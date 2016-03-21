@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao.impl.postgre;
 
+import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.MaterialConsumptionDAO;
 import org.lostfan.ktv.domain.MaterialConsumption;
 import org.lostfan.ktv.utils.ConnectionManager;
@@ -21,6 +22,7 @@ public class PostGreMaterialConsumptionDAO extends PostgreBaseDao implements Mat
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return materialConsumptions;
@@ -40,6 +42,7 @@ public class PostGreMaterialConsumptionDAO extends PostgreBaseDao implements Mat
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return materialConsumption;
@@ -74,6 +77,7 @@ public class PostGreMaterialConsumptionDAO extends PostgreBaseDao implements Mat
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -90,9 +94,10 @@ public class PostGreMaterialConsumptionDAO extends PostgreBaseDao implements Mat
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
+//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -106,9 +111,10 @@ public class PostGreMaterialConsumptionDAO extends PostgreBaseDao implements Mat
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Delete nonexistent element");
+//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 
@@ -124,6 +130,7 @@ public class PostGreMaterialConsumptionDAO extends PostgreBaseDao implements Mat
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return materialConsumptions;
@@ -142,6 +149,7 @@ public class PostGreMaterialConsumptionDAO extends PostgreBaseDao implements Mat
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return materialConsumptions;

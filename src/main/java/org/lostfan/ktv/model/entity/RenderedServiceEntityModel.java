@@ -190,9 +190,16 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
             if (result.hasErrors()) {
                 return result;
             }
-            getDao().save(entity);
-            subscriberDAO.saveSubscriberTariff(subscriberTariff);
-            subscriberDAO.saveSubscriberSession(subscriberSession);
+            getDao().transactionBegin();
+            try {
+                getDao().save(entity);
+                subscriberDAO.saveSubscriberTariff(subscriberTariff);
+                subscriberDAO.saveSubscriberSession(subscriberSession);
+                getDao().commit();
+            } catch (DAOException e) {
+                getDao().rollback();
+            }
+
             updateEntitiesList();
             return result;
         }
@@ -212,13 +219,18 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         if (result.hasErrors()) {
             return result;
         }
+        getDao().transactionBegin();
+        try {
+            subscriberDAO.deleteSubscriberSession(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+            subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
 
-        subscriberDAO.deleteSubscriberSession(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-
-        getDao().update(entity);
-        subscriberDAO.saveSubscriberSession(subscriberSession);
-        subscriberDAO.saveSubscriberTariff(subscriberTariff);
+            getDao().update(entity);
+            subscriberDAO.saveSubscriberSession(subscriberSession);
+            subscriberDAO.saveSubscriberTariff(subscriberTariff);
+            getDao().commit();
+        } catch (DAOException e) {
+            getDao().rollback();
+        }
 //        updateMaterials(entity);
         updateEntitiesList();
         return result;
@@ -244,8 +256,14 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
             if (result.hasErrors()) {
                 return result;
             }
-            getDao().save(entity);
-            subscriberDAO.saveSubscriberSession(subscriberSession);
+            getDao().transactionBegin();
+            try {
+                getDao().save(entity);
+                subscriberDAO.saveSubscriberSession(subscriberSession);
+                getDao().commit();
+            } catch (DAOException e) {
+                getDao().rollback();
+            }
             updateEntitiesList();
             return result;
         }
@@ -265,10 +283,15 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         if (result.hasErrors()) {
             return result;
         }
-
-        subscriberDAO.deleteSubscriberSession(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        getDao().update(entity);
-        subscriberDAO.saveSubscriberSession(subscriberSession);
+        getDao().transactionBegin();
+        try {
+            subscriberDAO.deleteSubscriberSession(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+            getDao().update(entity);
+            subscriberDAO.saveSubscriberSession(subscriberSession);
+            getDao().commit();
+        } catch (DAOException e) {
+            getDao().rollback();
+        }
 
         updateEntitiesList();
         return result;
@@ -294,8 +317,14 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
             subscriberSession.setDisconnectionDate(entity.getDate());
             subscriberSession.setDisconnectionReasonId(entity.getDisconnectionReasonId());
 
-            getDao().save(entity);
-            subscriberDAO.updateSubscriberSession(subscriberSession);
+            getDao().transactionBegin();
+            try {
+                getDao().save(entity);
+                subscriberDAO.updateSubscriberSession(subscriberSession);
+                getDao().commit();
+            } catch (DAOException e) {
+                getDao().rollback();
+            }
             updateEntitiesList();
             return result;
         }
@@ -319,12 +348,18 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         SubscriberSession currentSession = subscriberDAO.getSubscriberSessionByDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
         currentSession.setDisconnectionDate(null);
         currentSession.setDisconnectionReasonId(null);
-        subscriberDAO.updateSubscriberSession(currentSession);
-        SubscriberSession newSession = subscriberDAO.getNotClosedSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
-        newSession.setDisconnectionDate(entity.getDate());
-        newSession.setDisconnectionReasonId(entity.getDisconnectionReasonId());
-        getDao().update(entity);
-        subscriberDAO.updateSubscriberSession(newSession);
+        getDao().transactionBegin();
+        try {
+            subscriberDAO.updateSubscriberSession(currentSession);
+            SubscriberSession newSession = subscriberDAO.getNotClosedSubscriberSession(entity.getSubscriberAccount(), entity.getDate());
+            newSession.setDisconnectionDate(entity.getDate());
+            newSession.setDisconnectionReasonId(entity.getDisconnectionReasonId());
+            getDao().update(entity);
+            subscriberDAO.updateSubscriberSession(newSession);
+            getDao().commit();
+        } catch (DAOException | NullPointerException e) {
+            getDao().rollback();
+        }
 
         updateEntitiesList();
         return result;
@@ -355,10 +390,15 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
 
             SubscriberTariff subscriberTariff = subscriberDAO.getNotClosedSubscriberTariff(entity.getSubscriberAccount(), entity.getDate());
             subscriberTariff.setDisconnectTariff(entity.getDate());
-
-            getDao().save(entity);
-            subscriberDAO.updateSubscriberTariff(subscriberTariff);
-            subscriberDAO.saveSubscriberTariff(newSubscriberTariff);
+            getDao().transactionBegin();
+            try {
+                getDao().save(entity);
+                subscriberDAO.updateSubscriberTariff(subscriberTariff);
+                subscriberDAO.saveSubscriberTariff(newSubscriberTariff);
+                getDao().commit();
+            } catch (DAOException e) {
+                getDao().rollback();
+            }
             updateEntitiesList();
             return result;
         }
@@ -379,15 +419,21 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
             return result;
         }
 
-        subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffByDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
-        oldSubscriberTariff.setDisconnectTariff(null);
-        subscriberDAO.updateSubscriberTariff(oldSubscriberTariff);
-        getDao().update(entity);
-        SubscriberTariff notClosedSubscriberTariffNewSubscriber = subscriberDAO.getNotClosedSubscriberTariff(entity.getSubscriberAccount(), entity.getDate());
-        notClosedSubscriberTariffNewSubscriber.setDisconnectTariff(newSubscriberTariff.getConnectTariff());
-        subscriberDAO.updateSubscriberTariff(notClosedSubscriberTariffNewSubscriber);
-        subscriberDAO.saveSubscriberTariff(newSubscriberTariff);
+        getDao().transactionBegin();
+        try {
+            subscriberDAO.deleteSubscriberTariff(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+            SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffByDisconnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+            oldSubscriberTariff.setDisconnectTariff(null);
+            subscriberDAO.updateSubscriberTariff(oldSubscriberTariff);
+            getDao().update(entity);
+            SubscriberTariff notClosedSubscriberTariffNewSubscriber = subscriberDAO.getNotClosedSubscriberTariff(entity.getSubscriberAccount(), entity.getDate());
+            notClosedSubscriberTariffNewSubscriber.setDisconnectTariff(newSubscriberTariff.getConnectTariff());
+            subscriberDAO.updateSubscriberTariff(notClosedSubscriberTariffNewSubscriber);
+            subscriberDAO.saveSubscriberTariff(newSubscriberTariff);
+            getDao().commit();
+        } catch (DAOException e) {
+            getDao().rollback();
+        }
         updateEntitiesList();
         return result;
     }
@@ -436,10 +482,16 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         }
 
         if (entity.getId() == null) {
-            getDao().save(entity);
-            for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
-                materialConsumption.setRenderedServiceId(entity.getId());
-                materialConsumptionDAO.save(materialConsumption);
+            getDao().transactionBegin();
+            try {
+                getDao().save(entity);
+                for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
+                    materialConsumption.setRenderedServiceId(entity.getId());
+                    materialConsumptionDAO.save(materialConsumption);
+                }
+                getDao().commit();
+            } catch (DAOException e) {
+                getDao().rollback();
             }
             return result;
         }
@@ -450,9 +502,14 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         if (result.hasErrors()) {
             return result;
         }
-
-        getDao().update(entity);
-        updateMaterials(entity);
+        getDao().transactionBegin();
+        try {
+            getDao().update(entity);
+            updateMaterials(entity);
+            getDao().commit();
+        } catch (DAOException e) {
+            getDao().rollback();
+        }
         updateEntitiesList();
         return result;
     }
@@ -486,18 +543,24 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         }
         for (Integer id : ids) {
             RenderedService entity = getDao().get(id);
-            if(entity.getServiceId().equals(FixedServices.CONNECTION.getId())) {
-                deleteConnection(entity);
-            } else if(entity.getServiceId().equals(FixedServices.DISCONNECTION.getId())) {
-                deleteDisconnection(entity);
-            } else if(entity.getServiceId().equals(FixedServices.CHANGE_OF_TARIFF.getId())) {
-                deleteChangeTariff(entity);
-            } else if(entity.getServiceId().equals(FixedServices.RECONNECTION.getId())) {
-                deleteReconnection(entity);
-            } else if(entity.getServiceId().equals(FixedServices.MATERIALS.getId())) {
-                deleteMaterials(entity);
-            } else {
-                getDao().delete(entity.getId());
+            getDao().transactionBegin();
+            try {
+                if (entity.getServiceId().equals(FixedServices.CONNECTION.getId())) {
+                    deleteConnection(entity);
+                } else if (entity.getServiceId().equals(FixedServices.DISCONNECTION.getId())) {
+                    deleteDisconnection(entity);
+                } else if (entity.getServiceId().equals(FixedServices.CHANGE_OF_TARIFF.getId())) {
+                    deleteChangeTariff(entity);
+                } else if (entity.getServiceId().equals(FixedServices.RECONNECTION.getId())) {
+                    deleteReconnection(entity);
+                } else if (entity.getServiceId().equals(FixedServices.MATERIALS.getId())) {
+                    deleteMaterials(entity);
+                } else {
+                    getDao().delete(entity.getId());
+                }
+                getDao().commit();
+            } catch (DAOException e) {
+                getDao().rollback();
             }
 
         }

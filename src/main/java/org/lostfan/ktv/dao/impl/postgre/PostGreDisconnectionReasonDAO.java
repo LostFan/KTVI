@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao.impl.postgre;
 
+import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.DisconnectionReasonDAO;
 import org.lostfan.ktv.domain.DisconnectionReason;
 import org.lostfan.ktv.utils.ConnectionManager;
@@ -22,6 +23,7 @@ public class PostGreDisconnectionReasonDAO extends PostgreBaseDao implements Dis
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DAOException();
         }
         return reasons;
     }
@@ -38,6 +40,7 @@ public class PostGreDisconnectionReasonDAO extends PostgreBaseDao implements Dis
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DAOException();
         }
         return null;
     }
@@ -69,6 +72,7 @@ public class PostGreDisconnectionReasonDAO extends PostgreBaseDao implements Dis
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -83,6 +87,7 @@ public class PostGreDisconnectionReasonDAO extends PostgreBaseDao implements Dis
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -96,6 +101,7 @@ public class PostGreDisconnectionReasonDAO extends PostgreBaseDao implements Dis
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -112,6 +118,7 @@ public class PostGreDisconnectionReasonDAO extends PostgreBaseDao implements Dis
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return materials;

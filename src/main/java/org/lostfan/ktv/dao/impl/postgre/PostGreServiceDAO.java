@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao.impl.postgre;
 
+import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.ServicePrice;
@@ -23,6 +24,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return services;
@@ -41,6 +43,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return service;
@@ -83,6 +86,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -103,9 +107,10 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Update nonexistent element");
+//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -119,9 +124,10 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
         } else {
-            throw new UnsupportedOperationException("Delete nonexistent element");
+//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 
@@ -137,6 +143,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -154,6 +161,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                throw new DAOException();
             }
             return price;
         } else {
@@ -177,6 +185,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return servicePrices;
@@ -193,6 +202,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -207,6 +217,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
     }
 
@@ -223,6 +234,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return servicePrices;
@@ -241,6 +253,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return services;
@@ -259,6 +272,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            throw new DAOException();
         }
 
         return services;
