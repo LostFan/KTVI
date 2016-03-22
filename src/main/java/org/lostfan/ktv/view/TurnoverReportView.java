@@ -20,6 +20,16 @@ import java.util.List;
 
 public class TurnoverReportView extends FormView {
 
+    private class ModelObserver implements org.lostfan.ktv.utils.Observer {
+        @Override
+        public void update(Object args) {
+            TurnoverReportView.this.progressBar.setValue((Integer) args);
+//            TurnoverReportView.this.progressBar.revalidate();
+//            TurnoverReportView.this.progressBar.repaint();
+//            TurnoverReportView.this.revalidate();
+        }
+    }
+
     private class ReportTableModel extends AbstractTableModel {
 
         private List<TurnoverSheetTableDTO> turnoverSheetTableDTOs = new ArrayList<>();
@@ -120,8 +130,11 @@ public class TurnoverReportView extends FormView {
     private JButton cancelButton;
     private JButton excelButton;
     private JTable reportTable;
+    private JProgressBar progressBar;
 
     private TurnoverReportModel model;
+
+    private ModelObserver modelObserver;
 
     private ViewActionListener addActionListener;
     private ViewActionListener cancelActionListener;
@@ -137,6 +150,8 @@ public class TurnoverReportView extends FormView {
     public TurnoverReportView(TurnoverReportModel model, Entity entity) {
         this.model = model;
         reportTable = new JTable(new ReportTableModel());
+        progressBar = new JProgressBar();
+        progressBar.setStringPainted(true);
         this.reportTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
         setTitle(getEntityString(model.getEntityNameKey()));
@@ -176,11 +191,14 @@ public class TurnoverReportView extends FormView {
                 return;
             }
             serviceField.clearError();
-            String message = model.generateExcelReport(isAdditionalField.getValue(),
-                    serviceField.getValue(), dateField.getValue());
-            if (message != null) {
-                exceptionWindow(message);
-            }
+            new Thread(() -> {
+                String message = model.generateExcelReport(isAdditionalField.getValue(),
+                        serviceField.getValue(), dateField.getValue());
+                if (message != null) {
+                    exceptionWindow(message);
+                }
+            }).start();
+
         });
 
 
@@ -210,6 +228,10 @@ public class TurnoverReportView extends FormView {
             }
         });
 
+        this.modelObserver = new ModelObserver();
+
+        model.addObserver(this.modelObserver);
+
         buildLayout();
 
         show();
@@ -232,6 +254,7 @@ public class TurnoverReportView extends FormView {
         buttonPanel.add(addButton);
         buttonPanel.add(excelButton);
         buttonPanel.add(cancelButton);
+        buttonPanel.add(progressBar);
         getContentPanel().add(buttonPanel, BorderLayout.SOUTH);
     }
 

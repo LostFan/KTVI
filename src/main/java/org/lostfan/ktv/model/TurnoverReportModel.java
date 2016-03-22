@@ -43,9 +43,12 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
     public List<TurnoverSheetTableDTO> getTurnoverSheetDataByAdditionalServices(LocalDate date) {
         List<Service> services = getAllServices().stream().filter(e -> e.isAdditionalService()).collect(Collectors.toList());
         List<TurnoverSheetTableDTO> turnoverSheetTableDTOs = new ArrayList<>();
+        Integer count = 1;
         for (Service service : services) {
+            notifyObservers(100 * count++ / services.size());
             turnoverSheetTableDTOs.addAll(getTurnoverSheetData(date, service.getId()));
         }
+        notifyObservers(100);
         return turnoverSheetTableDTOs;
     }
 
