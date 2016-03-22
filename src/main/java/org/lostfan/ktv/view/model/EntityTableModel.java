@@ -1,5 +1,8 @@
 package org.lostfan.ktv.view.model;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
@@ -52,6 +55,10 @@ public class EntityTableModel<T extends Entity> extends AbstractTableModel {
             if (value != null) {
                 value = thisType.getDAO().get((Integer) value);
             }
+        }
+        if (thisType.getValueClass() == LocalDate.class && value != null) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            return dateTimeFormatter.format((LocalDate) value);
         }
 
         return value;

@@ -431,7 +431,7 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
             subscriberDAO.updateSubscriberTariff(notClosedSubscriberTariffNewSubscriber);
             subscriberDAO.saveSubscriberTariff(newSubscriberTariff);
             getDao().commit();
-        } catch (DAOException e) {
+        } catch (DAOException | NullPointerException e) {
             getDao().rollback();
         }
         updateEntitiesList();

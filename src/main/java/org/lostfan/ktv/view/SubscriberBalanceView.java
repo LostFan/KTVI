@@ -2,14 +2,17 @@ package org.lostfan.ktv.view;
 
 import java.awt.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.Subscriber;
+import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.model.dto.RenderedServiceExt;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
@@ -17,7 +20,7 @@ import org.lostfan.ktv.utils.ResourceBundles;
 
 public class SubscriberBalanceView extends FormView {
 
-    private static class SubscriberRenderedServicesAndPaymentsTableModel extends AbstractTableModel {
+    private class SubscriberRenderedServicesAndPaymentsTableModel extends AbstractTableModel {
 
         private List<RenderedServiceAndPayment> renderedServiceAndPayments = new ArrayList<>();
 
@@ -106,7 +109,7 @@ public class SubscriberBalanceView extends FormView {
 
     }
 
-    private static class RenderedServiceAndPayment {
+    private class RenderedServiceAndPayment {
 
         public RenderedServiceAndPayment(RenderedServiceExt renderedService) {
             this.date = renderedService.getDate();
@@ -163,7 +166,255 @@ public class SubscriberBalanceView extends FormView {
 
     }
 
+    private class SubscriptionFeeRenderedServicesTableModel extends AbstractTableModel {
+
+        private List<LocalDate> datesList = new ArrayList<>();
+        private List<RenderedServiceAndPayment> renderedServiceAndPayments;
+
+        public SubscriptionFeeRenderedServicesTableModel(List<RenderedServiceAndPayment> renderedServiceAndPayments) {
+            this.renderedServiceAndPayments = renderedServiceAndPayments;
+            LocalDate date = LocalDate.now().withDayOfMonth(1);
+            if (this.renderedServiceAndPayments.size() > 0) {
+                date = this.renderedServiceAndPayments.stream()
+                        .min((o1, o2) -> o1.getDate().compareTo(o2.getDate())).get().getDate();
+            }
+            while (date.isBefore(LocalDate.now())) {
+                datesList.add(date.withDayOfMonth(1));
+                date = date.plusMonths(1);
+            }
+        }
+
+        @Override
+        public int getRowCount() {
+            return datesList.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "renderedService.date");
+                case 1:
+                    return ResourceBundles.getGuiBundle().getString(
+                            "broughtForwardBalance");
+                case 2:
+                    return ResourceBundles.getGuiBundle().getString(
+                            "chargeable");
+
+            }
+
+            return null;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return Integer.class;
+                case 2:
+                    return Integer.class;
+            }
+            return null;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+
+            switch (columnIndex) {
+                case 0:
+                    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM.yyyy");
+                    return dateTimeFormatter.format(datesList.get(rowIndex));
+                case 1:
+                    return this.renderedServiceAndPayments.stream()
+                            .filter(o -> o.getDate().isBefore(datesList.get(rowIndex)))
+                            .mapToInt(o -> o.isCredit() ? -1 * o.getPrice() : o.getPrice()).sum();
+                case 2:
+                    return this.renderedServiceAndPayments.stream()
+                            .filter(o -> o.getDate().withDayOfMonth(1).isEqual(datesList.get(rowIndex)))
+                            .filter(o -> !o.isCredit())
+                            .mapToInt(o -> o.getPrice()).sum();
+            }
+            return null;
+
+        }
+    }
+
+    private class PaymentsTableModel extends AbstractTableModel {
+
+        private List<PaymentExt> payments;
+
+        public PaymentsTableModel(List<PaymentExt> payments) {
+            this.payments = payments.stream()
+                    .sorted((o1, o2) -> o1.getDate().compareTo(o2.getDate()))
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public int getRowCount() {
+            return payments.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 2;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "renderedService.date");
+                case 1:
+                    return ResourceBundles.getGuiBundle().getString(
+                            "paid");
+            }
+
+            return null;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return Integer.class;
+            }
+            return null;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+
+            switch (columnIndex) {
+                case 0:
+                    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                    return dateTimeFormatter.format(payments.get(rowIndex).getDate());
+                case 1:
+                    return payments.get(rowIndex).getPrice();
+            }
+            return null;
+
+        }
+    }
+
+    private class OtherRenderedServicesTableModel extends AbstractTableModel {
+
+        private List<RenderedServiceAndPayment> renderedServiceAndPayments;
+
+        public OtherRenderedServicesTableModel(List<RenderedServiceAndPayment> renderedServiceAndPayments) {
+            this.renderedServiceAndPayments = renderedServiceAndPayments.stream()
+                    .sorted((o1, o2) -> o1.getDate().compareTo(o2.getDate()))
+                    .collect(Collectors.toList());
+            ;
+        }
+
+        @Override
+        public int getRowCount() {
+            return renderedServiceAndPayments.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 5;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "payment.payDate");
+                case 1:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "payment.price");
+                case 2:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "service");
+                case 3:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "renderedService.date");
+                case 4:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "renderedService.price");
+            }
+
+            return null;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return Integer.class;
+                case 2:
+                    return String.class;
+                case 3:
+                    return String.class;
+                case 4:
+                    return Integer.class;
+            }
+            return null;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            switch (columnIndex) {
+                case 0:
+                    return renderedServiceAndPayments.get(rowIndex).isCredit() ?
+                            dateTimeFormatter.format(renderedServiceAndPayments.get(rowIndex).getDate()) :
+                            null;
+                case 1:
+                    return renderedServiceAndPayments.get(rowIndex).isCredit() ?
+                            renderedServiceAndPayments.get(rowIndex).getPrice() :
+                            null;
+                case 2:
+                    return renderedServiceAndPayments.get(rowIndex).getService().getName();
+                case 3:
+                    return !renderedServiceAndPayments.get(rowIndex).isCredit() ?
+                            dateTimeFormatter.format(renderedServiceAndPayments.get(rowIndex).getDate()) :
+                            null;
+                case 4:
+                    return !renderedServiceAndPayments.get(rowIndex).isCredit() ?
+                            renderedServiceAndPayments.get(rowIndex).getPrice() :
+                            null;
+            }
+            return null;
+
+        }
+    }
+
     private JTable table;
+    private JTable subscriptionFeeRenderedServicesTable;
+    private JTable subscriptionFeePaymentsTable;
+    private JTable otherServicesTable;
 
     public SubscriberBalanceView(SubscriberEntityModel model, Subscriber entity) {
 
@@ -174,7 +425,6 @@ public class SubscriberBalanceView extends FormView {
         List<RenderedServiceExt> renderedServices = model.getRenderedServicesExtBySubscriberId(entity.getId());
 
         Integer balance = 0;
-
         for (RenderedServiceExt renderedService : renderedServices) {
             renderedServiceAndPayments.add(new RenderedServiceAndPayment(renderedService));
             balance += renderedService.getPrice();
@@ -191,10 +441,10 @@ public class SubscriberBalanceView extends FormView {
         balanceFormField.setValue(balance);
         addFormField(balanceFormField);
 
-
+        JTabbedPane tabbedPane = new JTabbedPane();
         SubscriberRenderedServicesAndPaymentsTableModel subscriberRenderedServicesAndPaymentsTableModel = new SubscriberRenderedServicesAndPaymentsTableModel(renderedServiceAndPayments);
         this.table = new JTable(subscriberRenderedServicesAndPaymentsTableModel);
-        this.table.setPreferredScrollableViewportSize(new Dimension(500, 200));
+//        this.table.setPreferredScrollableViewportSize(new Dimension(500, 200));
         System.out.println(getFrame().getContentPane().getHeight());
         this.table.setAutoCreateRowSorter(false);
         this.table.setFillsViewportHeight(true);
@@ -204,7 +454,52 @@ public class SubscriberBalanceView extends FormView {
         this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
         JScrollPane tableScrollPane = new JScrollPane(this.table);
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        rightPanel.add(tableScrollPane);
+        tabbedPane.add(getGuiString("tabbedPane.allPaymentsAndRenderedServicesTable"), tableScrollPane);
+
+
+        JPanel subscriptionFeeChargeableAndPaidTablesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+
+        this.subscriptionFeeRenderedServicesTable = new JTable(
+                new SubscriptionFeeRenderedServicesTableModel(
+                        renderedServiceAndPayments.stream()
+                                .filter(o -> o.getService().getId() == FixedServices.SUBSCRIPTION_FEE.getId())
+                                .collect(Collectors.toList())));
+        renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.LEFT);
+        this.subscriptionFeeRenderedServicesTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
+        tableScrollPane = new JScrollPane(this.subscriptionFeeRenderedServicesTable);
+        subscriptionFeeChargeableAndPaidTablesPanel.add(tableScrollPane);
+
+        this.subscriptionFeePaymentsTable = new JTable(new PaymentsTableModel(payments.stream()
+                .filter(paymentExt -> paymentExt.getService().getId() == FixedServices.SUBSCRIPTION_FEE.getId())
+                .collect(Collectors.toList())));
+        renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.LEFT);
+        this.subscriptionFeePaymentsTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
+        tableScrollPane = new JScrollPane(this.subscriptionFeePaymentsTable);
+        subscriptionFeeChargeableAndPaidTablesPanel.add(tableScrollPane);
+
+        tabbedPane.add(getGuiString("tabbedPane.chargeableAndPaidTables") + " : " + getEntityString("subscriptionFee"),
+                subscriptionFeeChargeableAndPaidTablesPanel);
+
+        JPanel otherServicesChargeableAndPaidTablesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        this.otherServicesTable = new JTable(
+                new OtherRenderedServicesTableModel(
+                        renderedServiceAndPayments.stream()
+                                .filter(o -> o.getService().getId() != FixedServices.SUBSCRIPTION_FEE.getId())
+                                .collect(Collectors.toList())));
+        renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.LEFT);
+        this.otherServicesTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
+        tableScrollPane = new JScrollPane(this.otherServicesTable);
+        otherServicesChargeableAndPaidTablesPanel.add(tableScrollPane);
+
+        tabbedPane.add(getGuiString("tabbedPane.chargeableAndPaidTables") + " : " + getGuiString("additionalServices"),
+                otherServicesChargeableAndPaidTablesPanel);
+
+        rightPanel.add(tabbedPane);
         getContentPanel().add(rightPanel);
 
         revalidate();
@@ -214,7 +509,7 @@ public class SubscriberBalanceView extends FormView {
         if (getFrame().getContentPane().getWidth() > 300 && getFrame().getContentPane().getHeight() > 200) {
             this.table.setPreferredScrollableViewportSize(new Dimension(
                     getFrame().getContentPane().getWidth() - 90,
-                    getFrame().getContentPane().getHeight() - 120));
+                    getFrame().getContentPane().getHeight() - 150));
         }
     }
 
