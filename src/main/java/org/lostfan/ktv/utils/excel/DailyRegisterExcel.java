@@ -1,4 +1,4 @@
-package org.lostfan.ktv.utils;
+package org.lostfan.ktv.utils.excel;
 
 import java.awt.*;
 import java.io.File;
@@ -22,6 +22,8 @@ import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.DailyRegisterModel;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.model.dto.TurnoverSheetTableDTO;
+import org.lostfan.ktv.utils.DateFormatter;
+import org.lostfan.ktv.utils.ResourceBundles;
 
 public class DailyRegisterExcel {
     DailyRegisterModel model;
@@ -117,7 +119,7 @@ public class DailyRegisterExcel {
                 sheet.addCell(new Number(PAYMENT_PRICE, i, servicePayment));
                 i++;
             }
-            sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, i, getGuiString("total")));
+            sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, i, getGuiString("inTotal")));
             sheet.addCell(new Number(PAYMENT_PRICE, i, allPayment));
 
             workbook.write();

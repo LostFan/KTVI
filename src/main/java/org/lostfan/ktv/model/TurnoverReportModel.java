@@ -5,7 +5,7 @@ import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.model.dto.TurnoverSheetTableDTO;
 import org.lostfan.ktv.model.entity.BaseModel;
 import org.lostfan.ktv.utils.BaseObservable;
-import org.lostfan.ktv.utils.TurnoverReportExcel;
+import org.lostfan.ktv.utils.excel.TurnoverReportExcel;
 
 import java.time.LocalDate;
 import java.util.*;

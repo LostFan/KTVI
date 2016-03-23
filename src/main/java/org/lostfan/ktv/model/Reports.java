@@ -3,7 +3,8 @@ package org.lostfan.ktv.model;
 
 public enum Reports {
     TURNOVER_SHEET("turnoverSheet"),
-    DAILY_REGISTER("dailyRegister");;
+    DAILY_REGISTER("dailyRegister"),
+    CONSOLIDATED_REGISTER_ON_PAYMENT("consolidatedRegisterOnPayment");
 
     private final String code;
 

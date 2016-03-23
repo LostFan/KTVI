@@ -331,10 +331,11 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
 
     public List<RenderedService> getByMonth(LocalDate date) {
         List<RenderedService> renderedServices = new ArrayList<>();
+        LocalDate newDate = date.withDayOfMonth(1);
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"date\" >= ? AND \"date\" < ?  order by \"date\" ");
-            preparedStatement.setDate(1, Date.valueOf(date));
-            preparedStatement.setDate(2, Date.valueOf(date.plusMonths(1)));
+            preparedStatement.setDate(1, Date.valueOf(newDate));
+            preparedStatement.setDate(2, Date.valueOf(newDate.plusMonths(1)));
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 renderedServices.add(constructEntity(rs));

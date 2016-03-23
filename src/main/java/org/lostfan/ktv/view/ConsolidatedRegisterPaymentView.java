@@ -2,64 +2,76 @@ package org.lostfan.ktv.view;
 
 
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import org.lostfan.ktv.model.DailyRegisterModel;
+import org.lostfan.ktv.domain.Payment;
+import org.lostfan.ktv.model.ConsolidatedRegisterPaymentModel;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.dto.PaymentExt;
-import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.components.EntityPanel;
 import org.lostfan.ktv.view.components.EntityPanelFactory;
 
-public class DailyRegisterView extends FormView {
+public class ConsolidatedRegisterPaymentView extends FormView {
 
 
     private class ReportTableModel extends AbstractTableModel {
 
-        private List<PaymentExt> paymentExts = new ArrayList<>();
+        private List<Payment> payments = new ArrayList<>();
+        private LocalDate date;
 
         public ReportTableModel() {
         }
 
-        public ReportTableModel(List<PaymentExt> payments) {
-            this.paymentExts = payments;
-        }
-
-        public ReportTableModel(PaymentExt payment) {
-            this.paymentExts.add(payment);
+        public ReportTableModel(List<Payment> payments, LocalDate date) {
+            this.payments = payments;
+            this.date = date;
         }
 
         @Override
         public int getRowCount() {
-            return paymentExts.size();
+            if (date == null) {
+                return 0;
+            }
+            return date.lengthOfMonth();
         }
 
         @Override
         public int getColumnCount() {
-            return 3;
+            return 5;
         }
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             switch (columnIndex) {
                 case 0:
-                    return this.paymentExts.get(rowIndex).getSubscriber() != null ? String.format("%s (%d)",
-                            this.paymentExts.get(rowIndex).getSubscriber().getName(),
-                            this.paymentExts.get(rowIndex).getSubscriber().getAccount()) :
-                            this.paymentExts.get(rowIndex).getSubscriberAccount();
+                    return rowIndex + 1;
                 case 1:
-                    return this.paymentExts.get(rowIndex).getSubscriber() != null ?
-                            this.paymentExts.get(rowIndex).getService().getName() :
-                            null;
+                    return this.payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.SUBSCRIPTION_FEE.getId())
+                            .filter(e -> e.getDate().getDayOfMonth() == rowIndex + 1)
+                            .mapToInt(e -> e.getPrice()).sum();
                 case 2:
-                    return this.paymentExts.get(rowIndex).getPrice();
+                    return this.payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.CONNECTION.getId())
+                            .filter(e -> e.getDate().getDayOfMonth() == rowIndex + 1)
+                            .mapToInt(e -> e.getPrice()).sum();
+                case 3:
+                    return this.payments.stream().filter(e -> e.getServicePaymentId() != FixedServices.SUBSCRIPTION_FEE.getId())
+                            .filter(e -> e.getServicePaymentId() != FixedServices.CONNECTION.getId())
+                            .filter(e -> e.getDate().getDayOfMonth() == rowIndex + 1)
+                            .mapToInt(e -> e.getPrice()).sum();
+                case 4:
+                    return this.payments.stream()
+                            .filter(e -> e.getDate().getDayOfMonth() == rowIndex + 1)
+                            .mapToInt(e -> e.getPrice()).sum();
             }
 
             return null;
@@ -69,14 +81,20 @@ public class DailyRegisterView extends FormView {
         public String getColumnName(int columnIndex) {
             switch (columnIndex) {
                 case 0:
-                    return ResourceBundles.getEntityBundle().getString(
-                            "subscriber");
+                    return ResourceBundles.getGuiBundle().getString(
+                            "number");
                 case 1:
                     return ResourceBundles.getEntityBundle().getString(
-                            "service");
+                            "subscriptionFee");
                 case 2:
                     return ResourceBundles.getEntityBundle().getString(
-                            "servicePrice.price");
+                            "connection");
+                case 3:
+                    return ResourceBundles.getGuiBundle().getString(
+                            "additionalServices");
+                case 4:
+                    return ResourceBundles.getGuiBundle().getString(
+                            "total");
             }
 
             return null;
@@ -84,15 +102,7 @@ public class DailyRegisterView extends FormView {
 
         @Override
         public Class<?> getColumnClass(int columnIndex) {
-            switch (columnIndex) {
-                case 0:
-                    return String.class;
-                case 1:
-                    return String.class;
-                case 2:
-                    return Integer.class;
-            }
-            return null;
+            return Integer.class;
         }
 
         @Override
@@ -103,13 +113,13 @@ public class DailyRegisterView extends FormView {
 
     private class FooterModel extends AbstractTableModel {
 
-        Integer allPrice;
+        private List<Payment> payments = new ArrayList<>();
 
         public FooterModel() {
         }
 
-        public FooterModel(Integer allPrice) {
-            this.allPrice = allPrice;
+        public FooterModel(List<Payment> payments) {
+            this.payments = payments;
         }
 
 
@@ -120,7 +130,7 @@ public class DailyRegisterView extends FormView {
 
         @Override
         public int getColumnCount() {
-            return 3;
+            return 5;
         }
 
         @Override
@@ -128,11 +138,30 @@ public class DailyRegisterView extends FormView {
             switch (columnIndex) {
                 case 0:
                     return getGuiString("inTotal");
+                case 1:
+                    return this.payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.SUBSCRIPTION_FEE.getId())
+                            .mapToInt(e -> e.getPrice()).sum();
                 case 2:
-                    return allPrice;
+                    return this.payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.CONNECTION.getId())
+                            .mapToInt(e -> e.getPrice()).sum();
+                case 3:
+                    return this.payments.stream().filter(e -> e.getServicePaymentId() != FixedServices.SUBSCRIPTION_FEE.getId())
+                            .filter(e -> e.getServicePaymentId() != FixedServices.CONNECTION.getId())
+                            .mapToInt(e -> e.getPrice()).sum();
+                case 4:
+                    return this.payments.stream()
+                            .mapToInt(e -> e.getPrice()).sum();
             }
 
             return null;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            if (columnIndex == 0) {
+                return String.class;
+            }
+            return Integer.class;
         }
 
         @Override
@@ -149,7 +178,7 @@ public class DailyRegisterView extends FormView {
             super(fieldKey);
             this.panel = EntityPanelFactory.createEntityPanel(EntityFieldTypes.Service);
 
-            this.panel.setParentView(DailyRegisterView.this);
+            this.panel.setParentView(ConsolidatedRegisterPaymentView.this);
         }
 
         @Override
@@ -174,7 +203,7 @@ public class DailyRegisterView extends FormView {
     private JTable reportTable;
     private JTable footerTable;
 
-    private DailyRegisterModel model;
+    private ConsolidatedRegisterPaymentModel model;
 
     private ViewActionListener addActionListener;
     private ViewActionListener cancelActionListener;
@@ -183,7 +212,7 @@ public class DailyRegisterView extends FormView {
     private BooleanFormField isAdditionalField;
     private ServiceFormField serviceField;
 
-    public DailyRegisterView(DailyRegisterModel model) {
+    public ConsolidatedRegisterPaymentView(ConsolidatedRegisterPaymentModel model) {
         this.model = model;
         reportTable = new JTable(new ReportTableModel());
         this.reportTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -199,13 +228,14 @@ public class DailyRegisterView extends FormView {
 
         this.addButton = new JButton(getGuiString("buttons.generateReport"));
         this.addButton.addActionListener(e -> {
-            List<PaymentExt> paymentExts = model.getPaymentsExtByDate(dateField.getValue());
+            List<Payment> payments = model.getByMonth(dateField.getValue());
+            List<Payment> newPaymentList = payments.stream().filter(e1 -> e1.getServicePaymentId() == FixedServices.SUBSCRIPTION_FEE.getId())
+                    .filter(e1 -> e1.getDate().getDayOfMonth() == 5).collect(Collectors.toList());
             ReportTableModel reportTableModel = new ReportTableModel(
-                    paymentExts);
+                    payments, dateField.getValue());
             reportTable.setModel(reportTableModel);
-            if (paymentExts.size() > 0) {
-                Integer allPrice = paymentExts.stream().mapToInt(o -> o.getPrice()).sum();
-                footerTable.setModel(new FooterModel(allPrice));
+            if (payments.size() > 0) {
+                footerTable.setModel(new FooterModel(payments));
             }
             reportTable.repaint();
             if (this.addActionListener != null) {

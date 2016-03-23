@@ -1,6 +1,7 @@
 package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.model.ConsolidatedRegisterPaymentModel;
 import org.lostfan.ktv.model.DailyRegisterModel;
 import org.lostfan.ktv.model.FileMenu;
 import org.lostfan.ktv.model.FixedServices;
@@ -87,6 +88,10 @@ public class MainController {
                 case DAILY_REGISTER:
                     DailyRegisterModel dailyRegisterModel = new DailyRegisterModel();
                     DailyRegisterView dailyRegisterView = new DailyRegisterView(dailyRegisterModel);
+                    break;
+                case CONSOLIDATED_REGISTER_ON_PAYMENT:
+                    ConsolidatedRegisterPaymentModel consolidatedRegisterPaymentModel = new ConsolidatedRegisterPaymentModel();
+                    ConsolidatedRegisterPaymentView consolidatedRegisterPaymentView = new ConsolidatedRegisterPaymentView(consolidatedRegisterPaymentModel);
                     break;
             };
         });
