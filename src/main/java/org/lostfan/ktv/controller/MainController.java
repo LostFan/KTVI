@@ -1,6 +1,7 @@
 package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.model.DailyRegisterModel;
 import org.lostfan.ktv.model.FileMenu;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.PeriodModel;
@@ -80,8 +81,12 @@ public class MainController {
             String code = (String) args;
             switch (Reports.of(code)) {
                 case TURNOVER_SHEET:
-                    TurnoverReportModel reportModel = new TurnoverReportModel();
-                    TurnoverReportView reportView = new TurnoverReportView(reportModel);
+                    TurnoverReportModel turnoverReportModel = new TurnoverReportModel();
+                    TurnoverReportView turnoverReportView = new TurnoverReportView(turnoverReportModel);
+                    break;
+                case DAILY_REGISTER:
+                    DailyRegisterModel dailyRegisterModel = new DailyRegisterModel();
+                    DailyRegisterView dailyRegisterView = new DailyRegisterView(dailyRegisterModel);
                     break;
             };
         });

@@ -199,8 +199,6 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
                                       Integer serviceId, LocalDate date) {
         TurnoverReportExcel turnoverReportExcel = new TurnoverReportExcel(this);
         return turnoverReportExcel.generate(isAdditional, serviceId, date);
-
-
     }
 
 }

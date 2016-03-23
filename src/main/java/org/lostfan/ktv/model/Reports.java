@@ -2,7 +2,8 @@ package org.lostfan.ktv.model;
 
 
 public enum Reports {
-    TURNOVER_SHEET("turnoverSheet");
+    TURNOVER_SHEET("turnoverSheet"),
+    DAILY_REGISTER("dailyRegister");;
 
     private final String code;
 
