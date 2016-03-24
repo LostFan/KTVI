@@ -1,8 +1,7 @@
 package org.lostfan.ktv.controller;
 
-import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
-import org.lostfan.ktv.view.SubscriberBalanceView;
+import org.lostfan.ktv.view.SubscriberInformationView;
 import org.lostfan.ktv.view.SubscriberTableView;
 
 public class SubscriberController extends EntityController {
@@ -23,6 +22,6 @@ public class SubscriberController extends EntityController {
 
     private void balanceActionPerformed(Object args) {
         Integer subscriberId = (Integer) args;
-        SubscriberBalanceView subscriberBalanceView = new SubscriberBalanceView(model, model.getEntity(subscriberId));
+        SubscriberInformationView subscriberInformationView = new SubscriberInformationView(model, model.getEntity(subscriberId));
     }
 }

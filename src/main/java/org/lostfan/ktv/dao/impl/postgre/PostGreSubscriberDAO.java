@@ -277,6 +277,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
             while (rs.next()) {
                 SubscriberTariff subscriberTariff = new SubscriberTariff();
                 subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
+                subscriberTariff.setTariffId(rs.getInt("tariff_id"));
                 subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());

@@ -12,6 +12,8 @@ import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.Subscriber;
+import org.lostfan.ktv.domain.SubscriberSession;
+import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.dto.PaymentExt;
@@ -233,5 +235,13 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         }
 
         return criteria;
+    }
+
+    public List<SubscriberTariff> getSubscriberTariffs(Integer subscriberId) {
+        return getDao().getSubscriberTariffs(subscriberId);
+    }
+
+    public List<SubscriberSession> getSubscriberSessions(Integer subscriberId) {
+        return getDao().getSubscriberSessions(subscriberId);
     }
 }

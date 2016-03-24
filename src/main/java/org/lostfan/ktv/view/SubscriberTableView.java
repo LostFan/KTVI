@@ -72,7 +72,7 @@ public class SubscriberTableView extends EntityTableView {
         );
         searchPanel.add(findButton);
 
-        JButton balanceButton = new JButton(getGuiString("buttons.balance"));
+        JButton balanceButton = new JButton(getGuiString("buttons.subscriberInformation"));
 
         balanceButton.addActionListener(e -> {
                     if (balanceActionListener != null) {

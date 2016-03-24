@@ -12,13 +12,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.Subscriber;
+import org.lostfan.ktv.domain.SubscriberSession;
+import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.model.dto.RenderedServiceExt;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
 import org.lostfan.ktv.utils.ResourceBundles;
 
-public class SubscriberBalanceView extends FormView {
+public class SubscriberInformationView extends FormView {
 
     private class SubscriberRenderedServicesAndPaymentsTableModel extends AbstractTableModel {
 
@@ -317,6 +319,138 @@ public class SubscriberBalanceView extends FormView {
         }
     }
 
+    private class TariffsTableModel extends AbstractTableModel {
+
+        private List<SubscriberTariff> subscriberTariffs;
+
+        public TariffsTableModel(List<SubscriberTariff> subscriberTariffs) {
+            this.subscriberTariffs = subscriberTariffs.stream()
+                    .sorted((o1, o2) -> o1.getConnectTariff().compareTo(o2.getConnectTariff()))
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public int getRowCount() {
+            return subscriberTariffs.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "connection");
+                case 1:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "tariff");
+                case 2:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "disconnection");
+            }
+
+            return null;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return String.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            switch (columnIndex) {
+                case 0:
+                    return dateTimeFormatter.format(subscriberTariffs.get(rowIndex).getConnectTariff());
+                case 1:
+                    return subscriberTariffs.get(rowIndex).getTariffId();
+                case 2:
+                    return subscriberTariffs.get(rowIndex).getDisconnectTariff() != null ?
+                            dateTimeFormatter.format(subscriberTariffs.get(rowIndex).getDisconnectTariff()) :
+                            null;
+
+            }
+            return null;
+
+        }
+    }
+
+    private class SessionsTableModel extends AbstractTableModel {
+
+        private List<SubscriberSession> subscriberSessions;
+
+        public SessionsTableModel(List<SubscriberSession> subscriberSessions) {
+            this.subscriberSessions = subscriberSessions.stream()
+                    .sorted((o1, o2) -> o1.getConnectionDate().compareTo(o2.getConnectionDate()))
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public int getRowCount() {
+            return subscriberSessions.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 3;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "connection");
+                case 1:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "disconnection");
+                case 2:
+                    return ResourceBundles.getEntityBundle().getString(
+                            "disconnectionReason");
+            }
+
+            return null;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return String.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return false;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            switch (columnIndex) {
+                case 0:
+                    return dateTimeFormatter.format(subscriberSessions.get(rowIndex).getConnectionDate());
+                case 1:
+                    return subscriberSessions.get(rowIndex).getDisconnectionDate() != null ?
+                            dateTimeFormatter.format(subscriberSessions.get(rowIndex).getDisconnectionDate()) :
+                            null;
+                case 2:
+                    return subscriberSessions.get(rowIndex).getDisconnectionReasonId();
+
+            }
+            return null;
+
+        }
+    }
+
     private class OtherRenderedServicesTableModel extends AbstractTableModel {
 
         private List<RenderedServiceAndPayment> renderedServiceAndPayments;
@@ -415,10 +549,12 @@ public class SubscriberBalanceView extends FormView {
     private JTable subscriptionFeeRenderedServicesTable;
     private JTable subscriptionFeePaymentsTable;
     private JTable otherServicesTable;
+    private JTable subscriberTariffsTable;
+    private JTable subscriberSessionsTable;
 
-    public SubscriberBalanceView(SubscriberEntityModel model, Subscriber entity) {
+    public SubscriberInformationView(SubscriberEntityModel model, Subscriber entity) {
 
-        setTitle(getGuiString("window.balance"));
+        setTitle(getGuiString("window.subscriberInformation"));
         buildLayout();
 
         List<RenderedServiceAndPayment> renderedServiceAndPayments = new ArrayList<>();
@@ -442,24 +578,27 @@ public class SubscriberBalanceView extends FormView {
         addFormField(balanceFormField);
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        SubscriberRenderedServicesAndPaymentsTableModel subscriberRenderedServicesAndPaymentsTableModel = new SubscriberRenderedServicesAndPaymentsTableModel(renderedServiceAndPayments);
-        this.table = new JTable(subscriberRenderedServicesAndPaymentsTableModel);
-//        this.table.setPreferredScrollableViewportSize(new Dimension(500, 200));
-        System.out.println(getFrame().getContentPane().getHeight());
-        this.table.setAutoCreateRowSorter(false);
-        this.table.setFillsViewportHeight(true);
-
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-        renderer.setHorizontalAlignment(SwingConstants.LEFT);
-        this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
-        JScrollPane tableScrollPane = new JScrollPane(this.table);
+        DefaultTableCellRenderer renderer;
+        JScrollPane tableScrollPane;
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        tabbedPane.add(getGuiString("tabbedPane.allPaymentsAndRenderedServicesTable"), tableScrollPane);
+//        SubscriberRenderedServicesAndPaymentsTableModel subscriberRenderedServicesAndPaymentsTableModel = new SubscriberRenderedServicesAndPaymentsTableModel(renderedServiceAndPayments);
+//        this.table = new JTable(subscriberRenderedServicesAndPaymentsTableModel);
+////        this.table.setPreferredScrollableViewportSize(new Dimension(500, 200));
+//        System.out.println(getFrame().getContentPane().getHeight());
+//        this.table.setAutoCreateRowSorter(false);
+//        this.table.setFillsViewportHeight(true);
+//
+//        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+//        renderer.setHorizontalAlignment(SwingConstants.LEFT);
+//        this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
+//        JScrollPane tableScrollPane = new JScrollPane(this.table);
+//        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+//        tabbedPane.add(getGuiString("tabbedPane.allPaymentsAndRenderedServicesTable"), tableScrollPane);
 
 
         JPanel subscriptionFeeChargeableAndPaidTablesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-
-
+        JPanel subscriptionFeeRenderedServicesPanel = new JPanel(new BorderLayout());
+        JPanel subscriptionFeePaymentsPanel = new JPanel(new BorderLayout());
         this.subscriptionFeeRenderedServicesTable = new JTable(
                 new SubscriptionFeeRenderedServicesTableModel(
                         renderedServiceAndPayments.stream()
@@ -469,7 +608,9 @@ public class SubscriberBalanceView extends FormView {
         renderer.setHorizontalAlignment(SwingConstants.LEFT);
         this.subscriptionFeeRenderedServicesTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
         tableScrollPane = new JScrollPane(this.subscriptionFeeRenderedServicesTable);
-        subscriptionFeeChargeableAndPaidTablesPanel.add(tableScrollPane);
+        subscriptionFeeRenderedServicesPanel.add(new JLabel(getEntityString("subscriptionFee")), BorderLayout.NORTH);
+        subscriptionFeeRenderedServicesPanel.add(tableScrollPane, BorderLayout.CENTER);
+        subscriptionFeeChargeableAndPaidTablesPanel.add(subscriptionFeeRenderedServicesPanel);
 
         this.subscriptionFeePaymentsTable = new JTable(new PaymentsTableModel(payments.stream()
                 .filter(paymentExt -> paymentExt.getService().getId() == FixedServices.SUBSCRIPTION_FEE.getId())
@@ -478,7 +619,9 @@ public class SubscriberBalanceView extends FormView {
         renderer.setHorizontalAlignment(SwingConstants.LEFT);
         this.subscriptionFeePaymentsTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
         tableScrollPane = new JScrollPane(this.subscriptionFeePaymentsTable);
-        subscriptionFeeChargeableAndPaidTablesPanel.add(tableScrollPane);
+        subscriptionFeePaymentsPanel.add(new JLabel(getEntityString("payments")), BorderLayout.NORTH);
+        subscriptionFeePaymentsPanel.add(tableScrollPane, BorderLayout.CENTER);
+        subscriptionFeeChargeableAndPaidTablesPanel.add(subscriptionFeePaymentsPanel);
 
         tabbedPane.add(getGuiString("tabbedPane.chargeableAndPaidTables") + " : " + getEntityString("subscriptionFee"),
                 subscriptionFeeChargeableAndPaidTablesPanel);
@@ -499,6 +642,35 @@ public class SubscriberBalanceView extends FormView {
         tabbedPane.add(getGuiString("tabbedPane.chargeableAndPaidTables") + " : " + getGuiString("additionalServices"),
                 otherServicesChargeableAndPaidTablesPanel);
 
+        JPanel subscriberTariffsAndSessionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel subscriberTariffsPanel = new JPanel(new BorderLayout());
+        JPanel subscriberSessionsPanel = new JPanel(new BorderLayout());
+
+        this.subscriberTariffsTable = new JTable(
+                new TariffsTableModel(
+                        model.getSubscriberTariffs(entity.getId())));
+        renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.LEFT);
+        this.subscriberTariffsTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
+        tableScrollPane = new JScrollPane(this.subscriberTariffsTable);
+        subscriberTariffsPanel.add(new JLabel(getEntityString("tariffs")), BorderLayout.NORTH);
+        subscriberTariffsPanel.add(tableScrollPane, BorderLayout.CENTER);
+        subscriberTariffsAndSessionsPanel.add(subscriberTariffsPanel);
+
+        this.subscriberSessionsTable = new JTable(
+                new SessionsTableModel(
+                        model.getSubscriberSessions(entity.getId())));
+        renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(SwingConstants.LEFT);
+        this.subscriberSessionsTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
+        tableScrollPane = new JScrollPane(this.subscriberSessionsTable);
+        subscriberSessionsPanel.add(new JLabel(getGuiString("sessions")), BorderLayout.NORTH);
+        subscriberSessionsPanel.add(tableScrollPane, BorderLayout.CENTER);
+        subscriberTariffsAndSessionsPanel.add(subscriberSessionsPanel);
+
+        tabbedPane.add(getGuiString("tabbedPane.subscriberTariffsAndSessions"),
+                subscriberTariffsAndSessionsPanel);
+
         rightPanel.add(tabbedPane);
         getContentPanel().add(rightPanel);
 
@@ -506,11 +678,11 @@ public class SubscriberBalanceView extends FormView {
 
 
         show();
-        if (getFrame().getContentPane().getWidth() > 300 && getFrame().getContentPane().getHeight() > 200) {
-            this.table.setPreferredScrollableViewportSize(new Dimension(
-                    getFrame().getContentPane().getWidth() - 90,
-                    getFrame().getContentPane().getHeight() - 150));
-        }
+//        if (getFrame().getContentPane().getWidth() > 300 && getFrame().getContentPane().getHeight() > 200) {
+//            this.table.setPreferredScrollableViewportSize(new Dimension(
+//                    getFrame().getContentPane().getWidth() - 90,
+//                    getFrame().getContentPane().getHeight() - 150));
+//        }
     }
 
     private void buildLayout() {
