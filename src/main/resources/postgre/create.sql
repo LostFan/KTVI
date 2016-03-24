@@ -14,6 +14,14 @@ CREATE TABLE "material" (
   "unit" VARCHAR(10)
 );
 
+CREATE SEQUENCE serial_equipment START 1;
+
+CREATE TABLE "equipment" (
+  "id" INTEGER PRIMARY KEY DEFAULT nextval('serial_equipment'),
+  "name" VARCHAR(100) NOT NULL,
+  "price" INTEGER DEFAULT 0
+);
+
 CREATE SEQUENCE serial_service START 1;
 
 CREATE TABLE "service" (

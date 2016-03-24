@@ -572,7 +572,12 @@ public class SubscriberInformationView extends FormView {
         }
         renderedServiceAndPayments.sort((o1, o2) -> o2.getDate().compareTo(o1.getDate()));
 
-
+        IntegerFormField accountFormField = new IntegerFormField("subscriber.id");
+        accountFormField.setValue(entity.getAccount());
+        addFormField(accountFormField);
+        StringFormField nameFormField = new StringFormField("subscriber.name");
+        nameFormField.setValue(entity.getName());
+        addFormField(nameFormField);
         IntegerFormField balanceFormField = new IntegerFormField("subscriber.balance");
         balanceFormField.setValue(balance);
         addFormField(balanceFormField);

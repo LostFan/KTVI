@@ -84,4 +84,9 @@ public class HsqldbDaoFactory extends DAOFactory {
     public PaymentTypeDAO getPaymentTypeDAO() {
         return null;
     }
+
+    @Override
+    public EquipmentDAO getEquipmentDAO() {
+        return null;
+    }
 }
