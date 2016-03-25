@@ -15,6 +15,27 @@ import java.util.List;
 
 public class LoadPaymentsView extends FormView {
 
+    private class ModelObserver implements org.lostfan.ktv.utils.Observer {
+
+        private Integer filesCount;
+        private Integer filesCounter;
+
+        @Override
+        public void update(Object args) {
+            Integer currentValue = 100 - 100 * (filesCount - filesCounter) / filesCount + (Integer) args / filesCount;
+            LoadPaymentsView.this.progressBar.setValue(currentValue);
+            LoadPaymentsView.this.revalidate();
+        }
+
+        public void setFilesCounter(Integer filesCounter) {
+            this.filesCounter = filesCounter;
+        }
+
+        public void setFilesCount(Integer filesCount) {
+            this.filesCount = filesCount;
+        }
+    }
+
     private static class PaymentFileFilter extends FileFilter {
 
         @Override
@@ -39,9 +60,13 @@ public class LoadPaymentsView extends FormView {
     private JButton openFileButton;
     private JButton addButton;
     private JButton cancelButton;
+    private DateFormField dateField;
+    private JProgressBar progressBar;
 
     protected ViewActionListener addActionListener;
     private ViewActionListener loadPaymentFileListener;
+
+    private ModelObserver modelObserver;
 
     public LoadPaymentsView(PaymentEntityModel model) {
         this.model = model;
@@ -49,6 +74,19 @@ public class LoadPaymentsView extends FormView {
         this.fileChooser = new JFileChooser();
         this.fileChooser.setFileFilter(new PaymentFileFilter());
         this.fileChooser.setMultiSelectionEnabled(true);
+
+        progressBar = new JProgressBar();
+        progressBar.setStringPainted(true);
+
+        dateField = new DateFormField("renderedService.date");
+        dateField.addValueListener(e -> {
+            for (Payment payment : entityInnerTableView.getEntityList()) {
+                payment.setDate(dateField.getValue());
+            }
+            entityInnerTableView.revalidate();
+        });
+        addFormField(dateField);
+
 
         List<String> bankFileNames = new ArrayList<>();
         setTitle(getGuiString("window.loadPayments"));
@@ -70,29 +108,47 @@ public class LoadPaymentsView extends FormView {
             details.actionPerformed(null);
             int ret = fileChooser.showDialog(null, getGuiString("buttons.openFile"));
             if (ret == JFileChooser.APPROVE_OPTION) {
+                LoadPaymentsView.this.addButton.setEnabled(false);
                 File[] files = fileChooser.getSelectedFiles();
                 List<Payment> payments = entityInnerTableView.getEntityList();
-                for (File file : files) {
-                    if(bankFileNames.contains(file.getName())
-                            || !LoadPaymentsView.this.model.getPaymentsByBankFileName(file.getName()).isEmpty()) {
-                        if(!confirmAdding()) {
-                            continue;
+                modelObserver.setFilesCount(files.length);
+                new Thread(() -> {
+                    Integer filesCounter = 0;
+                    for (File file : files) {
+                        modelObserver.setFilesCounter(filesCounter++);
+                        if (bankFileNames.contains(file.getName())
+                                || !LoadPaymentsView.this.model.getPaymentsByBankFileName(file.getName()).isEmpty()) {
+                            if (!confirmAdding()) {
+                                continue;
+                            }
+                        } else {
+                            bankFileNames.add(file.getName());
                         }
-                    } else {
-                        bankFileNames.add(file.getName());
+
+                        if (LoadPaymentsView.this.loadPaymentFileListener != null) {
+                            LoadPaymentsView.this.loadPaymentFileListener.actionPerformed(new PaymentController.FileAndPayments(file, payments));
+                        }
+
+                        for (Payment payment : payments) {
+                            payment.setDate(dateField.getValue());
+                        }
+
+                        //                    payments.addAll(LoadPaymentsView.this.model.
+                        //                            createPayments(file, payments));
                     }
-                    if (LoadPaymentsView.this.loadPaymentFileListener != null) {
-                        LoadPaymentsView.this.loadPaymentFileListener.actionPerformed(new PaymentController.FileAndPayments(file, payments));
-                    }
-//                    payments.addAll(LoadPaymentsView.this.model.
-//                            createPayments(file, payments));
-                }
+                    LoadPaymentsView.this.addButton.setEnabled(true);
+                }).start();
 
             }
+
             this.entityInnerTableView.getTable().revalidate();
         });
 
         this.entityInnerTableView = new EntityInnerTableView<>(model.getLoadFullEntityField(), new ArrayList<>());
+
+        this.modelObserver = new ModelObserver();
+
+        model.addObserver(this.modelObserver);
 
         buildLayout();
 
@@ -119,12 +175,20 @@ public class LoadPaymentsView extends FormView {
         panel.add(Box.createVerticalGlue());
         panel.add(Box.createRigidArea(new Dimension(10, 10)));
 
+//        Dimension fieldPanelSize = new Dimension(10,20);
+//        getFieldPanel().setPreferredSize(fieldPanelSize);
+        JPanel jPanel = new JPanel();
+        jPanel.setPreferredSize(new Dimension(50, 50));
+        jPanel.add(getFieldPanel());
+        getContentPanel().add(jPanel, BorderLayout.NORTH);
+
         panel.add(this.entityInnerTableView.getContentPanel());
         getContentPanel().add(panel);
 
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addButton);
+        buttonPanel.add(progressBar);
         buttonPanel.add(cancelButton);
         getContentPanel().add(buttonPanel, BorderLayout.SOUTH);
     }

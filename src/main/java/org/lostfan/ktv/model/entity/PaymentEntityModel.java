@@ -103,25 +103,42 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         return payment;
     }
 
-    public List<Payment> createPayments(File file, List<Payment> paymentsInList) {
-        List<Payment> loadPayments= new PaymentsLoader(file).loadPayments();
+    /**
+     * Creates a new Payment list based on a payment file and the current loaded payments.
+     *
+     * @param file        A file for loading another payments from.
+     * @param paymentList A list of already loaded payments(displayed on the frame)
+     * @return a new (merged) list of payments
+     */
+    public List<Payment> createPayments(File file, List<Payment> paymentList) {
+        List<Payment> loadedPayments = new PaymentsLoader(file).load();
         List<Payment> payments = new ArrayList<>();
-        for (Payment loadPayment : loadPayments) {
-            if(loadPayment.getPrice() == 0 || subscriberDAO.get(loadPayment.getSubscriberAccount()) == null) {
+        Integer count = 1;
+        for (Payment loadedPayment : loadedPayments) {
+            if (loadedPayment.getPrice() == 0 || subscriberDAO.get(loadedPayment.getSubscriberAccount()) == null) {
                 continue;
             }
-
-            payments.addAll(addPayments(loadPayment, paymentsInList));
+            notifyObservers(100 * count++ / loadedPayments.size());
+            payments.addAll(addPayments(loadedPayment, paymentList));
 
         }
+        notifyObservers(100);
         return payments;
     }
 
-    public List<Payment> addPayments(Payment loadPayment, List<Payment> paymentsInList) {
+    /**
+     * Creates a new Payment list based on a raw in payment file and the current loaded payments.
+     *
+     * @param newLoadedPayment      Payment without service from the file for loading another payments from.
+     * @param currentLoadedPayments A list of already loaded payments(displayed on the frame)
+     * @return list of payments with services
+     */
+    public List<Payment> addPayments(Payment newLoadedPayment, List<Payment> currentLoadedPayments) {
+
         List<Payment> payments = new ArrayList<>();
-        Integer price = loadPayment.getPrice();
+        Integer price = newLoadedPayment.getPrice();
         Map<Integer, Integer> paymentMapFromTable = new HashMap<>();
-        for (Payment payment : paymentsInList) {
+        for (Payment payment : currentLoadedPayments) {
             if(paymentMapFromTable.containsKey(payment.getRenderedServicePaymentId())) {
                 paymentMapFromTable.put(payment.getRenderedServicePaymentId(),
                         paymentMapFromTable.get(payment.getRenderedServicePaymentId()) + payment.getPrice());
@@ -130,7 +147,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
             }
         }
 
-        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalance(loadPayment.getSubscriberAccount());
+        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalance(newLoadedPayment.getSubscriberAccount());
         for (Integer serviceId : hashMap.keySet()) {
             if (price == 0) {
                 break;
@@ -143,7 +160,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
             }
 
             Map<Integer, Payment> paymentsForNotClosedRenderedServices =
-                    getDao().getForNotClosedRenderedServices(loadPayment.getSubscriberAccount(), serviceId);
+                    getDao().getForNotClosedRenderedServices(newLoadedPayment.getSubscriberAccount(), serviceId);
             for (Integer id : paymentsForNotClosedRenderedServices.keySet()) {
                 Integer paymentPrice;
                 if (paymentMapFromTable.get(id) == null) {
@@ -155,10 +172,10 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
                     paymentPrice = paymentsForNotClosedRenderedServices.get(id).getPrice() - paymentMapFromTable.get(id);
                 }
                 Payment payment = new Payment();
-                payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
+                payment.setSubscriberAccount(newLoadedPayment.getSubscriberAccount());
                 payment.setDate(date);
-                payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
-                payment.setBankFileName(loadPayment.getBankFileName());
+                payment.setPaymentTypeId(newLoadedPayment.getPaymentTypeId());
+                payment.setBankFileName(newLoadedPayment.getBankFileName());
                 if (price > paymentPrice) {
                     payment.setPrice(paymentPrice);
                     price -= paymentPrice;
@@ -176,10 +193,10 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
             }
         }
         Payment payment = new Payment();
-        payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
+        payment.setSubscriberAccount(newLoadedPayment.getSubscriberAccount());
         payment.setDate(date);
-        payment.setBankFileName(loadPayment.getBankFileName());
-        payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
+        payment.setBankFileName(newLoadedPayment.getBankFileName());
+        payment.setPaymentTypeId(newLoadedPayment.getPaymentTypeId());
         payment.setPrice(price);
         payment.setServicePaymentId(FixedServices.SUBSCRIPTION_FEE.getId());
         payments.add(payment);
@@ -308,5 +325,9 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         for (Payment payment : payments) {
             save(payment);
         }
+    }
+
+    public List<Payment> getPaymentsByDate(LocalDate date) {
+        return getDao().getByDate(date);
     }
 }
