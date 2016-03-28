@@ -175,8 +175,14 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         // The query contains just one word
         if (tokenizer.countTokens() == 1) {
             String name = tokenizer.nextToken();
-            criteria.addName(name);
-            criteria.addStreet(name);
+            try {
+                criteria.setAccount(Integer.parseInt(name));
+            } catch (NumberFormatException e) {
+                // Otherwise, It's the name or the street name
+                criteria.addName(name);
+                criteria.addStreet(name);
+            }
+
             return criteria;
         }
 

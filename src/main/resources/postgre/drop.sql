@@ -23,3 +23,4 @@ DROP SEQUENCE IF EXISTS "serial_rendered_service";
 DROP SEQUENCE IF EXISTS "serial_payment_type";
 DROP SEQUENCE IF EXISTS "serial_payment";
 DROP SEQUENCE IF EXISTS "serial_material_consumption";
+DROP SEQUENCE IF EXISTS "serial_equipment";
