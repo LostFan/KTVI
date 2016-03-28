@@ -14,26 +14,6 @@ import java.util.List;
 
 public class PaymentController extends EntityController{
 
-    public static class FileAndPayments {
-
-        private File file;
-
-        private List<Payment> payments;
-
-        public FileAndPayments(File file, List<Payment> payments) {
-            this.file = file;
-            this.payments = payments;
-        }
-
-        public File getFile() {
-            return file;
-        }
-
-        public List<Payment> getPayments() {
-            return payments;
-        }
-    }
-
     private PaymentEntityModel model;
     private PaymentTableView view;
 
@@ -46,18 +26,17 @@ public class PaymentController extends EntityController{
     }
 
     private void loadActionPerformed(Object args) {
-        LoadPaymentsView loadPaymentsView = new LoadPaymentsView(model);
+        PaymentEntityModel paymentEntityModel = new PaymentEntityModel();
+        LoadPaymentsView loadPaymentsView = new LoadPaymentsView(paymentEntityModel);
         loadPaymentsView.setAddActionListener(args_ -> {
             List<Payment> payments = (List<Payment>) args_;
-            savePayments(payments, loadPaymentsView);
+            savePayments(paymentEntityModel, payments, loadPaymentsView);
         });
 
-        loadPaymentsView.setLoadPaymentFileListener(args_ -> {
-            FileAndPayments fileAndPayments = (FileAndPayments) args_;
-            loadPaymentsView.addPayments(
-                    model.createPayments(fileAndPayments.getFile(), fileAndPayments.getPayments()));
+        loadPaymentsView.setLoadPaymentFileActionListener(args_ -> {
+            File file = (File) args_;
+            paymentEntityModel.createPayments(file);
         });
-//        this.loadPaymentsView.setSaveActionListener(this::saveTariffPriceActionPerformed);
     }
 
     private void newDateActionPerformed(Object args) {
@@ -74,11 +53,11 @@ public class PaymentController extends EntityController{
         });
         entityView.setAddActionListener(args_ -> {
             List<Payment> payments = (List<Payment>) args_;
-            savePayments(payments, entityView);
+            savePayments(model, payments, entityView);
         });
     }
 
-    private void savePayments(List<Payment> payments, FormView view) {
+    private void savePayments(PaymentEntityModel model, List<Payment> payments, FormView view) {
         ValidationResult result = ValidationResult.createEmpty();
         for (Payment payment : payments) {
             result = model.getValidator().validate(payment, result);
@@ -88,7 +67,6 @@ public class PaymentController extends EntityController{
                 return;
             }
         }
-
         for (Payment payment : payments) {
             model.save(payment);
         }

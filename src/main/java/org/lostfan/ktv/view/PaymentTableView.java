@@ -17,10 +17,11 @@ public class PaymentTableView extends EntityTableView {
 
     private JLabel monthNumber;
     private JLabel yearNumber;
+    private JButton priceButton;
 
     public PaymentTableView(PaymentEntityModel model) {
         super(model);
-        JButton priceButton = new JButton(getGuiString("buttons.load"));
+        priceButton = new JButton(getGuiString("buttons.load"));
         priceButton.addActionListener(e -> {
             if (loadActionListener != null) {
                 loadActionListener.actionPerformed(null);

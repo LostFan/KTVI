@@ -27,11 +27,13 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
     private Validator<Payment> validator = new PaymentValidator();
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
     private RenderedServiceDAO renderedServiceDAO = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO();
+    private List<Payment> payments;
+    private Integer progress;
 
     public PaymentEntityModel() {
 
         date = LocalDate.now().withDayOfMonth(1);
-
+        payments = new ArrayList<>();
 
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("payment.id", EntityFieldTypes.Integer, Payment::getId, Payment::setId, false));
@@ -89,6 +91,10 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         return loadFullEntityField;
     }
 
+    public List<Payment> getPayments() {
+        return this.payments;
+    }
+
     public Payment createPayment(Integer subscriberId, LocalDate date, Integer price) {
         Payment payment = new Payment();
         if (subscriberDAO.get(subscriberId) == null) {
@@ -103,42 +109,45 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         return payment;
     }
 
+    public Integer getProgress() {
+        return progress;
+    }
+
     /**
      * Creates a new Payment list based on a payment file and the current loaded payments.
      *
      * @param file        A file for loading another payments from.
-     * @param paymentList A list of already loaded payments(displayed on the frame)
      * @return a new (merged) list of payments
      */
-    public List<Payment> createPayments(File file, List<Payment> paymentList) {
+    public void createPayments(File file) {
         List<Payment> loadedPayments = new PaymentsLoader(file).load();
-        List<Payment> payments = new ArrayList<>();
-        Integer count = 1;
+        Integer count = 0;
         for (Payment loadedPayment : loadedPayments) {
             if (loadedPayment.getPrice() == 0 || subscriberDAO.get(loadedPayment.getSubscriberAccount()) == null) {
                 continue;
             }
-            notifyObservers(100 * count++ / loadedPayments.size());
-            payments.addAll(addPayments(loadedPayment, paymentList));
+            progress = 100 * count++ / loadedPayments.size();
+            notifyObservers(null);
+            this.payments.addAll(addPayments(loadedPayment));
 
         }
-        notifyObservers(100);
-        return payments;
+        progress = 100;
+        notifyObservers(null);
+
     }
 
     /**
      * Creates a new Payment list based on a raw in payment file and the current loaded payments.
      *
      * @param newLoadedPayment      Payment without service from the file for loading another payments from.
-     * @param currentLoadedPayments A list of already loaded payments(displayed on the frame)
      * @return list of payments with services
      */
-    public List<Payment> addPayments(Payment newLoadedPayment, List<Payment> currentLoadedPayments) {
+    public List<Payment> addPayments(Payment newLoadedPayment) {
 
         List<Payment> payments = new ArrayList<>();
         Integer price = newLoadedPayment.getPrice();
         Map<Integer, Integer> paymentMapFromTable = new HashMap<>();
-        for (Payment payment : currentLoadedPayments) {
+        for (Payment payment : getPayments()) {
             if(paymentMapFromTable.containsKey(payment.getRenderedServicePaymentId())) {
                 paymentMapFromTable.put(payment.getRenderedServicePaymentId(),
                         paymentMapFromTable.get(payment.getRenderedServicePaymentId()) + payment.getPrice());

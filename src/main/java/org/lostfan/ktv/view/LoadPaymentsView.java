@@ -1,7 +1,6 @@
 package org.lostfan.ktv.view;
 
 
-import org.lostfan.ktv.controller.PaymentController;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
@@ -17,13 +16,20 @@ public class LoadPaymentsView extends FormView {
 
     private class ModelObserver implements org.lostfan.ktv.utils.Observer {
 
-        private Integer filesCount;
-        private Integer filesCounter;
+        private Integer filesCount = 1;
+        private Integer filesCounter = 1;
 
         @Override
         public void update(Object args) {
-            Integer currentValue = 100 - 100 * (filesCount - filesCounter) / filesCount + (Integer) args / filesCount;
-            LoadPaymentsView.this.progressBar.setValue(currentValue);
+            Integer progress = model.getProgress();
+            if (progress != null) {
+                Integer currentValue = 100 - 100 * (filesCount - filesCounter) / filesCount + progress / filesCount;
+                LoadPaymentsView.this.progressBar.setValue(currentValue);
+                if (progress == 100) {
+                    entityInnerTableView.getEntityList().clear();
+                    entityInnerTableView.getEntityList().addAll(model.getPayments());
+                }
+            }
             LoadPaymentsView.this.revalidate();
         }
 
@@ -64,12 +70,13 @@ public class LoadPaymentsView extends FormView {
     private JProgressBar progressBar;
 
     protected ViewActionListener addActionListener;
-    private ViewActionListener loadPaymentFileListener;
+    private ViewActionListener loadPaymentFileActionListener;
 
     private ModelObserver modelObserver;
 
     public LoadPaymentsView(PaymentEntityModel model) {
         this.model = model;
+        this.model.getPayments().clear();
 
         this.fileChooser = new JFileChooser();
         this.fileChooser.setFileFilter(new PaymentFileFilter());
@@ -111,8 +118,8 @@ public class LoadPaymentsView extends FormView {
                 LoadPaymentsView.this.addButton.setEnabled(false);
                 File[] files = fileChooser.getSelectedFiles();
                 List<Payment> payments = entityInnerTableView.getEntityList();
-                modelObserver.setFilesCount(files.length);
                 new Thread(() -> {
+                    modelObserver.setFilesCount(files.length);
                     Integer filesCounter = 0;
                     for (File file : files) {
                         modelObserver.setFilesCounter(filesCounter++);
@@ -125,16 +132,13 @@ public class LoadPaymentsView extends FormView {
                             bankFileNames.add(file.getName());
                         }
 
-                        if (LoadPaymentsView.this.loadPaymentFileListener != null) {
-                            LoadPaymentsView.this.loadPaymentFileListener.actionPerformed(new PaymentController.FileAndPayments(file, payments));
+                        if (LoadPaymentsView.this.loadPaymentFileActionListener != null) {
+                            LoadPaymentsView.this.loadPaymentFileActionListener.actionPerformed(file);
                         }
 
                         for (Payment payment : payments) {
                             payment.setDate(dateField.getValue());
                         }
-
-                        //                    payments.addAll(LoadPaymentsView.this.model.
-                        //                            createPayments(file, payments));
                     }
                     LoadPaymentsView.this.addButton.setEnabled(true);
                 }).start();
@@ -197,8 +201,8 @@ public class LoadPaymentsView extends FormView {
         this.addActionListener = addActionListener;
     }
 
-    public void setLoadPaymentFileListener(ViewActionListener loadPaymentFileListener) {
-        this.loadPaymentFileListener = loadPaymentFileListener;
+    public void setLoadPaymentFileActionListener(ViewActionListener loadPaymentFileActionListener) {
+        this.loadPaymentFileActionListener = loadPaymentFileActionListener;
     }
 
     private boolean confirmAdding(){
