@@ -29,14 +29,6 @@ import org.lostfan.ktv.validation.Validator;
 
 public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
-    private enum QueryParseStates {
-        Begin,
-        Name,
-        House,
-        Flat,
-        End;
-    }
-
     private List<EntityField> fields;
 
     private Validator<Subscriber> validator = new SubscriberValidator();
@@ -47,6 +39,8 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
     private PaymentTransformer paymentTransformer = new PaymentTransformer();
     private RenderedServiceTransformer renderedServiceTransformer = new RenderedServiceTransformer();
+
+    private EntitySearcherModel<Subscriber> searchModel = this.createSearchModel();
 
     public SubscriberEntityModel() {
 
@@ -160,88 +154,11 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     public void setSearchQuery(String query) {
         // Replace commas with the space key
         query = query.toLowerCase().replaceAll(",", " ");
-        this.entities = getDao().search(parseQuery(query));
+        searchModel.setSearchQuery(query);
+        this.entities = searchModel.getList();
         this.notifyObservers(null);
     }
 
-    /**
-     * A smart search implementation
-     */
-    private SubscriberSearchCriteria parseQuery(String query) {
-        SubscriberSearchCriteria criteria = new SubscriberSearchCriteria();
-
-        StringTokenizer tokenizer = new StringTokenizer(query, " ");
-
-        // The query contains just one word
-        if (tokenizer.countTokens() == 1) {
-            String name = tokenizer.nextToken();
-            try {
-                criteria.setAccount(Integer.parseInt(name));
-            } catch (NumberFormatException e) {
-                // Otherwise, It's the name or the street name
-                criteria.addName(name);
-                criteria.addStreet(name);
-            }
-
-            return criteria;
-        }
-
-        QueryParseStates lastState = QueryParseStates.Begin;
-        while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
-
-            switch (lastState) {
-                case Begin:
-                    criteria.addName(token);
-                    criteria.addStreet(token);
-                    lastState = QueryParseStates.Name;
-                    break;
-                case Name:
-                    // Try to retrieve a house number
-                    int i;
-                    for (i = 0; i < token.length(); ++i) {
-                        if (!Character.isDigit(token.charAt(i))) {
-                            break;
-                        }
-                    }
-                    // House numbers start with a digit
-                    if (i != 0) {
-                        criteria.setHouse(Integer.parseInt(token.substring(0, i)));
-                        if (i != token.length()) {
-                            criteria.setIndex(token.substring(i, token.length()));
-                        }
-                        // remove subscriber name from the criteria
-                        criteria.setNameIn(new ArrayList<>());
-                        lastState = QueryParseStates.House;
-
-                    }
-                    // Otherwise it's another word of a name
-                    else {
-                        criteria.addStreet(token);
-                        criteria.addName(token);
-                    }
-                    break;
-                case House:
-                    // Next token is a flat number
-                    criteria.setFlat(token);
-                    lastState = QueryParseStates.Flat;
-                    break;
-                case Flat:
-                    // Possibly the "flat" value is actually a building value
-                    // And the next value is true flat value
-                    criteria.setBuilding(criteria.getFlat());
-                    criteria.setFlat(token);
-                    break;
-                case End:
-                    // ???
-                    // What to do next?
-                    break;
-            }
-
-        }
-
-        return criteria;
-    }
 
     public List<SubscriberTariff> getSubscriberTariffs(Integer subscriberId) {
         return getDao().getSubscriberTariffs(subscriberId);
