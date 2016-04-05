@@ -1,8 +1,8 @@
 package org.lostfan.ktv.view;
 
-
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
+import org.lostfan.ktv.utils.FilePath;
 import org.lostfan.ktv.utils.ViewActionListener;
 
 import javax.swing.*;
@@ -113,10 +113,15 @@ public class LoadPaymentsView extends FormView {
         openFileButton.addActionListener(e -> {
             Action details = fileChooser.getActionMap().get("viewTypeDetails");
             details.actionPerformed(null);
+            if(FilePath.getFilePath(this.getTitle()) != null) {
+                File file = new File(FilePath.getFilePath(this.getTitle()).getPath());
+                fileChooser.setCurrentDirectory(file);
+            }
             int ret = fileChooser.showDialog(null, getGuiString("buttons.openFile"));
             if (ret == JFileChooser.APPROVE_OPTION) {
                 LoadPaymentsView.this.addButton.setEnabled(false);
                 File[] files = fileChooser.getSelectedFiles();
+                FilePath.setFilePath(this.getTitle(), fileChooser.getCurrentDirectory().getPath());
                 List<Payment> payments = entityInnerTableView.getEntityList();
                 new Thread(() -> {
                     modelObserver.setFilesCount(files.length);
