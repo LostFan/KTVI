@@ -3,8 +3,8 @@ package org.lostfan.ktv.controller;
 import org.lostfan.ktv.domain.ServicePrice;
 import org.lostfan.ktv.model.entity.ServiceEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.view.ServicePriceView;
-import org.lostfan.ktv.view.ServiceTableView;
+import org.lostfan.ktv.view.entity.ServicePriceView;
+import org.lostfan.ktv.view.table.ServiceTableView;
 
 public class ServiceEntityController extends EntityController {
 

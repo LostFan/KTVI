@@ -4,9 +4,9 @@ import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.FormView;
-import org.lostfan.ktv.view.LoadPaymentsView;
-import org.lostfan.ktv.view.PaymentTableView;
-import org.lostfan.ktv.view.PaymentView;
+import org.lostfan.ktv.view.entity.LoadPaymentsView;
+import org.lostfan.ktv.view.table.PaymentTableView;
+import org.lostfan.ktv.view.entity.PaymentView;
 
 import java.io.File;
 import java.time.LocalDate;

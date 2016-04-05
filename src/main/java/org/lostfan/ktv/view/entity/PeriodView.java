@@ -1,12 +1,13 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
 import javax.swing.*;
 
 import org.lostfan.ktv.model.PeriodModel;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.view.FormView;
 
-public class PeriodView extends FormView{
+public class PeriodView extends FormView {
 
     private PeriodModel model;
     private DateFormField dateField;

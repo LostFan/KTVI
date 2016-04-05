@@ -1,9 +1,11 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.*;
+import org.lostfan.ktv.view.EntityInnerTableView;
+import org.lostfan.ktv.view.FormView;
 import org.lostfan.ktv.view.components.*;
 
 import javax.swing.*;

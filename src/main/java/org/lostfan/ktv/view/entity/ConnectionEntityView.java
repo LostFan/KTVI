@@ -1,13 +1,11 @@
-package org.lostfan.ktv.view;
-
-import java.util.ArrayList;
-import java.util.List;
+package org.lostfan.ktv.view.entity;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FixedServices;
-import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.dto.ConnectionRenderedService;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
+import org.lostfan.ktv.view.FormView;
+import org.lostfan.ktv.view.View;
 
 public class ConnectionEntityView extends EntityView {
 
@@ -17,12 +15,12 @@ public class ConnectionEntityView extends EntityView {
 
     public ConnectionEntityView(RenderedServiceEntityModel model, ConnectionRenderedService entity) {
         super(model, entity);
-        setTitle(getEntityString(FixedServices.CONNECTION.getCode()));
+        setTitle(View.getEntityString(FixedServices.CONNECTION.getCode()));
 
         addFormField(createFormField(model.getTariffField(), entity), model.getTariffField());
 
-        DateFormField dateField = (DateFormField) getFormField("renderedService.date");
-        IntegerFormField priceField = (IntegerFormField) getFormField("renderedService.price");
+        FormView.DateFormField dateField = (FormView.DateFormField) getFormField("renderedService.date");
+        FormView.IntegerFormField priceField = (FormView.IntegerFormField) getFormField("renderedService.price");
         dateField.addValueListener(e -> {
             Integer price = model.getRenderedServicePriceByDate(FixedServices.CONNECTION.getId(), dateField.getValue());
             priceField.setValue(price);

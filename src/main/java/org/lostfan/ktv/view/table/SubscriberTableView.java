@@ -1,4 +1,4 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.table;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

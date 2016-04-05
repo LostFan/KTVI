@@ -1,4 +1,4 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.table;
 
 import org.lostfan.ktv.model.entity.SubscriptionFeeModel;
 import org.lostfan.ktv.utils.ViewActionListener;

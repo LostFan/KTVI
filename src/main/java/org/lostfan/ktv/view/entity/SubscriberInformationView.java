@@ -1,4 +1,4 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
 import java.time.LocalDate;
@@ -19,6 +19,7 @@ import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.model.dto.RenderedServiceExt;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.view.FormView;
 
 public class SubscriberInformationView extends FormView {
 

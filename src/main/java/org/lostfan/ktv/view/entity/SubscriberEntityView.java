@@ -1,17 +1,14 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import org.lostfan.ktv.domain.Payment;
-import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.dto.PaymentExt;

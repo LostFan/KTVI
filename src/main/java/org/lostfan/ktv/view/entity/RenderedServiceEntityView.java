@@ -1,13 +1,9 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import java.util.List;
 
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.domain.Tariff;
-import org.lostfan.ktv.model.EntityField;
-import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.EntityModel;
-import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 
 public class RenderedServiceEntityView extends EntityView {
 

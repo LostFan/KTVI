@@ -1,10 +1,11 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.SubscriptionFeeModel;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.validation.Error;
+import org.lostfan.ktv.view.FrameView;
 import org.lostfan.ktv.view.components.*;
 
 import javax.swing.*;

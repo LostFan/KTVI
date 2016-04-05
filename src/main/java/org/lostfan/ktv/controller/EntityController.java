@@ -5,9 +5,8 @@ import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.EntityFilterView;
-import org.lostfan.ktv.view.EntityTableView;
-import org.lostfan.ktv.view.EntityView;
-import org.lostfan.ktv.view.View;
+import org.lostfan.ktv.view.table.EntityTableView;
+import org.lostfan.ktv.view.entity.EntityView;
 import org.lostfan.ktv.view.components.EntityViewFactory;
 
 import java.util.List;

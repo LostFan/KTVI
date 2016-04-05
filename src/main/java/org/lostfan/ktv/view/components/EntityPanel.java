@@ -14,7 +14,7 @@ import org.lostfan.ktv.utils.Observer;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.EntityFilterView;
 import org.lostfan.ktv.view.EntitySelectionView;
-import org.lostfan.ktv.view.EntityView;
+import org.lostfan.ktv.view.entity.EntityView;
 import org.lostfan.ktv.view.FrameView;
 
 public class EntityPanel extends JPanel {

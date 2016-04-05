@@ -1,12 +1,11 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.table;
 
 import java.awt.*;
 import java.time.LocalDate;
 
-import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.view.View;
 
 import javax.swing.*;
 
@@ -21,7 +20,7 @@ public class PaymentTableView extends EntityTableView {
 
     public PaymentTableView(PaymentEntityModel model) {
         super(model);
-        priceButton = new JButton(getGuiString("buttons.load"));
+        priceButton = new JButton(View.getGuiString("buttons.load"));
         priceButton.addActionListener(e -> {
             if (loadActionListener != null) {
                 loadActionListener.actionPerformed(null);

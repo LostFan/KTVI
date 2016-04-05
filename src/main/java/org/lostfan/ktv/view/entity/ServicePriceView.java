@@ -1,4 +1,4 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
 import java.time.LocalDate;
@@ -7,19 +7,20 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import org.lostfan.ktv.domain.TariffPrice;
-import org.lostfan.ktv.model.dto.TariffWithPrices;
+import org.lostfan.ktv.domain.ServicePrice;
+import org.lostfan.ktv.model.dto.ServiceWithPrices;
 import org.lostfan.ktv.utils.DateFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.view.FormView;
 
-public class TariffPriceView extends FormView {
+public class ServicePriceView extends FormView {
 
     private static class ArchiveTableModel extends AbstractTableModel {
 
-        private List<TariffPrice> prices;
+        private List<ServicePrice> prices;
 
-        public ArchiveTableModel(List<TariffPrice> prices) {
+        public ArchiveTableModel(List<ServicePrice> prices) {
             this.prices = prices;
         }
 
@@ -35,17 +36,17 @@ public class TariffPriceView extends FormView {
 
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
-            TariffPrice tariffPrice = prices.get(rowIndex);
+            ServicePrice servicePrice = prices.get(rowIndex);
             if (columnIndex == 0) {
-                return tariffPrice.getPrice();
+                return servicePrice.getPrice();
             } else {
-                return DateFormatter.format(tariffPrice.getDate());
+                return DateFormatter.format(servicePrice.getDate());
             }
         }
 
         @Override
         public String getColumnName(int columnIndex) {
-            return ResourceBundles.getEntityBundle().getString(columnIndex == 0 ? "tariffPrice.price" : "tariffPrice.date");
+            return ResourceBundles.getEntityBundle().getString(columnIndex == 0 ? "servicePrice.price" : "servicePrice.date");
         }
 
         @Override
@@ -59,7 +60,7 @@ public class TariffPriceView extends FormView {
         }
     }
 
-    private TariffWithPrices tariff;
+    private ServiceWithPrices service;
     private ViewActionListener saveActionListener;
     private ViewActionListener deleteActionListener;
 
@@ -72,46 +73,48 @@ public class TariffPriceView extends FormView {
     private JButton deleteButton;
     private JButton cancelButton;
 
-    public TariffPriceView(TariffWithPrices tariff) {
+    public ServicePriceView(ServiceWithPrices service) {
         super();
-        setTitle(getGuiString("tariffPrice.windowTitle"));
-        this.tariff = tariff;
+        setTitle(getGuiString("servicePrice.windowTitle"));
+        this.service = service;
 
-        this.archiveTable = new JTable(new ArchiveTableModel(tariff.getArchivePrices()));
+        this.archiveTable = new JTable(new ArchiveTableModel(service.getArchivePrices()));
         // Align center
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
         this.archiveTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         this.archiveTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 
-        this.priceField = new IntegerFormField("tariffPrice.price");
-        this.dateField = new DateFormField("tariffPrice.date");
+        this.priceField = new IntegerFormField("servicePrice.price");
+        this.dateField = new DateFormField("servicePrice.date");
 
-        if (tariff.getNewPrice() != null) {
-            this.priceField.setValue(tariff.getNewPrice().getPrice());
-            this.dateField.setValue(tariff.getNewPrice().getDate());
-            newPriceTitle = getGuiString("tariffPrice.changeNew") + ":";
+        if (service.getNewPrice() != null) {
+            this.priceField.setValue(service.getNewPrice().getPrice());
+            this.dateField.setValue(service.getNewPrice().getDate());
+            newPriceTitle = getGuiString("servicePrice.changeNew") + ":";
         } else {
             this.priceField.setValue(0);
-            newPriceTitle = getGuiString("tariffPrice.createNew") + ":";
+            newPriceTitle = getGuiString("servicePrice.createNew") + ":";
         }
         String nameSaveButton = "buttons.save";
-        if(tariff.getNewPrice() != null) {
+        if(service.getNewPrice() != null) {
             nameSaveButton = "buttons.change";
         }
         this.saveButton = new JButton(getGuiString(nameSaveButton));
         this.saveButton.addActionListener(e -> {
             if (saveActionListener != null) {
-                saveActionListener.actionPerformed(buildNewTariffPrice());
+                saveActionListener.actionPerformed(buildNewServicePrice());
             }
         });
 
         this.deleteButton = new JButton(getGuiString("buttons.delete"));
         this.deleteButton.addActionListener(e -> {
             if (deleteActionListener != null) {
-                deleteActionListener.actionPerformed(tariff.getNewPrice());
+                deleteActionListener.actionPerformed(service.getNewPrice());
             }
         });
+
+
 
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> hide());
@@ -132,20 +135,20 @@ public class TariffPriceView extends FormView {
         getContentPanel().add(mainPanel, BorderLayout.CENTER);
 
         Box box = Box.createHorizontalBox();
-        box.add(new JLabel(getGuiString("tariffPrice.currentPrice") + ": "));
+        box.add(new JLabel(getGuiString("servicePrice.currentPrice") + ": "));
         box.add(Box.createRigidArea(new Dimension(15, 0)));
-        if (tariff.getCurrentPrice() == null) {
+        if (service.getCurrentPrice() == null) {
             box.add(new JLabel("-"));
         } else {
-            String priceStr = String.format("%d (%s)",tariff.getCurrentPrice().getPrice(),
-                    DateFormatter.format(tariff.getCurrentPrice().getDate()));
+            String priceStr = String.format("%d (%s)",service.getCurrentPrice().getPrice(),
+                    DateFormatter.format(service.getCurrentPrice().getDate()));
             box.add(new JLabel(priceStr));
         }
         mainPanel.add(box);
         mainPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        if (tariff.getArchivePrices().size() != 0) {
-            mainPanel.add(new JLabel(getGuiString("tariffPrice.archive") + ":"));
+        if (service.getArchivePrices().size() != 0) {
+            mainPanel.add(new JLabel(getGuiString("servicePrice.archive") + ":"));
             mainPanel.add(new JScrollPane(this.archiveTable));
             mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
@@ -159,18 +162,18 @@ public class TariffPriceView extends FormView {
         getContentPanel().add(buttonPanel, BorderLayout.PAGE_END);
 
         buttonPanel.add(this.saveButton);
-        if(tariff.getNewPrice() != null) {
+        if(service.getNewPrice() != null) {
             buttonPanel.add(this.deleteButton);
         }
         buttonPanel.add(this.cancelButton);
     }
 
-    public TariffPrice buildNewTariffPrice() {
-        TariffPrice tariffPrice = new TariffPrice();
-        tariffPrice.setTariffId(this.tariff.getId());
-        tariffPrice.setPrice(this.priceField.getValue() == null ? 0 : this.priceField.getValue());
-        tariffPrice.setDate(this.dateField.getValue());
-        return tariffPrice;
+    public ServicePrice buildNewServicePrice() {
+        ServicePrice servicePrice = new ServicePrice();
+        servicePrice.setServiceId(this.service.getId());
+        servicePrice.setPrice(this.priceField.getValue() == null ? 0 : this.priceField.getValue());
+        servicePrice.setDate(this.dateField.getValue());
+        return servicePrice;
     }
 
     public void setSaveActionListener(ViewActionListener saveActionListener) {

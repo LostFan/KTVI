@@ -16,6 +16,18 @@ import org.lostfan.ktv.model.entity.BaseModel;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.*;
 import org.lostfan.ktv.view.components.EntityViewFactory;
+import org.lostfan.ktv.view.entity.EntityView;
+import org.lostfan.ktv.view.entity.PeriodView;
+import org.lostfan.ktv.view.entity.TariffTableView;
+import org.lostfan.ktv.view.report.ConsolidatedRegisterPaymentView;
+import org.lostfan.ktv.view.report.DailyRegisterView;
+import org.lostfan.ktv.view.report.TurnoverReportView;
+import org.lostfan.ktv.view.table.EntityTableView;
+import org.lostfan.ktv.view.table.PaymentTableView;
+import org.lostfan.ktv.view.table.RenderedServiceTableView;
+import org.lostfan.ktv.view.table.ServiceTableView;
+import org.lostfan.ktv.view.table.SubscriberTableView;
+import org.lostfan.ktv.view.table.SubscriptionFeeTableView;
 
 import java.time.LocalDate;
 import java.util.HashMap;

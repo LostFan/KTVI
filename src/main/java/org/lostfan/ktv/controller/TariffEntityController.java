@@ -3,8 +3,8 @@ package org.lostfan.ktv.controller;
 import org.lostfan.ktv.domain.TariffPrice;
 import org.lostfan.ktv.model.entity.TariffEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.view.TariffPriceView;
-import org.lostfan.ktv.view.TariffTableView;
+import org.lostfan.ktv.view.entity.TariffPriceView;
+import org.lostfan.ktv.view.entity.TariffTableView;
 
 public class TariffEntityController extends EntityController {
 

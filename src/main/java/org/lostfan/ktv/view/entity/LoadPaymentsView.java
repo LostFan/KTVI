@@ -1,9 +1,11 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.utils.FilePath;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.view.EntityInnerTableView;
+import org.lostfan.ktv.view.FormView;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

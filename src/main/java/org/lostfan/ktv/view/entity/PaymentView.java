@@ -1,4 +1,4 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -10,6 +10,8 @@ import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.view.EntityInnerTableView;
+import org.lostfan.ktv.view.FormView;
 import org.lostfan.ktv.view.components.EntityComboBoxModel;
 import org.lostfan.ktv.view.components.EntityPanel;
 import org.lostfan.ktv.view.components.EntityPanelFactory;

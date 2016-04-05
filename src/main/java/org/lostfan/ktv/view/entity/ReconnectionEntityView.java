@@ -1,4 +1,4 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FixedServices;

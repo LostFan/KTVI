@@ -10,7 +10,15 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
-import org.lostfan.ktv.view.*;
+import org.lostfan.ktv.view.entity.AdditionalServiceEntityView;
+import org.lostfan.ktv.view.entity.ChangeOfTariffEntityView;
+import org.lostfan.ktv.view.entity.ConnectionEntityView;
+import org.lostfan.ktv.view.entity.DisconnectionEntityView;
+import org.lostfan.ktv.view.entity.EntityView;
+import org.lostfan.ktv.view.entity.MaterialsServiceEntityView;
+import org.lostfan.ktv.view.entity.ReconnectionEntityView;
+import org.lostfan.ktv.view.entity.RenderedServiceEntityView;
+import org.lostfan.ktv.view.entity.SubscriberEntityView;
 
 public class EntityViewFactory {
 

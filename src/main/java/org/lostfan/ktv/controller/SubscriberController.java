@@ -1,8 +1,8 @@
 package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
-import org.lostfan.ktv.view.SubscriberInformationView;
-import org.lostfan.ktv.view.SubscriberTableView;
+import org.lostfan.ktv.view.entity.SubscriberInformationView;
+import org.lostfan.ktv.view.table.SubscriberTableView;
 
 public class SubscriberController extends EntityController {
 

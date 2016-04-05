@@ -1,4 +1,4 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import java.time.LocalDate;
 
@@ -8,6 +8,9 @@ import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
+import org.lostfan.ktv.view.EntityInnerTableView;
+import org.lostfan.ktv.view.FormView;
+import org.lostfan.ktv.view.View;
 import org.lostfan.ktv.view.components.EntityPanelFactory;
 
 public class AdditionalServiceEntityView extends EntityView {
@@ -20,7 +23,7 @@ public class AdditionalServiceEntityView extends EntityView {
 
     public AdditionalServiceEntityView(RenderedServiceEntityModel model, RenderedService entity) {
         super(model, entity);
-        setTitle(getEntityString(FixedServices.ADDITIONAL_SERVICE.getCode()));
+        setTitle(View.getEntityString(FixedServices.ADDITIONAL_SERVICE.getCode()));
 
         Service service = new Service();
         if(entity != null) {
@@ -29,9 +32,9 @@ public class AdditionalServiceEntityView extends EntityView {
         addFormField(new EntityFormField(model.getServiceField(), entity, EntityPanelFactory.createAdditionalServiceEntityPanel())
                 , model.getServiceField());
 
-        FormField dateField = getFormField("renderedService.date");
-        FormField priceField = getFormField("renderedService.price");
-        FormField serviceField = getFormField("service");
+        FormView.FormField dateField = getFormField("renderedService.date");
+        FormView.FormField priceField = getFormField("renderedService.price");
+        FormView.FormField serviceField = getFormField("service");
         dateField.addValueListener(e ->
                 priceField.setValue(model.getRenderedServicePriceByDate((Integer) serviceField.getValue(), (LocalDate)dateField.getValue())));
         serviceField.addValueListener(e -> {

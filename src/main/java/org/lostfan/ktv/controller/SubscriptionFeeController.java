@@ -2,9 +2,8 @@ package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.model.entity.SubscriptionFeeModel;
 import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.view.EntityFilterView;
-import org.lostfan.ktv.view.SubscriptionFeeTableView;
-import org.lostfan.ktv.view.SubscriptionFeeView;
+import org.lostfan.ktv.view.table.SubscriptionFeeTableView;
+import org.lostfan.ktv.view.entity.SubscriptionFeeView;
 
 import java.time.LocalDate;
 import java.util.List;

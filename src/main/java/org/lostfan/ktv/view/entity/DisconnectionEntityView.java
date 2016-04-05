@@ -1,9 +1,11 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.dto.DisconnectionRenderedService;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
+import org.lostfan.ktv.view.FormView;
+import org.lostfan.ktv.view.View;
 
 public class DisconnectionEntityView extends EntityView {
 
@@ -13,12 +15,12 @@ public class DisconnectionEntityView extends EntityView {
 
     public DisconnectionEntityView(RenderedServiceEntityModel model, DisconnectionRenderedService entity) {
         super(model, entity);
-        setTitle(getEntityString(FixedServices.DISCONNECTION.getCode()));
+        setTitle(View.getEntityString(FixedServices.DISCONNECTION.getCode()));
 
         addFormField(createFormField(model.getDisconnectionReasonField(), entity), model.getDisconnectionReasonField());
 
-        DateFormField dateField = (DateFormField) getFormField("renderedService.date");
-        IntegerFormField priceField = (IntegerFormField) getFormField("renderedService.price");
+        FormView.DateFormField dateField = (FormView.DateFormField) getFormField("renderedService.date");
+        FormView.IntegerFormField priceField = (FormView.IntegerFormField) getFormField("renderedService.price");
         dateField.addValueListener(e -> {
             Integer price = model.getRenderedServicePriceByDate(FixedServices.DISCONNECTION.getId(), dateField.getValue());
             priceField.setValue(price);

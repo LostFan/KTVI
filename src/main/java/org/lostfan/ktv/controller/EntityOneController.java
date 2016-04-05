@@ -4,7 +4,7 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.view.EntityView;
+import org.lostfan.ktv.view.entity.EntityView;
 
 public class EntityOneController {
 

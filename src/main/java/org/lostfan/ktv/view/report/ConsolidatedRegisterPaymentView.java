@@ -1,4 +1,4 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.report;
 
 
 import java.awt.*;
@@ -15,9 +15,9 @@ import org.lostfan.ktv.model.ConsolidatedRegisterPaymentModel;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FixedServices;
-import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.view.FormView;
 import org.lostfan.ktv.view.components.EntityPanel;
 import org.lostfan.ktv.view.components.EntityPanelFactory;
 

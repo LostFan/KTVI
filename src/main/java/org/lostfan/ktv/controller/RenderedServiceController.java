@@ -5,9 +5,8 @@ import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.dto.*;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.view.ConnectionEntityView;
-import org.lostfan.ktv.view.EntityView;
-import org.lostfan.ktv.view.RenderedServiceTableView;
+import org.lostfan.ktv.view.entity.EntityView;
+import org.lostfan.ktv.view.table.RenderedServiceTableView;
 import org.lostfan.ktv.view.components.EntityViewFactory;
 
 import java.time.LocalDate;

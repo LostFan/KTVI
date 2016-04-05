@@ -1,4 +1,4 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.table;
 
 
 import java.awt.*;
@@ -13,9 +13,8 @@ import javax.swing.*;
 
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
-import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
-import org.lostfan.ktv.validation.Error;
+import org.lostfan.ktv.view.View;
 
 public class RenderedServiceTableView extends EntityTableView {
 
@@ -30,49 +29,49 @@ public class RenderedServiceTableView extends EntityTableView {
     public RenderedServiceTableView(RenderedServiceEntityModel model) {
         super(model);
         final JPopupMenu popup = new JPopupMenu();
-        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.CONNECTION.getCode())) {
+        popup.add(new JMenuItem(new AbstractAction(View.getEntityString(FixedServices.CONNECTION.getCode())) {
             public void actionPerformed(ActionEvent e) {
                 if (addConnectionActionListener != null) {
                     addConnectionActionListener.actionPerformed(null);
                 }
             }
         }));
-        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.RECONNECTION.getCode())) {
+        popup.add(new JMenuItem(new AbstractAction(View.getEntityString(FixedServices.RECONNECTION.getCode())) {
             public void actionPerformed(ActionEvent e) {
                 if (addReconnectionActionListener != null) {
                     addReconnectionActionListener.actionPerformed(null);
                 }
             }
         }));
-        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.DISCONNECTION.getCode())) {
+        popup.add(new JMenuItem(new AbstractAction(View.getEntityString(FixedServices.DISCONNECTION.getCode())) {
             public void actionPerformed(ActionEvent e) {
                 if (addDisconnectionActionListener != null) {
                     addDisconnectionActionListener.actionPerformed(null);
                 }
             }
         }));
-        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.CHANGE_OF_TARIFF.getCode())) {
+        popup.add(new JMenuItem(new AbstractAction(View.getEntityString(FixedServices.CHANGE_OF_TARIFF.getCode())) {
             public void actionPerformed(ActionEvent e) {
                 if (addChangeOfTariffActionListener != null) {
                     addChangeOfTariffActionListener.actionPerformed(null);
                 }
             }
         }));
-        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.MATERIALS.getCode())) {
+        popup.add(new JMenuItem(new AbstractAction(View.getEntityString(FixedServices.MATERIALS.getCode())) {
             public void actionPerformed(ActionEvent e) {
                 if (addMaterialsServiceActionListener != null) {
                     addMaterialsServiceActionListener.actionPerformed(null);
                 }
             }
         }));
-        popup.add(new JMenuItem(new AbstractAction(getEntityString(FixedServices.ADDITIONAL_SERVICE.getCode())) {
+        popup.add(new JMenuItem(new AbstractAction(View.getEntityString(FixedServices.ADDITIONAL_SERVICE.getCode())) {
             public void actionPerformed(ActionEvent e) {
                 if (addAdditionalServiceActionListener != null) {
                     addAdditionalServiceActionListener.actionPerformed(null);
                 }
             }
         }));
-        JButton addButton = getButton(getGuiString("buttons.add"));
+        JButton addButton = getButton(View.getGuiString("buttons.add"));
         for (ActionListener actionListener : addButton.getActionListeners()) {
             addButton.removeActionListener(actionListener);
         }

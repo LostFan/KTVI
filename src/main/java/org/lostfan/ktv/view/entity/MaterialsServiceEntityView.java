@@ -1,7 +1,6 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +13,7 @@ import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.model.dto.MaterialsRenderedService;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
+import org.lostfan.ktv.view.EntityInnerTableView;
 
 public class MaterialsServiceEntityView extends EntityView {
 

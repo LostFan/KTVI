@@ -1,4 +1,4 @@
-package org.lostfan.ktv.view;
+package org.lostfan.ktv.view.table;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -16,6 +16,7 @@ import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.entity.EntityModel;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.validation.Error;
+import org.lostfan.ktv.view.View;
 import org.lostfan.ktv.view.model.EntityTableModel;
 
 public class EntityTableView extends View {
