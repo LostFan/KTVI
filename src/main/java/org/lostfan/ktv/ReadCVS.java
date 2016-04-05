@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +74,7 @@ public class ReadCVS {
         loadConnections();
         loadAdditionalServices();
         loadPayments();
+        updateTariffsInSubscriberTariffs();
 
 
 
@@ -394,53 +396,53 @@ public class ReadCVS {
     public void createServices() {
         Service service = new Service();
         service.setName(getString("subscriptionFee"));
-        service.setId(FixedServices.SUBSCRIPTION_FEE.getId());
+//        service.setId(FixedServices.SUBSCRIPTION_FEE.getId());
         service.setAdditionalService(false);
         DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
         service = new Service();
         service.setName(getString("connection"));
-        service.setId(FixedServices.CONNECTION.getId());
+//        service.setId(FixedServices.CONNECTION.getId());
         service.setAdditionalService(false);
         DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
 
         service = new Service();
         service.setName(getString("reconnection"));
-        service.setId(3);
+        //service.setId(3);
         service.setAdditionalService(true);
         DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
         service = new Service();
         service.setName(getString("disconnection"));
-        service.setId(4);
+        //service.setId(4);
         service.setAdditionalService(true);
         DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
         service = new Service();
         service.setName(getString("changeOfTariff"));
-        service.setId(5);
+        //service.setId(5);
         service.setAdditionalService(true);
         DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
         service = new Service();
         service.setName(getString("settingUpTV"));
         service.setAdditionalService(true);
-        service.setId(6);
+        //service.setId(6);
         DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
         service = new Service();
         service.setName(getString("materialsService"));
         service.setAdditionalService(true);
-        service.setId(7);
+        //service.setId(7);
         DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
         service = new Service();
         service.setName(getString("workOnTheReplacementOfMaterials"));
         service.setAdditionalService(true);
-        service.setId(8);
+        //service.setId(8);
         DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
         service = new Service();
         service.setName(getString("connectingExtTV"));
         service.setAdditionalService(true);
-        service.setId(9);
+        //service.setId(9);
         DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
         service = new Service();
         service.setName(getString("workOnConnections"));
-        service.setId(10);
+        //service.setId(10);
         service.setAdditionalService(true);
         DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
     }
@@ -896,6 +898,79 @@ public class ReadCVS {
                 payment.setServicePaymentId(renderedService.getServiceId());
                 payment.setRenderedServicePaymentId(renderedService.getId());
                 DAOFactory.getDefaultDAOFactory().getPaymentDAO().save(payment);
+            }
+        }
+    }
+
+    public void updateTariffsInSubscriberTariffs() {
+        String csvFile = "BASES/history.CSV";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+
+//        Set<Integer> set = new HashSet<>();
+        List<RenderedService> renderedServices = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO()
+                .getByService(FixedServices.DISCONNECTION.getId());
+
+        try {
+            FileInputStream fis = new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            HashSet<Integer> hashSet = new HashSet();
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                String[] row = line.split(cvsSplitBy);
+
+                Integer subscriber_account = parseInt(row[1]);
+
+                if (row[0].equals("0") || subscriber_account == null || !row[10].equals("99")
+                        || row[8].equals("0") || row[8] == null)
+                    continue;
+
+                if (renderedServices.stream().filter(e -> e.getSubscriberAccount().equals(subscriber_account)).count() == 0) {
+                    continue;
+                }
+//                hashSet.add(subscriber_account);
+                System.out.println(subscriber_account + "=" + row[8]);
+                SubscriberTariff subscriberTariff = DAOFactory.getDefaultDAOFactory().getSubscriberDAO()
+                        .getNotClosedSubscriberTariff(subscriber_account, LocalDate.of(2017, 1, 1));
+                subscriberTariff.setTariffId(parseInt(row[8]));
+                DAOFactory.getDefaultDAOFactory().getSubscriberDAO().updateSubscriberTariff(subscriberTariff);
+//                RenderedService renderedService = new RenderedService();
+//                renderedService.setServiceId(FixedServices.SUBSCRIPTION_FEE.getId());
+//                renderedService.setDate(LocalDate.of(parseInt(row[2]), parseInt(row[3]), 1));
+//                renderedService.setSubscriberAccount(parseInt(row[1]));
+//
+//
+//                renderedService.setPrice(parseInt(row[5]));
+//                if(parseInt(row[2]) == 2004 && parseInt(row[3]) ==  3 && !row[4].equals("") && !row[4].equals(" ")) {
+//                    renderedService.setPrice(parseInt(row[5]) + parseInt(row[4]));
+//                }
+////                if(!set.contains(parseInt(row[1]))) {
+////                    renderedService.setPrice(parseInt(row[5]) + parseInt(row[4]));
+////                }
+////                set.add(parseInt(row[1]));
+//                DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(renderedService);
+                size++;
+            }
+            System.out.println(size + " subscriptionFees have been loaded");
+            System.out.println(renderedServices.size() + " renderedServices size");
+            System.out.println(hashSet.size() + " hashSet size");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No subscriptionFees loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
