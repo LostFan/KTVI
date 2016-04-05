@@ -18,22 +18,31 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import org.lostfan.ktv.domain.Service;
-import org.lostfan.ktv.domain.Subscriber;
-import org.lostfan.ktv.model.DailyRegisterModel;
 import org.lostfan.ktv.model.dto.PaymentExt;
-import org.lostfan.ktv.model.dto.TurnoverSheetTableDTO;
 import org.lostfan.ktv.utils.DateFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 public class DailyRegisterExcel {
-    DailyRegisterModel model;
 
+    private List<PaymentExt> paymentExts;
 
-    public DailyRegisterExcel(DailyRegisterModel model) {
-        this.model = model;
+    private List<Service> services;
+
+    private LocalDate date;
+
+    public void setPaymentExts(List<PaymentExt> paymentExts) {
+        this.paymentExts = paymentExts;
     }
 
-    public String generate(LocalDate date) {
+    public void setServices(List<Service> services) {
+        this.services = services;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String generate() {
 
         WritableWorkbook workbook;
         String message = null;
@@ -74,10 +83,6 @@ public class DailyRegisterExcel {
                     "payment.price"), cellFormat));
             i++;
 
-            List<PaymentExt> paymentExts;
-            paymentExts = model.getPaymentsExtByDate(date);
-
-
             paymentExts = paymentExts.stream().sorted((o1, o2) -> {
                 if (o1.getSubscriber().getStreetId() - o2.getSubscriber().getStreetId() != 0) {
                     return o1.getSubscriber().getStreetId() - o2.getSubscriber().getStreetId();
@@ -109,7 +114,6 @@ public class DailyRegisterExcel {
 
             Long allPayment = 0L;
 
-            List<Service> services = model.getAllServices();
             for (Service service : services) {
                 Long servicePayment = paymentExts.stream().filter(e -> e.getServicePaymentId() == service.getId()).mapToLong(value -> value.getPrice()).sum();
 

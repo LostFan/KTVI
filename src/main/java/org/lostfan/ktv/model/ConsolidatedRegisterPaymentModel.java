@@ -41,8 +41,10 @@ public class ConsolidatedRegisterPaymentModel extends BaseObservable implements 
     }
 
     public String generateExcelReport(LocalDate date) {
-        ConsolidatedRegisterPaymentExcel consolidatedRegisterPaymentExcel = new ConsolidatedRegisterPaymentExcel(this);
-        return consolidatedRegisterPaymentExcel.generate(date);
+        ConsolidatedRegisterPaymentExcel consolidatedRegisterPaymentExcel = new ConsolidatedRegisterPaymentExcel();
+        consolidatedRegisterPaymentExcel.setPayments(getByMonth(date));
+        consolidatedRegisterPaymentExcel.setDate(date);
+        return consolidatedRegisterPaymentExcel.generate();
     }
 
     public List<Service> getAllServices() {

@@ -197,8 +197,18 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
 
     public String generateExcelReport(Boolean isAdditional,
                                       Integer serviceId, LocalDate date) {
-        TurnoverReportExcel turnoverReportExcel = new TurnoverReportExcel(this);
-        return turnoverReportExcel.generate(isAdditional, serviceId, date);
+        TurnoverReportExcel turnoverReportExcel = new TurnoverReportExcel();
+        if (serviceId != null) {
+            turnoverReportExcel.setService(getService(serviceId));
+        }
+        if (isAdditional) {
+            turnoverReportExcel.setTurnoverSheetTableDTOs(getTurnoverSheetDataByAdditionalServices(date));
+        } else {
+            turnoverReportExcel.setTurnoverSheetTableDTOs(getTurnoverSheetData(date, serviceId));
+        }
+        turnoverReportExcel.setDate(date);
+        turnoverReportExcel.setAdditionalServices(getAllServices().stream().filter(e -> e.isAdditionalService()).collect(Collectors.toList()));
+        return turnoverReportExcel.generate(isAdditional);
     }
 
 }

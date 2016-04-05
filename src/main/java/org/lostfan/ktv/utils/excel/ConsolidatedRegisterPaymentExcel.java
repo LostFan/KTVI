@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import jxl.Workbook;
 import jxl.format.Alignment;
@@ -18,22 +17,25 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import org.lostfan.ktv.domain.Payment;
-import org.lostfan.ktv.domain.Service;
-import org.lostfan.ktv.model.ConsolidatedRegisterPaymentModel;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.dto.PaymentExt;
-import org.lostfan.ktv.utils.DateFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 public class ConsolidatedRegisterPaymentExcel {
-    ConsolidatedRegisterPaymentModel model;
 
+    private List<Payment> payments;
 
-    public ConsolidatedRegisterPaymentExcel(ConsolidatedRegisterPaymentModel model) {
-        this.model = model;
+    private LocalDate date;
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
 
-    public String generate(LocalDate date) {
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String generate() {
 
         WritableWorkbook workbook;
         String message = null;
@@ -78,9 +80,6 @@ public class ConsolidatedRegisterPaymentExcel {
             sheet.addCell(new Label(TOTAL_COLUMN, i, ResourceBundles.getGuiBundle().getString(
                     "total"), cellFormat));
             i++;
-
-            List<Payment> payments;
-            payments = model.getByMonth(date);
 
 
             for (Integer index = 1; index <= date.lengthOfMonth(); index++) {

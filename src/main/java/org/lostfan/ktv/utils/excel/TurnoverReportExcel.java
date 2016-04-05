@@ -19,20 +19,38 @@ import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.Subscriber;
-import org.lostfan.ktv.model.TurnoverReportModel;
 import org.lostfan.ktv.model.dto.TurnoverSheetTableDTO;
 import org.lostfan.ktv.utils.ResourceBundles;
 
 public class TurnoverReportExcel {
-    TurnoverReportModel model;
 
+    private List<TurnoverSheetTableDTO> turnoverSheetTableDTOs;
 
-    public TurnoverReportExcel(TurnoverReportModel model) {
-        this.model = model;
+    private List<Service> additionalServices;
+
+    private Service service;
+
+    private LocalDate date;
+
+    public void setTurnoverSheetTableDTOs(List<TurnoverSheetTableDTO> turnoverSheetTableDTOs) {
+        this.turnoverSheetTableDTOs = turnoverSheetTableDTOs;
     }
 
-    public String generate(Boolean isAdditional,
-                           Integer serviceId, LocalDate date) {
+    public void setAdditionalServices(List<Service> additionalServices) {
+        this.additionalServices = additionalServices;
+    }
+
+
+    public void setService(Service service) {
+        this.service = service;
+    }
+
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String generate(Boolean isAdditional) {
 
         WritableWorkbook workbook;
         String message = null;
@@ -88,7 +106,7 @@ public class TurnoverReportExcel {
                         "additionalServices") + " "
                         + date.getMonthValue() + "-" + date.getYear();
             } else {
-                fileName = model.getService(serviceId).toString() + " "
+                fileName = service.toString() + " "
                         + date.getMonthValue() + "-" + date.getYear();
             }
             File file = new File(fileName + ".xls");
@@ -141,13 +159,6 @@ public class TurnoverReportExcel {
                     "debit"), cellFormat));
             i++;
 
-            List<TurnoverSheetTableDTO> turnoverSheetTableDTOs;
-            if (isAdditional) {
-                turnoverSheetTableDTOs = model.getTurnoverSheetDataByAdditionalServices(date);
-            } else {
-                turnoverSheetTableDTOs = model.getTurnoverSheetData(date, serviceId);
-            }
-
             turnoverSheetTableDTOs = turnoverSheetTableDTOs.stream().sorted((o1, o2) -> {
                 if (o1.getSubscriber().getStreetId() - o2.getSubscriber().getStreetId() != 0) {
                     return o1.getSubscriber().getStreetId() - o2.getSubscriber().getStreetId();
@@ -185,17 +196,16 @@ public class TurnoverReportExcel {
             }
 
             if (isAdditional) {
-                List<Service> services = model.getAllServices().stream().filter(e -> e.isAdditionalService()).collect(Collectors.toList());
-                for (Service service : services) {
-                    Long broughtForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == service.getId()).mapToLong(value -> value.getBroughtForwardBalanceCredit()).sum();
-                    Long broughtForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == service.getId()).mapToLong(value -> value.getBroughtForwardBalanceDebit()).sum();
-                    Long carriedForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == service.getId()).mapToLong(value -> value.getCarriedForwardBalanceCredit()).sum();
-                    Long carriedForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == service.getId()).mapToLong(value -> value.getCarriedForwardBalanceDebit()).sum();
-                    Long turnoverBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == service.getId()).mapToLong(value -> value.getTurnoverBalanceCredit()).sum();
-                    Long turnoverBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == service.getId()).mapToLong(value -> value.getTurnoverBalanceDebit()).sum();
+                for (Service additionalService : additionalServices) {
+                    Long broughtForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == additionalService.getId()).mapToLong(value -> value.getBroughtForwardBalanceCredit()).sum();
+                    Long broughtForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == additionalService.getId()).mapToLong(value -> value.getBroughtForwardBalanceDebit()).sum();
+                    Long carriedForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == additionalService.getId()).mapToLong(value -> value.getCarriedForwardBalanceCredit()).sum();
+                    Long carriedForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == additionalService.getId()).mapToLong(value -> value.getCarriedForwardBalanceDebit()).sum();
+                    Long turnoverBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == additionalService.getId()).mapToLong(value -> value.getTurnoverBalanceCredit()).sum();
+                    Long turnoverBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId() == additionalService.getId()).mapToLong(value -> value.getTurnoverBalanceDebit()).sum();
 
-                    sheet.addCell(new Label(SUBSCRIBER_ADDRESS_COLUMN, i, service.getName()));
-                    sheet.addCell(new Number(SERVICE_COLUMN, i, service.getId()));
+                    sheet.addCell(new Label(SUBSCRIBER_ADDRESS_COLUMN, i, additionalService.getName()));
+                    sheet.addCell(new Number(SERVICE_COLUMN, i, additionalService.getId()));
                     sheet.addCell(new Number(BROUGHT_FORWARD_BALANCE_CREDIT, i, broughtForwardBalanceCreditSum));
                     sheet.addCell(new Number(BROUGHT_FORWARD_BALANCE_DEBIT, i, broughtForwardBalanceDebitSum));
                     sheet.addCell(new Number(TURNOVER_BALANCE_CREDIT, i, turnoverBalanceCreditSum));

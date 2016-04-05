@@ -49,8 +49,11 @@ public class DailyRegisterModel extends BaseObservable implements BaseModel {
     }
 
     public String generateExcelReport(LocalDate date) {
-        DailyRegisterExcel dailyRegisterExcel = new DailyRegisterExcel(this);
-        return dailyRegisterExcel.generate(date);
+        DailyRegisterExcel dailyRegisterExcel = new DailyRegisterExcel();
+        dailyRegisterExcel.setPaymentExts(getPaymentsExtByDate(date));
+        dailyRegisterExcel.setServices(getAllServices());
+        dailyRegisterExcel.setDate(date);
+        return dailyRegisterExcel.generate();
     }
 
     public List<Service> getAllServices() {
