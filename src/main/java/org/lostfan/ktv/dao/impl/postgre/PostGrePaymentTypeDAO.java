@@ -50,7 +50,6 @@ public class PostGrePaymentTypeDAO extends PostgreBaseDao implements PaymentType
                 paymentType = new PaymentType();
                 paymentType.setId(rs.getInt("id"));
                 paymentType.setName(rs.getString("name"));
-
             }
 
         } catch (SQLException ex) {
@@ -87,8 +86,6 @@ public class PostGrePaymentTypeDAO extends PostgreBaseDao implements PaymentType
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -104,8 +101,6 @@ public class PostGrePaymentTypeDAO extends PostgreBaseDao implements PaymentType
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 

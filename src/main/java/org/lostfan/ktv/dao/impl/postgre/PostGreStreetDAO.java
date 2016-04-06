@@ -54,11 +54,8 @@ public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
             PreparedStatement preparedStatement;
             if (street.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
-                        "INSERT INTO \"street\" (\"name\", \"id\") VALUES(?, ?); " +
-//                                "ALTER SEQUENCE serial_street RESTART WITH ?;");
-                                "");
+                        "INSERT INTO \"street\" (\"name\", \"id\") VALUES(?, ?)");
                 preparedStatement.setInt(2, street.getId());
-//                preparedStatement.setInt(3, street.getId() + 1);
             }
              else {
                 preparedStatement = getConnection().prepareStatement(
@@ -93,8 +90,6 @@ public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new IllegalArgumentException("Update nonexistent element");
         }
     }
 
@@ -110,8 +105,6 @@ public class PostGreStreetDAO extends PostgreBaseDao implements StreetDAO {
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 

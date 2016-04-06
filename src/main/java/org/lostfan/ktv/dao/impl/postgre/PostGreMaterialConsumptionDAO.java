@@ -54,10 +54,8 @@ public class PostGreMaterialConsumptionDAO extends PostgreBaseDao implements Mat
             if (materialConsumption.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"material_consumption\" (\"material_id\", \"rendered_service_id\", \"amount\", \"id\")" +
-                                " VALUES(?, ?, ?, ?); ");
-//                                "ALTER SEQUENCE serial_material_consumption RESTART WITH ?;");
+                                " VALUES(?, ?, ?, ?) ");
                 preparedStatement.setInt(4, materialConsumption.getId());
-//                preparedStatement.setInt(5, materialConsumption.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"material_consumption\" (\"material_id\", \"rendered_service_id\", \"amount\")" +

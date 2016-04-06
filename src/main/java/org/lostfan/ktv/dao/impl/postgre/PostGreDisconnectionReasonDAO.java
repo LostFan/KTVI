@@ -51,11 +51,9 @@ public class PostGreDisconnectionReasonDAO extends PostgreBaseDao implements Dis
             PreparedStatement preparedStatement;
             if (disconnectionReason.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
-                        "INSERT INTO \"disconnection_reason\" (\"name\", \"id\") VALUES(?, ?); " +
-//                                "ALTER SEQUENCE serial_disconnection_reason RESTART WITH ?;");
-                "");
+                        "INSERT INTO \"disconnection_reason\" (\"name\", \"id\") VALUES(?, ?)");
                 preparedStatement.setInt(2, disconnectionReason.getId());
-//                preparedStatement.setInt(3, disconnectionReason.getId() + 1);
+
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"disconnection_reason\" (\"name\") VALUES(?)");

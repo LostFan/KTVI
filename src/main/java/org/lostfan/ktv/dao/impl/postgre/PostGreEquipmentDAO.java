@@ -56,10 +56,8 @@ public class PostGreEquipmentDAO extends PostgreBaseDao implements EquipmentDAO 
             PreparedStatement preparedStatement;
             if (equipment.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
-                        "INSERT INTO \"equipment\" (\"name\", \"price\", \"id\") VALUES(?, ?, ?); ");
-//                                "ALTER SEQUENCE serial_equipment RESTART WITH ?;");
+                        "INSERT INTO \"equipment\" (\"name\", \"price\", \"id\") VALUES(?, ?, ?)");
                 preparedStatement.setInt(4, equipment.getId());
-//                preparedStatement.setInt(5, equipment.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"equipment\" (\"name\", \"price\") VALUES(?, ?)");
@@ -94,8 +92,6 @@ public class PostGreEquipmentDAO extends PostgreBaseDao implements EquipmentDAO 
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -113,7 +109,6 @@ public class PostGreEquipmentDAO extends PostgreBaseDao implements EquipmentDAO 
             }
         } else {
             throw new DAOException();
-//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 

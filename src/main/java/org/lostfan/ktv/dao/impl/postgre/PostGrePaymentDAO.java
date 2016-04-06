@@ -61,7 +61,6 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
             while (rs.next()) {
                 payment = constructEntity(rs);
-
             }
 
         } catch (SQLException ex) {
@@ -81,7 +80,6 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
             while (rs.next()) {
                 payments.add(constructEntity(rs));
-
             }
 
         } catch (SQLException ex) {
@@ -101,7 +99,6 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
             while (rs.next()) {
                 payments.add(constructEntity(rs));
-
             }
 
         } catch (SQLException ex) {
@@ -118,11 +115,8 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
             if(payment.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"rendered_service_id\", \"price\", \"date\", \"bank_file_name\", \"id\")" +
-                                " VALUES(?, ?, ?, ?, ?, ?, ?); " +
-//                                "ALTER SEQUENCE serial_payment RESTART WITH ?;");
-                                "");
+                                " VALUES(?, ?, ?, ?, ?, ?, ?) ");
                 preparedStatement.setInt(7, payment.getId());
-//                preparedStatement.setInt(7, payment.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"payment\" (\"subscriber_account\", \"service_id\", \"rendered_service_id\", \"price\", \"date\", \"bank_file_name\")" +
@@ -177,8 +171,6 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -194,8 +186,6 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 
@@ -208,7 +198,6 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
             while (rs.next()) {
                 payments.add(constructEntity(rs));
-
             }
 
         } catch (SQLException ex) {
@@ -233,7 +222,6 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
             while (rs.next()) {
                 payments.add(constructEntity(rs));
-
             }
 
         } catch (SQLException ex) {
@@ -265,15 +253,12 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
 
     public Map<Integer, Integer> getAllPaymentsPriceForSubscriberToDate(int serviceId, LocalDate date) {
         Map<Integer, Integer> subscribersPricesInMonth = new HashMap<>();
-        Long sum=0L;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT \"subscriber_account\",sum(\"price\") as \"price\" FROM \"payment\" where \"service_id\" = ? AND \"date\" < ? group by \"subscriber_account\"");
             preparedStatement.setInt(1, serviceId);
             preparedStatement.setDate(2, Date.valueOf(date.withDayOfMonth(1)));
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                sum+=rs.getLong("price");
-//                System.out.println(rs.getInt("subscriber_account") + "   " + rs.getInt("price"));
                 subscribersPricesInMonth.put(rs.getInt("subscriber_account"), rs.getInt("price"));
             }
 
@@ -287,7 +272,6 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
     @Override
     public Map<Integer, Payment> getForNotClosedRenderedServices(Integer subscriberAccount, Integer serviceId) {
         Map<Integer, Payment> hashMap = new HashMap<>();
-
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "select * from \"rendered_service\" \n" +

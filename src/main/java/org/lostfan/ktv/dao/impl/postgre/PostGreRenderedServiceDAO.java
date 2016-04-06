@@ -21,7 +21,6 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
             ResultSet rs = statement.executeQuery("SELECT * FROM \"rendered_service\" limit 1000 OFFSET  0");
             while (rs.next()) {
                 RenderedService renderedService = constructEntity(rs);
-
                 renderedServices.add(renderedService);
             }
 
@@ -197,12 +196,9 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
             preparedStatement.setInt(1, serviceId);
             preparedStatement.setDate(2, Date.valueOf(date.withDayOfMonth(1)));
             ResultSet rs = preparedStatement.executeQuery();
-            Long sum=0L;
             while (rs.next()) {
-                sum+=rs.getInt("price");
                 subscribersPricesInMonth.put(rs.getInt("subscriber_account"), rs.getInt("price"));
             }
-//            System.out.println("ren_sum =" + sum);
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new DAOException();
@@ -261,9 +257,7 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"rendered_service\" (\"subscriber_account\", \"service_id\", \"date\",  \"price\", \"id\")" +
                                 " VALUES(?, ?, ?, ?, ?); ");
-//                                "ALTER SEQUENCE serial_rendered_service RESTART WITH ?;");
                 preparedStatement.setInt(5, renderedService.getId());
-//                preparedStatement.setInt(6, renderedService.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"rendered_service\" (\"subscriber_account\", \"service_id\", \"date\",  \"price\")" +
@@ -307,8 +301,6 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -324,8 +316,6 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 

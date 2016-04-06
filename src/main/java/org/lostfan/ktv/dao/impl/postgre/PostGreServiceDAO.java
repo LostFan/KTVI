@@ -57,11 +57,8 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
             if (service.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"service\" (\"name\", \"additional\", \"consume_materials\"" +
-                                ", \"change_tariff\", \"connection_service\", \"disconnection_service\", \"id\") VALUES(?, ?, ?, ?, ?, ?, ?); " +
-//                                "ALTER SEQUENCE serial_service RESTART WITH ?;");
-                                "");
+                                ", \"change_tariff\", \"connection_service\", \"disconnection_service\", \"id\") VALUES(?, ?, ?, ?, ?, ?, ?)");
                 preparedStatement.setInt(7, service.getId());
-//                preparedStatement.setInt(8, service.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"service\" (\"name\", \"additional\", \"consume_materials\"" +
@@ -82,7 +79,6 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
             if (resultSet.next()) {
                 service.setId(resultSet.getInt(1));
             }
-
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -109,8 +105,6 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -126,8 +120,6 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 

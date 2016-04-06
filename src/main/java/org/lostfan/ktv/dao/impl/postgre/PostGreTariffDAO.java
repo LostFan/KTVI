@@ -73,11 +73,8 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
             PreparedStatement preparedStatement;
             if(tariff.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
-                        "INSERT INTO \"tariff\" (\"name\", \"channels\", \"digital\", \"id\") VALUES(?, ?, ?, ?); " +
-//                                "ALTER SEQUENCE serial_tariff RESTART WITH ?;");
-                                "");
+                        "INSERT INTO \"tariff\" (\"name\", \"channels\", \"digital\", \"id\") VALUES(?, ?, ?, ?)");
                 preparedStatement.setInt(4, tariff.getId());
-//                preparedStatement.setInt(5, tariff.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"tariff\" (\"name\", \"channels\", \"digital\") VALUES(?, ?, ?)");
@@ -115,8 +112,6 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -132,8 +127,6 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 

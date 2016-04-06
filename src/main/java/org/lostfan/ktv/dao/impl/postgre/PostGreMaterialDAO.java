@@ -37,7 +37,6 @@ public class PostGreMaterialDAO extends PostgreBaseDao implements MaterialDAO {
 
             while (rs.next()) {
                 material = constructEntity(rs);
-
             }
 
         } catch (SQLException ex) {
@@ -54,10 +53,8 @@ public class PostGreMaterialDAO extends PostgreBaseDao implements MaterialDAO {
             PreparedStatement preparedStatement;
             if (material.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
-                        "INSERT INTO \"material\" (\"name\", \"price\", \"unit\", \"id\") VALUES(?, ?, ?, ?); ");
-//                                "ALTER SEQUENCE serial_material RESTART WITH ?;");
+                        "INSERT INTO \"material\" (\"name\", \"price\", \"unit\", \"id\") VALUES(?, ?, ?, ?)");
                 preparedStatement.setInt(4, material.getId());
-//                preparedStatement.setInt(5, material.getId() + 1);
             } else {
                 preparedStatement = getConnection().prepareStatement(
                         "INSERT INTO \"material\" (\"name\", \"price\", \"unit\") VALUES(?, ?, ?)");
@@ -94,8 +91,6 @@ public class PostGreMaterialDAO extends PostgreBaseDao implements MaterialDAO {
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -113,7 +108,6 @@ public class PostGreMaterialDAO extends PostgreBaseDao implements MaterialDAO {
             }
         } else {
             throw new DAOException();
-//            throw new UnsupportedOperationException("Delete nonexistent element");
         }
     }
 

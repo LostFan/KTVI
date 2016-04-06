@@ -42,7 +42,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
 
             while (rs.next()) {
                 subscriber = constructEntity(rs);
-
             }
 
         } catch (SQLException ex) {
@@ -307,7 +306,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 if (rs.getDate("disconnection_date") != null) {
                     subscriberSession.setDisconnectionDate(rs.getDate("disconnection_date").toLocalDate());
                 }
-
             }
 
         } catch (SQLException ex) {
@@ -334,7 +332,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 if (rs.getObject("disconnection_reason_id") != null) {
                     subscriberSession.setDisconnectionReasonId(rs.getInt("disconnection_reason_id"));
                 }
-
             }
 
         } catch (SQLException ex) {
@@ -375,7 +372,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 subscriberSession = new SubscriberSession();
                 subscriberSession.setSubscriberAccount(rs.getInt("subscriber_account"));
                 subscriberSession.setConnectionDate(rs.getDate("connection_date").toLocalDate());
-
             }
 
         } catch (SQLException ex) {
@@ -398,7 +394,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 subscriberSession = new SubscriberSession();
                 subscriberSession.setSubscriberAccount(rs.getInt("subscriber_account"));
                 subscriberSession.setConnectionDate(rs.getDate("connection_date").toLocalDate());
-
             }
 
         } catch (SQLException ex) {
@@ -423,7 +418,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 subscriberSession = new SubscriberSession();
                 subscriberSession.setSubscriberAccount(rs.getInt("subscriber_account"));
                 subscriberSession.setConnectionDate(rs.getDate("connection_date").toLocalDate());
-
             }
 
         } catch (SQLException ex) {
@@ -458,8 +452,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -477,8 +469,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new IllegalArgumentException("Delete nonexistent element");
         }
     }
 
@@ -551,7 +541,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
                 }
-
             }
 
         } catch (SQLException ex) {
@@ -576,7 +565,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
                 subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
                 subscriberTariff.setTariffId(rs.getInt("tariff_id"));
-
             }
 
         } catch (SQLException ex) {
@@ -605,7 +593,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
                 }
-
             }
 
         } catch (SQLException ex) {
@@ -638,7 +625,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                     subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
                 }
                 subscriberTariffs.add(subscriberTariff);
-
             }
 
         } catch (SQLException ex) {
@@ -672,7 +658,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                     subscriberSession.setDisconnectionDate(rs.getDate("disconnection_date").toLocalDate());
                 }
                 subscriberSessions.add(subscriberSession);
-
             }
 
         } catch (SQLException ex) {
@@ -704,7 +689,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
                 }
-
             }
 
         } catch (SQLException ex) {
@@ -735,7 +719,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberSession.setDisconnectionDate(rs.getDate("disconnection_date").toLocalDate());
                 }
-
             }
 
         } catch (SQLException ex) {
@@ -766,7 +749,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
                 subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
                 subscriberTariff.setTariffId(rs.getInt("tariff_id"));
-
             }
 
         } catch (SQLException ex) {
@@ -796,7 +778,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 subscriberTariff.setSubscriberAccount(rs.getInt("subscriber_account"));
                 subscriberTariff.setConnectTariff(rs.getDate("connection_date").toLocalDate());
                 subscriberTariff.setTariffId(rs.getInt("tariff_id"));
-
             }
 
         } catch (SQLException ex) {
@@ -827,7 +808,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 subscriberTariff.setDisconnectTariff(rs.getDate("disconnection_date").toLocalDate());
                 subscriberTariff.setTariffId(rs.getInt("tariff_id"));
                 subscriberTariffs.add(subscriberTariff);
-
             }
 
         } catch (SQLException ex) {
@@ -878,8 +858,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new UnsupportedOperationException("Update nonexistent element");
         }
     }
 
@@ -897,8 +875,6 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 ex.printStackTrace();
                 throw new DAOException();
             }
-        } else {
-//            throw new IllegalArgumentException("Delete nonexistent element");
         }
     }
 
