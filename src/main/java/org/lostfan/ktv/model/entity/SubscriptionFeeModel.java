@@ -11,7 +11,9 @@ import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.model.searcher.RenderedServiceSearcherModel;
+import org.lostfan.ktv.validation.SubscriptionFeeValidator;
 import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.validation.Validator;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -28,6 +30,8 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
 
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
     private TariffDAO tariffDAO = DAOFactory.getDefaultDAOFactory().getTariffDAO();
+
+    private Validator<RenderedService> validator = new SubscriptionFeeValidator();
 
     public SubscriptionFeeModel() {
 
@@ -70,6 +74,10 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
         return new RenderedServiceSearcherModel();
     }
 
+    @Override
+    public Validator<RenderedService> getValidator() {
+        return validator;
+    }
 
     public List<EntityField> getFields() {
         return fields;

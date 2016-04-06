@@ -133,16 +133,6 @@ public abstract class BaseDocumentModel<T extends Document> extends BaseObservab
 
     protected abstract EntityDAO<T> getDao();
 
-    /**
-     * Dummy Implementation
-     * TODO: Remove this method
-     * when all the derived implementation classes acquire its own validators
-     */
-    @Override
-    public Validator<T> getValidator() {
-        return (entity, result) -> result;
-    }
-
     public PeriodValidator getPeriodValidator() {
         return periodValidator;
     }
