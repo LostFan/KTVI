@@ -8,6 +8,17 @@ public class DisconnectionRenderedService extends RenderedService {
 
     private Integer disconnectionReasonId;
 
+    public static DisconnectionRenderedService build(RenderedService renderedService, SubscriberSession subscriberSession) {
+        DisconnectionRenderedService dto = new DisconnectionRenderedService();
+        dto.setId(renderedService.getId());
+        dto.setDate(renderedService.getDate());
+        dto.setPrice(renderedService.getPrice());
+        dto.setSubscriberAccount(renderedService.getSubscriberAccount());
+        dto.setServiceId(renderedService.getServiceId());
+        dto.setDisconnectionReasonId(subscriberSession.getDisconnectionReasonId());
+        return dto;
+    }
+
     @Override
     public Integer getServiceId() {
         return FixedServices.DISCONNECTION.getId();
@@ -19,16 +30,5 @@ public class DisconnectionRenderedService extends RenderedService {
 
     public void setDisconnectionReasonId(Integer disconnectionReasonId) {
         this.disconnectionReasonId = disconnectionReasonId;
-    }
-
-    public static DisconnectionRenderedService build(RenderedService renderedService, SubscriberSession subscriberSession) {
-        DisconnectionRenderedService dto = new DisconnectionRenderedService();
-        dto.setId(renderedService.getId());
-        dto.setDate(renderedService.getDate());
-        dto.setPrice(renderedService.getPrice());
-        dto.setSubscriberAccount(renderedService.getSubscriberAccount());
-        dto.setServiceId(renderedService.getServiceId());
-        dto.setDisconnectionReasonId(subscriberSession.getDisconnectionReasonId());
-        return dto;
     }
 }

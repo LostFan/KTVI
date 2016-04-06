@@ -9,6 +9,17 @@ public class ConnectionRenderedService extends RenderedService implements Tariff
 
     private Integer tariffId;
 
+    public static ConnectionRenderedService build(RenderedService renderedService, SubscriberTariff subscriberTariff) {
+        ConnectionRenderedService dto = new ConnectionRenderedService();
+        dto.setId(renderedService.getId());
+        dto.setDate(renderedService.getDate());
+        dto.setPrice(renderedService.getPrice());
+        dto.setSubscriberAccount(renderedService.getSubscriberAccount());
+        dto.setServiceId(renderedService.getServiceId());
+        dto.setTariffId(subscriberTariff.getTariffId());
+        return dto;
+    }
+
     public Integer getTariffId() {
         return tariffId;
     }
@@ -20,16 +31,5 @@ public class ConnectionRenderedService extends RenderedService implements Tariff
     @Override
     public Integer getServiceId() {
         return FixedServices.CONNECTION.getId();
-    }
-
-    public static ConnectionRenderedService build(RenderedService renderedService, SubscriberTariff subscriberTariff) {
-        ConnectionRenderedService dto = new ConnectionRenderedService();
-        dto.setId(renderedService.getId());
-        dto.setDate(renderedService.getDate());
-        dto.setPrice(renderedService.getPrice());
-        dto.setSubscriberAccount(renderedService.getSubscriberAccount());
-        dto.setServiceId(renderedService.getServiceId());
-        dto.setTariffId(subscriberTariff.getTariffId());
-        return dto;
     }
 }

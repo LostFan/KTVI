@@ -10,5 +10,4 @@ public interface MaterialsDTO extends Entity {
     List<MaterialConsumption> getMaterialConsumption();
 
     void setMaterialConsumption(List<MaterialConsumption> materialConsumption);
-
 }

@@ -11,19 +11,11 @@ public class MaterialsRenderedService extends RenderedService implements Materia
 
     private List<MaterialConsumption> materialConsumption;
 
-    public List<MaterialConsumption> getMaterialConsumption() {
-        return materialConsumption;
-    }
-
-    public void setMaterialConsumption(List<MaterialConsumption> materialConsumption) {
-        this.materialConsumption = materialConsumption;
-    }
 
     @Override
     public Integer getServiceId() {
         return FixedServices.MATERIALS.getId();
     }
-
 
     public static MaterialsRenderedService build(RenderedService renderedService,List<MaterialConsumption> materialConsumptions) {
         MaterialsRenderedService dto = new MaterialsRenderedService();
@@ -33,5 +25,13 @@ public class MaterialsRenderedService extends RenderedService implements Materia
         dto.setSubscriberAccount(renderedService.getSubscriberAccount());
         dto.setMaterialConsumption(materialConsumptions);
         return dto;
+    }
+
+    public List<MaterialConsumption> getMaterialConsumption() {
+        return materialConsumption;
+    }
+
+    public void setMaterialConsumption(List<MaterialConsumption> materialConsumption) {
+        this.materialConsumption = materialConsumption;
     }
 }
