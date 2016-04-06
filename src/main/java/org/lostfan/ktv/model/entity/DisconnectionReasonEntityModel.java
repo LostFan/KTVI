@@ -7,6 +7,8 @@ import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.searcher.DisconnectionReasonSearcherModel;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
+import org.lostfan.ktv.validation.DisconnectionReasonValidator;
+import org.lostfan.ktv.validation.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 public class DisconnectionReasonEntityModel extends BaseEntityModel<DisconnectionReason> {
 
     private List<EntityField> fields;
+
+    private Validator<DisconnectionReason> validator = new DisconnectionReasonValidator();
 
     public DisconnectionReasonEntityModel() {
         this.fields = new ArrayList<>();
@@ -59,5 +63,10 @@ public class DisconnectionReasonEntityModel extends BaseEntityModel<Disconnectio
     @Override
     public EntitySearcherModel<DisconnectionReason> createSearchModel() {
         return new DisconnectionReasonSearcherModel();
+    }
+
+    @Override
+    public Validator<DisconnectionReason> getValidator() {
+        return validator;
     }
 }

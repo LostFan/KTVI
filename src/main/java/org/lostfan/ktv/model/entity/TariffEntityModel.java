@@ -18,11 +18,15 @@ import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.model.searcher.TariffSearcherModel;
 import org.lostfan.ktv.model.transform.TariffWithPricesTransformer;
 import org.lostfan.ktv.validation.TariffPriceValidator;
+import org.lostfan.ktv.validation.TariffValidator;
 import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.validation.Validator;
 
 public class TariffEntityModel extends BaseEntityModel<Tariff> {
 
     private List<EntityField> fields;
+
+    private Validator<Tariff> validator = new TariffValidator();
 
     private TariffWithPricesTransformer tariffWithPricesTransformer;
     private TariffPriceValidator tariffPriceValidator;
@@ -130,5 +134,10 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
     @Override
     public EntitySearcherModel<Tariff> createSearchModel() {
         return new TariffSearcherModel();
+    }
+
+    @Override
+    public Validator<Tariff> getValidator() {
+        return validator;
     }
 }

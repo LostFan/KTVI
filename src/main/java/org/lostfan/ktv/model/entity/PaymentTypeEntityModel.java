@@ -5,15 +5,20 @@ import java.util.List;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.EntityDAO;
+import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.domain.PaymentType;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.model.searcher.PaymentTypeSearcherModel;
+import org.lostfan.ktv.validation.PaymentTypeValidator;
+import org.lostfan.ktv.validation.Validator;
 
 public class PaymentTypeEntityModel extends BaseEntityModel<PaymentType> {
 
     private List<EntityField> fields;
+
+    private Validator<PaymentType> validator = new PaymentTypeValidator();
 
     public PaymentTypeEntityModel() {
         this.fields = new ArrayList<>();
@@ -59,5 +64,10 @@ public class PaymentTypeEntityModel extends BaseEntityModel<PaymentType> {
     @Override
     public EntitySearcherModel<PaymentType> createSearchModel() {
         return new PaymentTypeSearcherModel();
+    }
+
+    @Override
+    public Validator<PaymentType> getValidator() {
+        return validator;
     }
 }

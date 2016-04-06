@@ -112,14 +112,4 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     }
 
     protected abstract EntityDAO<T> getDao();
-
-    /**
-     * Dummy Implementation
-     * TODO: Remove this method
-     * when all the derived implementation classes acquire its own validators
-     */
-    @Override
-    public Validator<T> getValidator() {
-        return (entity, result) -> result;
-    }
 }

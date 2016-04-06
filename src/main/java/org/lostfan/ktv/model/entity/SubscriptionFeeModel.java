@@ -65,6 +65,11 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
         return null;
     }
 
+    @Override
+    public EntitySearcherModel<RenderedService> createSearchModel() {
+        return new RenderedServiceSearcherModel();
+    }
+
 
     public List<EntityField> getFields() {
         return fields;
@@ -225,10 +230,5 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
 
     public LocalDate getDate() {
         return this.date;
-    }
-
-    @Override
-    public EntitySearcherModel<RenderedService> createSearchModel() {
-        return new RenderedServiceSearcherModel();
     }
 }

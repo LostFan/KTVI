@@ -7,6 +7,8 @@ import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.model.searcher.StreetSearcherModel;
+import org.lostfan.ktv.validation.StreetValidator;
+import org.lostfan.ktv.validation.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
 public class StreetEntityModel extends BaseEntityModel<Street> {
 
     private List<EntityField> fields;
+
+    private Validator<Street> validator = new StreetValidator();
 
     public StreetEntityModel() {
         fields = new ArrayList<>();
@@ -62,5 +66,10 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
     @Override
     public EntitySearcherModel<Street> createSearchModel() {
         return new StreetSearcherModel();
+    }
+
+    @Override
+    public Validator<Street> getValidator() {
+        return validator;
     }
 }

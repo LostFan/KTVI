@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lostfan.ktv.dao.DAOFactory;
-import org.lostfan.ktv.dao.EntityDAO;
 import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.ServicePrice;
-import org.lostfan.ktv.domain.TariffPrice;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.dto.ServiceWithPrices;
@@ -17,13 +15,17 @@ import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.model.searcher.ServiceSearcherModel;
 import org.lostfan.ktv.model.transform.ServiceWithPricesTransformer;
 import org.lostfan.ktv.validation.ServicePriceValidator;
+import org.lostfan.ktv.validation.ServiceValidator;
 import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.validation.Validator;
 
 public class ServiceEntityModel extends BaseEntityModel<Service> {
 
     private List<EntityField> fields;
-    ServiceWithPricesTransformer serviceWithPricesTransformer;
-    ServicePriceValidator servicePriceValidator;
+    private ServiceWithPricesTransformer serviceWithPricesTransformer;
+
+    private Validator<Service> validator = new ServiceValidator();
+    private ServicePriceValidator servicePriceValidator;
 
     public ServiceEntityModel() {
 
@@ -73,6 +75,11 @@ public class ServiceEntityModel extends BaseEntityModel<Service> {
     @Override
     public Service createNewEntity() {
         return new Service();
+    }
+
+    @Override
+    public Validator<Service> getValidator() {
+        return validator;
     }
 
     public void delete(ServicePrice price) {

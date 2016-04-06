@@ -18,6 +18,8 @@ public class EquipmentEntityModel extends BaseEntityModel<Equipment> {
 
     private List<EntityField> fields;
 
+    private Validator<Equipment> validator = new EquipmentValidator();
+
     public EquipmentEntityModel() {
         fields = new ArrayList<>();
 
@@ -67,7 +69,7 @@ public class EquipmentEntityModel extends BaseEntityModel<Equipment> {
 
     @Override
     public Validator<Equipment> getValidator() {
-        return new EquipmentValidator();
+        return validator;
     }
 
     @Override

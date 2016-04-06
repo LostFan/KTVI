@@ -17,6 +17,8 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
 
     private List<EntityField> fields;
 
+    private Validator<Material> validator = new MaterialValidator();
+
     public MaterialEntityModel() {
         fields = new ArrayList<>();
 
@@ -67,7 +69,7 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
 
     @Override
     public Validator<Material> getValidator() {
-        return new MaterialValidator();
+        return validator;
     }
 
     @Override
