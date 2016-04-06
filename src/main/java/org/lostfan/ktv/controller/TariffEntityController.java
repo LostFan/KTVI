@@ -38,6 +38,5 @@ public class TariffEntityController extends EntityController {
         TariffPrice tariffPrice = (TariffPrice) args;
         this.model.delete(tariffPrice);
         this.tariffPriceView.hide();
-
     }
 }

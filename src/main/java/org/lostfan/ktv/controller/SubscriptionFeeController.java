@@ -54,7 +54,6 @@ public class SubscriptionFeeController extends EntityController{
             if(dateAndSubscriberId.getSubscriberId() == null) {
                 result.addError("errors.empty", "subscriber");
             }
-
             if (result.hasErrors()) {
                 entityView.showErrors(result.getErrors());
                 return;

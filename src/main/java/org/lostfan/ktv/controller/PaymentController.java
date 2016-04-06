@@ -101,7 +101,6 @@ public class PaymentController extends EntityController{
                 view.showErrors(result.getErrors());
                 return;
             }
-
         }
 
         for (Payment payment : payments) {

@@ -6,7 +6,7 @@ import org.lostfan.ktv.view.table.SubscriberTableView;
 
 public class SubscriberController extends EntityController {
 
-    SubscriberEntityModel model;
+    private SubscriberEntityModel model;
 
     public SubscriberController(SubscriberEntityModel model, SubscriberTableView view) {
         super(model, view);
