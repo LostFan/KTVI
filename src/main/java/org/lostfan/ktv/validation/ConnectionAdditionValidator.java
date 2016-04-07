@@ -42,11 +42,6 @@ public class ConnectionAdditionValidator implements Validator<RenderedService> {
             result.addError("errors.hasSessionAfterDate");
             return result;
         }
-//        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAfterDate(entity.getSubscriberAccount(), entity.getDate());
-//        if(oldSubscriberTariff != null) {
-//            result.addError("errors.getTariffAfterDate");
-//            return result;
-//        }
         return result;
     }
 }

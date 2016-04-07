@@ -49,11 +49,6 @@ public class ConnectionEditValidator implements Validator<RenderedService> {
                 result.addError("errors.alreadyGotSession");
                 return result;
             }
-//            oldSubscriberTariff = subscriberDAO.getSubscriberTariffAtDate(entity.getSubscriberAccount(), entity.getDate());
-//            if(oldSubscriberTariff != null  ) {
-//                result.addError("errors.alreadyGetTariff");
-//                return result;
-//            }
         }
 
         return result;

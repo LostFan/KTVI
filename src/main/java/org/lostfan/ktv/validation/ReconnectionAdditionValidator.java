@@ -24,21 +24,11 @@ public class ReconnectionAdditionValidator implements Validator<RenderedService>
             result.addError("errors.alreadyGotSession");
             return result;
         }
-//        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAtDate(entity.getSubscriberAccount(), entity.getDate());
-//        if(oldSubscriberTariff != null) {
-//            result.addError("errors.alreadyGetTariff");
-//            return result;
-//        }
         oldSubscriberSession = subscriberDAO.getSubscriberSessionAfterDate(entity.getSubscriberAccount(), entity.getDate());
         if(oldSubscriberSession != null) {
             result.addError("errors.hasSessionAfterDate");
             return result;
         }
-//        SubscriberTariff oldSubscriberTariff = subscriberDAO.getSubscriberTariffAfterDate(entity.getSubscriberAccount(), entity.getDate());
-//        if(oldSubscriberTariff != null) {
-//            result.addError("errors.getTariffAfterDate");
-//            return result;
-//        }
         return result;
     }
 }

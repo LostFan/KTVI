@@ -15,9 +15,6 @@ public class MaterialConsumptionValidator implements Validator<MaterialConsumpti
             result.addError("errors.empty", "materialConsumption.amount");
         }
 
-//        if (entity.getAccount() == null || entity.getAccount().length() == 0) {
-//            result.addError("errors.empty", "subscriber.account");
-//        }
 
         return result;
     }
