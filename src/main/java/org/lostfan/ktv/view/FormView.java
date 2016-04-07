@@ -300,7 +300,6 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
             this.datePicker = new DatePickerField();
 
             datePicker.addActionListener(e -> fireValueChanged(getValue()));
-            // TODO: something with the manual date entering
             datePicker.getModel().addChangeListener(e -> fireValueChanged(getValue()));
         }
 
@@ -437,6 +436,12 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
                     field.setError(error.getMessage());
                 }
             }
+        }
+    }
+
+    public void clearErrors() {
+        for (FormField field : this.fields.values()) {
+            field.clearError();
         }
     }
 

@@ -18,13 +18,6 @@ import java.util.List;
 
 public class EntityInnerTableView<T extends Entity> extends View {
 
-    private class ModelObserver implements Observer {
-        @Override
-        public void update(Object args) {
-            EntityInnerTableView.this.revalidate();
-        }
-    }
-
     private JTable table;
     private JScrollPane tableScrollPane;
     private JButton addCopyButton;
@@ -37,14 +30,9 @@ public class EntityInnerTableView<T extends Entity> extends View {
 
     private ViewActionListener addActionListener;
 
-    private ModelObserver modelObserver;
-
     private FullEntityField fullEntityField;
 
-//    private EntityModel model;
-
     public EntityInnerTableView(FullEntityField fullEntityField, List<Entity> list) {
-//        this.model = model;
         this.fullEntityField = fullEntityField;
         this.entityInnerTableModel = new EntityInnerTableModel(fullEntityField, list);
         this.table = new JTable(this.entityInnerTableModel);
@@ -78,10 +66,6 @@ public class EntityInnerTableView<T extends Entity> extends View {
         });
 
         buildLayout();
-
-//        this.modelObserver = new ModelObserver();
-//
-//        model.addObserver(this.modelObserver);
     }
 
     private void buildLayout() {

@@ -114,8 +114,6 @@ public class ServicePriceView extends FormView {
             }
         });
 
-
-
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> hide());
 

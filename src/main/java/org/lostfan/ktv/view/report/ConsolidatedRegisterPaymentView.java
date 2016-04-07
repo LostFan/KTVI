@@ -17,6 +17,8 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.validation.NotNullValidator;
+import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.FormView;
 import org.lostfan.ktv.view.components.EntityPanel;
 import org.lostfan.ktv.view.components.EntityPanelFactory;
@@ -197,6 +199,7 @@ public class ConsolidatedRegisterPaymentView extends FormView {
         }
     }
 
+    private NotNullValidator validator = new NotNullValidator();
     private JButton addButton;
     private JButton cancelButton;
     private JButton excelButton;
@@ -244,18 +247,20 @@ public class ConsolidatedRegisterPaymentView extends FormView {
         });
         this.excelButton = new JButton(getGuiString("buttons.generateExcelReport"));
         this.excelButton.addActionListener(e -> {
-            if (dateField.getValue() == null) {
-                dateField.setError("errors.empty");
+            ValidationResult validationResult = ValidationResult.createEmpty();
+            validator.validate(dateField.getValue(), dateField.getFieldKey(),
+                    validationResult);
+            if (validationResult.hasErrors()) {
+                this.showErrors(validationResult.getErrors());
                 return;
             }
-            dateField.clearError();
+            this.clearErrors();
             String message = model.generateExcelReport(dateField.getValue());
             if (message != null) {
                 exceptionWindow(message);
             }
 
         });
-
 
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {
@@ -271,7 +276,6 @@ public class ConsolidatedRegisterPaymentView extends FormView {
             }
 
         }
-
 
         this.isAdditionalField.addValueListener(newValue -> {
             if ((isAdditionalField.getValue())) {
@@ -318,7 +322,6 @@ public class ConsolidatedRegisterPaymentView extends FormView {
         buttonPanel.add(cancelButton);
         getContentPanel().add(buttonPanel, BorderLayout.SOUTH);
     }
-
 
     private void exceptionWindow(String message) {
         int optionType = JOptionPane.OK_OPTION;

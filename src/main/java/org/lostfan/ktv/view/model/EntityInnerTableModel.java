@@ -2,7 +2,6 @@ package org.lostfan.ktv.view.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.lostfan.ktv.domain.Entity;
 import org.lostfan.ktv.model.EntityField;
@@ -82,7 +81,6 @@ public class EntityInnerTableModel extends DefaultTableModel {
         if(indexes.length == 0) {
             return;
         }
-//
         List<Entity> deletedList = new ArrayList<>();
         for (int i = 0; i <  indexes.length; i++) {
             deletedList.add(list.get(indexes[i]));
@@ -106,7 +104,6 @@ public class EntityInnerTableModel extends DefaultTableModel {
             this.list.add(deletedIndexes[i], deletedList.get(i));
         }
         deletedObjects.remove(lastIndex);
-
     }
 
     @Override
@@ -147,7 +144,6 @@ public class EntityInnerTableModel extends DefaultTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-
         if(columnIndex == 0) {
             return rowIndex + 1;
         }

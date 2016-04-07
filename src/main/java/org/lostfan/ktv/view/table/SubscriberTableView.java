@@ -49,8 +49,6 @@ public class SubscriberTableView extends EntityTableView {
 
     public SubscriberTableView(SubscriberEntityModel model) {
         super(model);
-
-
         JPanel searchPanel = new JPanel();
         JLabel label = new JLabel(getGuiString("label.search"));
         searchPanel.add(label);
@@ -94,6 +92,4 @@ public class SubscriberTableView extends EntityTableView {
     public void setBalanceActionListener(ViewActionListener balanceActionListener) {
         this.balanceActionListener = balanceActionListener;
     }
-
-
 }

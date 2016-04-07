@@ -23,95 +23,6 @@ import org.lostfan.ktv.view.FormView;
 
 public class SubscriberInformationView extends FormView {
 
-    private class SubscriberRenderedServicesAndPaymentsTableModel extends AbstractTableModel {
-
-        private List<RenderedServiceAndPayment> renderedServiceAndPayments = new ArrayList<>();
-
-        public SubscriberRenderedServicesAndPaymentsTableModel(List<RenderedServiceAndPayment> renderedServiceAndPayments) {
-            this.renderedServiceAndPayments = renderedServiceAndPayments;
-        }
-
-        @Override
-        public int getRowCount() {
-            return renderedServiceAndPayments.size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return 5;
-        }
-
-        @Override
-        public String getColumnName(int columnIndex) {
-            switch (columnIndex) {
-                case 0:
-                    return ResourceBundles.getGuiBundle().getString(
-                            "number");
-                case 1:
-                    return ResourceBundles.getEntityBundle().getString(
-                            "renderedService.date");
-                case 2:
-                    return ResourceBundles.getGuiBundle().getString(
-                            "creditDebit");
-                case 3:
-                    return ResourceBundles.getEntityBundle().getString(
-                            "service");
-                case 4:
-                    return ResourceBundles.getEntityBundle().getString(
-                            "renderedService.price");
-            }
-
-            return null;
-        }
-
-        @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            switch (columnIndex) {
-                case 0:
-                    return Integer.class;
-                case 1:
-                    return LocalDate.class;
-                case 2:
-                    return String.class;
-                case 3:
-                    return Service.class;
-                case 4:
-                    return Integer.class;
-            }
-            return null;
-        }
-
-        @Override
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return false;
-        }
-
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-
-            switch (columnIndex) {
-                case 0:
-                    return rowIndex + 1;
-                case 1:
-                    return renderedServiceAndPayments.get(rowIndex).getDate();
-                case 2:
-                    return renderedServiceAndPayments.get(rowIndex).isCredit() ?
-                            ResourceBundles.getGuiBundle().getString("credit") :
-                            ResourceBundles.getGuiBundle().getString("debit");
-                case 3:
-                    return renderedServiceAndPayments.get(rowIndex).getService();
-                case 4:
-                    return renderedServiceAndPayments.get(rowIndex).isCredit() ?
-                            renderedServiceAndPayments.get(rowIndex).getPrice() * -1 :
-                            renderedServiceAndPayments.get(rowIndex).getPrice();
-            }
-            return null;
-
-        }
-
-
-    }
-
     private class RenderedServiceAndPayment {
 
         public RenderedServiceAndPayment(RenderedServiceExt renderedService) {
@@ -211,7 +122,6 @@ public class SubscriberInformationView extends FormView {
                             "chargeable");
 
             }
-
             return null;
         }
 
@@ -251,7 +161,6 @@ public class SubscriberInformationView extends FormView {
                             .mapToInt(o -> o.getPrice()).sum();
             }
             return null;
-
         }
     }
 
@@ -285,7 +194,6 @@ public class SubscriberInformationView extends FormView {
                     return ResourceBundles.getGuiBundle().getString(
                             "paid");
             }
-
             return null;
         }
 
@@ -353,7 +261,6 @@ public class SubscriberInformationView extends FormView {
                     return ResourceBundles.getEntityBundle().getString(
                             "disconnection");
             }
-
             return null;
         }
 
@@ -379,7 +286,6 @@ public class SubscriberInformationView extends FormView {
                     return subscriberTariffs.get(rowIndex).getDisconnectTariff() != null ?
                             dateTimeFormatter.format(subscriberTariffs.get(rowIndex).getDisconnectTariff()) :
                             null;
-
             }
             return null;
 
@@ -419,7 +325,6 @@ public class SubscriberInformationView extends FormView {
                     return ResourceBundles.getEntityBundle().getString(
                             "disconnectionReason");
             }
-
             return null;
         }
 
@@ -445,7 +350,6 @@ public class SubscriberInformationView extends FormView {
                             null;
                 case 2:
                     return subscriberSessions.get(rowIndex).getDisconnectionReasonId();
-
             }
             return null;
 
@@ -460,7 +364,6 @@ public class SubscriberInformationView extends FormView {
             this.renderedServiceAndPayments = renderedServiceAndPayments.stream()
                     .sorted((o1, o2) -> o1.getDate().compareTo(o2.getDate()))
                     .collect(Collectors.toList());
-            ;
         }
 
         @Override
@@ -492,7 +395,6 @@ public class SubscriberInformationView extends FormView {
                     return ResourceBundles.getEntityBundle().getString(
                             "renderedService.price");
             }
-
             return null;
         }
 
@@ -542,7 +444,6 @@ public class SubscriberInformationView extends FormView {
                             null;
             }
             return null;
-
         }
     }
 
@@ -587,20 +488,6 @@ public class SubscriberInformationView extends FormView {
         DefaultTableCellRenderer renderer;
         JScrollPane tableScrollPane;
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//        SubscriberRenderedServicesAndPaymentsTableModel subscriberRenderedServicesAndPaymentsTableModel = new SubscriberRenderedServicesAndPaymentsTableModel(renderedServiceAndPayments);
-//        this.table = new JTable(subscriberRenderedServicesAndPaymentsTableModel);
-////        this.table.setPreferredScrollableViewportSize(new Dimension(500, 200));
-//        System.out.println(getFrame().getContentPane().getHeight());
-//        this.table.setAutoCreateRowSorter(false);
-//        this.table.setFillsViewportHeight(true);
-//
-//        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
-//        renderer.setHorizontalAlignment(SwingConstants.LEFT);
-//        this.table.getColumnModel().getColumn(0).setCellRenderer(renderer);
-//        JScrollPane tableScrollPane = new JScrollPane(this.table);
-//        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//        tabbedPane.add(getGuiString("tabbedPane.allPaymentsAndRenderedServicesTable"), tableScrollPane);
-
 
         JPanel subscriptionFeeChargeableAndPaidTablesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JPanel subscriptionFeeRenderedServicesPanel = new JPanel(new BorderLayout());
@@ -682,21 +569,12 @@ public class SubscriberInformationView extends FormView {
 
         revalidate();
 
-
         show();
-//        if (getFrame().getContentPane().getWidth() > 300 && getFrame().getContentPane().getHeight() > 200) {
-//            this.table.setPreferredScrollableViewportSize(new Dimension(
-//                    getFrame().getContentPane().getWidth() - 90,
-//                    getFrame().getContentPane().getHeight() - 150));
-//        }
     }
 
     private void buildLayout() {
         getContentPanel().setLayout(new BorderLayout(10, 10));
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-
         getContentPanel().add(getFieldPanel(), BorderLayout.PAGE_START);
-
     }
-
 }

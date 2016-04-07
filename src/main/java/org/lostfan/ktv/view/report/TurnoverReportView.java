@@ -7,6 +7,8 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.TurnoverReportModel;
 import org.lostfan.ktv.model.dto.TurnoverSheetTableDTO;
 import org.lostfan.ktv.utils.*;
+import org.lostfan.ktv.validation.NotNullValidator;
+import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.FormView;
 import org.lostfan.ktv.view.components.EntityPanel;
 import org.lostfan.ktv.view.components.EntityPanelFactory;
@@ -126,6 +128,7 @@ public class TurnoverReportView extends FormView {
         }
     }
 
+    private NotNullValidator validator = new NotNullValidator();
     private JButton addButton;
     private JButton cancelButton;
     private JButton excelButton;
@@ -181,16 +184,19 @@ public class TurnoverReportView extends FormView {
         });
         this.excelButton = new JButton(getGuiString("buttons.generateExcelReport"));
         this.excelButton.addActionListener(e -> {
-            if(dateField.getValue() == null) {
-                dateField.setError("errors.empty");
+            ValidationResult validationResult = ValidationResult.createEmpty();
+            validator.validate(dateField.getValue(), dateField.getFieldKey(),
+                    validationResult);
+            if (!isAdditionalField.getValue()) {
+                validator.validate(serviceField.getValue(), serviceField.getFieldKey(),
+                        validationResult);
+            }
+
+            if (validationResult.hasErrors()) {
+                this.showErrors(validationResult.getErrors());
                 return;
             }
-            dateField.clearError();
-            if(!isAdditionalField.getValue() && serviceField.getValue() == null) {
-                serviceField.setError("errors.empty");
-                return;
-            }
-            serviceField.clearError();
+            this.clearErrors();
             new Thread(() -> {
                 String message = model.generateExcelReport(isAdditionalField.getValue(),
                         serviceField.getValue(), dateField.getValue());
@@ -200,8 +206,6 @@ public class TurnoverReportView extends FormView {
             }).start();
 
         });
-
-
 
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {
@@ -217,8 +221,6 @@ public class TurnoverReportView extends FormView {
             }
 
         }
-
-
 
         this.isAdditionalField.addValueListener(newValue -> {
             if ((isAdditionalField.getValue())) {

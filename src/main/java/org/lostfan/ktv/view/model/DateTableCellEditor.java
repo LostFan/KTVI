@@ -22,7 +22,6 @@ public class DateTableCellEditor implements TableCellEditor {
     private TableCellEditor editor;
     private EntityFieldTypes entityFieldTypes;
 
-
     protected JTable table;
     protected int row, column;
     private DatePickerField datePickerField;

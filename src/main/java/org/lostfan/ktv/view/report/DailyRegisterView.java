@@ -14,6 +14,8 @@ import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
+import org.lostfan.ktv.validation.NotNullValidator;
+import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.FormView;
 import org.lostfan.ktv.view.components.EntityPanel;
 import org.lostfan.ktv.view.components.EntityPanelFactory;
@@ -168,6 +170,7 @@ public class DailyRegisterView extends FormView {
         }
     }
 
+    private NotNullValidator validator = new NotNullValidator();
     private JButton addButton;
     private JButton cancelButton;
     private JButton excelButton;
@@ -214,18 +217,19 @@ public class DailyRegisterView extends FormView {
         });
         this.excelButton = new JButton(getGuiString("buttons.generateExcelReport"));
         this.excelButton.addActionListener(e -> {
-            if (dateField.getValue() == null) {
-                dateField.setError("errors.empty");
+            ValidationResult validationResult = ValidationResult.createEmpty();
+            validator.validate(dateField.getValue(), dateField.getFieldKey(),
+                    validationResult);
+            if (validationResult.hasErrors()) {
+                this.showErrors(validationResult.getErrors());
                 return;
             }
-            dateField.clearError();
+            this.clearErrors();
             String message = model.generateExcelReport(dateField.getValue());
             if (message != null) {
                 exceptionWindow(message);
             }
-
         });
-
 
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
         this.cancelButton.addActionListener(e -> {
@@ -239,9 +243,7 @@ public class DailyRegisterView extends FormView {
             if (!entityField.isEditable()) {
                 continue;
             }
-
         }
-
 
         this.isAdditionalField.addValueListener(newValue -> {
             if ((isAdditionalField.getValue())) {
@@ -288,7 +290,6 @@ public class DailyRegisterView extends FormView {
         buttonPanel.add(cancelButton);
         getContentPanel().add(buttonPanel, BorderLayout.SOUTH);
     }
-
 
     private void exceptionWindow(String message) {
         int optionType = JOptionPane.OK_OPTION;

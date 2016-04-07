@@ -53,11 +53,9 @@ public class CriteriaComboBoxModel implements ComboBoxModel<String> {
 
     @Override
     public void addListDataListener(ListDataListener l) {
-
     }
 
     @Override
     public void removeListDataListener(ListDataListener l) {
-
     }
 }

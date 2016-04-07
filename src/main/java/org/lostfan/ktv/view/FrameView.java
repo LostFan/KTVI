@@ -27,7 +27,6 @@ public abstract class FrameView extends View {
                 if(FrameView.this.frame.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
                     FormSize.setFormSize(getTitle(), getWidth(), getHeight());
                 }
-
             }
         });
     }

@@ -105,7 +105,6 @@ public class RenderedServiceTableView extends EntityTableView {
         numberOfYear.setBackground(new Color(0,0,0,0));
         numberOfYear.setForeground(null);
 
-
         minusMonth.addActionListener(e -> {
             LocalDate date = model.getDate().minusMonths(1);
             numberOfMonth.setText(String.valueOf(date.getMonth().getValue()));
@@ -138,8 +137,6 @@ public class RenderedServiceTableView extends EntityTableView {
                 newDateActionListener.actionPerformed(date);
             }
         });
-
-
 
         JPanel newPanel = new JPanel();
         getContentPanel().add(newPanel,  BorderLayout.SOUTH);

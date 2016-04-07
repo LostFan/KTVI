@@ -86,10 +86,7 @@ public class SubscriberEntityView extends EntityView {
                         renderedServiceAndPayments.get(rowIndex).getPrice();
             }
             return null;
-
         }
-
-
     }
 
     private static class RenderedServiceAndPayment {
@@ -174,12 +171,9 @@ public class SubscriberEntityView extends EntityView {
         }
         renderedServiceAndPayments.sort((o1, o2) -> o2.getDate().compareTo(o1.getDate()));
 
-
         IntegerFormField balanceFormField = new IntegerFormField("subscriber.balance");
         balanceFormField.setValue(balance);
         addFormField(balanceFormField);
-
-
 
         SubscriberRenderedServicesAndPaymentsTableModel subscriberRenderedServicesAndPaymentsTableModel = new SubscriberRenderedServicesAndPaymentsTableModel(renderedServiceAndPayments);
         this.table = new JTable(subscriberRenderedServicesAndPaymentsTableModel);
@@ -199,5 +193,4 @@ public class SubscriberEntityView extends EntityView {
 
         revalidate();
     }
-
 }

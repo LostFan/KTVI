@@ -92,7 +92,7 @@ public class LoadPaymentsView extends FormView {
             for (Payment payment : entityInnerTableView.getEntityList()) {
                 payment.setDate(dateField.getValue());
             }
-            entityInnerTableView.revalidate();
+            this.revalidate();
         });
         addFormField(dateField);
 
@@ -168,7 +168,7 @@ public class LoadPaymentsView extends FormView {
 
     public void addPayments(List<Payment> payments) {
         entityInnerTableView.getEntityList().addAll(payments);
-        entityInnerTableView.revalidate();
+        this.revalidate();
     }
 
     private void buildLayout() {
@@ -186,8 +186,6 @@ public class LoadPaymentsView extends FormView {
         panel.add(Box.createVerticalGlue());
         panel.add(Box.createRigidArea(new Dimension(10, 10)));
 
-//        Dimension fieldPanelSize = new Dimension(10,20);
-//        getFieldPanel().setPreferredSize(fieldPanelSize);
         JPanel jPanel = new JPanel();
         jPanel.setPreferredSize(new Dimension(50, 50));
         jPanel.add(getFieldPanel());

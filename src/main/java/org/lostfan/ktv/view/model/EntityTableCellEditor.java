@@ -111,6 +111,5 @@ public class EntityTableCellEditor implements TableCellEditor {
     public void removeCellEditorListener(CellEditorListener l){
         editor.removeCellEditorListener(l);
     }
-
 }
 

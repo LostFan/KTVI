@@ -120,8 +120,6 @@ public class PaymentView extends FormView {
             hide();
         });
 
-
-
         buildLayout();
 
         show();
@@ -161,7 +159,6 @@ public class PaymentView extends FormView {
         panel.add(this.entityInnerTableView.getContentPanel());
         getContentPanel().add(panel);
 
-
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addButton);
         buttonPanel.add(cancelButton);
@@ -171,16 +168,14 @@ public class PaymentView extends FormView {
     public void addPayments(List<Payment> payments) {
         entityInnerTableView.getEntityList().clear();
         entityInnerTableView.getEntityList().addAll(payments);
-        entityInnerTableView.revalidate();
+        this.revalidate();
     }
 
     public void setAddActionListener(ViewActionListener addActionListener) {
         this.addActionListener = addActionListener;
     }
 
-
     public void setAddPaymentsInTableListener(ViewActionListener addPaymentsInTable) {
         this.addPaymentsInTableListener = addPaymentsInTable;
     }
-
 }

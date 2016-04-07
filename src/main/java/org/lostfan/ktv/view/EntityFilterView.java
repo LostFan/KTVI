@@ -111,9 +111,6 @@ public class EntityFilterView extends FrameView {
             if (getSelectedFieldType() != null && getSelectedFieldType() == EntityFieldTypes.Date) {
                 panel.add(this.datePicker, c);
             }
-//            panel.add(new JList<>());
-//            panel.add(new JPopupMenu());
-
 
             panel.add(this.removeButton, c);
 

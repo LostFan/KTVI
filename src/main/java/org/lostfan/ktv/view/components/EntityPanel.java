@@ -110,7 +110,6 @@ public class EntityPanel extends JPanel {
         buttonPanel.add(this.entityButton, BorderLayout.LINE_END);
         this.add(buttonPanel, BorderLayout.LINE_END);
 
-
         this.textField = (JTextField) this.comboBox.getEditor().getEditorComponent();
         new EntityPanelController(model, this);
         this.model = model;

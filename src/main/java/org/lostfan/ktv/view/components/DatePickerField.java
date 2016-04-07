@@ -70,5 +70,4 @@ public class DatePickerField extends JDatePickerImpl {
 
         return new java.sql.Date(((Date)getModel().getValue()).getTime()).toLocalDate();
     }
-
 }

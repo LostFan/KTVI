@@ -55,11 +55,9 @@ public class SubscriptionFeeView extends FrameView {
             }
         }
 
-
         public JComponent getInputComponent() {
             return this.panel;
         }
-
 
         public Object getValue() {
             return  this.panel.getSelectedEntity() != null ? this.panel.getSelectedEntity().getId() : null;
@@ -196,5 +194,4 @@ public class SubscriptionFeeView extends FrameView {
         }
         JOptionPane.showMessageDialog(getFrame(), message, "Error", JOptionPane.ERROR_MESSAGE);
     }
-
 }

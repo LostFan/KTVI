@@ -93,8 +93,6 @@ public class SubscriptionFeeTableView extends EntityTableView {
             }
         });
 
-
-
         JPanel newPanel = new JPanel();
         getContentPanel().add(newPanel,  BorderLayout.SOUTH);
         newPanel.add(beginButton);

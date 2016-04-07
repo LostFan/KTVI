@@ -125,26 +125,6 @@ public class EntityTableView extends View {
 
         this.tablePanel = new JPanel();
         this.tablePanel.setLayout(new BorderLayout(10, 10));
-//        JPanel searchPanel = new JPanel();
-//        JComboBox fieldComboBox = new JComboBox<String>(new FieldsComboBoxModel(model.getFields()));
-//
-//        searchPanel.add(fieldComboBox);
-//
-//        JTextField textField = new JTextField(15);
-//        searchPanel.add(textField);
-//
-//        JButton findButton = new JButton(getGuiString("buttons.find"));
-//        findButton.addActionListener(e -> {
-//            if (this.filterActionListener != null) {
-//                this.filterActionListener.actionPerformed(null);
-//            }
-//        });
-//        searchPanel.add(findButton);
-////        jPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-//        this.tablePanel.setLayout(new BorderLayout(10, 10));
-//        this.tablePanel.add(searchPanel, BorderLayout.NORTH);
-
-
 
         JButton button = new JButton(getGuiString("buttons.filter"));
         button.addActionListener(e -> {
