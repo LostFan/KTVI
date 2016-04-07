@@ -20,8 +20,6 @@ public class MaterialConsumptionEntityModel extends BaseEntityModel<MaterialCons
     private Validator<MaterialConsumption> validator = new MaterialConsumptionValidator();
 
     public MaterialConsumptionEntityModel() {
-        fields = new ArrayList<>();
-
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("materialConsumption.id", EntityFieldTypes.Integer, MaterialConsumption::getId, MaterialConsumption::setId, false));
         this.fields.add(new EntityField("material", EntityFieldTypes.Material, MaterialConsumption::getMaterialId, MaterialConsumption::setMaterialId));

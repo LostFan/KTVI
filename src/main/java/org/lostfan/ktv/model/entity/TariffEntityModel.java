@@ -92,7 +92,6 @@ public class TariffEntityModel extends BaseEntityModel<Tariff> {
                 getDao().deleteTariffPrice(tariffWithPrices.getNewPrice());
             }
             getDao().saveTariffPrice(price);
-
         }
         return result;
     }

@@ -21,8 +21,6 @@ public class EquipmentEntityModel extends BaseEntityModel<Equipment> {
     private Validator<Equipment> validator = new EquipmentValidator();
 
     public EquipmentEntityModel() {
-        fields = new ArrayList<>();
-
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("equipment.id", EntityFieldTypes.Integer, Equipment::getId, Equipment::setId, false));
         this.fields.add(new EntityField("equipment.name", EntityFieldTypes.String, Equipment::getName, Equipment::setName));

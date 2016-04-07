@@ -39,7 +39,6 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
 
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false));
-
         this.fields.add(new EntityField("renderedService.date", EntityFieldTypes.Date, RenderedService::getDate, RenderedService::setDate));
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberAccount, RenderedService::setSubscriberAccount));
         this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
@@ -90,7 +89,6 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
     protected EntityDAO<RenderedService> getDao() {
         return DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO();
     }
-
 
     public Class getEntityClass() {
         return RenderedService.class;
@@ -148,7 +146,6 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
             getDao().delete(renderedService.getId());
         }
         saveRenderedService(subscriberId, date);
-
     }
 
     private void createSubscriptionFeesInMouth(LocalDate date) {
@@ -223,7 +220,6 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
             return null;
         }
         return (number + 50) / 100 * 100;
-
     }
 
     public void setDate(LocalDate date) {

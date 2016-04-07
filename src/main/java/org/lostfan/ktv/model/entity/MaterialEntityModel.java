@@ -20,8 +20,6 @@ public class MaterialEntityModel extends BaseEntityModel<Material> {
     private Validator<Material> validator = new MaterialValidator();
 
     public MaterialEntityModel() {
-        fields = new ArrayList<>();
-
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("material.id", EntityFieldTypes.Integer, Material::getId, Material::setId, false));
         this.fields.add(new EntityField("material.name", EntityFieldTypes.String, Material::getName, Material::setName));

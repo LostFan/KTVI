@@ -27,7 +27,6 @@ public class StreetEntityModel extends BaseEntityModel<Street> {
         this.fields.add(new EntityField("street.name", EntityFieldTypes.String, Street::getName, Street::setName));
     }
 
-
     @Override
     public List<EntityModel> getEntityModels() {
         return null;

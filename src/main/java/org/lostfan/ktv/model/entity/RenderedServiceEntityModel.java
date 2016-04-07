@@ -49,7 +49,6 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
 
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false));
-
         this.fields.add(new EntityField("renderedService", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId, false));
         this.fields.add(new EntityField("renderedService.date", EntityFieldTypes.Date, RenderedService::getDate, RenderedService::setDate));
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberAccount, RenderedService::setSubscriberAccount));
@@ -170,9 +169,6 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         subscriberTariff.setConnectTariff(entity.getDate());
         result = validatorSubscriberTariff.validate(subscriberTariff, result);
 
-//        for (MaterialConsumption materialConsumption : entity.getMaterialConsumption()) {
-//            result = MainModel.getMaterialConsumptionEntityModel().getValidator().validate(materialConsumption, result);
-//        }
         if (result.hasErrors()) {
             return result;
         }
@@ -231,7 +227,7 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         } catch (DAOException e) {
             getDao().rollback();
         }
-//        updateMaterials(entity);
+
         updateEntitiesList();
         return result;
     }
@@ -536,7 +532,6 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
             if(entity.getServiceId().equals(FixedServices.RECONNECTION.getId())) {
                 isDeleteReconnection(entity, result);
             }
-//            getDao().delete(id);
         }
         if (result.hasErrors()) {
             return result;

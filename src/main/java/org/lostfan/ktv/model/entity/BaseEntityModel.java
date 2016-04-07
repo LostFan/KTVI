@@ -6,7 +6,6 @@ import org.lostfan.ktv.model.FieldSearchCriterion;
 import org.lostfan.ktv.model.FullEntityField;
 import org.lostfan.ktv.utils.BaseObservable;
 import org.lostfan.ktv.validation.ValidationResult;
-import org.lostfan.ktv.validation.Validator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +27,7 @@ public abstract class BaseEntityModel<T extends Entity> extends BaseObservable i
     public List<FieldSearchCriterion<T>> getSearchCriteria() {
         return this.searchCriteria;
     }
+
     @Override
     public void setSearchCriteria(List<FieldSearchCriterion<T>> criteria) {
         this.searchCriteria = criteria;

@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.PaymentDAO;
-import org.lostfan.ktv.dao.RenderedServiceDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.*;
@@ -26,7 +25,6 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
     private FullEntityField loadFullEntityField;
     private Validator<Payment> validator = new PaymentValidator();
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
-    private RenderedServiceDAO renderedServiceDAO = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO();
     private List<Payment> payments;
     private Integer progress;
 
