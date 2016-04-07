@@ -40,7 +40,6 @@ public class TurnoverReportExcel {
         this.additionalServices = additionalServices;
     }
 
-
     public void setService(Service service) {
         this.service = service;
     }
@@ -239,23 +238,17 @@ public class TurnoverReportExcel {
             }
             try {
                 desktop.open(file);
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+            } catch (IOException | NullPointerException ioe) {
+                message = "message.fail";
             }
         } catch (IOException e) {
             if (e instanceof FileNotFoundException) {
-
-//                exceptionWindow(e);
                 message = "message.fileIsUsed";
+            } else {
+                message = "message.fail";
             }
-            // TODO Auto-generated catch block
-//            e.printStackTrace();
-        } catch (RowsExceededException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (WriteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            message = "message.fail";
         }
         return message;
     }

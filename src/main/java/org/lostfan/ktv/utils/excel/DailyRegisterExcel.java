@@ -47,10 +47,7 @@ public class DailyRegisterExcel {
         WritableWorkbook workbook;
         String message = null;
         try {
-
-
             Integer i = 0;
-
             Integer SUBSCRIBER_ID_COLUMN = i++;
             Integer SUBSCRIBER_NAME_COLUMN = i++;
             Integer SERVICE_COLUMN = i++;
@@ -68,8 +65,6 @@ public class DailyRegisterExcel {
             WritableCellFormat cellFormat = new WritableCellFormat();
             cellFormat.setAlignment(Alignment.CENTRE);
             i = 0;
-//            sheet.mergeCells(FIRST_COLUMN, i, LAST_COLUMN, i);
-//            i++;
 
             //Addding cells
             sheet.addCell(new Label(SUBSCRIBER_ID_COLUMN, i, ResourceBundles.getEntityBundle().getString(
@@ -105,7 +100,6 @@ public class DailyRegisterExcel {
 
             for (PaymentExt paymentExt : paymentExts) {
                 sheet.addCell(new Number(SUBSCRIBER_ID_COLUMN, i, paymentExt.getSubscriberAccount()));
-//                sheet.addCell(new Label(SUBSCRIBER_ADDRESS_COLUMN, i, getFullSubscriberAddress(paymentExt)));
                 sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, i, getAbbreviatedName(paymentExt)));
                 sheet.addCell(new Number(SERVICE_COLUMN, i, paymentExt.getServicePaymentId()));
                 sheet.addCell(new Number(PAYMENT_PRICE, i, paymentExt.getPrice()));
@@ -134,46 +128,21 @@ public class DailyRegisterExcel {
             }
             try {
                 desktop.open(file);
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+            } catch (IOException | NullPointerException ioe) {
+                message = "message.fail";
             }
         } catch (IOException e) {
             if (e instanceof FileNotFoundException) {
 
-//                exceptionWindow(e);
                 message = "message.fileIsUsed";
+            } else {
+                message = "message.fail";
             }
-            // TODO Auto-generated catch block
-//            e.printStackTrace();
-        } catch (RowsExceededException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (WriteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            message = "message.fail";
         }
         return message;
     }
-
-//    private String getFullSubscriberAddress(PaymentExt paymentExt) {
-//        Subscriber subscriber = paymentExt.getSubscriber();
-//        if (subscriber == null || paymentExt.getSubscriberStreet() == null) {
-//            return "";
-//        }
-//        StringBuilder address = new StringBuilder(paymentExt.getSubscriberStreet().getName())
-//                .append(",")
-//                .append(subscriber.getHouse())
-//                .append(subscriber.getIndex());
-//        if (!subscriber.getBuilding().isEmpty()) {
-//            address.append(",")
-//                    .append(getGuiString("buildingAbbreviated"))
-//                    .append(subscriber.getBuilding());
-//        }
-//        address.append(",")
-//                .append(getGuiString("flatAbbreviated"))
-//                .append(subscriber.getFlat());
-//        return address.toString();
-//    }
 
     private String getAbbreviatedName(PaymentExt paymentExt) {
         String abbreviatedName = paymentExt.getSubscriber().getName();

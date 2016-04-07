@@ -40,10 +40,7 @@ public class ConsolidatedRegisterPaymentExcel {
         WritableWorkbook workbook;
         String message = null;
         try {
-
-
             Integer i = 0;
-
             Integer NUMBER_OF_DAY_COLUMN = i++;
             Integer SUBSCRIPTION_FEE_COLUMN = i++;
             Integer CONNECTION_COLUMN = i++;
@@ -65,8 +62,6 @@ public class ConsolidatedRegisterPaymentExcel {
             WritableCellFormat cellFormat = new WritableCellFormat();
             cellFormat.setAlignment(Alignment.CENTRE);
             i = 0;
-//            sheet.mergeCells(FIRST_COLUMN, i, LAST_COLUMN, i);
-//            i++;
 
             //Addding cells
             sheet.addCell(new Label(NUMBER_OF_DAY_COLUMN, i, ResourceBundles.getGuiBundle().getString(
@@ -121,63 +116,19 @@ public class ConsolidatedRegisterPaymentExcel {
             }
             try {
                 desktop.open(file);
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+            } catch (IOException | NullPointerException ioe) {
+                message = "message.fail";
             }
         } catch (IOException e) {
             if (e instanceof FileNotFoundException) {
-
-//                exceptionWindow(e);
                 message = "message.fileIsUsed";
+            } else {
+                message = "message.fail";
             }
-            // TODO Auto-generated catch block
-//            e.printStackTrace();
-        } catch (RowsExceededException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (WriteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            message = "message.fail";
         }
         return message;
-    }
-
-//    private String getFullSubscriberAddress(PaymentExt paymentExt) {
-//        Subscriber subscriber = paymentExt.getSubscriber();
-//        if (subscriber == null || paymentExt.getSubscriberStreet() == null) {
-//            return "";
-//        }
-//        StringBuilder address = new StringBuilder(paymentExt.getSubscriberStreet().getName())
-//                .append(",")
-//                .append(subscriber.getHouse())
-//                .append(subscriber.getIndex());
-//        if (!subscriber.getBuilding().isEmpty()) {
-//            address.append(",")
-//                    .append(getGuiString("buildingAbbreviated"))
-//                    .append(subscriber.getBuilding());
-//        }
-//        address.append(",")
-//                .append(getGuiString("flatAbbreviated"))
-//                .append(subscriber.getFlat());
-//        return address.toString();
-//    }
-
-    private String getAbbreviatedName(PaymentExt paymentExt) {
-        String abbreviatedName = paymentExt.getSubscriber().getName();
-        String[] strings = abbreviatedName.split("\\s+");
-        if (strings.length < 2) {
-            return paymentExt.getSubscriber().getName();
-        }
-        StringBuilder name = new StringBuilder()
-                .append(strings[0])
-                .append(" ")
-                .append(strings[1].charAt(0))
-                .append(".");
-        if (strings.length > 2) {
-            name.append(strings[2].charAt(0))
-                    .append(". ");
-        }
-        return name.toString();
     }
 
     private static String getGuiString(String key) {
