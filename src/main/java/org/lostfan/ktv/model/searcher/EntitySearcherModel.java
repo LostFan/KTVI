@@ -31,7 +31,6 @@ public abstract class EntitySearcherModel<T extends Entity> extends BaseObservab
     }
 
     public T getEntity(int id) {
-
         return getDao().get(id);
     }
 

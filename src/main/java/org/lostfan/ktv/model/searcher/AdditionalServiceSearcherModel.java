@@ -27,7 +27,6 @@ public class AdditionalServiceSearcherModel extends EntitySearcherModel<Service>
     @Override
     public List<Service> getList() {
         return getDao().getAll().stream().filter(isAdditional()).collect(Collectors.toList());
-
     }
 
     @Override
@@ -43,7 +42,6 @@ public class AdditionalServiceSearcherModel extends EntitySearcherModel<Service>
                 && e.getId() != FixedServices.RECONNECTION.getId()
                 && e.getId() != FixedServices.SUBSCRIPTION_FEE.getId()
                 && e.getId() != FixedServices.MATERIALS.getId();
-
     }
 
     @Override

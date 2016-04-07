@@ -18,7 +18,7 @@ public class SubscriberSearcherModel extends EntitySearcherModel<Subscriber> {
         Name,
         House,
         Flat,
-        End;
+        End
     }
 
     private List<EntityField> fields;
@@ -117,7 +117,6 @@ public class SubscriberSearcherModel extends EntitySearcherModel<Subscriber> {
                     // What to do next?
                     break;
             }
-
         }
 
         return criteria;

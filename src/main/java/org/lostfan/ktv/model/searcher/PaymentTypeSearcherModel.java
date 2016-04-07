@@ -15,7 +15,6 @@ public class PaymentTypeSearcherModel extends EntitySearcherModel<PaymentType> {
 
     public PaymentTypeSearcherModel() {
         fields = new ArrayList<>();
-
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("paymentType.id", EntityFieldTypes.Integer, PaymentType::getId, PaymentType::setId, false));
         this.fields.add(new EntityField("paymentType.name", EntityFieldTypes.String, PaymentType::getName, PaymentType::setName));

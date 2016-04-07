@@ -14,8 +14,6 @@ public class MaterialSearcherModel extends EntitySearcherModel<Material> {
     private List<EntityField> fields;
 
     public MaterialSearcherModel() {
-        fields = new ArrayList<>();
-
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("material.id", EntityFieldTypes.Integer, Material::getId, Material::setId, false));
         this.fields.add(new EntityField("material.name", EntityFieldTypes.String, Material::getName, Material::setName));
