@@ -70,8 +70,6 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
                     turnoverSheetTableDTO.setServiceId(serviceId);
                     if(v > 0) {
                         turnoverSheetTableDTO.setBroughtForwardBalanceDebit(v);
-                    } else {
-//                        turnoverSheetTableDTO.setBroughtForwardBalanceDebit(-1* v);
                     }
                     tableDTOHashMap.put(k, turnoverSheetTableDTO);
                 }
@@ -180,11 +178,6 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
             if(carriedForwardBalance != turnoverSheetTableDTO.getCarriedForwardBalanceDebit() - turnoverSheetTableDTO.getCarriedForwardBalanceCredit()) {
                 System.out.println(turnoverSheetTableDTO.getSubscriberAccount());
             }
-//            if (carriedForwardBalance >= 0) {
-//                turnoverSheetTableDTO.setCarriedForwardBalanceDebit(carriedForwardBalance);
-//            } else {
-//                turnoverSheetTableDTO.setCarriedForwardBalanceCredit(-1 * carriedForwardBalance);
-//            }
         }
         System.out.println(turnoverSheetTableDTOs.stream().mapToInt(i -> i.getBroughtForwardBalanceCredit()).sum());
         System.out.println(turnoverSheetTableDTOs.stream().mapToInt(i -> i.getBroughtForwardBalanceDebit()).sum());

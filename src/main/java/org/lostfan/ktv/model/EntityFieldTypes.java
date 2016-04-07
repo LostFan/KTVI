@@ -54,5 +54,4 @@ public enum EntityFieldTypes {
     public EntityDAO getDAO() {
         return this.dao;
     }
-
 }

@@ -44,7 +44,6 @@ public class MainModel extends BaseObservable {
         nameEntityModels.put(materialEntityModel.getEntityNameKey(), materialEntityModel);
         nameEntityModels.put(paymentEntityModel.getEntityNameKey(), paymentEntityModel);
         nameEntityModels.put(renderedServiceEntityModel.getEntityNameKey(), renderedServiceEntityModel);
-//        nameEntityModels.put(subscriptionFeeModel.getEntityNameKey(), subscriptionFeeModel);
         nameEntityModels.put(serviceEntityModel.getEntityNameKey(), serviceEntityModel);
         nameEntityModels.put(streetEntityModel.getEntityNameKey(), streetEntityModel);
         nameEntityModels.put(subscriberEntityModel.getEntityNameKey(), subscriberEntityModel);

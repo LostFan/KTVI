@@ -24,9 +24,6 @@ public class DailyRegisterModel extends BaseObservable implements BaseModel {
 
     private PaymentTransformer paymentTransformer = new PaymentTransformer();
 
-    public DailyRegisterModel() {
-    }
-
     @Override
     public String getEntityNameKey() {
         return "dailyRegister";
@@ -59,6 +56,4 @@ public class DailyRegisterModel extends BaseObservable implements BaseModel {
     public List<Service> getAllServices() {
         return serviceDAO.getAll();
     }
-
-
 }

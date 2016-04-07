@@ -1,11 +1,6 @@
 package org.lostfan.ktv.model;
 
-import org.lostfan.ktv.dao.DAOFactory;
-import org.lostfan.ktv.dao.ServiceDAO;
-import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Entity;
-import org.lostfan.ktv.domain.Service;
-import org.lostfan.ktv.domain.Subscriber;
 
 import java.time.LocalDate;
 import java.util.function.Predicate;
