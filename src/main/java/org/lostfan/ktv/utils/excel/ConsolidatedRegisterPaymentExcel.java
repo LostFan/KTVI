@@ -15,13 +15,11 @@ import jxl.write.WritableCellFormat;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
-import jxl.write.biff.RowsExceededException;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.FixedServices;
-import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.utils.ResourceBundles;
 
-public class ConsolidatedRegisterPaymentExcel {
+public class ConsolidatedRegisterPaymentExcel implements ExcelGenerator{
 
     private List<Payment> payments;
 
@@ -35,6 +33,7 @@ public class ConsolidatedRegisterPaymentExcel {
         this.date = date;
     }
 
+    @Override
     public String generate() {
 
         WritableWorkbook workbook;
@@ -63,19 +62,15 @@ public class ConsolidatedRegisterPaymentExcel {
             cellFormat.setAlignment(Alignment.CENTRE);
             i = 0;
 
-            //Addding cells
-            sheet.addCell(new Label(NUMBER_OF_DAY_COLUMN, i, ResourceBundles.getGuiBundle().getString(
-                    "day"), cellFormat));
+            // Adding cells
+            sheet.addCell(new Label(NUMBER_OF_DAY_COLUMN, i, getGuiString("day"), cellFormat));
             sheet.addCell(new Label(SUBSCRIPTION_FEE_COLUMN, i, ResourceBundles.getEntityBundle().getString(
                     "subscriptionFee"), cellFormat));
             sheet.addCell(new Label(CONNECTION_COLUMN, i, ResourceBundles.getEntityBundle().getString(
                     "connection"), cellFormat));
-            sheet.addCell(new Label(ADDITIONAL_COLUMN, i, ResourceBundles.getGuiBundle().getString(
-                    "additionalServices"), cellFormat));
-            sheet.addCell(new Label(TOTAL_COLUMN, i, ResourceBundles.getGuiBundle().getString(
-                    "total"), cellFormat));
+            sheet.addCell(new Label(ADDITIONAL_COLUMN, i, ("additionalServices"), cellFormat));
+            sheet.addCell(new Label(TOTAL_COLUMN, i, getGuiString("total"), cellFormat));
             i++;
-
 
             for (Integer index = 1; index <= date.lengthOfMonth(); index++) {
                 final Integer finalIndex = index;

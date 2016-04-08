@@ -21,8 +21,9 @@ import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.utils.DateFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.utils.SubscriberByAddressComparator;
 
-public class DailyRegisterExcel {
+public class DailyRegisterExcel implements ExcelGenerator {
 
     private List<PaymentExt> paymentExts;
 
@@ -42,6 +43,7 @@ public class DailyRegisterExcel {
         this.date = date;
     }
 
+    @Override
     public String generate() {
 
         WritableWorkbook workbook;
@@ -78,25 +80,10 @@ public class DailyRegisterExcel {
                     "payment.price"), cellFormat));
             i++;
 
-            paymentExts = paymentExts.stream().sorted((o1, o2) -> {
-                if (o1.getSubscriber().getStreetId() - o2.getSubscriber().getStreetId() != 0) {
-                    return o1.getSubscriber().getStreetId() - o2.getSubscriber().getStreetId();
-                }
-                if (o1.getSubscriber().getHouse() - o2.getSubscriber().getHouse() != 0) {
-                    return o1.getSubscriber().getHouse() - o2.getSubscriber().getHouse();
-                }
-                if (o1.getSubscriber().getIndex().compareToIgnoreCase(o2.getSubscriber().getIndex()) != 0) {
-                    return o1.getSubscriber().getIndex().compareToIgnoreCase(o2.getSubscriber().getIndex());
-                }
-                if (o1.getSubscriber().getBuilding().compareToIgnoreCase(o2.getSubscriber().getBuilding()) != 0) {
-                    return o1.getSubscriber().getBuilding().compareToIgnoreCase(o2.getSubscriber().getBuilding());
-                }
-                if (o1.getSubscriber().getFlat().length() - o2.getSubscriber().getFlat().length() != 0) {
-                    return o1.getSubscriber().getFlat().length() - o2.getSubscriber().getFlat().length();
-                }
-                return o1.getSubscriber().getFlat().compareToIgnoreCase(o2.getSubscriber().getFlat());
-            }).collect(Collectors.toList());
-
+            SubscriberByAddressComparator comparator = new SubscriberByAddressComparator();
+            paymentExts = paymentExts.stream()
+                    .sorted((o1, o2) -> comparator.compare(o1.getSubscriber(), o2.getSubscriber()))
+                    .collect(Collectors.toList());
 
             for (PaymentExt paymentExt : paymentExts) {
                 sheet.addCell(new Number(SUBSCRIBER_ID_COLUMN, i, paymentExt.getSubscriberAccount()));
@@ -109,7 +96,10 @@ public class DailyRegisterExcel {
             Long allPayment = 0L;
 
             for (Service service : services) {
-                Long servicePayment = paymentExts.stream().filter(e -> e.getServicePaymentId() == service.getId()).mapToLong(value -> value.getPrice()).sum();
+                Long servicePayment = paymentExts.stream()
+                        .filter(e -> e.getServicePaymentId().equals(service.getId()))
+                        .mapToLong(value -> value.getPrice())
+                        .sum();
 
                 allPayment += servicePayment;
                 sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, i, service.getName()));

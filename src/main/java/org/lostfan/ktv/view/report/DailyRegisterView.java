@@ -1,7 +1,7 @@
 package org.lostfan.ktv.view.report;
 
-
 import java.awt.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
@@ -9,7 +9,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.model.DailyRegisterModel;
-import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.utils.ResourceBundles;
@@ -21,7 +20,6 @@ import org.lostfan.ktv.view.components.EntityPanel;
 import org.lostfan.ktv.view.components.EntityPanelFactory;
 
 public class DailyRegisterView extends FormView {
-
 
     private class ReportTableModel extends AbstractTableModel {
 
@@ -215,7 +213,16 @@ public class DailyRegisterView extends FormView {
 
             }
         });
+
         this.excelButton = new JButton(getGuiString("buttons.generateExcelReport"));
+        URL url = getClass().getClassLoader().getResource("images/excel.png");
+        ImageIcon icon = null;
+        if(url != null) {
+            icon = new ImageIcon(url);
+            Image image = icon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+            icon = new ImageIcon(image);
+            excelButton.setIcon(icon);
+        }
         this.excelButton.addActionListener(e -> {
             ValidationResult validationResult = ValidationResult.createEmpty();
             validator.validate(dateField.getValue(), dateField.getFieldKey(),
@@ -238,12 +245,6 @@ public class DailyRegisterView extends FormView {
             }
             hide();
         });
-
-        for (EntityField entityField : model.getFields()) {
-            if (!entityField.isEditable()) {
-                continue;
-            }
-        }
 
         this.isAdditionalField.addValueListener(newValue -> {
             if ((isAdditionalField.getValue())) {

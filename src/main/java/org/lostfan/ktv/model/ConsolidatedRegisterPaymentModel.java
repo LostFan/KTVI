@@ -17,7 +17,7 @@ public class ConsolidatedRegisterPaymentModel extends BaseObservable implements 
 
     @Override
     public String getEntityNameKey() {
-        return "dailyRegister";
+        return "consolidatedRegisterOnPayment";
     }
 
     @Override

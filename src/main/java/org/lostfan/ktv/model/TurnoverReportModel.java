@@ -201,7 +201,8 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
         }
         turnoverReportExcel.setDate(date);
         turnoverReportExcel.setAdditionalServices(getAllServices().stream().filter(e -> e.isAdditionalService()).collect(Collectors.toList()));
-        return turnoverReportExcel.generate(isAdditional);
+        turnoverReportExcel.setIsAdditional(isAdditional);
+        return turnoverReportExcel.generate();
     }
 
 }
