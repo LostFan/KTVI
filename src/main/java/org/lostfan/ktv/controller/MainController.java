@@ -98,8 +98,7 @@ public class MainController {
                     TurnoverReportView turnoverReportView = new TurnoverReportView(turnoverReportModel);
                     break;
                 case DAILY_REGISTER:
-                    DailyRegisterModel dailyRegisterModel = new DailyRegisterModel();
-                    DailyRegisterView dailyRegisterView = new DailyRegisterView(dailyRegisterModel);
+                    new DailyRegisterController();
                     break;
                 case CONSOLIDATED_REGISTER_ON_PAYMENT:
                     ConsolidatedRegisterPaymentModel consolidatedRegisterPaymentModel = new ConsolidatedRegisterPaymentModel();

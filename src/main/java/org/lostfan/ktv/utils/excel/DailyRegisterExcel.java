@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import jxl.Workbook;
@@ -18,6 +19,7 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import org.lostfan.ktv.domain.Service;
+import org.lostfan.ktv.model.dto.DailyRegisterReport;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.utils.DateFormatter;
 import org.lostfan.ktv.utils.ResourceBundles;
@@ -25,18 +27,12 @@ import org.lostfan.ktv.utils.SubscriberByAddressComparator;
 
 public class DailyRegisterExcel implements ExcelGenerator {
 
-    private List<PaymentExt> paymentExts;
-
-    private List<Service> services;
+    private DailyRegisterReport report;
 
     private LocalDate date;
 
-    public void setPaymentExts(List<PaymentExt> paymentExts) {
-        this.paymentExts = paymentExts;
-    }
-
-    public void setServices(List<Service> services) {
-        this.services = services;
+    public void setReport(DailyRegisterReport report) {
+        this.report = report;
     }
 
     public void setDate(LocalDate date) {
@@ -49,11 +45,11 @@ public class DailyRegisterExcel implements ExcelGenerator {
         WritableWorkbook workbook;
         String message = null;
         try {
-            Integer i = 0;
-            Integer SUBSCRIBER_ID_COLUMN = i++;
-            Integer SUBSCRIBER_NAME_COLUMN = i++;
-            Integer SERVICE_COLUMN = i++;
-            Integer PAYMENT_PRICE = i++;
+            Integer row = 0;
+            Integer SUBSCRIBER_ID_COLUMN = row++;
+            Integer SUBSCRIBER_NAME_COLUMN = row++;
+            Integer SERVICE_COLUMN = row++;
+            Integer PAYMENT_PRICE = row++;
             //Creating WorkBook
             String fileName = String.format("%s - %s", ResourceBundles.getEntityBundle().getString(
                     "dailyRegister"), DateFormatter.format(date));
@@ -66,49 +62,42 @@ public class DailyRegisterExcel implements ExcelGenerator {
             sheet.setColumnView(PAYMENT_PRICE, 20);
             WritableCellFormat cellFormat = new WritableCellFormat();
             cellFormat.setAlignment(Alignment.CENTRE);
-            i = 0;
+            row = 0;
 
             //Addding cells
-            sheet.addCell(new Label(SUBSCRIBER_ID_COLUMN, i, ResourceBundles.getEntityBundle().getString(
+            sheet.addCell(new Label(SUBSCRIBER_ID_COLUMN, row, ResourceBundles.getEntityBundle().getString(
                     "subscriber"), cellFormat));
-            sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, i, ResourceBundles.getEntityBundle().getString(
+            sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, row, ResourceBundles.getEntityBundle().getString(
                     "subscriber.name"), cellFormat));
-            sheet.addCell(new Label(SERVICE_COLUMN, i, ResourceBundles.getEntityBundle().getString(
+            sheet.addCell(new Label(SERVICE_COLUMN, row, ResourceBundles.getEntityBundle().getString(
                     "service"), cellFormat));
 
-            sheet.addCell(new Label(PAYMENT_PRICE, i, ResourceBundles.getEntityBundle().getString(
+            sheet.addCell(new Label(PAYMENT_PRICE, row, ResourceBundles.getEntityBundle().getString(
                     "payment.price"), cellFormat));
-            i++;
+            row++;
 
             SubscriberByAddressComparator comparator = new SubscriberByAddressComparator();
-            paymentExts = paymentExts.stream()
+            this.report.setPayments(this.report.getPayments().stream()
                     .sorted((o1, o2) -> comparator.compare(o1.getSubscriber(), o2.getSubscriber()))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()));
 
-            for (PaymentExt paymentExt : paymentExts) {
-                sheet.addCell(new Number(SUBSCRIBER_ID_COLUMN, i, paymentExt.getSubscriberAccount()));
-                sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, i, getAbbreviatedName(paymentExt)));
-                sheet.addCell(new Number(SERVICE_COLUMN, i, paymentExt.getServicePaymentId()));
-                sheet.addCell(new Number(PAYMENT_PRICE, i, paymentExt.getPrice()));
-                i++;
+            for (PaymentExt paymentExt : this.report.getPayments()) {
+                sheet.addCell(new Number(SUBSCRIBER_ID_COLUMN, row, paymentExt.getSubscriberAccount()));
+                sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, row, getAbbreviatedName(paymentExt)));
+                sheet.addCell(new Number(SERVICE_COLUMN, row, paymentExt.getServicePaymentId()));
+                sheet.addCell(new Number(PAYMENT_PRICE, row, paymentExt.getPrice()));
+                row++;
             }
 
-            Long allPayment = 0L;
-
-            for (Service service : services) {
-                Long servicePayment = paymentExts.stream()
-                        .filter(e -> e.getServicePaymentId().equals(service.getId()))
-                        .mapToLong(value -> value.getPrice())
-                        .sum();
-
-                allPayment += servicePayment;
-                sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, i, service.getName()));
-                sheet.addCell(new Number(SERVICE_COLUMN, i, service.getId()));
-                sheet.addCell(new Number(PAYMENT_PRICE, i, servicePayment));
-                i++;
+            for (Map.Entry<Service, Integer> service : this.report.getServiceAmounts().entrySet()) {
+                sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, row, service.getKey().getName()));
+                sheet.addCell(new Number(SERVICE_COLUMN, row, service.getKey().getId()));
+                sheet.addCell(new Number(PAYMENT_PRICE, row, service.getValue()));
+                row++;
             }
-            sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, i, getGuiString("inTotal")));
-            sheet.addCell(new Number(PAYMENT_PRICE, i, allPayment));
+
+            sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, row, getGuiString("inTotal")));
+            sheet.addCell(new Number(PAYMENT_PRICE, row, this.report.getOverallSum()));
 
             workbook.write();
             workbook.close();

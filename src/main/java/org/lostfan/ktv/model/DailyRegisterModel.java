@@ -1,8 +1,9 @@
 package org.lostfan.ktv.model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.lostfan.ktv.dao.DAOFactory;
 import org.lostfan.ktv.dao.PaymentDAO;
@@ -10,6 +11,7 @@ import org.lostfan.ktv.dao.ServiceDAO;
 import org.lostfan.ktv.dao.SubscriberDAO;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.domain.Service;
+import org.lostfan.ktv.model.dto.DailyRegisterReport;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.model.entity.BaseModel;
 import org.lostfan.ktv.model.transform.PaymentTransformer;
@@ -24,6 +26,9 @@ public class DailyRegisterModel extends BaseObservable implements BaseModel {
 
     private PaymentTransformer paymentTransformer = new PaymentTransformer();
 
+    private DailyRegisterReport report;
+    private LocalDate date;
+
     @Override
     public String getEntityNameKey() {
         return "dailyRegister";
@@ -34,22 +39,53 @@ public class DailyRegisterModel extends BaseObservable implements BaseModel {
         return new ArrayList<>();
     }
 
-    public List<PaymentExt> getPaymentsExtByDate(LocalDate date) {
-        List<PaymentExt> payments = new ArrayList<>();
-        for (Payment payment : paymentDAO.getByDate(date)) {
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public DailyRegisterReport getReport() {
+        return report;
+    }
+
+    public void generate(LocalDate date) {
+        this.date = date;
+        List<Payment> payments = paymentDAO.getByDate(date);
+        this.report = new DailyRegisterReport();
+        this.report.setPayments(new ArrayList<>(payments.size()));
+
+        Map<Integer, Integer> serviceSums = new HashMap<>();
+        int overallSum = 0;
+        for (Payment payment : payments) {
             PaymentExt paymentExt = paymentTransformer.transformTo(payment);
             paymentExt.setService(serviceDAO.get(payment.getServicePaymentId()));
             paymentExt.setSubscriber(subscriberDAO.get(payment.getSubscriberAccount()));
-            payments.add(paymentExt);
+            this.report.getPayments().add(paymentExt);
+
+            overallSum += payment.getPrice();
+            Integer serviceAmount = serviceSums.get(payment.getServicePaymentId());
+            if (serviceAmount == null) {
+                serviceAmount = 0;
+            }
+            serviceAmount += payment.getPrice();
+            serviceSums.put(payment.getServicePaymentId(), serviceAmount);
         }
-        return payments;
+        // Amount for each service
+        this.report.setOverallSum(overallSum);
+        this.report.setServiceAmounts(
+                serviceDAO.getAll().stream().collect(Collectors.toMap(Function.identity(), service -> {
+                    Integer sum = serviceSums.get(service.getId());
+                    if (sum == null) {
+                        return 0;
+                    }
+                    return sum;
+                }, Integer::max, LinkedHashMap::new)));
+        notifyObservers(report);
     }
 
-    public String generateExcelReport(LocalDate date) {
+    public String generateExcel() {
         DailyRegisterExcel dailyRegisterExcel = new DailyRegisterExcel();
-        dailyRegisterExcel.setPaymentExts(getPaymentsExtByDate(date));
-        dailyRegisterExcel.setServices(getAllServices());
-        dailyRegisterExcel.setDate(date);
+        dailyRegisterExcel.setReport(this.report);
+        dailyRegisterExcel.setDate(this.date);
         return dailyRegisterExcel.generate();
     }
 

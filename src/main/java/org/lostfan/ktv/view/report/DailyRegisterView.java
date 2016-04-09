@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.lostfan.ktv.model.DailyRegisterModel;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.dto.DailyRegisterReport;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.utils.ViewActionListener;
@@ -24,16 +25,20 @@ public class DailyRegisterView extends FormView {
     private class ReportTableModel extends AbstractTableModel {
 
         private List<PaymentExt> paymentExts = new ArrayList<>();
+        private String[] columnNames;
 
         public ReportTableModel() {
+            this.columnNames = new String[]
+                    {
+                            ResourceBundles.getEntityBundle().getString("subscriber"),
+                            ResourceBundles.getEntityBundle().getString("service"),
+                            ResourceBundles.getEntityBundle().getString("servicePrice.price")
+                    };
         }
 
         public ReportTableModel(List<PaymentExt> payments) {
+            this();
             this.paymentExts = payments;
-        }
-
-        public ReportTableModel(PaymentExt payment) {
-            this.paymentExts.add(payment);
         }
 
         @Override
@@ -67,37 +72,15 @@ public class DailyRegisterView extends FormView {
 
         @Override
         public String getColumnName(int columnIndex) {
-            switch (columnIndex) {
-                case 0:
-                    return ResourceBundles.getEntityBundle().getString(
-                            "subscriber");
-                case 1:
-                    return ResourceBundles.getEntityBundle().getString(
-                            "service");
-                case 2:
-                    return ResourceBundles.getEntityBundle().getString(
-                            "servicePrice.price");
-            }
-
-            return null;
+            return this.columnNames[columnIndex];
         }
 
         @Override
         public Class<?> getColumnClass(int columnIndex) {
-            switch (columnIndex) {
-                case 0:
-                    return String.class;
-                case 1:
-                    return String.class;
-                case 2:
-                    return Integer.class;
+            if (columnIndex == 2) {
+                return Integer.class;
             }
-            return null;
-        }
-
-        @Override
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return false;
+            return String.class;
         }
     }
 
@@ -111,7 +94,6 @@ public class DailyRegisterView extends FormView {
         public FooterModel(Integer allPrice) {
             this.allPrice = allPrice;
         }
-
 
         @Override
         public int getRowCount() {
@@ -131,13 +113,15 @@ public class DailyRegisterView extends FormView {
                 case 2:
                     return allPrice;
             }
-
             return null;
         }
 
         @Override
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return false;
+        public Class<?> getColumnClass(int columnIndex) {
+            if (columnIndex == 2) {
+                return Integer.class;
+            }
+            return String.class;
         }
     }
 
@@ -169,7 +153,7 @@ public class DailyRegisterView extends FormView {
     }
 
     private NotNullValidator validator = new NotNullValidator();
-    private JButton addButton;
+    private JButton generateButton;
     private JButton cancelButton;
     private JButton excelButton;
     private JTable reportTable;
@@ -177,86 +161,71 @@ public class DailyRegisterView extends FormView {
 
     private DailyRegisterModel model;
 
-    private ViewActionListener addActionListener;
-    private ViewActionListener cancelActionListener;
+    private ViewActionListener generateActionListener;
+    private ViewActionListener excelActionListener;
 
     private DateFormField dateField;
-    private BooleanFormField isAdditionalField;
-    private ServiceFormField serviceField;
 
     public DailyRegisterView(DailyRegisterModel model) {
         this.model = model;
         reportTable = new JTable(new ReportTableModel());
         this.reportTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
+        this.footerTable = new JTable(new FooterModel());
+
         setTitle(getEntityString(model.getEntityNameKey()));
 
         dateField = new DateFormField("renderedService.date");
         addFormField(dateField);
-        isAdditionalField = new BooleanFormField("service.additional");
-//        addFormField(isAdditionalField);
-        serviceField = new ServiceFormField("service");
-//        addFormField(serviceField);
 
-        this.addButton = new JButton(getGuiString("buttons.generateReport"));
-        this.addButton.addActionListener(e -> {
-            List<PaymentExt> paymentExts = model.getPaymentsExtByDate(dateField.getValue());
-            ReportTableModel reportTableModel = new ReportTableModel(
-                    paymentExts);
-            reportTable.setModel(reportTableModel);
-            if (paymentExts.size() > 0) {
-                Integer allPrice = paymentExts.stream().mapToInt(o -> o.getPrice()).sum();
-                footerTable.setModel(new FooterModel(allPrice));
+        this.generateButton = new JButton(getGuiString("buttons.generateReport"));
+        this.generateButton.setEnabled(model.getDate() != null);
+        this.generateButton.addActionListener(e -> {
+            if (this.generateActionListener != null) {
+                this.generateActionListener.actionPerformed(dateField.getValue());
             }
-            reportTable.repaint();
-            if (this.addActionListener != null) {
-
-            }
+        });
+        // Disable "Generate button" on empty date
+        // This is kind of a validator
+        dateField.addValueListener(newValue -> {
+            this.generateButton.setEnabled(newValue != null);
         });
 
         this.excelButton = new JButton(getGuiString("buttons.generateExcelReport"));
         URL url = getClass().getClassLoader().getResource("images/excel.png");
-        ImageIcon icon = null;
         if(url != null) {
-            icon = new ImageIcon(url);
+            ImageIcon icon = new ImageIcon(url);
             Image image = icon.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
             icon = new ImageIcon(image);
             excelButton.setIcon(icon);
         }
         this.excelButton.addActionListener(e -> {
-            ValidationResult validationResult = ValidationResult.createEmpty();
-            validator.validate(dateField.getValue(), dateField.getFieldKey(),
-                    validationResult);
-            if (validationResult.hasErrors()) {
-                this.showErrors(validationResult.getErrors());
-                return;
-            }
-            this.clearErrors();
-            String message = model.generateExcelReport(dateField.getValue());
-            if (message != null) {
-                exceptionWindow(message);
+            if (excelActionListener != null) {
+                excelActionListener.actionPerformed(dateField.getValue());
             }
         });
 
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
-        this.cancelButton.addActionListener(e -> {
-            if (this.cancelActionListener != null) {
-                this.cancelActionListener.actionPerformed(null);
-            }
-            hide();
-        });
+        this.cancelButton.addActionListener(e -> hide());
 
-        this.isAdditionalField.addValueListener(newValue -> {
-            if ((isAdditionalField.getValue())) {
-                serviceField.setVisible(false);
-            } else {
-                serviceField.setVisible(true);
-            }
-        });
-
+        model.addObserver(arg -> updateData());
+        updateData();
         buildLayout();
-
         show();
+    }
+
+    private void updateData() {
+        DailyRegisterReport report = this.model.getReport();
+        if (report == null) {
+            this.excelButton.setVisible(false);
+            this.reportTable.setModel(new ReportTableModel());
+            this.footerTable.setModel(new FooterModel());
+        } else {
+            this.excelButton.setVisible(true);
+            this.reportTable.setModel(new ReportTableModel(report.getPayments()));
+            this.footerTable.setModel(new FooterModel(report.getOverallSum()));
+        }
+        revalidate();
     }
 
     private void buildLayout() {
@@ -273,7 +242,6 @@ public class DailyRegisterView extends FormView {
 
         JScrollPane tableScrollPane = new JScrollPane(this.reportTable);
         panel.add(BorderLayout.CENTER, tableScrollPane);
-        footerTable = new JTable(new FooterModel());
         footerTable.setRowSelectionAllowed(false);
         footerTable.setColumnSelectionAllowed(false);
 
@@ -286,13 +254,13 @@ public class DailyRegisterView extends FormView {
         getContentPanel().add(panel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.add(addButton);
         buttonPanel.add(excelButton);
+        buttonPanel.add(generateButton);
         buttonPanel.add(cancelButton);
         getContentPanel().add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private void exceptionWindow(String message) {
+    public void showExceptionWindow(String message) {
         int optionType = JOptionPane.OK_OPTION;
         int messageType = JOptionPane.WARNING_MESSAGE;
         Object[] selValues = {getGuiString("buttons.ok")};
@@ -301,5 +269,13 @@ public class DailyRegisterView extends FormView {
                 getGuiString(message), attention,
                 optionType, messageType, null, selValues,
                 selValues[0]);
+    }
+
+    public void setGenerateActionListener(ViewActionListener generateActionListener) {
+        this.generateActionListener = generateActionListener;
+    }
+
+    public void setExcelActionListener(ViewActionListener excelActionListener) {
+        this.excelActionListener = excelActionListener;
     }
 }
