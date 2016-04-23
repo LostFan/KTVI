@@ -25,10 +25,21 @@ public class DisconnectionEditValidator implements Validator<RenderedService> {
             result.addError("errors.hasSessionAfterDate");
             return result;
         }
+
+        SubscriberSession subscriberSessionByConnectionDate = subscriberDAO.getSubscriberSessionByConnectionDate(prevRenderedService.getSubscriberAccount(), prevRenderedService.getDate());
+        if (subscriberSessionByConnectionDate != null) {
+            result.addError("errors.hasSessionAfterDate");
+            return result;
+        }
+
         if (prevRenderedService.getDate().isAfter(entity.getDate())) {
             SubscriberSession subscriberSession = subscriberDAO.getSubscriberSessionAtDate(entity.getSubscriberAccount(), entity.getDate());
             if (subscriberSession == null || subscriberSession.getDisconnectionDate() != null) {
                 result.addError("errors.noCurrentSession");
+                return result;
+            }
+            if (subscriberSession.getConnectionDate().equals(entity.getDate())) {
+                result.addError("errors.disconnectionInOneDayWithConnection");
                 return result;
             }
         }

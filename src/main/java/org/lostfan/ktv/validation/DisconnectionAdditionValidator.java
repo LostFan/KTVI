@@ -20,6 +20,10 @@ public class DisconnectionAdditionValidator implements Validator<RenderedService
             result.addError("errors.noCurrentSession");
             return result;
         }
+        if (subscriberSession.getConnectionDate().equals(entity.getDate())) {
+            result.addError("errors.disconnectionInOneDayWithConnection");
+            return result;
+        }
 
         return result;
     }

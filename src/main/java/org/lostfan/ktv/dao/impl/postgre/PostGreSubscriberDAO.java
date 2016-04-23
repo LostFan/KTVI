@@ -408,7 +408,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
     public SubscriberSession getSubscriberSessionAtDate(Integer subscriberId, LocalDate localDate) {
         SubscriberSession subscriberSession = null;
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<=? AND (\"disconnection_date\" IS NULL OR \"disconnection_date\" >= ?)  ORDER BY \"connection_date\"  desc LIMIT 1");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<=? AND (\"disconnection_date\" IS NULL OR \"disconnection_date\" > ?)  ORDER BY \"connection_date\"  desc LIMIT 1");
             preparedStatement.setInt(1, subscriberId);
             preparedStatement.setDate(2, Date.valueOf(localDate));
             preparedStatement.setDate(3, Date.valueOf(localDate));
