@@ -102,6 +102,7 @@ public class EntityTableView extends View {
         this.table.setRowSelectionAllowed(false);
         this.table.setAutoCreateRowSorter(true);
         this.table.setFillsViewportHeight(true);
+        this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

@@ -1,6 +1,7 @@
 package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.domain.Payment;
+import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.FormView;
@@ -26,7 +27,7 @@ public class PaymentController extends EntityController{
     }
 
     private void loadActionPerformed(Object args) {
-        PaymentEntityModel paymentEntityModel = new PaymentEntityModel();
+        PaymentEntityModel paymentEntityModel = MainModel.getPaymentEntityModel();
         LoadPaymentsView loadPaymentsView = new LoadPaymentsView(paymentEntityModel);
         loadPaymentsView.setAddActionListener(args_ -> {
             List<Payment> payments = (List<Payment>) args_;

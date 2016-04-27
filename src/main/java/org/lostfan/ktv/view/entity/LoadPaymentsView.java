@@ -84,6 +84,8 @@ public class LoadPaymentsView extends FormView {
         this.fileChooser.setFileFilter(new PaymentFileFilter());
         this.fileChooser.setMultiSelectionEnabled(true);
 
+        this.modelObserver = new ModelObserver();
+
         progressBar = new JProgressBar();
         progressBar.setStringPainted(true);
 
@@ -126,6 +128,7 @@ public class LoadPaymentsView extends FormView {
                 FilePath.setFilePath(this.getTitle(), fileChooser.getCurrentDirectory().getPath());
                 List<Payment> payments = entityInnerTableView.getEntityList();
                 new Thread(() -> {
+                    model.addObserver(this.modelObserver);
                     modelObserver.setFilesCount(files.length);
                     Integer filesCounter = 0;
                     for (File file : files) {
@@ -148,6 +151,7 @@ public class LoadPaymentsView extends FormView {
                         }
                     }
                     LoadPaymentsView.this.addButton.setEnabled(true);
+                    model.removeObserver(this.modelObserver);
                 }).start();
 
             }
@@ -156,10 +160,6 @@ public class LoadPaymentsView extends FormView {
         });
 
         this.entityInnerTableView = new EntityInnerTableView<>(model.getLoadFullEntityField(), new ArrayList<>());
-
-        this.modelObserver = new ModelObserver();
-
-        model.addObserver(this.modelObserver);
 
         buildLayout();
 
