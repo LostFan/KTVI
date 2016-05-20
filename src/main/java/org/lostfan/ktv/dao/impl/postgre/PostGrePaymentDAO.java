@@ -191,6 +191,20 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
         }
     }
 
+    public void deleteByDate(LocalDate date) {
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "DELETE FROM  \"payment\" where \"date\" = ?");
+            preparedStatement.setDate(1, Date.valueOf(date));
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new DAOException();
+        }
+
+    }
+
     public List<Payment> getByBankFileName(String bankFileName) {
         List<Payment> payments = new ArrayList<>();
         try {

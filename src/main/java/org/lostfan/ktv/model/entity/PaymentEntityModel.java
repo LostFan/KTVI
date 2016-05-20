@@ -15,8 +15,7 @@ import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.utils.PaymentsLoader;
-import org.lostfan.ktv.validation.PaymentValidator;
-import org.lostfan.ktv.validation.Validator;
+import org.lostfan.ktv.validation.*;
 
 public class PaymentEntityModel extends BaseDocumentModel<Payment> {
 
@@ -27,6 +26,8 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
     private List<Payment> payments;
     private Integer progress;
+    private PeriodValidator periodValidator = new PeriodValidator();
+    private NotNullValidator notNullValidator = new NotNullValidator();
 
     public PaymentEntityModel() {
 
@@ -336,5 +337,20 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
 
     public List<Payment> getPaymentsByDate(LocalDate date) {
         return getDao().getByDate(date);
+    }
+
+    public ValidationResult deletePaymentsByDate(LocalDate date) {
+        ValidationResult validationResult = ValidationResult.createEmpty();
+        notNullValidator.validate(date, "entity.date", validationResult);
+        if(validationResult.hasErrors()) {
+            return validationResult;
+        }
+        periodValidator.validate(date, validationResult);
+        if(validationResult.hasErrors()) {
+            return validationResult;
+        }
+        getDao().deleteByDate(date);
+        updateEntitiesList();
+        return validationResult;
     }
 }
