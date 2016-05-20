@@ -108,6 +108,9 @@ public class PaymentView extends FormView {
         this.addButton = new JButton(getGuiString(entity == null ? "buttons.add" : "buttons.change"));
         this.addButton.addActionListener(e -> {
             if (this.addActionListener != null) {
+                if (this.entityInnerTableView != null) {
+                    this.entityInnerTableView.stopEditing();
+                }
                 this.addActionListener.actionPerformed(entityInnerTableView.getEntityList());
             }
         });
