@@ -180,7 +180,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
                 }
                 Payment payment = new Payment();
                 payment.setSubscriberAccount(newLoadedPayment.getSubscriberAccount());
-                payment.setDate(date);
+                payment.setDate(newLoadedPayment.getDate());
                 payment.setPaymentTypeId(newLoadedPayment.getPaymentTypeId());
                 payment.setBankFileName(newLoadedPayment.getBankFileName());
                 if (price > paymentPrice) {
@@ -201,7 +201,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         }
         Payment payment = new Payment();
         payment.setSubscriberAccount(newLoadedPayment.getSubscriberAccount());
-        payment.setDate(date);
+        payment.setDate(newLoadedPayment.getDate());
         payment.setBankFileName(newLoadedPayment.getBankFileName());
         payment.setPaymentTypeId(newLoadedPayment.getPaymentTypeId());
         payment.setPrice(price);
@@ -259,7 +259,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
                 Integer paymentPrice  = paymentsForNotClosedRenderedServices.get(id).getPrice();
                 Payment payment = new Payment();
                 payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
-                payment.setDate(date);
+                payment.setDate(loadPayment.getDate());
                 payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
                 payment.setBankFileName(loadPayment.getBankFileName());
                 if (price > paymentPrice) {
@@ -280,7 +280,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         }
         Payment payment = new Payment();
         payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
-        payment.setDate(date);
+        payment.setDate(loadPayment.getDate());
         payment.setBankFileName(loadPayment.getBankFileName());
         payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
         payment.setPrice(price);
