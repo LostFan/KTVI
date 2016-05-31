@@ -34,8 +34,9 @@ public class PaymentTableView extends EntityTableView {
                 deleteByDateActionListener.actionPerformed(null);
             }
         });
-        addButton(priceButton, false);
+
         addButton(deleteByDateButton, false);
+        addButton(priceButton, false);
 
         JButton beginButton =  new JButton("<<<");
         JButton minusYear =  new JButton("<<");

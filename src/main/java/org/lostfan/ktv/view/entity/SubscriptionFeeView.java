@@ -83,11 +83,24 @@ public class SubscriptionFeeView extends FrameView {
         }
     }
 
+    private class ModelObserver implements org.lostfan.ktv.utils.Observer {
+
+        @Override
+        public void update(Object args) {
+            Integer progress = model.getProgress();
+            if (progress != null) {
+                SubscriptionFeeView.this.progressBar.setValue(progress);
+            }
+            SubscriptionFeeView.this.revalidate();
+        }
+    }
+
     private DateLabelFieldInput dateLabelFieldInput;
     private SubscriberLabelFieldInput subscriberLabelFieldInput;
     private JButton addButton;
     private JButton cancelButton;
     private JPanel fieldPanel;
+    private JProgressBar progressBar;
 
     private SubscriptionFeeModel model;
 
@@ -132,6 +145,9 @@ public class SubscriptionFeeView extends FrameView {
             subscriberLabelFieldInput = new SubscriberLabelFieldInput(null);
         }
 
+        progressBar = new JProgressBar();
+        progressBar.setStringPainted(true);
+
         buildLayout();
 
         show();
@@ -168,6 +184,7 @@ public class SubscriptionFeeView extends FrameView {
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addButton);
+        buttonPanel.add(progressBar);
         buttonPanel.add(cancelButton);
         getContentPanel().add(buttonPanel, BorderLayout.SOUTH);
     }

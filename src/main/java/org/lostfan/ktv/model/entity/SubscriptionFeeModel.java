@@ -27,6 +27,7 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
     private LocalDate date;
     private List<RenderedService> entities;
     private List<EntityField> fields;
+    private Integer progress;
 
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
     private TariffDAO tariffDAO = DAOFactory.getDefaultDAOFactory().getTariffDAO();
@@ -101,12 +102,7 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
             return result;
         }
         LocalDate beginDate = date.withDayOfMonth(1);
-        LocalDate endDate = LocalDate.now().withDayOfMonth(1).plusMonths(1);
-        while(beginDate.isBefore(endDate)){
-            System.out.println(beginDate);
-            createSubscriptionFeeInMouthBySubscriber(subscriberId, beginDate);
-            beginDate = beginDate.plusMonths(1);
-        }
+        createSubscriptionFeeInMouthBySubscriber(subscriberId, beginDate);
         updateEntitiesList();
         return result;
     }
@@ -130,12 +126,7 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
             return result;
         }
         LocalDate beginDate = date.withDayOfMonth(1);
-        LocalDate endDate = LocalDate.now().withDayOfMonth(1).plusMonths(1);
-        while(beginDate.isBefore(endDate)){
-            System.out.println(beginDate);
-            createSubscriptionFeesInMouth(beginDate);
-            beginDate = beginDate.plusMonths(1);
-        }
+        createSubscriptionFeesInMouth(beginDate);
         updateEntitiesList();
         return result;
     }
@@ -154,8 +145,11 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
         for (RenderedService renderedService : renderedServices) {
             getDao().delete(renderedService.getId());
         }
+        Integer count = 0;
         for (Subscriber subscriber : subscribers) {
             saveRenderedService(subscriber.getId(), date);
+            progress = 100 * count++ / subscribers.size();
+            notifyObservers(null);
         }
     }
 
@@ -234,5 +228,9 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
 
     public LocalDate getDate() {
         return this.date;
+    }
+
+    public Integer getProgress() {
+        return progress;
     }
 }

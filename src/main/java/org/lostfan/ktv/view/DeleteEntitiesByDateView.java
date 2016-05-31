@@ -62,10 +62,10 @@ public class DeleteEntitiesByDateView extends FormView {
         int optionType = JOptionPane.OK_CANCEL_OPTION;
         int messageType = JOptionPane.QUESTION_MESSAGE;
         Object[] selValues = { getGuiString("buttons.yes"), getGuiString("buttons.cancel") };
-        String message = getGuiString("window.loadPayments") + " : "
+        String message = getGuiString("window.delete") + " : "
                 + getEntityString(model.getEntityNameKey());
         int result = JOptionPane.showOptionDialog(null,
-                getGuiString("message.alreadyExistLoadQuestion"), message,
+                getGuiString("message.deleteQuestion"), message,
                 optionType, messageType, null, selValues,
                 selValues[0]);
 
