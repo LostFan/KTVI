@@ -4,6 +4,7 @@ import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.view.DeleteEntitiesByDateView;
 import org.lostfan.ktv.view.FormView;
 import org.lostfan.ktv.view.entity.LoadPaymentsView;
 import org.lostfan.ktv.view.table.PaymentTableView;
@@ -23,6 +24,7 @@ public class PaymentController extends EntityController{
         this.model = model;
         this.view = view;
         view.loadActionListener(this::loadActionPerformed);
+        view.deleteByDateActionListener(this::deleteByDateActionPerformed);
         view.newDateActionListener(this::newDateActionPerformed);
     }
 
@@ -37,6 +39,21 @@ public class PaymentController extends EntityController{
         loadPaymentsView.setLoadPaymentFileActionListener(args_ -> {
             File file = (File) args_;
             paymentEntityModel.createPayments(file);
+        });
+    }
+
+    private void deleteByDateActionPerformed(Object args) {
+        PaymentEntityModel paymentEntityModel = MainModel.getPaymentEntityModel();
+        DeleteEntitiesByDateView deleteEntitiesByDateView = new DeleteEntitiesByDateView(paymentEntityModel);
+        deleteEntitiesByDateView.setDeleteActionListener(args_ -> {
+            LocalDate date = (LocalDate) args_;
+            ValidationResult result = paymentEntityModel.deletePaymentsByDate(date);
+            if (result.hasErrors()) {
+                deleteEntitiesByDateView.showErrors(result.getErrors());
+                return;
+            }
+            deleteEntitiesByDateView.hide();
+
         });
     }
 

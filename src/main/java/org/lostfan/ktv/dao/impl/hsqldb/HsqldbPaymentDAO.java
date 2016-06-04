@@ -298,4 +298,9 @@ public class HsqldbPaymentDAO extends HsqldbBaseDao implements PaymentDAO {
     public Map<Integer, Payment> getForNotClosedRenderedServices(Integer subscriberAccount, Integer serviceId) {
         return null;
     }
+
+    @Override
+    public void deleteByDate(LocalDate date) {
+
+    }
 }

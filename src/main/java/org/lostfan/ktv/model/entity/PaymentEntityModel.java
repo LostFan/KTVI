@@ -15,8 +15,7 @@ import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.utils.PaymentsLoader;
-import org.lostfan.ktv.validation.PaymentValidator;
-import org.lostfan.ktv.validation.Validator;
+import org.lostfan.ktv.validation.*;
 
 public class PaymentEntityModel extends BaseDocumentModel<Payment> {
 
@@ -27,6 +26,8 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
     private List<Payment> payments;
     private Integer progress;
+    private PeriodValidator periodValidator = new PeriodValidator();
+    private NotNullValidator notNullValidator = new NotNullValidator();
 
     public PaymentEntityModel() {
 
@@ -180,7 +181,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
                 }
                 Payment payment = new Payment();
                 payment.setSubscriberAccount(newLoadedPayment.getSubscriberAccount());
-                payment.setDate(date);
+                payment.setDate(newLoadedPayment.getDate());
                 payment.setPaymentTypeId(newLoadedPayment.getPaymentTypeId());
                 payment.setBankFileName(newLoadedPayment.getBankFileName());
                 if (price > paymentPrice) {
@@ -201,7 +202,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         }
         Payment payment = new Payment();
         payment.setSubscriberAccount(newLoadedPayment.getSubscriberAccount());
-        payment.setDate(date);
+        payment.setDate(newLoadedPayment.getDate());
         payment.setBankFileName(newLoadedPayment.getBankFileName());
         payment.setPaymentTypeId(newLoadedPayment.getPaymentTypeId());
         payment.setPrice(price);
@@ -259,7 +260,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
                 Integer paymentPrice  = paymentsForNotClosedRenderedServices.get(id).getPrice();
                 Payment payment = new Payment();
                 payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
-                payment.setDate(date);
+                payment.setDate(loadPayment.getDate());
                 payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
                 payment.setBankFileName(loadPayment.getBankFileName());
                 if (price > paymentPrice) {
@@ -280,7 +281,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         }
         Payment payment = new Payment();
         payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
-        payment.setDate(date);
+        payment.setDate(loadPayment.getDate());
         payment.setBankFileName(loadPayment.getBankFileName());
         payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
         payment.setPrice(price);
@@ -336,5 +337,20 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
 
     public List<Payment> getPaymentsByDate(LocalDate date) {
         return getDao().getByDate(date);
+    }
+
+    public ValidationResult deletePaymentsByDate(LocalDate date) {
+        ValidationResult validationResult = ValidationResult.createEmpty();
+        notNullValidator.validate(date, "entity.date", validationResult);
+        if(validationResult.hasErrors()) {
+            return validationResult;
+        }
+        periodValidator.validate(date, validationResult);
+        if(validationResult.hasErrors()) {
+            return validationResult;
+        }
+        getDao().deleteByDate(date);
+        updateEntitiesList();
+        return validationResult;
     }
 }

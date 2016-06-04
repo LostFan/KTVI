@@ -13,10 +13,12 @@ public class PaymentTableView extends EntityTableView {
 
     private ViewActionListener loadActionListener;
     private ViewActionListener newDateActionListener;
+    private ViewActionListener deleteByDateActionListener;
 
     private JLabel monthNumber;
     private JLabel yearNumber;
     private JButton priceButton;
+    private JButton deleteByDateButton;
 
     public PaymentTableView(PaymentEntityModel model) {
         super(model);
@@ -26,6 +28,14 @@ public class PaymentTableView extends EntityTableView {
                 loadActionListener.actionPerformed(null);
             }
         });
+        deleteByDateButton = new JButton(View.getGuiString("buttons.deleteByDate"));
+        deleteByDateButton.addActionListener(e -> {
+            if (deleteByDateActionListener != null) {
+                deleteByDateActionListener.actionPerformed(null);
+            }
+        });
+
+        addButton(deleteByDateButton, false);
         addButton(priceButton, false);
 
         JButton beginButton =  new JButton("<<<");
@@ -41,6 +51,7 @@ public class PaymentTableView extends EntityTableView {
         minusYear.addActionListener(e -> updateDate(model.getDate().minusYears(1)));
         plusMonth.addActionListener(e -> updateDate(model.getDate().plusMonths(1)));
         plusYear.addActionListener(e -> updateDate(model.getDate().plusYears(1)));
+        endButton.addActionListener(e -> updateDate(LocalDate.now()));
 
         JPanel newPanel = new JPanel();
         getContentPanel().add(newPanel,  BorderLayout.SOUTH);
@@ -67,6 +78,11 @@ public class PaymentTableView extends EntityTableView {
     public void loadActionListener(ViewActionListener loadActionListener) {
         this.loadActionListener = loadActionListener;
     }
+
+    public void deleteByDateActionListener(ViewActionListener deleteByDateActionListener) {
+        this.deleteByDateActionListener = deleteByDateActionListener;
+    }
+
 
     public void newDateActionListener(ViewActionListener newDateActionListener) {
         this.newDateActionListener = newDateActionListener;

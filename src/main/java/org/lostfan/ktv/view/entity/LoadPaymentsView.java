@@ -10,6 +10,8 @@ import org.lostfan.ktv.view.FormView;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,8 @@ public class LoadPaymentsView extends FormView {
 
     protected ViewActionListener addActionListener;
     private ViewActionListener loadPaymentFileActionListener;
+    private Thread loadingThread;
+    private boolean isOpened = true;
 
     private ModelObserver modelObserver;
 
@@ -111,7 +115,10 @@ public class LoadPaymentsView extends FormView {
         });
 
         this.cancelButton = new JButton(getGuiString("buttons.cancel"));
-        this.cancelButton.addActionListener(e -> hide());
+        this.cancelButton.addActionListener(e -> {
+                isOpened = false;
+                hide();
+        });
 
         this.openFileButton = new JButton(getGuiString("buttons.openFile"));
         openFileButton.addActionListener(e -> {
@@ -127,11 +134,15 @@ public class LoadPaymentsView extends FormView {
                 File[] files = fileChooser.getSelectedFiles();
                 FilePath.setFilePath(this.getTitle(), fileChooser.getCurrentDirectory().getPath());
                 List<Payment> payments = entityInnerTableView.getEntityList();
-                new Thread(() -> {
+                loadingThread = new Thread(() -> {
                     model.addObserver(this.modelObserver);
                     modelObserver.setFilesCount(files.length);
                     Integer filesCounter = 0;
+
                     for (File file : files) {
+                        if(!isOpened) {
+                            return;
+                        }
                         modelObserver.setFilesCounter(filesCounter++);
                         if (bankFileNames.contains(file.getName())
                                 || !LoadPaymentsView.this.model.getPaymentsByBankFileName(file.getName()).isEmpty()) {
@@ -152,12 +163,23 @@ public class LoadPaymentsView extends FormView {
                     }
                     LoadPaymentsView.this.addButton.setEnabled(true);
                     model.removeObserver(this.modelObserver);
-                }).start();
+                });
+                loadingThread.start();
 
             }
 
             this.entityInnerTableView.getTable().revalidate();
         });
+
+        getFrame().addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+               isOpened = false;
+            }
+        });
+
 
         this.entityInnerTableView = new EntityInnerTableView<>(model.getLoadFullEntityField(), new ArrayList<>());
 
