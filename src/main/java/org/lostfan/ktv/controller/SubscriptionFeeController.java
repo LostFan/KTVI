@@ -1,5 +1,7 @@
 package org.lostfan.ktv.controller;
 
+import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.model.SubscriptionFeeRecalculationModel;
 import org.lostfan.ktv.model.entity.SubscriptionFeeModel;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.view.table.SubscriptionFeeTableView;
@@ -17,51 +19,74 @@ public class SubscriptionFeeController extends EntityController{
         super(model, view);
         this.model = model;
         this.view = view;
-        view.setCountWithActionListener(this::addCountWithActionPerformed);
-        view.setCountAllWithActionListener(this::addCountAllWithActionPerformed);
+        view.setRecalculateWithActionListener(this::addRecalculateOneActionPerformed);
+        view.setRecalculateAllWithActionListener(this::addRecalculateAllActionPerformed);
         view.newDateActionListener(this::newDateActionPerformed);
     }
 
-    protected void addCountAllWithActionPerformed(Object args) {
-        SubscriptionFeeView entityView = new SubscriptionFeeView(this.model, false);
-        entityView.setAddActionListener(args_ -> {
+    protected void addRecalculateAllActionPerformed(Object args) {
+        SubscriptionFeeRecalculationModel subscriptionFeeRecalculationModel = new SubscriptionFeeRecalculationModel();
+        SubscriptionFeeView entityView = new SubscriptionFeeView(model, subscriptionFeeRecalculationModel, false);
+        addAddActionListener(entityView);
+        entityView.setRecalculateActionListener(args_ -> {
             LocalDate date = (LocalDate) args_;
             ValidationResult result = ValidationResult.createEmpty();
-            if(date == null) {
+            if (date == null) {
                 result.addError("errors.empty", "renderedService.date");
             }
             if (result.hasErrors()) {
                 entityView.showErrors(result.getErrors());
                 return;
             }
-            result = model.createSubscriptionFees(date);
+            result = subscriptionFeeRecalculationModel.createSubscriptionFees(date);
             if (result.hasErrors()) {
                 entityView.showErrors(result.getErrors());
                 return;
             }
-            entityView.hide();
         });
+        entityView.setDeleteAllActionListener(args_ -> {
+            LocalDate date = (LocalDate) args_;
+            model.deleteAllRenderedServicesByMouth(date);
+        });
+
     }
 
-    protected void addCountWithActionPerformed(Object args) {
-        SubscriptionFeeView entityView = new SubscriptionFeeView(this.model, true);
-        entityView.setAddActionListener(args_ -> {
+    protected void addRecalculateOneActionPerformed(Object args) {
+        SubscriptionFeeRecalculationModel subscriptionFeeRecalculationModel = new SubscriptionFeeRecalculationModel();
+        SubscriptionFeeView entityView = new SubscriptionFeeView(this.model, subscriptionFeeRecalculationModel, true);
+        addAddActionListener(entityView);
+        entityView.setRecalculateActionListener(args_ -> {
             SubscriptionFeeView.DateAndSubscriberId dateAndSubscriberId = (SubscriptionFeeView.DateAndSubscriberId) args_;
             ValidationResult result = ValidationResult.createEmpty();
-            if(dateAndSubscriberId.getDate() == null) {
+            if (dateAndSubscriberId.getDate() == null) {
                 result.addError("errors.empty", "renderedService.date");
             }
-            if(dateAndSubscriberId.getSubscriberId() == null) {
+            if (dateAndSubscriberId.getSubscriberId() == null) {
                 result.addError("errors.empty", "subscriber");
             }
             if (result.hasErrors()) {
                 entityView.showErrors(result.getErrors());
                 return;
             }
-            result = model.createSubscriptionFeeBySubscriber(dateAndSubscriberId.getSubscriberId(), dateAndSubscriberId.getDate());
+            result = subscriptionFeeRecalculationModel.createSubscriptionFeeBySubscriber(dateAndSubscriberId.getSubscriberId(), dateAndSubscriberId.getDate());
             if (result.hasErrors()) {
                 entityView.showErrors(result.getErrors());
                 return;
+            }
+        });
+        entityView.setDeleteSeveralActionListener(args_ -> {
+            List<RenderedService> renderedServices = (List<RenderedService>) args_;
+            for (RenderedService renderedService : renderedServices) {
+                model.deleteRenderedServicesByMouthAndSubscriberId(renderedService.getDate(), renderedService.getSubscriberAccount());
+            }
+        });
+    }
+
+    private void addAddActionListener(SubscriptionFeeView entityView) {
+        entityView.setAddActionListener(args -> {
+            List<RenderedService> renderedServices = (List<RenderedService>) args;
+            for (RenderedService renderedService : renderedServices) {
+                model.save(renderedService);
             }
             entityView.hide();
         });

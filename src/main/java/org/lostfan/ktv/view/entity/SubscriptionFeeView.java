@@ -1,16 +1,20 @@
 package org.lostfan.ktv.view.entity;
 
+import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.model.EntityFieldTypes;
+import org.lostfan.ktv.model.SubscriptionFeeRecalculationModel;
 import org.lostfan.ktv.model.entity.SubscriptionFeeModel;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.validation.Error;
+import org.lostfan.ktv.view.EntityInnerTableView;
 import org.lostfan.ktv.view.FrameView;
 import org.lostfan.ktv.view.components.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class SubscriptionFeeView extends FrameView {
 
@@ -24,7 +28,7 @@ public class SubscriptionFeeView extends FrameView {
             this.datePicker = new DatePickerField();
         }
 
-        public JComponent getInputComponent() {
+        public DatePickerField getInputComponent() {
             return this.datePicker;
         }
 
@@ -83,39 +87,91 @@ public class SubscriptionFeeView extends FrameView {
         }
     }
 
+    private class ModelObserver implements org.lostfan.ktv.utils.Observer {
+
+        @Override
+        public void update(Object args) {
+            Integer progress = subscriptionFeeRecalculationModel.getProgress();
+            if (progress != null) {
+                SubscriptionFeeView.this.progressBar.setValue(progress);
+                if (progress == 100) {
+                    entityInnerTableView.getEntityList().clear();
+                    entityInnerTableView.getEntityList().addAll(subscriptionFeeRecalculationModel.getNewRenderedServices());
+                }
+            }
+            SubscriptionFeeView.this.revalidate();
+        }
+    }
+
     private DateLabelFieldInput dateLabelFieldInput;
     private SubscriberLabelFieldInput subscriberLabelFieldInput;
+    private JButton recalculateButton;
     private JButton addButton;
     private JButton cancelButton;
     private JPanel fieldPanel;
+    private JProgressBar progressBar;
+    private EntityInnerTableView<RenderedService> entityInnerTableView;
+    private ModelObserver modelObserver;
 
     private SubscriptionFeeModel model;
+    private SubscriptionFeeRecalculationModel subscriptionFeeRecalculationModel;
 
-    private ViewActionListener addActionListener;
+    private ViewActionListener recalculateActionListener;
     private ViewActionListener cancelActionListener;
-    private ViewActionListener changeActionListener;
+    private ViewActionListener addActionListener;
+    private ViewActionListener deleteAllActionListener;
+    private ViewActionListener deleteSeveralActionListener;
 
     private boolean subscriberVision;
 
-    public SubscriptionFeeView(SubscriptionFeeModel model) {
-        this(model, false);
-    }
-
-    public SubscriptionFeeView(SubscriptionFeeModel model, boolean subscriberVision) {
+    public SubscriptionFeeView(SubscriptionFeeModel model, SubscriptionFeeRecalculationModel subscriptionFeeRecalculationModel, boolean subscriberVision) {
         this.subscriberVision = subscriberVision;
         this.model = model;
+        this.subscriptionFeeRecalculationModel = subscriptionFeeRecalculationModel;
+
+        modelObserver = new ModelObserver();
 
         setTitle(getEntityString(model.getEntityNameKey()));
 
-        this.addButton = new JButton(getGuiString("buttons.count"));
-        this.addButton.addActionListener(e -> {
+        this.recalculateButton = new JButton(getGuiString("buttons.recalculate"));
+        this.recalculateButton.addActionListener(e -> {
 
-            if (this.addActionListener != null) {
-                if(subscriberLabelFieldInput == null) {
-                    this.addActionListener.actionPerformed(dateLabelFieldInput.getValue());
+            if (this.recalculateActionListener != null) {
+                if (subscriberLabelFieldInput == null) {
+                    new Thread(() -> {
+                        this.recalculateButton.setEnabled(false);
+                        this.addButton.setEnabled(false);
+                        subscriptionFeeRecalculationModel.addObserver(this.modelObserver);
+                        this.recalculateActionListener.actionPerformed(dateLabelFieldInput.getValue());
+                        subscriptionFeeRecalculationModel.removeObserver(this.modelObserver);
+                        this.recalculateButton.setEnabled(true);
+                        this.addButton.setEnabled(true);
+                        this.entityInnerTableView.getTable().revalidate();
+                    }).start();
                 } else {
-                    this.addActionListener.actionPerformed(new DateAndSubscriberId((Integer) subscriberLabelFieldInput.getValue(), (LocalDate) dateLabelFieldInput.getValue()));
+                    this.recalculateActionListener.actionPerformed(new DateAndSubscriberId((Integer) subscriberLabelFieldInput.getValue(), (LocalDate) dateLabelFieldInput.getValue()));
+                    this.addButton.setEnabled(true);
+                    entityInnerTableView.getEntityList().clear();
+                    entityInnerTableView.getEntityList().addAll(subscriptionFeeRecalculationModel.getNewRenderedServices());
+                    entityInnerTableView.getTable().repaint();
+                    entityInnerTableView.getTable().revalidate();
                 }
+            }
+        });
+
+        this.addButton = new JButton(getGuiString("buttons.add"));
+        this.addButton.addActionListener(e -> {
+            if(subscriberVision) {
+                if (this.deleteSeveralActionListener != null) {
+                    this.deleteSeveralActionListener.actionPerformed(entityInnerTableView.getEntityList());
+                }
+            } else {
+                if (this.deleteAllActionListener != null) {
+                    this.deleteAllActionListener.actionPerformed(dateLabelFieldInput.getValue());
+                }
+            }
+            if (this.addActionListener != null) {
+                this.addActionListener.actionPerformed(entityInnerTableView.getEntityList());
             }
         });
 
@@ -128,16 +184,32 @@ public class SubscriptionFeeView extends FrameView {
         });
 
         dateLabelFieldInput = new DateLabelFieldInput();
+        dateLabelFieldInput.getInputComponent().addActionListener(e -> {
+            addButton.setEnabled(false);
+        });
         if(this.subscriberVision) {
             subscriberLabelFieldInput = new SubscriberLabelFieldInput(null);
         }
 
-        buildLayout();
+        progressBar = new JProgressBar();
+        progressBar.setStringPainted(true);
+
+
+
+        this.entityInnerTableView = new EntityInnerTableView<>(model.getLoadFullEntityField(), new ArrayList<>());
+
+        buildLayout(subscriberVision);
 
         show();
     }
 
-    private void buildLayout() {
+    private void buildLayout(boolean subscriberVision) {
+
+        if(subscriberVision) {
+            progressBar.setVisible(false);
+        }
+        addButton.setEnabled(false);
+        this.entityInnerTableView.setVisibleButtons(false);
         getContentPanel().setLayout(new BorderLayout(10, 10));
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
@@ -166,10 +238,28 @@ public class SubscriptionFeeView extends FrameView {
             this.fieldPanel.add(inputComponent, c);
         }
 
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        panel.add(Box.createVerticalGlue());
+
+        panel.add(Box.createRigidArea(new Dimension(10, 10)));
+
+        panel.add(this.entityInnerTableView.getContentPanel());
+        this.entityInnerTableView.getTable().setEnabled(false);
+        getContentPanel().add(panel);
+
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(recalculateButton);
         buttonPanel.add(addButton);
+        buttonPanel.add(progressBar);
         buttonPanel.add(cancelButton);
         getContentPanel().add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    public void setRecalculateActionListener(ViewActionListener recalculateActionListener) {
+        this.recalculateActionListener = recalculateActionListener;
     }
 
     public void setAddActionListener(ViewActionListener addActionListener) {
@@ -178,6 +268,14 @@ public class SubscriptionFeeView extends FrameView {
 
     public void setCancelActionListener(ViewActionListener cancelActionListener) {
         this.cancelActionListener = cancelActionListener;
+    }
+
+    public void setDeleteAllActionListener(ViewActionListener deleteAllActionListener) {
+        this.deleteAllActionListener = deleteAllActionListener;
+    }
+
+    public void setDeleteSeveralActionListener(ViewActionListener deleteSeveralActionListener) {
+        this.deleteSeveralActionListener = deleteSeveralActionListener;
     }
 
     public void showErrors(java.util.List<org.lostfan.ktv.validation.Error> errors) {

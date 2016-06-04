@@ -11,29 +11,29 @@ public class SubscriptionFeeTableView extends EntityTableView {
 
     private SubscriptionFeeModel model;
 
-    private ViewActionListener countWithActionListener;
-    private ViewActionListener countAllWithActionListener;
+    private ViewActionListener recalculateWithActionListener;
+    private ViewActionListener recalculateAllWithActionListener;
     private ViewActionListener newDateActionListener;
 
     public SubscriptionFeeTableView(SubscriptionFeeModel model) {
         super(model);
         this.model = model;
 
-        JButton button = new JButton(getGuiString("buttons.countWith"));
+        JButton button = new JButton(getGuiString("buttons.recalculateWith"));
         button.addActionListener(e -> {
-            if (this.countWithActionListener != null) {
-                this.countWithActionListener.actionPerformed(null);
+            if (this.recalculateWithActionListener != null) {
+                this.recalculateWithActionListener.actionPerformed(null);
             }
         });
         addButton(button, false);
 
-        button = new JButton(getGuiString("buttons.countAllWith"));
+        button = new JButton(getGuiString("buttons.recalculateAllWith"));
         button.addActionListener(e -> {
             int selectedId = getSelectedEntityId();
-            if (selectedId != -1 && this.countAllWithActionListener != null) {
-                this.countAllWithActionListener.actionPerformed(selectedId);
+            if (selectedId != -1 && this.recalculateAllWithActionListener != null) {
+                this.recalculateAllWithActionListener.actionPerformed(selectedId);
             } else {
-                this.countAllWithActionListener.actionPerformed(null);
+                this.recalculateAllWithActionListener.actionPerformed(null);
             }
         });
         addButton(button, false);
@@ -132,12 +132,12 @@ public class SubscriptionFeeTableView extends EntityTableView {
         super.revalidate();
     }
 
-    public void setCountWithActionListener(ViewActionListener countWithActionListener) {
-        this.countWithActionListener = countWithActionListener;
+    public void setRecalculateWithActionListener(ViewActionListener recalculateWithActionListener) {
+        this.recalculateWithActionListener = recalculateWithActionListener;
     }
 
-    public void setCountAllWithActionListener(ViewActionListener countAllWithActionListener) {
-        this.countAllWithActionListener = countAllWithActionListener;
+    public void setRecalculateAllWithActionListener(ViewActionListener recalculateAllWithActionListener) {
+        this.recalculateAllWithActionListener = recalculateAllWithActionListener;
     }
 
     public void newDateActionListener(ViewActionListener newDateActionListener) {

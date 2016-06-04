@@ -107,6 +107,11 @@ public class HsqldbRenderedServiceDAO extends HsqldbBaseDao implements RenderedS
         return renderedServices;
     }
 
+    @Override
+    public List<RenderedService> getAll(int subscriberAccount, int serviceId) {
+        return null;
+    }
+
     public List<RenderedService> getAll(int serviceId, LocalDate date) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {

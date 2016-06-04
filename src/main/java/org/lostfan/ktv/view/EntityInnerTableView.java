@@ -27,6 +27,7 @@ public class EntityInnerTableView<T extends Entity> extends View {
     private JButton upButton;
     private JButton downButton;
     private EntityInnerTableModel entityInnerTableModel;
+    private JPanel buttonsPanel;
 
     private ViewActionListener addActionListener;
 
@@ -83,13 +84,13 @@ public class EntityInnerTableView<T extends Entity> extends View {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         getContentPanel().add(rightPanel, BorderLayout.LINE_END);
 
-        JPanel rightPanelInner = new JPanel(new GridLayout(4, 1, 0, 10));
-        rightPanel.add(rightPanelInner);
+        buttonsPanel = new JPanel(new GridLayout(4, 1, 0, 10));
+        rightPanel.add(buttonsPanel);
 
-        rightPanelInner.add(this.addCopyButton);
-        rightPanelInner.add(this.addButton);
-        rightPanelInner.add(this.restoreRowButton);
-        rightPanelInner.add(this.deleteButton);
+        buttonsPanel.add(this.addCopyButton);
+        buttonsPanel.add(this.addButton);
+        buttonsPanel.add(this.restoreRowButton);
+        buttonsPanel.add(this.deleteButton);
     }
 
     public int getSelectedIndex() {
@@ -200,5 +201,9 @@ public class EntityInnerTableView<T extends Entity> extends View {
 
     public JTable getTable() {
         return this.table;
+    }
+
+    public void setVisibleButtons(boolean isVisible) {
+        buttonsPanel.setVisible(isVisible);
     }
 }
