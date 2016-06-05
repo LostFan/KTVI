@@ -290,6 +290,11 @@ public class HsqldbRenderedServiceDAO extends HsqldbBaseDao implements RenderedS
     }
 
     @Override
+    public Map<Integer, Integer> getAllRenderedServicesPriceInMonthForSubscriber(LocalDate date) {
+        return null;
+    }
+
+    @Override
     public Map<Integer, Integer> getAllRenderedServicesPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date) {
         return null;
     }

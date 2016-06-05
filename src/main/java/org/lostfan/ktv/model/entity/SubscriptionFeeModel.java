@@ -118,16 +118,24 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
         return loadFullEntityField;
     }
 
-    public void deleteAllRenderedServicesByMouth(LocalDate date) {
+    public void deleteAllRenderedServicesByMonth(LocalDate date) {
         List<RenderedService> renderedServices = ((RenderedServiceDAO) getDao()).getAllForMonth(FixedServices.SUBSCRIPTION_FEE.getId(), date);
         for (RenderedService renderedService : renderedServices) {
             getDao().delete(renderedService.getId());
         }
     }
-    public void deleteRenderedServicesByMouthAndSubscriberId(LocalDate date, Integer subscriberId) {
+    public void deleteRenderedServicesByMonthAndSubscriberId(LocalDate date, Integer subscriberId) {
         List<RenderedService> renderedServices = ((RenderedServiceDAO) getDao()).getAllForMonth(FixedServices.SUBSCRIPTION_FEE.getId(), subscriberId, date);
         for (RenderedService renderedService : renderedServices) {
             getDao().delete(renderedService.getId());
         }
+    }
+
+    public void saveAll(List<RenderedService> renderedServices) {
+        getDao().transactionBegin();
+        for (RenderedService renderedService : renderedServices) {
+            save(renderedService);
+        }
+        getDao().commit();
     }
 }

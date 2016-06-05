@@ -40,7 +40,7 @@ public class SubscriptionFeeRecalculationModel extends BaseObservable {
             return result;
         }
         LocalDate beginDate = date.withDayOfMonth(1);
-        newRenderedServices.add(getSubscriptionFeeByMouth(subscriberId, beginDate));
+        newRenderedServices.add(getSubscriptionFeeByMonth(subscriberId, beginDate));
         return result;
     }
 
@@ -52,20 +52,20 @@ public class SubscriptionFeeRecalculationModel extends BaseObservable {
             return result;
         }
         LocalDate beginDate = date.withDayOfMonth(1);
-        createSubscriptionFeesInMouth(beginDate);
+        createSubscriptionFeesInMonth(beginDate);
         return result;
     }
 
-    private void createSubscriptionFeesInMouth(LocalDate date) {
+    private void createSubscriptionFeesInMonth(LocalDate date) {
         newRenderedServices.clear();
         List<Subscriber> subscribers = subscriberDAO.getAll();
         Integer count = 0;
         for (Subscriber subscriber : subscribers) {
             progress = 100 * count++ / subscribers.size();
             notifyObservers(null);
-            RenderedService renderedService = getSubscriptionFeeByMouth(subscriber.getId(), date);
+            RenderedService renderedService = getSubscriptionFeeByMonth(subscriber.getId(), date);
             if(renderedService != null) {
-                newRenderedServices.add(getSubscriptionFeeByMouth(subscriber.getId(), date));
+                newRenderedServices.add(getSubscriptionFeeByMonth(subscriber.getId(), date));
             }
         }
         progress = 100;
@@ -76,7 +76,7 @@ public class SubscriptionFeeRecalculationModel extends BaseObservable {
         return DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO();
     }
 
-    private RenderedService getSubscriptionFeeByMouth(Integer subscriberId, LocalDate date) {
+    private RenderedService getSubscriptionFeeByMonth(Integer subscriberId, LocalDate date) {
         RenderedService renderedService = new RenderedService();
         renderedService.setServiceId(FixedServices.SUBSCRIPTION_FEE.getId());
         renderedService.setSubscriberAccount(subscriberId);

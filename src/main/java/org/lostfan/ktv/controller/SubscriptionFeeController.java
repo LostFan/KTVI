@@ -46,7 +46,7 @@ public class SubscriptionFeeController extends EntityController{
         });
         entityView.setDeleteAllActionListener(args_ -> {
             LocalDate date = (LocalDate) args_;
-            model.deleteAllRenderedServicesByMouth(date);
+            model.deleteAllRenderedServicesByMonth(date);
         });
 
     }
@@ -77,7 +77,7 @@ public class SubscriptionFeeController extends EntityController{
         entityView.setDeleteSeveralActionListener(args_ -> {
             List<RenderedService> renderedServices = (List<RenderedService>) args_;
             for (RenderedService renderedService : renderedServices) {
-                model.deleteRenderedServicesByMouthAndSubscriberId(renderedService.getDate(), renderedService.getSubscriberAccount());
+                model.deleteRenderedServicesByMonthAndSubscriberId(renderedService.getDate(), renderedService.getSubscriberAccount());
             }
         });
     }
@@ -85,9 +85,8 @@ public class SubscriptionFeeController extends EntityController{
     private void addAddActionListener(SubscriptionFeeView entityView) {
         entityView.setAddActionListener(args -> {
             List<RenderedService> renderedServices = (List<RenderedService>) args;
-            for (RenderedService renderedService : renderedServices) {
-                model.save(renderedService);
-            }
+            model.saveAll(renderedServices);
+
             entityView.hide();
         });
     }

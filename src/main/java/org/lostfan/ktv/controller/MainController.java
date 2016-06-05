@@ -104,6 +104,8 @@ public class MainController {
                     ConsolidatedRegisterPaymentModel consolidatedRegisterPaymentModel = new ConsolidatedRegisterPaymentModel();
                     ConsolidatedRegisterPaymentView consolidatedRegisterPaymentView = new ConsolidatedRegisterPaymentView(consolidatedRegisterPaymentModel);
                     break;
+                case REPORT_TO_BANK:
+                    new ReportToBankController();
             };
         });
         this.view.setMenuFileActionListener(args -> {
