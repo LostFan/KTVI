@@ -27,7 +27,11 @@ public class SubscriptionFeeController extends EntityController{
     protected void addRecalculateAllActionPerformed(Object args) {
         SubscriptionFeeRecalculationModel subscriptionFeeRecalculationModel = new SubscriptionFeeRecalculationModel();
         SubscriptionFeeView entityView = new SubscriptionFeeView(model, subscriptionFeeRecalculationModel, false);
-        addAddActionListener(entityView);
+        entityView.setAddActionListener(args_ -> {
+            List<RenderedService> renderedServices = (List<RenderedService>) args_;
+            model.generateAllSubscriptionFees(renderedServices);
+            entityView.hide();
+        });
         entityView.setRecalculateActionListener(args_ -> {
             LocalDate date = (LocalDate) args_;
             ValidationResult result = ValidationResult.createEmpty();
@@ -44,17 +48,17 @@ public class SubscriptionFeeController extends EntityController{
                 return;
             }
         });
-        entityView.setDeleteAllActionListener(args_ -> {
-            LocalDate date = (LocalDate) args_;
-            model.deleteAllRenderedServicesByMonth(date);
-        });
 
     }
 
     protected void addRecalculateOneActionPerformed(Object args) {
         SubscriptionFeeRecalculationModel subscriptionFeeRecalculationModel = new SubscriptionFeeRecalculationModel();
         SubscriptionFeeView entityView = new SubscriptionFeeView(this.model, subscriptionFeeRecalculationModel, true);
-        addAddActionListener(entityView);
+        entityView.setAddActionListener(args_ -> {
+            List<RenderedService> renderedServices = (List<RenderedService>) args_;
+            model.generateSeveralSubscriptionFees(renderedServices);
+            entityView.hide();
+        });
         entityView.setRecalculateActionListener(args_ -> {
             SubscriptionFeeView.DateAndSubscriberId dateAndSubscriberId = (SubscriptionFeeView.DateAndSubscriberId) args_;
             ValidationResult result = ValidationResult.createEmpty();
@@ -73,21 +77,6 @@ public class SubscriptionFeeController extends EntityController{
                 entityView.showErrors(result.getErrors());
                 return;
             }
-        });
-        entityView.setDeleteSeveralActionListener(args_ -> {
-            List<RenderedService> renderedServices = (List<RenderedService>) args_;
-            for (RenderedService renderedService : renderedServices) {
-                model.deleteRenderedServicesByMonthAndSubscriberId(renderedService.getDate(), renderedService.getSubscriberAccount());
-            }
-        });
-    }
-
-    private void addAddActionListener(SubscriptionFeeView entityView) {
-        entityView.setAddActionListener(args -> {
-            List<RenderedService> renderedServices = (List<RenderedService>) args;
-            model.saveAll(renderedServices);
-
-            entityView.hide();
         });
     }
 

@@ -11,7 +11,9 @@ import org.lostfan.ktv.validation.Validator;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -131,16 +133,89 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
         }
     }
 
-    public void saveAll(List<RenderedService> renderedServices) {
+    public void generateAllSubscriptionFees(List<RenderedService> renderedServices) {
+
+        if(renderedServices.size() == 0) {
+            return;
+        }
+        List<RenderedService> list =((RenderedServiceDAO) getDao()).getAllForMonth(renderedServices.get(0).getServiceId(),
+                renderedServices.get(0).getDate());
+        Map<Integer, List<RenderedService>> map = new HashMap<>();
+        for (RenderedService renderedService : list) {
+            List<RenderedService> value = map.get(renderedService.getSubscriberAccount());
+            if(value == null) {
+                value = new ArrayList<>();
+                map.put(renderedService.getSubscriberAccount(), value);
+            }
+            value.add(renderedService);
+        }
+
         getDao().transactionBegin();
+
         for (RenderedService renderedService : renderedServices) {
-            if (renderedService.getId() == null) {
+            list = map.get(renderedService.getSubscriberAccount());
+            map.remove(renderedService.getSubscriberAccount());
+            if(list == null || list.isEmpty()) {
                 getDao().save(renderedService);
-            } else {
-                getDao().update(renderedService);
+                continue;
+            }
+            if(list.size() > 1) {
+                continue;
+            }
+            for (RenderedService monthService : list) {
+                if(monthService.getDate().equals(renderedService.getDate())) {
+                    renderedService.setId(monthService.getId());
+                    getDao().update(renderedService);
+                }
+            }
+        }
+
+        for (Map.Entry<Integer, List<RenderedService>> integerListEntry : map.entrySet()) {
+            for (RenderedService renderedService : integerListEntry.getValue()) {
+                getDao().delete(renderedService.getId());
             }
         }
         getDao().commit();
         updateEntitiesList();
+    }
+
+    public void generateSeveralSubscriptionFees(List<RenderedService> renderedServices) {
+        if(renderedServices.size() == 0) {
+            return;
+        }
+        List<RenderedService> list =((RenderedServiceDAO) getDao()).getAllForMonth(renderedServices.get(0).getServiceId(),
+                renderedServices.get(0).getDate());
+        Map<Integer, List<RenderedService>> map = new HashMap<>();
+        for (RenderedService renderedService : list) {
+            List<RenderedService> value = map.get(renderedService.getSubscriberAccount());
+            if(value == null) {
+                value = new ArrayList<>();
+                map.put(renderedService.getSubscriberAccount(), value);
+            }
+            value.add(renderedService);
+        }
+
+        getDao().transactionBegin();
+
+        for (RenderedService renderedService : renderedServices) {
+            list = map.get(renderedService.getSubscriberAccount());
+            if(list == null || list.isEmpty()) {
+                getDao().save(renderedService);
+                continue;
+            }
+            if(list.size() > 1) {
+                continue;
+            }
+            for (RenderedService monthService : list) {
+                if(monthService.getDate().equals(renderedService.getDate())) {
+                    renderedService.setId(monthService.getId());
+                    getDao().update(renderedService);
+                }
+            }
+        }
+
+        getDao().commit();
+        updateEntitiesList();
+
     }
 }

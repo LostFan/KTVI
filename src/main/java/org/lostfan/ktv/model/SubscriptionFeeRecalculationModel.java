@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SubscriptionFeeRecalculationModel extends BaseObservable {
 
@@ -40,7 +41,12 @@ public class SubscriptionFeeRecalculationModel extends BaseObservable {
             return result;
         }
         LocalDate beginDate = date.withDayOfMonth(1);
-        newRenderedServices.add(getSubscriptionFeeByMonth(subscriberId, beginDate));
+        RenderedService renderedService = getSubscriptionFeeByMonth(subscriberId, beginDate);
+        if(renderedService != null && newRenderedServices.stream().
+                filter(e -> e.getSubscriberAccount() == renderedService.getSubscriberAccount())
+                .collect(Collectors.toList()).isEmpty()) {
+            newRenderedServices.add(getSubscriptionFeeByMonth(subscriberId, beginDate));
+        }
         return result;
     }
 

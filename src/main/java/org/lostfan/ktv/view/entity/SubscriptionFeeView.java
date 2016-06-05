@@ -119,8 +119,6 @@ public class SubscriptionFeeView extends FrameView {
     private ViewActionListener recalculateActionListener;
     private ViewActionListener cancelActionListener;
     private ViewActionListener addActionListener;
-    private ViewActionListener deleteAllActionListener;
-    private ViewActionListener deleteSeveralActionListener;
 
     private boolean subscriberVision;
 
@@ -161,15 +159,6 @@ public class SubscriptionFeeView extends FrameView {
 
         this.addButton = new JButton(getGuiString("buttons.add"));
         this.addButton.addActionListener(e -> {
-            if(subscriberVision) {
-                if (this.deleteSeveralActionListener != null) {
-                    this.deleteSeveralActionListener.actionPerformed(entityInnerTableView.getEntityList());
-                }
-            } else {
-                if (this.deleteAllActionListener != null) {
-                    this.deleteAllActionListener.actionPerformed(dateLabelFieldInput.getValue());
-                }
-            }
             if (this.addActionListener != null) {
                 this.addActionListener.actionPerformed(entityInnerTableView.getEntityList());
             }
@@ -268,14 +257,6 @@ public class SubscriptionFeeView extends FrameView {
 
     public void setCancelActionListener(ViewActionListener cancelActionListener) {
         this.cancelActionListener = cancelActionListener;
-    }
-
-    public void setDeleteAllActionListener(ViewActionListener deleteAllActionListener) {
-        this.deleteAllActionListener = deleteAllActionListener;
-    }
-
-    public void setDeleteSeveralActionListener(ViewActionListener deleteSeveralActionListener) {
-        this.deleteSeveralActionListener = deleteSeveralActionListener;
     }
 
     public void showErrors(java.util.List<org.lostfan.ktv.validation.Error> errors) {
