@@ -134,8 +134,13 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
     public void saveAll(List<RenderedService> renderedServices) {
         getDao().transactionBegin();
         for (RenderedService renderedService : renderedServices) {
-            save(renderedService);
+            if (renderedService.getId() == null) {
+                getDao().save(renderedService);
+            } else {
+                getDao().update(renderedService);
+            }
         }
         getDao().commit();
+        updateEntitiesList();
     }
 }
