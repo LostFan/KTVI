@@ -304,6 +304,33 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
         }
     }
 
+    public Map<Integer, List<RenderedService>> getServiceAndSubscriberRenderedServiceMap() {
+        Map<Integer, List<RenderedService>> hashMap = new HashMap<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "select \"subscriber_account\", \"service_id\"," +
+                            " sum(\"price\")  from \"rendered_service\"" +
+                            " group by \"subscriber_account\", \"service_id\"");
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                RenderedService payment = new RenderedService();
+                payment.setServiceId(rs.getInt("service_id"));
+                payment.setSubscriberAccount(rs.getInt("subscriber_account"));
+                payment.setPrice(rs.getInt("sum"));
+                List<RenderedService> payments = hashMap.get(rs.getInt("subscriber_account"));
+                if (payments == null) {
+                    payments = new ArrayList<>();
+                }
+                payments.add(payment);
+                hashMap.put(rs.getInt("subscriber_account"), payments);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DAOException();
+        }
+        return hashMap;
+    }
+
     public void update(RenderedService renderedService) {
         if(get(renderedService.getId()) != null) {
             try {

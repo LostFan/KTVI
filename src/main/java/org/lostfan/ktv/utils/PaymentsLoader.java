@@ -13,25 +13,23 @@ import org.lostfan.ktv.model.PaymentTypes;
 
 public class PaymentsLoader {
 
-    private File file;
 
-    public PaymentsLoader(File file) {
-        this.file = file;
+    public PaymentsLoader() {
     }
 
-    public List<Payment> load() {
+    public List<Payment> load(File file) {
         List<Payment> payments = new ArrayList<>();
         if(file.getName().endsWith(".210")) {
-            payments = loadERIP();
+            payments = loadERIP(file);
         }
         if(file.getName().endsWith(".dat")) {
-            payments = loadPost();
+            payments = loadPost(file);
         }
 
         return payments;
     }
 
-    private List<Payment> loadERIP() {
+    private List<Payment> loadERIP(File file) {
         List<Payment> payments = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -56,7 +54,7 @@ public class PaymentsLoader {
         return payments;
     }
 
-    private List<Payment> loadPost() {
+    private List<Payment> loadPost(File file) {
         List<Payment> payments = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));

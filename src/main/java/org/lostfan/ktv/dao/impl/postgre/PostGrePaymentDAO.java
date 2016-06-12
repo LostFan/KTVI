@@ -294,7 +294,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
                             "LEFT JOIN (\n" +
                             "select \"payment\".\"rendered_service_id\" , sum(\"payment\".\"price\") as \"payment_price\" from payment group by \"payment\".\"rendered_service_id\") as payment\n" +
                             "ON (\"payment\".\"rendered_service_id\" = \"rendered_service\".\"id\")\n" +
-                            "where \"rendered_service\".\"service_id\" = ? AND\n" +
+                            "where \"rendered_service\".\"service_id\" = ? AND \"rendered_service\".\"price\" != 0 AND \n" +
                             "\"rendered_service\".\"subscriber_account\" = ? AND (\"payment\".\"payment_price\" < \"rendered_service\".\"price\" OR \"payment\".\"payment_price\" is null)" +
                             " order by \"rendered_service\".\"date\"");
             preparedStatement.setInt(1, serviceId);
@@ -314,6 +314,34 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
         }
         return hashMap;
     }
+
+    public Map<Integer, List<Payment>> getServiceAndSubscriberPaymentMap() {
+        Map<Integer, List<Payment>> hashMap = new HashMap<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "select \"subscriber_account\", \"service_id\", sum(\"price\")" +
+                            " from \"payment\" group by \"subscriber_account\", \"service_id\"");
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                Payment payment = new Payment();
+                payment.setServicePaymentId(rs.getInt("service_id"));
+                payment.setSubscriberAccount(rs.getInt("subscriber_account"));
+                payment.setPrice(rs.getInt("sum"));
+                List<Payment> payments = hashMap.get(rs.getInt("subscriber_account"));
+                if (payments == null) {
+                    payments = new ArrayList<>();
+                }
+                payments.add(payment);
+                hashMap.put(rs.getInt("subscriber_account"), payments);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DAOException();
+        }
+        return hashMap;
+    }
+
+
 
     @Override
     public List<Payment> getAllContainsInName(String str) {

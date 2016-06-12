@@ -3,6 +3,7 @@ package org.lostfan.ktv.view.entity;
 import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.model.entity.PaymentEntityModel;
 import org.lostfan.ktv.utils.FilePath;
+import org.lostfan.ktv.utils.PaymentsLoader;
 import org.lostfan.ktv.utils.ViewActionListener;
 import org.lostfan.ktv.view.EntityInnerTableView;
 import org.lostfan.ktv.view.FormView;
@@ -27,8 +28,7 @@ public class LoadPaymentsView extends FormView {
         public void update(Object args) {
             Integer progress = model.getProgress();
             if (progress != null) {
-                Integer currentValue = 100 - 100 * (filesCount - filesCounter) / filesCount + progress / filesCount;
-                LoadPaymentsView.this.progressBar.setValue(currentValue);
+                LoadPaymentsView.this.progressBar.setValue(progress);
                 if (progress == 100) {
                     entityInnerTableView.getEntityList().clear();
                     entityInnerTableView.getEntityList().addAll(model.getPayments());
@@ -79,6 +79,8 @@ public class LoadPaymentsView extends FormView {
     private boolean isOpened = true;
 
     private ModelObserver modelObserver;
+
+    private PaymentsLoader paymentsLoader = new PaymentsLoader();
 
     public LoadPaymentsView(PaymentEntityModel model) {
         this.model = model;
@@ -133,7 +135,8 @@ public class LoadPaymentsView extends FormView {
                 LoadPaymentsView.this.addButton.setEnabled(false);
                 File[] files = fileChooser.getSelectedFiles();
                 FilePath.setFilePath(this.getTitle(), fileChooser.getCurrentDirectory().getPath());
-                List<Payment> payments = entityInnerTableView.getEntityList();
+                List<Payment> payments = new ArrayList<Payment>();
+                payments.addAll(entityInnerTableView.getEntityList());
                 loadingThread = new Thread(() -> {
                     model.addObserver(this.modelObserver);
                     modelObserver.setFilesCount(files.length);
@@ -153,13 +156,17 @@ public class LoadPaymentsView extends FormView {
                             bankFileNames.add(file.getName());
                         }
 
-                        if (LoadPaymentsView.this.loadPaymentFileActionListener != null) {
-                            LoadPaymentsView.this.loadPaymentFileActionListener.actionPerformed(file);
-                        }
 
-                        for (Payment payment : payments) {
+
+                        List<Payment> newPayments = paymentsLoader.load(file);
+                        for (Payment payment : newPayments) {
                             payment.setDate(dateField.getValue());
                         }
+                        payments.addAll(newPayments);
+
+                    }
+                    if (LoadPaymentsView.this.loadPaymentFileActionListener != null) {
+                        LoadPaymentsView.this.loadPaymentFileActionListener.actionPerformed(payments);
                     }
                     LoadPaymentsView.this.addButton.setEnabled(true);
                     model.removeObserver(this.modelObserver);

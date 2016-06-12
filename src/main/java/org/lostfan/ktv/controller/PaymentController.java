@@ -37,8 +37,8 @@ public class PaymentController extends EntityController{
         });
 
         loadPaymentsView.setLoadPaymentFileActionListener(args_ -> {
-            File file = (File) args_;
-            paymentEntityModel.createPayments(file);
+            List<Payment> payments = (List<Payment>) args_;
+            paymentEntityModel.createPayments(payments);
         });
     }
 

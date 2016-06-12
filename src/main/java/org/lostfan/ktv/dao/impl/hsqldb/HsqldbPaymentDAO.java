@@ -300,6 +300,11 @@ public class HsqldbPaymentDAO extends HsqldbBaseDao implements PaymentDAO {
     }
 
     @Override
+    public Map<Integer, List<Payment>> getServiceAndSubscriberPaymentMap() {
+        return null;
+    }
+
+    @Override
     public void deleteByDate(LocalDate date) {
 
     }

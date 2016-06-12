@@ -151,6 +151,11 @@ public class HsqldbRenderedServiceDAO extends HsqldbBaseDao implements RenderedS
         return renderedServices;
     }
 
+    @Override
+    public Map<Integer, List<RenderedService>> getServiceAndSubscriberRenderedServiceMap() {
+        return null;
+    }
+
     public List<RenderedService> getAllForMonth(int serviceId, int subscriberAccount, LocalDate date) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {
