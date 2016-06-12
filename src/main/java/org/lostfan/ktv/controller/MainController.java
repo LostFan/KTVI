@@ -119,6 +119,12 @@ public class MainController {
                         periodModel.savePeriod(date);
                     });
                     break;
+                case CONVERTER_10000_TO_1:
+                    new ConverterController(FileMenu.CONVERTER_10000_TO_1);
+                    break;
+                case CONVERTER_1_TO_10000:
+                    new ConverterController(FileMenu.CONVERTER_1_TO_10000);
+                    break;
             };
         });
 
