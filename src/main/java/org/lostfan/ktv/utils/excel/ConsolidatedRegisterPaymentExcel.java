@@ -68,13 +68,14 @@ public class ConsolidatedRegisterPaymentExcel implements ExcelGenerator{
                     "subscriptionFee"), cellFormat));
             sheet.addCell(new Label(CONNECTION_COLUMN, i, ResourceBundles.getEntityBundle().getString(
                     "connection"), cellFormat));
-            sheet.addCell(new Label(ADDITIONAL_COLUMN, i, ("additionalServices"), cellFormat));
+            sheet.addCell(new Label(ADDITIONAL_COLUMN, i, ResourceBundles.getGuiBundle().getString(
+                    "additionalServices"), cellFormat));
             sheet.addCell(new Label(TOTAL_COLUMN, i, getGuiString("total"), cellFormat));
             i++;
 
-            for (Integer index = 1; index <= date.lengthOfMonth(); index++) {
+            for (Integer index = 0; index < date.lengthOfMonth(); index++) {
                 final Integer finalIndex = index;
-                sheet.addCell(new Number(NUMBER_OF_DAY_COLUMN, i, finalIndex));
+                sheet.addCell(new Number(NUMBER_OF_DAY_COLUMN, i, finalIndex + 1));
                 sheet.addCell(new Number(SUBSCRIPTION_FEE_COLUMN, i, payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.SUBSCRIPTION_FEE.getId())
                         .filter(e -> e.getDate().getDayOfMonth() == finalIndex + 1)
                         .mapToInt(e -> e.getPrice()).sum()));
