@@ -82,4 +82,6 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
     HashMap<Integer, Integer> getServicesBalance(Integer subscriberAccount);
 
     List<Subscriber> search(SubscriberSearchCriteria criteria);
+
+    Integer getLastSubscriberAccount();
 }

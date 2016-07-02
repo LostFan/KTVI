@@ -163,4 +163,10 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     public List<SubscriberSession> getSubscriberSessions(Integer subscriberId) {
         return getDao().getSubscriberSessions(subscriberId);
     }
+
+    public Integer getNewSubscriberAccount() {
+        Integer lastAccount = getDao().getLastSubscriberAccount();
+        Integer newAccount = lastAccount / 10 * 10 + 10 + (int) (Math.random() * 10);
+        return newAccount;
+    }
 }

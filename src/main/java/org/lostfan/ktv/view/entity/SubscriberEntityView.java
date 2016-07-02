@@ -15,6 +15,7 @@ import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.model.dto.RenderedServiceExt;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.view.FormView;
 
 public class SubscriberEntityView extends EntityView {
 
@@ -150,6 +151,9 @@ public class SubscriberEntityView extends EntityView {
 
     public SubscriberEntityView(SubscriberEntityModel model) {
         super(model);
+        FormView.FormField accountField = getFormField("subscriber.account");
+        accountField.setValue(model.getNewSubscriberAccount());
+        revalidate();
     }
 
     public SubscriberEntityView(SubscriberEntityModel model, Subscriber entity) {

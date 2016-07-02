@@ -1076,6 +1076,20 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
         return subscribers;
     }
 
+    public Integer getLastSubscriberAccount() {
+        Integer lastAccount = null;
+        try {
+            Statement statement = getConnection().createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM \"subscriber\" order by \"account\" desc limit 1");
+            while (rs.next()) {
+                lastAccount = rs.getInt("account");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return lastAccount;
+    }
+
     private Subscriber constructEntity(ResultSet rs) throws SQLException{
         Subscriber subscriber = new Subscriber();
         subscriber.setAccount(rs.getInt("account"));

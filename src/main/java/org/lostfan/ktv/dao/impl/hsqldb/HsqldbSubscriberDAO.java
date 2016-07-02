@@ -807,6 +807,11 @@ public class HsqldbSubscriberDAO extends HsqldbBaseDao implements SubscriberDAO 
     }
 
     @Override
+    public Integer getLastSubscriberAccount() {
+        return null;
+    }
+
+    @Override
     public HashMap<Integer, Integer> getServicesBalance(Integer subscriberAccount) {
         return null;
     }
