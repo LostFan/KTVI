@@ -249,9 +249,11 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         List<RenderedService> renderedServices = renderedServicesMap.get(subscriberAccount);
         List<Payment> payments = paymentsMap.get(subscriberAccount);
         for (RenderedService renderedService : renderedServices) {
-            for (Payment payment : payments) {
-                if(payment.getServicePaymentId().equals(renderedService.getServiceId())) {
+            if(payments != null) {
+                for (Payment payment : payments) {
+                    if (payment.getServicePaymentId().equals(renderedService.getServiceId())) {
                         map.put(renderedService.getServiceId(), renderedService.getPrice() - payment.getPrice());
+                    }
                 }
             }
             if(map.get(renderedService.getServiceId()) == null) {
