@@ -11,6 +11,8 @@ import org.lostfan.ktv.validation.SubscriptionFeeValidator;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.validation.Validator;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -89,7 +91,7 @@ public class SubscriptionFeeRecalculationModel extends BaseObservable {
         renderedService.setDate(date.withDayOfMonth(1));
 
         List<SubscriberSession> subscriberSessions = subscriberDAO.getSubscriberSessionsForMonth(subscriberId, date);
-        Integer allPrice = 0;
+        BigDecimal allPrice = BigDecimal.ZERO;
         for (SubscriberSession subscriberSession : subscriberSessions) {
             LocalDate beginDate = date.withDayOfMonth(1).equals(subscriberSession.getConnectionDate().withDayOfMonth(1))
                     ? subscriberSession.getConnectionDate().plusDays(1) : date.withDayOfMonth(1);
@@ -110,7 +112,7 @@ public class SubscriptionFeeRecalculationModel extends BaseObservable {
                 Integer months =  Period.between(beginTariffDate, endTariffDate).getMonths();
                 if(months == 1) {
                     allPrice = tariffDAO.getPriceByDate(subscriberTariff.getTariffId(), beginTariffDate);
-                    if(allPrice == 0) {
+                    if(BigDecimal.ZERO.compareTo(allPrice) == 0) {
                         return null;
                     }
                     renderedService.setPrice(allPrice);
@@ -118,12 +120,12 @@ public class SubscriptionFeeRecalculationModel extends BaseObservable {
                 }
                 Integer days =  Period.between(beginTariffDate, endTariffDate).getDays();
                 if(days > 0) {
-                    Integer price = rounding(tariffDAO.getPriceByDate(subscriberTariff.getTariffId(), beginTariffDate) / beginTariffDate.lengthOfMonth() * days);
-                    allPrice += price;
+                    BigDecimal price = tariffDAO.getPriceByDate(subscriberTariff.getTariffId(), beginTariffDate).multiply(new BigDecimal(days)).divide(new BigDecimal(beginTariffDate.lengthOfMonth()), 2, RoundingMode.HALF_UP);
+                    allPrice = allPrice.add(price);
                 }
             }
         }
-        if(allPrice == 0) {
+        if(BigDecimal.ZERO.compareTo(allPrice) == 0) {
             return null;
         }
         renderedService.setPrice(allPrice);
@@ -136,6 +138,15 @@ public class SubscriptionFeeRecalculationModel extends BaseObservable {
             return null;
         }
         return (number + 50) / 100 * 100;
+    }
+    //todo
+    private Double rounding(Double number) {
+        if(number == null) {
+            return null;
+        }
+        Long longNumber = Math.round(number * 100);
+        Double newNumber  = longNumber.doubleValue() / 100;
+        return newNumber;
     }
 
     public Integer getProgress() {

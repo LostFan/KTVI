@@ -1,6 +1,7 @@
 package org.lostfan.ktv.model.entity;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, Payment::getSubscriberAccount, Payment::setSubscriberAccount));
         this.fields.add(new EntityField("service", EntityFieldTypes.Service, Payment::getServicePaymentId, Payment::setServicePaymentId));
         this.fields.add(new EntityField("renderedService", EntityFieldTypes.RenderedService, Payment::getRenderedServicePaymentId, Payment::setRenderedServicePaymentId));
-        this.fields.add(new EntityField("payment.price", EntityFieldTypes.Integer, Payment::getPrice, Payment::setPrice));
+        this.fields.add(new EntityField("payment.price", EntityFieldTypes.Double, Payment::getPrice, Payment::setPrice));
         this.fields.add(new EntityField("payment.bankFileName", EntityFieldTypes.String, Payment::getBankFileName, Payment::setBankFileName));
         this.fields.add(new EntityField("paymentType", EntityFieldTypes.PaymentType, Payment::getPaymentTypeId, Payment::setPaymentTypeId));
 
@@ -99,12 +100,12 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         return this.payments;
     }
 
-    public Payment createPayment(Integer subscriberId, LocalDate date, Integer price) {
+    public Payment createPayment(Integer subscriberId, LocalDate date, BigDecimal price) {
         Payment payment = new Payment();
         if (subscriberDAO.get(subscriberId) == null) {
             return null;
         }
-        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalance(subscriberId);
+        HashMap<Integer, BigDecimal> hashMap = subscriberDAO.getServicesBalance(subscriberId);
         payment.setSubscriberAccount(subscriberId);
         payment.setDate(date);
         payment.setPaymentTypeId(null);
@@ -127,7 +128,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         List<Payment> loadedPayments = new PaymentsLoader().load(file);
         Integer count = 0;
         for (Payment loadedPayment : loadedPayments) {
-            if (loadedPayment.getPrice() == 0 || subscriberDAO.get(loadedPayment.getSubscriberAccount()) == null) {
+            if (BigDecimal.ZERO.compareTo(loadedPayment.getPrice()) == 0 || subscriberDAO.get(loadedPayment.getSubscriberAccount()) == null) {
                 continue;
             }
             progress = 100 * count++ / loadedPayments.size();
@@ -146,7 +147,7 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         renderedServicesMap = renderedServiceDAO.getServiceAndSubscriberRenderedServiceMap();
         long begin = System.currentTimeMillis();
         for (Payment loadedPayment : loadedPayments) {
-            if (loadedPayment.getPrice() == 0 || subscriberDAO.get(loadedPayment.getSubscriberAccount()) == null) {
+            if (BigDecimal.ZERO.compareTo(loadedPayment.getPrice()) == 0 || subscriberDAO.get(loadedPayment.getSubscriberAccount()) == null) {
                 continue;
             }
             progress = 100 * count++ / loadedPayments.size();
@@ -170,59 +171,58 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
     public List<Payment> addPayments(Payment newLoadedPayment) {
 
         List<Payment> payments = new ArrayList<>();
-        Integer price = newLoadedPayment.getPrice();
-        Map<Integer, Integer> paymentMapFromTable = new HashMap<>();
+        BigDecimal price = newLoadedPayment.getPrice();
+        Map<Integer, BigDecimal> paymentMapFromTable = new HashMap<>();
         for (Payment payment : getPayments()) {
             if(paymentMapFromTable.containsKey(payment.getRenderedServicePaymentId())) {
                 paymentMapFromTable.put(payment.getRenderedServicePaymentId(),
-                        paymentMapFromTable.get(payment.getRenderedServicePaymentId()) + payment.getPrice());
+                        payment.getPrice().add(paymentMapFromTable.get(payment.getRenderedServicePaymentId())));
             } else {
                 paymentMapFromTable.put(payment.getRenderedServicePaymentId(), payment.getPrice());
             }
         }
 
-        Map<Integer, Integer> hashMap = getServicesBalance(newLoadedPayment.getSubscriberAccount());
+        Map<Integer, BigDecimal> hashMap = getServicesBalance(newLoadedPayment.getSubscriberAccount());
 
-        for (Map.Entry<Integer, Integer> servicePriceEntry : hashMap.entrySet()) {
-            if (price == 0) {
+        for (Map.Entry<Integer, BigDecimal> servicePriceEntry : hashMap.entrySet()) {
+            if (BigDecimal.ZERO.compareTo(price) == 0) {
                 break;
             }
-            if (servicePriceEntry.getValue() == 0) {
+            if (BigDecimal.ZERO.compareTo(servicePriceEntry.getValue()) == 0) {
                 continue;
             }
             if (servicePriceEntry.getKey() == FixedServices.SUBSCRIPTION_FEE.getId()) {
                 continue;
             }
-            if(servicePriceEntry.getValue().equals(
+            if(servicePriceEntry.getValue().compareTo(
                     getPayments().stream().filter(e -> e.getServicePaymentId().equals(servicePriceEntry.getKey())
                         && e.getSubscriberAccount().equals(newLoadedPayment.getSubscriberAccount()))
-                        .mapToInt(i -> i.getPrice()).sum())) {
+                        .map(i -> i.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add)) == 0) {
                 continue;
             }
 
             Map<Integer, Payment> paymentsForNotClosedRenderedServices =
                     getDao().getForNotClosedRenderedServices(newLoadedPayment.getSubscriberAccount(), servicePriceEntry.getKey());
             for (Integer id : paymentsForNotClosedRenderedServices.keySet()) {
-                Integer paymentPrice;
+                BigDecimal paymentPrice;
                 if (paymentMapFromTable.get(id) == null) {
                     paymentPrice = paymentsForNotClosedRenderedServices.get(id).getPrice();
                 } else {
                     if (paymentMapFromTable.get(id).equals(paymentsForNotClosedRenderedServices.get(id).getPrice())) {
                         continue;
                     }
-                    paymentPrice = paymentsForNotClosedRenderedServices.get(id).getPrice() - paymentMapFromTable.get(id);
+                    paymentPrice = paymentsForNotClosedRenderedServices.get(id).getPrice().add(paymentMapFromTable.get(id).negate());
                 }
                 Payment payment = new Payment();
                 payment.setSubscriberAccount(newLoadedPayment.getSubscriberAccount());
                 payment.setDate(newLoadedPayment.getDate());
                 payment.setPaymentTypeId(newLoadedPayment.getPaymentTypeId());
                 payment.setBankFileName(newLoadedPayment.getBankFileName());
-                if (price > paymentPrice) {
+                if (price.compareTo(paymentPrice) > 0) {
                     payment.setPrice(paymentPrice);
-                    price -= paymentPrice;
+                    price = price.add(paymentPrice.negate());
                 } else {
                     payment.setPrice(price);
-                    price = 0;
                     payment.setServicePaymentId(servicePriceEntry.getKey());
                     payment.setRenderedServicePaymentId(id);
                     payments.add(payment);
@@ -244,14 +244,16 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
         return payments;
     }
 
-    private Map<Integer, Integer> getServicesBalance(Integer subscriberAccount) {
-        Map<Integer, Integer> map = new HashMap<>();
+    private Map<Integer, BigDecimal> getServicesBalance(Integer subscriberAccount) {
+        Map<Integer, BigDecimal> map = new HashMap<>();
         List<RenderedService> renderedServices = renderedServicesMap.get(subscriberAccount);
         List<Payment> payments = paymentsMap.get(subscriberAccount);
         for (RenderedService renderedService : renderedServices) {
-            for (Payment payment : payments) {
-                if(payment.getServicePaymentId().equals(renderedService.getServiceId())) {
-                        map.put(renderedService.getServiceId(), renderedService.getPrice() - payment.getPrice());
+            if(payments != null) {
+                for (Payment payment : payments) {
+                    if (payment.getServicePaymentId().equals(renderedService.getServiceId())) {
+                        map.put(renderedService.getServiceId(), renderedService.getPrice().add(payment.getPrice().negate()));
+                    }
                 }
             }
             if(map.get(renderedService.getServiceId()) == null) {
@@ -263,24 +265,23 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
 
     public List<Payment> loadPayments(Payment loadPayment, Payment oldPayment) {
         List<Payment> payments = new ArrayList<>();
-        Integer price = loadPayment.getPrice();
+        BigDecimal price = loadPayment.getPrice();
         if(oldPayment != null
                 && oldPayment.getSubscriberAccount().equals(loadPayment.getSubscriberAccount()))
         {
             for (Payment payment1 : getList(oldPayment.getSubscriberAccount(),oldPayment.getDate(), oldPayment.getBankFileName())) {
-                Integer paymentPrice = payment1.getPrice();
+                BigDecimal paymentPrice = payment1.getPrice();
                 Payment payment = new Payment();
                 payment.setId(payment1.getId());
                 payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
                 payment.setDate(loadPayment.getDate());
                 payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
                 payment.setBankFileName(loadPayment.getBankFileName());
-                if (price > paymentPrice) {
+                if (price.compareTo(paymentPrice) > 0) {
                     payment.setPrice(paymentPrice);
-                    price -= paymentPrice;
+                    price = price.add(paymentPrice.negate());
                 } else {
                     payment.setPrice(price);
-                    price = 0;
                     payment.setServicePaymentId(payment1.getServicePaymentId());
                     payment.setRenderedServicePaymentId(payment1.getRenderedServicePaymentId());
                     payments.add(payment);
@@ -292,12 +293,12 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
             }
         }
 
-        HashMap<Integer, Integer> hashMap = subscriberDAO.getServicesBalance(loadPayment.getSubscriberAccount());
+        HashMap<Integer, BigDecimal> hashMap = subscriberDAO.getServicesBalance(loadPayment.getSubscriberAccount());
         for (Integer serviceId : hashMap.keySet()) {
-            if (price == 0) {
+            if (BigDecimal.ZERO.compareTo(price) == 0) {
                 break;
             }
-            if (hashMap.get(serviceId) == 0) {
+            if (BigDecimal.ZERO.compareTo(hashMap.get(serviceId)) == 0) {
                 continue;
             }
             if (serviceId == FixedServices.SUBSCRIPTION_FEE.getId()) {
@@ -307,18 +308,17 @@ public class PaymentEntityModel extends BaseDocumentModel<Payment> {
             Map<Integer, Payment> paymentsForNotClosedRenderedServices =
                     getDao().getForNotClosedRenderedServices(loadPayment.getSubscriberAccount(), serviceId);
             for (Integer id : paymentsForNotClosedRenderedServices.keySet()) {
-                Integer paymentPrice  = paymentsForNotClosedRenderedServices.get(id).getPrice();
+                BigDecimal paymentPrice  = paymentsForNotClosedRenderedServices.get(id).getPrice();
                 Payment payment = new Payment();
                 payment.setSubscriberAccount(loadPayment.getSubscriberAccount());
                 payment.setDate(loadPayment.getDate());
                 payment.setPaymentTypeId(loadPayment.getPaymentTypeId());
                 payment.setBankFileName(loadPayment.getBankFileName());
-                if (price > paymentPrice) {
+                if (price.compareTo(paymentPrice) > 0) {
                     payment.setPrice(paymentPrice);
-                    price -= paymentPrice;
+                    price = price.add(paymentPrice.negate());
                 } else {
                     payment.setPrice(price);
-                    price = 0;
                     payment.setServicePaymentId(serviceId);
                     payment.setRenderedServicePaymentId(id);
                     payments.add(payment);

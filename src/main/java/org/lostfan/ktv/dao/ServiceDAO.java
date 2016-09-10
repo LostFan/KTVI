@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import org.lostfan.ktv.domain.ServicePrice;
 
 public interface ServiceDAO extends EntityDAO<Service> {
 
-    int getPriceByDate(int serviceId, LocalDate date);
+    BigDecimal getPriceByDate(int serviceId, LocalDate date);
 
     void savePrice(ServicePrice servicePrice);
 

@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view.report;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,12 +87,12 @@ public class DailyRegisterView extends FormView {
 
     private class FooterModel extends AbstractTableModel {
 
-        Integer allPrice;
+        BigDecimal allPrice;
 
         public FooterModel() {
         }
 
-        public FooterModel(Integer allPrice) {
+        public FooterModel(BigDecimal allPrice) {
             this.allPrice = allPrice;
         }
 

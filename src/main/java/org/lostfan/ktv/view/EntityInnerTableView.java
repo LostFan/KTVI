@@ -145,7 +145,7 @@ public class EntityInnerTableView<T extends Entity> extends View {
         textField.setBorder(BorderFactory.createEmptyBorder());
         textField.setEditable(false);
         DefaultCellEditor editor = new DefaultCellEditor(textField);
-        editor.setClickCountToStart(1);
+        editor.setClickCountToStart(2);
         for (int columnIndex=0;columnIndex< this.table.getColumnCount(); columnIndex++) {
             if(EntityFieldTypes.getEntityClass(this.table.getColumnClass(columnIndex)).isEntityClass()) {
                 this.table.getColumn(this.table.getColumnName(columnIndex))

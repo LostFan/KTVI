@@ -17,7 +17,7 @@ public class EquipmentSearcherModel extends EntitySearcherModel<Equipment> {
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("equipment.id", EntityFieldTypes.Integer, Equipment::getId, Equipment::setId, false));
         this.fields.add(new EntityField("equipment.name", EntityFieldTypes.String, Equipment::getName, Equipment::setName));
-        this.fields.add(new EntityField("equipment.price", EntityFieldTypes.Integer, Equipment::getPrice, Equipment::setPrice));
+        this.fields.add(new EntityField("equipment.price", EntityFieldTypes.Double, Equipment::getPrice, Equipment::setPrice));
     }
 
     @Override

@@ -1,12 +1,13 @@
 package org.lostfan.ktv.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class TariffPrice extends DefaultEntity {
 
     private Integer tariffId;
 
-    private int price;
+    private BigDecimal price;
 
     private LocalDate date;
 
@@ -18,11 +19,11 @@ public class TariffPrice extends DefaultEntity {
         this.tariffId = tariffId;
     }
 
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

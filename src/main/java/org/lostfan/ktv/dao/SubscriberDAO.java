@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,7 @@ import org.lostfan.ktv.model.searcher.SubscriberSearchCriteria;
 
 public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
-    int getBalanceByDate(int subscriberId, LocalDate date);
+    Double getBalanceByDate(int subscriberId, LocalDate date);
 
     Integer getTariffIdByDate(int subscriberId, LocalDate date);
 
@@ -77,9 +78,9 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
 
     List<Subscriber> getSubscribersByBeginningPartOfAccount(String str);
 
-    HashMap<Integer, Integer> getServicesBalanceBySubscriberIdAndDate(Integer subscriberId, LocalDate date);
+    HashMap<Integer, BigDecimal> getServicesBalanceBySubscriberIdAndDate(Integer subscriberId, LocalDate date);
 
-    HashMap<Integer, Integer> getServicesBalance(Integer subscriberAccount);
+    HashMap<Integer, BigDecimal> getServicesBalance(Integer subscriberAccount);
 
     List<Subscriber> search(SubscriberSearchCriteria criteria);
 

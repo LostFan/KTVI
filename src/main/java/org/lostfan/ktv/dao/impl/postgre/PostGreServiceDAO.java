@@ -6,6 +6,7 @@ import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.ServicePrice;
 import org.lostfan.ktv.utils.ConnectionManager;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -130,7 +131,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
                     "INSERT INTO \"service_price\" (\"service_id\", \"date\", \"price\") VALUES(?, ?, ?)");
             preparedStatement.setInt(1, servicePrice.getServiceId());
             preparedStatement.setDate(2, Date.valueOf(servicePrice.getDate()));
-            preparedStatement.setInt(3, servicePrice.getPrice());
+            preparedStatement.setBigDecimal(3, servicePrice.getPrice());
             preparedStatement.executeUpdate();
 
         } catch (SQLException ex) {
@@ -139,9 +140,9 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
         }
     }
 
-    public int getPriceByDate(int serviceId, LocalDate date) {
+    public BigDecimal getPriceByDate(int serviceId, LocalDate date) {
         if(get(serviceId) != null) {
-            int price = 0;
+            BigDecimal price = BigDecimal.ZERO;
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"service_price\" where \"service_id\" = ? AND \"date\" <= ?" +
                         " ORDER BY \"date\" DESC LIMIT 1");
@@ -149,7 +150,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
                 preparedStatement.setDate(2, Date.valueOf(date));
                 ResultSet rs = preparedStatement.executeQuery();
                 while (rs.next()) {
-                    price =  rs.getInt("price");
+                    price =  rs.getBigDecimal("price");
                 }
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -170,7 +171,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
             while (rs.next()) {
                 ServicePrice servicePrice = new ServicePrice();
                 servicePrice.setServiceId(rs.getInt("service_id"));
-                servicePrice.setPrice(rs.getInt("price"));
+                servicePrice.setPrice(rs.getBigDecimal("price"));
                 servicePrice.setDate(rs.getDate("date").toLocalDate());
                 servicePrices.add(servicePrice);
             }
@@ -189,7 +190,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
                     "INSERT INTO \"service_price\" (\"service_id\", \"date\", \"price\") VALUES(?, ?, ?)");
             preparedStatement.setInt(1, servicePrice.getServiceId());
             preparedStatement.setDate(2, Date.valueOf(servicePrice.getDate()));
-            preparedStatement.setInt(3, servicePrice.getPrice());
+            preparedStatement.setBigDecimal(3, servicePrice.getPrice());
             preparedStatement.executeUpdate();
 
         } catch (SQLException ex) {
@@ -285,7 +286,7 @@ public class PostGreServiceDAO extends PostgreBaseDao implements ServiceDAO {
 
     private ServicePrice constructPriceEntity(ResultSet rs) throws SQLException {
         ServicePrice servicePrice = new ServicePrice();
-        servicePrice.setPrice(rs.getInt("price"));
+        servicePrice.setPrice(rs.getBigDecimal("price"));
         servicePrice.setServiceId(rs.getInt("service_id"));
         servicePrice.setDate(rs.getDate("date").toLocalDate());
         return servicePrice;

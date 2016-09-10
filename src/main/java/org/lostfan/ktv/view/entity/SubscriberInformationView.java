@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,14 +29,14 @@ public class SubscriberInformationView extends FormView {
         public RenderedServiceAndPayment(RenderedServiceExt renderedService) {
             this.date = renderedService.getDate();
             this.service = renderedService.getService();
-            this.price = renderedService.getPrice();
+            this.price = renderedService.getPrice().setScale(4, BigDecimal.ROUND_HALF_UP);
         }
 
         public RenderedServiceAndPayment(PaymentExt payment) {
             this.date = payment.getDate();
             this.isCredit = true;
             this.service = payment.getService();
-            this.price = payment.getPrice();
+            this.price = payment.getPrice().setScale(4, BigDecimal.ROUND_HALF_UP);
         }
 
         private LocalDate date;
@@ -44,7 +45,7 @@ public class SubscriberInformationView extends FormView {
 
         private Service service;
 
-        private Integer price;
+        private BigDecimal price;
 
         public LocalDate getDate() {
             return date;
@@ -70,11 +71,11 @@ public class SubscriberInformationView extends FormView {
             this.service = service;
         }
 
-        public Integer getPrice() {
+        public BigDecimal getPrice() {
             return price;
         }
 
-        public void setPrice(Integer price) {
+        public void setPrice(BigDecimal price) {
             this.price = price;
         }
 
@@ -153,12 +154,12 @@ public class SubscriberInformationView extends FormView {
                 case 1:
                     return this.renderedServiceAndPayments.stream()
                             .filter(o -> o.getDate().isBefore(datesList.get(rowIndex)))
-                            .mapToInt(o -> o.isCredit() ? -1 * o.getPrice() : o.getPrice()).sum();
+                            .map(o -> o.isCredit() ? o.getPrice().negate() : o.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add).setScale(2, BigDecimal.ROUND_HALF_UP);
                 case 2:
                     return this.renderedServiceAndPayments.stream()
                             .filter(o -> o.getDate().withDayOfMonth(1).isEqual(datesList.get(rowIndex)))
                             .filter(o -> !o.isCredit())
-                            .mapToInt(o -> o.getPrice()).sum();
+                            .map(o -> o.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add).setScale(2, BigDecimal.ROUND_HALF_UP);
             }
             return null;
         }
@@ -462,15 +463,15 @@ public class SubscriberInformationView extends FormView {
         List<RenderedServiceAndPayment> renderedServiceAndPayments = new ArrayList<>();
         List<RenderedServiceExt> renderedServices = model.getRenderedServicesExtBySubscriberId(entity.getId());
 
-        Integer balance = 0;
+        BigDecimal balance = BigDecimal.ZERO;
         for (RenderedServiceExt renderedService : renderedServices) {
             renderedServiceAndPayments.add(new RenderedServiceAndPayment(renderedService));
-            balance += renderedService.getPrice();
+            balance = balance.add(renderedService.getPrice());
         }
         List<PaymentExt> payments = model.getPaymentsExtBySubscriberId(entity.getId());
         for (PaymentExt payment : payments) {
             renderedServiceAndPayments.add(new RenderedServiceAndPayment(payment));
-            balance -= payment.getPrice();
+            balance = balance.add(payment.getPrice().negate());
         }
         renderedServiceAndPayments.sort((o1, o2) -> o2.getDate().compareTo(o1.getDate()));
 
@@ -480,8 +481,8 @@ public class SubscriberInformationView extends FormView {
         StringFormField nameFormField = new StringFormField("subscriber.name");
         nameFormField.setValue(entity.getName());
         addFormField(nameFormField);
-        IntegerFormField balanceFormField = new IntegerFormField("subscriber.balance");
-        balanceFormField.setValue(balance);
+        BigDecimalFormField balanceFormField = new BigDecimalFormField("subscriber.balance");
+        balanceFormField.setValue(balance.setScale(2, BigDecimal.ROUND_HALF_UP));
         addFormField(balanceFormField);
 
         JTabbedPane tabbedPane = new JTabbedPane();

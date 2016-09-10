@@ -11,7 +11,7 @@ public class MoneyTextField extends TextField {
 
         private boolean hasSign;
 
-        private boolean willBeInteger(String insertion, int offset, int lengthToDelete) {
+        private boolean willBeDouble(String insertion, int offset, int lengthToDelete) {
             String text = getText();
             // The string has already a sign
             // Inserting in the beginning
@@ -43,14 +43,14 @@ public class MoneyTextField extends TextField {
 
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-            if (willBeInteger(string, offset, 0)) {
+            if (willBeDouble(string, offset, 0)) {
                 super.insertString(fb, offset, string, attr);
             }
         }
 
         @Override
         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-            if (willBeInteger(text, offset, length)) {
+            if (willBeDouble(text, offset, length)) {
                 super.replace(fb, offset, length, text, attrs);
             }
         }

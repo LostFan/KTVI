@@ -1,5 +1,6 @@
 package org.lostfan.ktv.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
@@ -53,32 +54,32 @@ public class DailyRegisterModel extends BaseObservable implements BaseModel {
         this.report = new DailyRegisterReport();
         this.report.setPayments(new ArrayList<>(payments.size()));
 
-        Map<Integer, Integer> serviceSums = new HashMap<>();
-        int overallSum = 0;
+        Map<Integer, BigDecimal> serviceSums = new HashMap<>();
+        BigDecimal overallSum = BigDecimal.ZERO;
         for (Payment payment : payments) {
             PaymentExt paymentExt = paymentTransformer.transformTo(payment);
             paymentExt.setService(serviceDAO.get(payment.getServicePaymentId()));
             paymentExt.setSubscriber(subscriberDAO.get(payment.getSubscriberAccount()));
             this.report.getPayments().add(paymentExt);
 
-            overallSum += payment.getPrice();
-            Integer serviceAmount = serviceSums.get(payment.getServicePaymentId());
+            overallSum = overallSum.add(payment.getPrice());
+            BigDecimal serviceAmount = serviceSums.get(payment.getServicePaymentId());
             if (serviceAmount == null) {
-                serviceAmount = 0;
+                serviceAmount = BigDecimal.ZERO;
             }
-            serviceAmount += payment.getPrice();
+            serviceAmount = serviceAmount.add(payment.getPrice());
             serviceSums.put(payment.getServicePaymentId(), serviceAmount);
         }
         // Amount for each service
         this.report.setOverallSum(overallSum);
         this.report.setServiceAmounts(
                 serviceDAO.getAll().stream().collect(Collectors.toMap(Function.identity(), service -> {
-                    Integer sum = serviceSums.get(service.getId());
+                    BigDecimal sum = serviceSums.get(service.getId());
                     if (sum == null) {
-                        return 0;
+                        return 0D;
                     }
-                    return sum;
-                }, Integer::max, LinkedHashMap::new)));
+                    return sum.doubleValue();
+                }, Double::max, LinkedHashMap::new)));
         notifyObservers(report);
     }
 

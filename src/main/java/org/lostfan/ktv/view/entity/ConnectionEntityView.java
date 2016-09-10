@@ -7,6 +7,8 @@ import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.view.FormView;
 import org.lostfan.ktv.view.View;
 
+import java.math.BigDecimal;
+
 public class ConnectionEntityView extends EntityView {
 
     public ConnectionEntityView(RenderedServiceEntityModel model) {
@@ -20,9 +22,9 @@ public class ConnectionEntityView extends EntityView {
         addFormField(createFormField(model.getTariffField(), entity), model.getTariffField());
 
         FormView.DateFormField dateField = (FormView.DateFormField) getFormField("renderedService.date");
-        FormView.IntegerFormField priceField = (FormView.IntegerFormField) getFormField("renderedService.price");
+        BigDecimalFormField priceField = (BigDecimalFormField) getFormField("renderedService.price");
         dateField.addValueListener(e -> {
-            Integer price = model.getRenderedServicePriceByDate(FixedServices.CONNECTION.getId(), dateField.getValue());
+            BigDecimal price = model.getRenderedServicePriceByDate(FixedServices.CONNECTION.getId(), dateField.getValue());
             priceField.setValue(price);
         });
 

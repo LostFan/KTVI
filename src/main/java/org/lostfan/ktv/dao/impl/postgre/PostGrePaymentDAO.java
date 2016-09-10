@@ -6,6 +6,7 @@ import org.lostfan.ktv.domain.Payment;
 import org.lostfan.ktv.domain.PaymentType;
 import org.lostfan.ktv.utils.ConnectionManager;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -129,7 +130,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
             } else {
                 preparedStatement.setNull(3, Types.INTEGER);
             }
-            preparedStatement.setInt(4, payment.getPrice());
+            preparedStatement.setBigDecimal(4, payment.getPrice());
             preparedStatement.setDate(5, Date.valueOf(payment.getDate()));
             preparedStatement.setString(6, payment.getBankFileName());
             preparedStatement.executeUpdate();
@@ -163,7 +164,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
                 } else {
                     preparedStatement.setNull(4, Types.INTEGER);
                 }
-                preparedStatement.setInt(5, payment.getPrice());
+                preparedStatement.setBigDecimal(5, payment.getPrice());
                 preparedStatement.setDate(6, Date.valueOf(payment.getDate()));
                 preparedStatement.setString(7, payment.getBankFileName());
                 preparedStatement.setInt(8, payment.getId());
@@ -247,8 +248,8 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
         return payments;
     }
 
-    public Map<Integer, Integer> getAllPaymentsPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date) {
-        Map<Integer, Integer> subscribersPricesInMonth = new HashMap<>();
+    public Map<Integer, BigDecimal> getAllPaymentsPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date) {
+        Map<Integer, BigDecimal> subscribersPricesInMonth = new HashMap<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT \"subscriber_account\",sum(\"price\") as \"price\" FROM \"payment\" where \"service_id\" = ? AND \"date\" >= ? AND \"date\" < ? group by \"subscriber_account\"");
             preparedStatement.setInt(1, serviceId);
@@ -256,7 +257,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
             preparedStatement.setDate(3, Date.valueOf(date.withDayOfMonth(1).plusMonths(1)));
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                subscribersPricesInMonth.put(rs.getInt("subscriber_account"), rs.getInt("price"));
+                subscribersPricesInMonth.put(rs.getInt("subscriber_account"), rs.getBigDecimal("price"));
             }
 
         } catch (SQLException ex) {
@@ -267,15 +268,34 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
         return subscribersPricesInMonth;
     }
 
-    public Map<Integer, Integer> getAllPaymentsPriceForSubscriberToDate(int serviceId, LocalDate date) {
-        Map<Integer, Integer> subscribersPricesInMonth = new HashMap<>();
+    @Override
+    public Map<Integer, BigDecimal> getAllPaymentsPriceBeforeDate(LocalDate date) {
+        Map<Integer, BigDecimal> subscribersPricesInMonth = new HashMap<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT \"subscriber_account\",sum(\"price\") as \"price\" FROM \"payment\" where \"date\" <= ? group by \"subscriber_account\"");
+            preparedStatement.setDate(1, Date.valueOf(date));
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                subscribersPricesInMonth.put(rs.getInt("subscriber_account"), rs.getBigDecimal("price"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new DAOException();
+        }
+
+        return subscribersPricesInMonth;
+    }
+
+    public Map<Integer, BigDecimal> getAllPaymentsPriceForSubscriberToDate(int serviceId, LocalDate date) {
+        Map<Integer, BigDecimal> subscribersPricesInMonth = new HashMap<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT \"subscriber_account\",sum(\"price\") as \"price\" FROM \"payment\" where \"service_id\" = ? AND \"date\" < ? group by \"subscriber_account\"");
             preparedStatement.setInt(1, serviceId);
             preparedStatement.setDate(2, Date.valueOf(date.withDayOfMonth(1)));
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                subscribersPricesInMonth.put(rs.getInt("subscriber_account"), rs.getInt("price"));
+                subscribersPricesInMonth.put(rs.getInt("subscriber_account"), rs.getBigDecimal("price"));
             }
 
         } catch (SQLException ex) {
@@ -305,7 +325,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
                 payment.setServicePaymentId(rs.getInt("service_id"));
                 payment.setRenderedServicePaymentId(rs.getInt("id"));
                 payment.setSubscriberAccount(rs.getInt("subscriber_account"));
-                payment.setPrice(rs.getInt("price") - rs.getInt("payment_price"));
+                payment.setPrice(getBigDecimal(rs, "price").add(getBigDecimal(rs, "payment_price").negate()));
                 hashMap.put(rs.getInt("id"), payment);
             }
         } catch (SQLException e) {
@@ -326,7 +346,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
                 Payment payment = new Payment();
                 payment.setServicePaymentId(rs.getInt("service_id"));
                 payment.setSubscriberAccount(rs.getInt("subscriber_account"));
-                payment.setPrice(rs.getInt("sum"));
+                payment.setPrice(rs.getBigDecimal("sum"));
                 List<Payment> payments = hashMap.get(rs.getInt("subscriber_account"));
                 if (payments == null) {
                     payments = new ArrayList<>();
@@ -365,7 +385,7 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
     private Payment constructEntity(ResultSet rs) throws SQLException{
         Payment payment = new Payment();
         payment.setId(rs.getInt("id"));
-        payment.setPrice(rs.getInt("price"));
+        payment.setPrice(rs.getBigDecimal("price"));
         payment.setDate(rs.getDate("date").toLocalDate());
         if(rs.getObject("payment_type_id") != null) {
             payment.setPaymentTypeId(rs.getInt("payment_type_id"));
@@ -377,5 +397,9 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
         payment.setServicePaymentId(rs.getInt("service_id"));
         payment.setBankFileName(rs.getString("bank_file_name"));
         return payment;
+    }
+
+    private BigDecimal getBigDecimal(ResultSet rs, String field) throws SQLException {
+        return rs.getBigDecimal(field) != null ? rs.getBigDecimal(field) : BigDecimal.ZERO;
     }
 }

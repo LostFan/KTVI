@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.swing.*;
@@ -65,7 +66,7 @@ public class ServicePriceView extends FormView {
     private ViewActionListener deleteActionListener;
 
     private JTable archiveTable;
-    private IntegerFormField priceField;
+    private BigDecimalFormField priceField;
     private DateFormField dateField;
     private String newPriceTitle;
 
@@ -85,7 +86,7 @@ public class ServicePriceView extends FormView {
         this.archiveTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         this.archiveTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 
-        this.priceField = new IntegerFormField("servicePrice.price");
+        this.priceField = new BigDecimalFormField("servicePrice.price");
         this.dateField = new DateFormField("servicePrice.date");
 
         if (service.getNewPrice() != null) {
@@ -93,7 +94,7 @@ public class ServicePriceView extends FormView {
             this.dateField.setValue(service.getNewPrice().getDate());
             newPriceTitle = getGuiString("servicePrice.changeNew") + ":";
         } else {
-            this.priceField.setValue(0);
+            this.priceField.setValue(BigDecimal.ZERO);
             newPriceTitle = getGuiString("servicePrice.createNew") + ":";
         }
         String nameSaveButton = "buttons.save";
@@ -138,7 +139,7 @@ public class ServicePriceView extends FormView {
         if (service.getCurrentPrice() == null) {
             box.add(new JLabel("-"));
         } else {
-            String priceStr = String.format("%d (%s)",service.getCurrentPrice().getPrice(),
+            String priceStr = String.format("%.2f (%s)",service.getCurrentPrice().getPrice(),
                     DateFormatter.format(service.getCurrentPrice().getDate()));
             box.add(new JLabel(priceStr));
         }
@@ -169,7 +170,7 @@ public class ServicePriceView extends FormView {
     public ServicePrice buildNewServicePrice() {
         ServicePrice servicePrice = new ServicePrice();
         servicePrice.setServiceId(this.service.getId());
-        servicePrice.setPrice(this.priceField.getValue() == null ? 0 : this.priceField.getValue());
+        servicePrice.setPrice(this.priceField.getValue() == null ? BigDecimal.ZERO : this.priceField.getValue());
         servicePrice.setDate(this.dateField.getValue());
         return servicePrice;
     }

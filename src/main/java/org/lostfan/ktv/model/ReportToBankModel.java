@@ -13,6 +13,7 @@ import org.lostfan.ktv.utils.excel.TurnoverReportExcel;
 
 import javax.swing.text.DateFormatter;
 import java.io.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -30,13 +31,16 @@ public class ReportToBankModel extends BaseObservable implements BaseModel {
 
     private static String PAYER_NUMBER = "700223277";
 
-    private static String NUMBER_OF_MESSAGE = "2";
+    private static String NUMBER_OF_MESSAGE = "1";
 
-    private static String CURRENCY_CODE = "974";
+    private static String CURRENCY_CODE = "933";
+
+    private static String CODE = "3012300048018";
 
     private SubscriberDAO subscriberDAO = DAOFactory.getDefaultDAOFactory().getSubscriberDAO();
     private StreetDAO streetDAO = DAOFactory.getDefaultDAOFactory().getStreetDAO();
     private RenderedServiceDAO renderedServiceDAO = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO();
+    private PaymentDAO paymentDAO = DAOFactory.getDefaultDAOFactory().getPaymentDAO();
 
     public ReportToBankModel() {
     }
@@ -76,10 +80,29 @@ public class ReportToBankModel extends BaseObservable implements BaseModel {
 
 
         List<String> rows = new ArrayList<>();
-        Map<Integer, Integer> result = renderedServiceDAO. getAllRenderedServicesPriceInMonthForSubscriber(date);
+        Map<Integer, BigDecimal> result = new TreeMap<>();
+        Map<Integer, BigDecimal> resultRenderedServices = renderedServiceDAO. getAllRenderedServicesPriceBeforeDate(date);
+        Map<Integer, BigDecimal> resultPayments = paymentDAO. getAllPaymentsPriceBeforeDate(date);
         Integer i = 0;
         DateTimeFormatter yearMonthDayFormatter = DateTimeFormatter.ofPattern("YYYYMMdd");
         DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MM.YYYY");
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Map.Entry<Integer, BigDecimal> renderedServiceEntry : resultRenderedServices.entrySet()) {
+            BigDecimal value = renderedServiceEntry.getValue();
+            BigDecimal paymentValue = resultPayments.get(renderedServiceEntry.getKey());
+            if(paymentValue != null) {
+                value = value.add(paymentValue.negate());
+            }
+            result.put(renderedServiceEntry.getKey(), value);
+        }
+        Integer size = 0;
+        for (BigDecimal aDouble : result.values()) {
+                sum = sum.add(aDouble.setScale(2, BigDecimal.ROUND_HALF_UP));
+            if(aDouble
+                    .setScale(2, BigDecimal.ROUND_HALF_UP).compareTo(BigDecimal.ZERO) != 0) {
+                size++;
+            }
+        }
 
         StringBuilder firstRow = new StringBuilder();
 
@@ -91,22 +114,26 @@ public class ReportToBankModel extends BaseObservable implements BaseModel {
                 .append(SEPARATOR)
                 .append(yearMonthDayFormatter.format(LocalDate.now()))
                 .append(SEPARATOR)
-                .append(result.size())
+                .append(size)
                 .append(SEPARATOR)
                 .append(PAYER_NUMBER)
                 .append(SEPARATOR)
                 .append(AGENT_CODE)
                 .append(SEPARATOR)
+                .append(CODE)
+                .append(SEPARATOR)
                 .append("1")
                 .append(SEPARATOR)
                 .append(CURRENCY_CODE)
                 .append(SEPARATOR)
-                .append(result.values().stream().mapToInt(Integer::intValue).sum());
+                .append(sum);
 
         rows.add(firstRow.toString());
 
-        for (Map.Entry<Integer, Integer> entry : result.entrySet()) {
-            if(entry.getValue() == 0) {
+        for (Map.Entry<Integer, BigDecimal> entry : result.entrySet()) {
+            BigDecimal value = entry.getValue()
+                    .setScale(2, BigDecimal.ROUND_HALF_UP);
+            if(value.compareTo(BigDecimal.ZERO) == 0) {
                 continue;
             }
             Subscriber subscriber = subscriberDAO.get(entry.getKey());
@@ -118,11 +145,13 @@ public class ReportToBankModel extends BaseObservable implements BaseModel {
                     .append(SEPARATOR)
                     .append(entry.getKey())
                     .append(SEPARATOR)
+                    .append(subscriber.getName())
+                    .append(SEPARATOR)
                     .append(fullAddress)
                     .append(SEPARATOR)
                     .append(monthYearFormatter.format(date))
                     .append(SEPARATOR)
-                    .append(entry.getValue())
+                    .append(value)
                     .append(SEPARATOR)
                     .append(SEPARATOR)
                     .append(yearMonthDayFormatter.format(LocalDate.now()))

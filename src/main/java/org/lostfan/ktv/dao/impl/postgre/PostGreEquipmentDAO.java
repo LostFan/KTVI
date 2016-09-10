@@ -63,7 +63,7 @@ public class PostGreEquipmentDAO extends PostgreBaseDao implements EquipmentDAO 
                         "INSERT INTO \"equipment\" (\"name\", \"price\") VALUES(?, ?)");
             }
             preparedStatement.setString(1, equipment.getName());
-            preparedStatement.setInt(2, equipment.getPrice());
+            preparedStatement.setBigDecimal(2, equipment.getPrice());
             preparedStatement.executeUpdate();
             if (equipment.getId() != null) {
                 return;
@@ -84,7 +84,7 @@ public class PostGreEquipmentDAO extends PostgreBaseDao implements EquipmentDAO 
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"equipment\" set \"name\" = ?, \"price\" = ? where \"id\" = ?");
                 preparedStatement.setString(1, equipment.getName());
-                preparedStatement.setInt(2, equipment.getPrice());
+                preparedStatement.setBigDecimal(2, equipment.getPrice());
                 preparedStatement.setInt(3, equipment.getId());
                 preparedStatement.executeUpdate();
 
@@ -135,7 +135,7 @@ public class PostGreEquipmentDAO extends PostgreBaseDao implements EquipmentDAO 
         Equipment equipment;
         equipment = new Equipment();
         equipment.setId(rs.getInt("id"));
-        equipment.setPrice(rs.getInt("price"));
+        equipment.setPrice(rs.getBigDecimal("price"));
         equipment.setName(rs.getString("name"));
         return equipment;
     }

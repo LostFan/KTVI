@@ -85,11 +85,11 @@ public class DailyRegisterExcel implements ExcelGenerator {
                 sheet.addCell(new Number(SUBSCRIBER_ID_COLUMN, row, paymentExt.getSubscriberAccount()));
                 sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, row, getAbbreviatedName(paymentExt)));
                 sheet.addCell(new Number(SERVICE_COLUMN, row, paymentExt.getServicePaymentId()));
-                sheet.addCell(new Number(PAYMENT_PRICE, row, paymentExt.getPrice()));
+                sheet.addCell(new Number(PAYMENT_PRICE, row, paymentExt.getPrice().doubleValue()));
                 row++;
             }
 
-            for (Map.Entry<Service, Integer> service : this.report.getServiceAmounts().entrySet()) {
+            for (Map.Entry<Service, Double> service : this.report.getServiceAmounts().entrySet()) {
                 sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, row, service.getKey().getName()));
                 sheet.addCell(new Number(SERVICE_COLUMN, row, service.getKey().getId()));
                 sheet.addCell(new Number(PAYMENT_PRICE, row, service.getValue()));
@@ -97,7 +97,7 @@ public class DailyRegisterExcel implements ExcelGenerator {
             }
 
             sheet.addCell(new Label(SUBSCRIBER_NAME_COLUMN, row, getGuiString("inTotal")));
-            sheet.addCell(new Number(PAYMENT_PRICE, row, this.report.getOverallSum()));
+            sheet.addCell(new Number(PAYMENT_PRICE, row, this.report.getOverallSum().doubleValue()));
 
             workbook.write();
             workbook.close();

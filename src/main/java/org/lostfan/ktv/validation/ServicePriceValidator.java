@@ -1,5 +1,6 @@
 package org.lostfan.ktv.validation;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.lostfan.ktv.domain.ServicePrice;
@@ -13,7 +14,7 @@ public class ServicePriceValidator implements Validator<ServicePrice> {
         // entity.serviceId is expected always to be set
 
         if (entity.getDate() != null) {
-            if (entity.getPrice() < 0) {
+            if (entity.getPrice().compareTo(BigDecimal.ZERO) < 0) {
                 result.addError("errors.negative", "servicePrice.price");
             }
 

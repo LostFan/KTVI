@@ -1,5 +1,6 @@
 package org.lostfan.ktv.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class RenderedService extends DefaultEntity implements Document {
@@ -12,7 +13,7 @@ public class RenderedService extends DefaultEntity implements Document {
 
     private LocalDate date;
 
-    private Integer price;
+    private BigDecimal price;
 
     public Integer getId() {
         return id;
@@ -46,11 +47,11 @@ public class RenderedService extends DefaultEntity implements Document {
         this.date = date;
     }
 
-    public Integer getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

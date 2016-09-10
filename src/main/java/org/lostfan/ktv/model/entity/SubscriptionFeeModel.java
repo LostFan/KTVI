@@ -9,7 +9,6 @@ import org.lostfan.ktv.validation.SubscriptionFeeValidator;
 import org.lostfan.ktv.validation.Validator;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +33,7 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
         this.fields.add(new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false));
         this.fields.add(new EntityField("renderedService.date", EntityFieldTypes.Date, RenderedService::getDate, RenderedService::setDate));
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberAccount, RenderedService::setSubscriberAccount));
-        this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
+        this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Double, RenderedService::getPrice, RenderedService::setPrice));
 
         loadFullEntityField = new FullEntityField("renderedService", EntityFieldTypes.RenderedService, null, null, RenderedService::new);
         loadFullEntityField.setEntityFields(getFields().stream().filter(e -> !e.getTitleKey().equals("renderedService.id")).collect(Collectors.toList()));
@@ -140,6 +139,7 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
         }
         List<RenderedService> list =((RenderedServiceDAO) getDao()).getAllForMonth(renderedServices.get(0).getServiceId(),
                 renderedServices.get(0).getDate());
+        list = list.stream().filter(e -> e.getDate().equals(renderedServices.get(0).getDate().withDayOfMonth(1))).collect(Collectors.toList());
         Map<Integer, List<RenderedService>> map = new HashMap<>();
         for (RenderedService renderedService : list) {
             List<RenderedService> value = map.get(renderedService.getSubscriberAccount());

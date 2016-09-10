@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,8 @@ public class PaymentsLoader {
                     payment.setSubscriberAccount(Integer.parseInt(str[2]));
                     payment.setDate(createDate(str[9]));
                     payment.setBankFileName(file.getName());
-                    payment.setPrice(Integer.parseInt(str[6].split("\\.")[0]));
+//                    payment.setPrice(Integer.parseInt(str[6].split("\\.")[0]));
+                    payment.setPrice(new BigDecimal(str[6]));
                     payment.setPaymentTypeId(PaymentTypes.BANK.getId());
                     payments.add(payment);
                 } catch (Exception ex) {
@@ -66,7 +68,7 @@ public class PaymentsLoader {
                     payment.setSubscriberAccount(Integer.parseInt(str[0]));
 //                    payment.setDate(createDate(str[9]));
                     payment.setBankFileName(file.getName());
-                    payment.setPrice(Integer.parseInt(str[5]));
+                    payment.setPrice(new BigDecimal(str[5]));
                     payment.setPaymentTypeId(PaymentTypes.POST.getId());
                     payments.add(payment);
                 } catch (Exception ex) {

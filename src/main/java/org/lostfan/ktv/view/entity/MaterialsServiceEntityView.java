@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,23 +46,26 @@ public class MaterialsServiceEntityView extends EntityView {
             this.setInnerTable(this.entityInnerTableView);
         }
         this.entityInnerTableView.getTable().getModel().addTableModelListener(e -> {
-            double allSum = 0;
+            BigDecimal allSum = BigDecimal.ZERO;
             for(int i = 0; i < entityInnerTableView.getTable().getRowCount(); i++ ) {
-                if(entityInnerTableView.getTable().getValueAt(i, entityInnerTableView.getTable().getColumn(getEntityString("materialConsumption.allPrice")).getModelIndex()) != null) {
-                    allSum = allSum + (Double) entityInnerTableView.getTable().getValueAt(i, entityInnerTableView.getTable().getColumn(getEntityString("materialConsumption.allPrice")).getModelIndex());
+                Object objPrice = entityInnerTableView.getTable().getValueAt(i, entityInnerTableView.getTable().getColumn(getEntityString("materialConsumption.allPrice")).getModelIndex());
+                if(objPrice != null) {
+                    allSum = allSum.add((BigDecimal) (objPrice));
                 }
             }
-            priceField.setValue(rounding((int) allSum));
+            priceField.setValue(allSum.setScale(2, BigDecimal.ROUND_HALF_UP));
         });
 
         revalidate();
     }
 
-    private Integer rounding(Integer number) {
+    private Double rounding(Double number) {
         if(number == null) {
             return null;
         }
-        return (number + 50) / 100 * 100;
+        Long longNumber = Math.round(number * 100);
+        Double newNumber  = longNumber.doubleValue() / 100;
+        return newNumber;
 
     }
 

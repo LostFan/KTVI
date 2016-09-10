@@ -2,6 +2,7 @@ package org.lostfan.ktv.view.report;
 
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,20 +61,20 @@ public class ConsolidatedRegisterPaymentView extends FormView {
                 case 1:
                     return this.payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.SUBSCRIPTION_FEE.getId())
                             .filter(e -> e.getDate().getDayOfMonth() == rowIndex + 1)
-                            .mapToInt(e -> e.getPrice()).sum();
+                            .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
                 case 2:
                     return this.payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.CONNECTION.getId())
                             .filter(e -> e.getDate().getDayOfMonth() == rowIndex + 1)
-                            .mapToInt(e -> e.getPrice()).sum();
+                            .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
                 case 3:
                     return this.payments.stream().filter(e -> e.getServicePaymentId() != FixedServices.SUBSCRIPTION_FEE.getId())
                             .filter(e -> e.getServicePaymentId() != FixedServices.CONNECTION.getId())
                             .filter(e -> e.getDate().getDayOfMonth() == rowIndex + 1)
-                            .mapToInt(e -> e.getPrice()).sum();
+                            .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
                 case 4:
                     return this.payments.stream()
                             .filter(e -> e.getDate().getDayOfMonth() == rowIndex + 1)
-                            .mapToInt(e -> e.getPrice()).sum();
+                            .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
             }
 
             return null;
@@ -142,17 +143,17 @@ public class ConsolidatedRegisterPaymentView extends FormView {
                     return getGuiString("inTotal");
                 case 1:
                     return this.payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.SUBSCRIPTION_FEE.getId())
-                            .mapToInt(e -> e.getPrice()).sum();
+                            .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
                 case 2:
                     return this.payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.CONNECTION.getId())
-                            .mapToInt(e -> e.getPrice()).sum();
+                            .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
                 case 3:
                     return this.payments.stream().filter(e -> e.getServicePaymentId() != FixedServices.SUBSCRIPTION_FEE.getId())
                             .filter(e -> e.getServicePaymentId() != FixedServices.CONNECTION.getId())
-                            .mapToInt(e -> e.getPrice()).sum();
+                            .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
                 case 4:
                     return this.payments.stream()
-                            .mapToInt(e -> e.getPrice()).sum();
+                            .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
             }
 
             return null;

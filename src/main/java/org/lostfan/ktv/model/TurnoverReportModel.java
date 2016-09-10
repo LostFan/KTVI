@@ -7,6 +7,7 @@ import org.lostfan.ktv.model.entity.BaseModel;
 import org.lostfan.ktv.utils.BaseObservable;
 import org.lostfan.ktv.utils.excel.TurnoverReportExcel;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -63,41 +64,41 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
         }
 
         Map<Integer, TurnoverSheetTableDTO> tableDTOHashMap = new HashMap<>();
-        Map<Integer, Integer> beginPeriodDebit = renderedServiceDAO.getAllRenderedServicesPriceForSubscriberByServiceIdBeforeDate(serviceId, date);
+        Map<Integer, BigDecimal> beginPeriodDebit = renderedServiceDAO.getAllRenderedServicesPriceForSubscriberByServiceIdBeforeDate(serviceId, date);
         beginPeriodDebit.forEach((k, v) -> {
                     TurnoverSheetTableDTO turnoverSheetTableDTO = new TurnoverSheetTableDTO();
                     turnoverSheetTableDTO.setSubscriberAccount(k);
                     turnoverSheetTableDTO.setServiceId(serviceId);
-                    if(v > 0) {
+                    if(v.compareTo(BigDecimal.ZERO) > 0) {
                         turnoverSheetTableDTO.setBroughtForwardBalanceDebit(v);
                     }
                     tableDTOHashMap.put(k, turnoverSheetTableDTO);
                 }
         );
-        Map<Integer, Integer> beginPeriodCredit = paymentDAO.getAllPaymentsPriceForSubscriberToDate(serviceId, date);
+        Map<Integer, BigDecimal> beginPeriodCredit = paymentDAO.getAllPaymentsPriceForSubscriberToDate(serviceId, date);
         beginPeriodCredit.forEach((k, v) -> {
             if (tableDTOHashMap.containsKey(k)) {
-                Integer broughtForwardBalanceDebit = tableDTOHashMap.get(k).getBroughtForwardBalanceDebit();
-                if(broughtForwardBalanceDebit <= v) {
-                    tableDTOHashMap.get(k).setBroughtForwardBalanceDebit(0);
-                    tableDTOHashMap.get(k).setBroughtForwardBalanceCredit(v - broughtForwardBalanceDebit);
+                BigDecimal broughtForwardBalanceDebit = tableDTOHashMap.get(k).getBroughtForwardBalanceDebit();
+                if(broughtForwardBalanceDebit.compareTo(v) <= 0) {
+                    tableDTOHashMap.get(k).setBroughtForwardBalanceDebit(BigDecimal.ZERO);
+                    tableDTOHashMap.get(k).setBroughtForwardBalanceCredit(v.add(broughtForwardBalanceDebit.negate()));
                 } else {
-                    tableDTOHashMap.get(k).setBroughtForwardBalanceDebit(broughtForwardBalanceDebit - v);
+                    tableDTOHashMap.get(k).setBroughtForwardBalanceDebit(broughtForwardBalanceDebit.add(v.negate()));
                 }
             } else {
                 TurnoverSheetTableDTO turnoverSheetTableDTO = new TurnoverSheetTableDTO();
                 turnoverSheetTableDTO.setSubscriberAccount(k);
                 turnoverSheetTableDTO.setServiceId(serviceId);
-                if(v > 0) {
+                if(v.compareTo(BigDecimal.ZERO) > 0) {
                     turnoverSheetTableDTO.setBroughtForwardBalanceCredit(v);
                 } else {
-                    turnoverSheetTableDTO.setBroughtForwardBalanceDebit(-1* v);
+                    turnoverSheetTableDTO.setBroughtForwardBalanceDebit(v.negate());
                 }
                 tableDTOHashMap.put(k, turnoverSheetTableDTO);
             }
                 }
         );
-        Map<Integer,Integer> allRenderedServicesPriceInMonthForSubscriberByServiceId = renderedServiceDAO.getAllRenderedServicesPriceInMonthForSubscriberByServiceId(serviceId, date);
+        Map<Integer,BigDecimal> allRenderedServicesPriceInMonthForSubscriberByServiceId = renderedServiceDAO.getAllRenderedServicesPriceInMonthForSubscriberByServiceId(serviceId, date);
         allRenderedServicesPriceInMonthForSubscriberByServiceId.forEach((k, v) -> {
             if (tableDTOHashMap.containsKey(k)) {
                 tableDTOHashMap.get(k).setTurnoverBalanceDebit(v);
@@ -109,7 +110,7 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
                 tableDTOHashMap.put(k, turnoverSheetTableDTO);
             }
         });
-        Map<Integer,Integer> allPaymentsPriceInMonthForSubscriberByServiceId = paymentDAO.getAllPaymentsPriceInMonthForSubscriberByServiceId(serviceId, date);
+        Map<Integer, BigDecimal> allPaymentsPriceInMonthForSubscriberByServiceId = paymentDAO.getAllPaymentsPriceInMonthForSubscriberByServiceId(serviceId, date);
         allPaymentsPriceInMonthForSubscriberByServiceId.forEach((k, v) -> {
             if (tableDTOHashMap.containsKey(k)) {
                 tableDTOHashMap.get(k).setTurnoverBalanceCredit(v);
@@ -121,7 +122,7 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
                 tableDTOHashMap.put(k, turnoverSheetTableDTO);
             }
         });
-        Map<Integer, Integer> endPeriodDebit = renderedServiceDAO.getAllRenderedServicesPriceForSubscriberByServiceIdBeforeDate(serviceId, date.plusMonths(1));
+        Map<Integer, BigDecimal> endPeriodDebit = renderedServiceDAO.getAllRenderedServicesPriceForSubscriberByServiceIdBeforeDate(serviceId, date.plusMonths(1));
         endPeriodDebit.forEach((k, v) -> {
             if (tableDTOHashMap.containsKey(k)) {
                 tableDTOHashMap.get(k).setCarriedForwardBalanceDebit(v);
@@ -134,16 +135,16 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
             }
                 }
         );
-        Map<Integer, Integer> endPeriodCredit = paymentDAO.getAllPaymentsPriceForSubscriberToDate(serviceId, date.plusMonths(1));
+        Map<Integer, BigDecimal> endPeriodCredit = paymentDAO.getAllPaymentsPriceForSubscriberToDate(serviceId, date.plusMonths(1));
         endPeriodCredit.forEach((k, v) -> {
                     TurnoverSheetTableDTO dto = tableDTOHashMap.get(k);
                     if (dto != null) {
-                        Integer carriedForwardBalanceDebit = dto.getCarriedForwardBalanceDebit();
-                        if(carriedForwardBalanceDebit <= v) {
-                            dto.setCarriedForwardBalanceDebit(0);
-                            dto.setCarriedForwardBalanceCredit(v - carriedForwardBalanceDebit);
+                        BigDecimal carriedForwardBalanceDebit = dto.getCarriedForwardBalanceDebit();
+                        if(carriedForwardBalanceDebit.compareTo(v) <= 0) {
+                            dto.setCarriedForwardBalanceDebit(BigDecimal.ZERO);
+                            dto.setCarriedForwardBalanceCredit(v.add(carriedForwardBalanceDebit.negate()));
                         } else {
-                            dto.setCarriedForwardBalanceDebit(carriedForwardBalanceDebit - v);
+                            dto.setCarriedForwardBalanceDebit(carriedForwardBalanceDebit.add(v.negate()));
                         }
                     } else {
                         TurnoverSheetTableDTO turnoverSheetTableDTO = new TurnoverSheetTableDTO();
@@ -158,10 +159,10 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
 
         turnoverSheetTableDTOs = tableDTOHashMap.values().stream().sorted((dto1, dto2) -> dto1.getSubscriberAccount() - dto2.getSubscriberAccount())
                 .filter(e -> isAddAllNullUsers
-                        ||  e.getBroughtForwardBalanceDebit() - e.getBroughtForwardBalanceCredit() != 0
-                        ||  e.getTurnoverBalanceDebit() != 0
-                        ||  e.getTurnoverBalanceCredit() != 0
-                        ||  e.getCarriedForwardBalanceDebit() - e.getCarriedForwardBalanceCredit() != 0 )
+                        || e.getBroughtForwardBalanceDebit().add(e.getBroughtForwardBalanceCredit().negate()).compareTo(BigDecimal.ZERO) != 0
+                        || e.getTurnoverBalanceDebit().compareTo(BigDecimal.ZERO) != 0
+                        || e.getTurnoverBalanceCredit().compareTo(BigDecimal.ZERO) != 0
+                        || e.getCarriedForwardBalanceDebit().add(e.getCarriedForwardBalanceCredit().negate()).compareTo((BigDecimal.ZERO)) != 0)
                 .collect(Collectors.toList());
 
         for (TurnoverSheetTableDTO turnoverSheetTableDTO : turnoverSheetTableDTOs) {
@@ -172,19 +173,19 @@ public class TurnoverReportModel extends BaseObservable implements BaseModel {
         }
 
         for (TurnoverSheetTableDTO turnoverSheetTableDTO : turnoverSheetTableDTOs) {
-            Integer carriedForwardBalance =
-                    turnoverSheetTableDTO.getBroughtForwardBalanceDebit() - turnoverSheetTableDTO.getBroughtForwardBalanceCredit()
-                    + turnoverSheetTableDTO.getTurnoverBalanceDebit() - turnoverSheetTableDTO.getTurnoverBalanceCredit();
-            if(carriedForwardBalance != turnoverSheetTableDTO.getCarriedForwardBalanceDebit() - turnoverSheetTableDTO.getCarriedForwardBalanceCredit()) {
+            BigDecimal carriedForwardBalance =
+                    turnoverSheetTableDTO.getBroughtForwardBalanceDebit().add(turnoverSheetTableDTO.getBroughtForwardBalanceCredit().negate())
+                    .add(turnoverSheetTableDTO.getTurnoverBalanceDebit()).add(turnoverSheetTableDTO.getTurnoverBalanceCredit().negate());
+            if(carriedForwardBalance != turnoverSheetTableDTO.getCarriedForwardBalanceDebit().add(turnoverSheetTableDTO.getCarriedForwardBalanceCredit().negate())) {
                 System.out.println(turnoverSheetTableDTO.getSubscriberAccount());
             }
         }
-        System.out.println(turnoverSheetTableDTOs.stream().mapToInt(i -> i.getBroughtForwardBalanceCredit()).sum());
-        System.out.println(turnoverSheetTableDTOs.stream().mapToInt(i -> i.getBroughtForwardBalanceDebit()).sum());
-        System.out.println(turnoverSheetTableDTOs.stream().mapToInt(i -> i.getTurnoverBalanceCredit()).sum());
-        System.out.println(turnoverSheetTableDTOs.stream().mapToInt(i -> i.getTurnoverBalanceDebit()).sum());
-        System.out.println(turnoverSheetTableDTOs.stream().mapToInt(i -> i.getCarriedForwardBalanceCredit()).sum());
-        System.out.println(turnoverSheetTableDTOs.stream().mapToInt(i -> i.getCarriedForwardBalanceDebit()).sum());
+        System.out.println(turnoverSheetTableDTOs.stream().map(i -> i.getBroughtForwardBalanceCredit()).reduce(BigDecimal.ZERO, BigDecimal::add));
+        System.out.println(turnoverSheetTableDTOs.stream().map(i -> i.getBroughtForwardBalanceDebit()).reduce(BigDecimal.ZERO, BigDecimal::add));
+        System.out.println(turnoverSheetTableDTOs.stream().map(i -> i.getTurnoverBalanceCredit()).reduce(BigDecimal.ZERO, BigDecimal::add));
+        System.out.println(turnoverSheetTableDTOs.stream().map(i -> i.getTurnoverBalanceDebit()).reduce(BigDecimal.ZERO, BigDecimal::add));
+        System.out.println(turnoverSheetTableDTOs.stream().map(i -> i.getCarriedForwardBalanceCredit()).reduce(BigDecimal.ZERO, BigDecimal::add));
+        System.out.println(turnoverSheetTableDTOs.stream().map(i -> i.getCarriedForwardBalanceDebit()).reduce(BigDecimal.ZERO, BigDecimal::add));
         return turnoverSheetTableDTOs;
     }
 

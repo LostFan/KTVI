@@ -11,6 +11,7 @@ import org.lostfan.ktv.model.entity.BaseModel;
 import org.lostfan.ktv.utils.*;
 import org.lostfan.ktv.view.components.DatePickerField;
 import org.lostfan.ktv.view.components.IntegerTextField;
+import org.lostfan.ktv.view.components.MoneyTextField;
 import org.lostfan.ktv.view.model.CriteriaComboBoxModel;
 import org.lostfan.ktv.view.model.FieldsComboBoxModel;
 
@@ -28,6 +29,7 @@ public class EntityFilterView extends FrameView {
         private JComboBox<String> fieldComboBox;
         private JComboBox<String> criterionComboBox;
         private IntegerTextField integerTextField;
+        private MoneyTextField moneyTextField;
         private JTextField valueTextField;
         private DatePickerField datePicker;
         private JButton removeButton;
@@ -44,6 +46,7 @@ public class EntityFilterView extends FrameView {
             this.criterionComboBox = new JComboBox<>();
             this.valueTextField = new JTextField(20);
             this.integerTextField = new IntegerTextField();
+            this.moneyTextField = new MoneyTextField();
             this.datePicker = new DatePickerField();
             this.removeButton = new JButton();
             URL url = EntityFilterView.class.getClassLoader().getResource("images/remove.png");
@@ -84,6 +87,8 @@ public class EntityFilterView extends FrameView {
                     return this.valueTextField.getText();
                 case Integer:
                     return this.integerTextField.getValue();
+                case Double:
+                    return this.moneyTextField.getValue();
                 case Boolean:
                     return getSelectedCriterion() == SearchCriteria.Boolean.True;
                 case Date:
@@ -107,6 +112,12 @@ public class EntityFilterView extends FrameView {
             }
             if (getSelectedFieldType() != null && getSelectedFieldType() == EntityFieldTypes.Integer) {
                 panel.add(this.integerTextField, c);
+            }
+            if (getSelectedFieldType() != null && getSelectedFieldType() == EntityFieldTypes.Double) {
+                panel.add(this.moneyTextField, c);
+            }
+            if (getSelectedFieldType() != null && getSelectedFieldType() == EntityFieldTypes.BigDecimal) {
+                panel.add(this.moneyTextField, c);
             }
             if (getSelectedFieldType() != null && getSelectedFieldType() == EntityFieldTypes.Date) {
                 panel.add(this.datePicker, c);

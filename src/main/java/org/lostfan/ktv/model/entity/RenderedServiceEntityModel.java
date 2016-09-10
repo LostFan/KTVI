@@ -8,6 +8,7 @@ import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.model.searcher.RenderedServiceSearcherModel;
 import org.lostfan.ktv.validation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         this.fields.add(new EntityField("renderedService", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId, false));
         this.fields.add(new EntityField("renderedService.date", EntityFieldTypes.Date, RenderedService::getDate, RenderedService::setDate));
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberAccount, RenderedService::setSubscriberAccount));
-        this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Integer, RenderedService::getPrice, RenderedService::setPrice));
+        this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Double, RenderedService::getPrice, RenderedService::setPrice));
 
         this.serviceEntityField = new EntityField("service", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId, false);
         this.tariffField = new EntityField("tariff", EntityFieldTypes.Tariff, TariffField::getTariffId, TariffField::setTariffId);
@@ -62,9 +63,9 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
 
         FullEntityField materialConsumptionField = new FullEntityField("materialConsumption", EntityFieldTypes.MaterialConsumption, MaterialsDTO::getMaterialConsumption, MaterialsDTO::setMaterialConsumption, MaterialConsumption::new);
         List<EntityField> entityFields = MainModel.getMaterialConsumptionEntityModel().getFields().stream().filter(e -> !e.getTitleKey().equals("renderedService")).filter(e -> !e.getTitleKey().equals("materialConsumption.id")).collect(Collectors.toList());
-        entityFields.add(new EntityField("materialConsumption.price", EntityFieldTypes.Integer, new Function<MaterialConsumption, Integer>() {
+        entityFields.add(new EntityField("materialConsumption.price", EntityFieldTypes.BigDecimal, new Function<MaterialConsumption, BigDecimal>() {
             @Override
-            public Integer apply(MaterialConsumption materialConsumption) {
+            public BigDecimal apply(MaterialConsumption materialConsumption) {
                 if (materialConsumption.getMaterialId() == null) {
                     return null;
                 }
@@ -72,14 +73,14 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
             }
         }, (e1, e2) -> {
         }));
-        entityFields.add(new EntityField("materialConsumption.allPrice", EntityFieldTypes.Double, new Function<MaterialConsumption, Double>() {
+        entityFields.add(new EntityField("materialConsumption.allPrice", EntityFieldTypes.BigDecimal, new Function<MaterialConsumption, BigDecimal>() {
             @Override
-            public Double apply(MaterialConsumption materialConsumption) {
+            public BigDecimal apply(MaterialConsumption materialConsumption) {
                 if (materialConsumption.getMaterialId() == null
                         || materialConsumption.getAmount() == null) {
                     return null;
                 }
-                return ((materialDAO.get(materialConsumption.getMaterialId()).getPrice() * materialConsumption.getAmount()));
+                return ((materialDAO.get(materialConsumption.getMaterialId()).getPrice().multiply(new BigDecimal(materialConsumption.getAmount())))).setScale(2, BigDecimal.ROUND_HALF_UP);
             }
         }, (e1, e2) -> {
         }));
@@ -663,11 +664,11 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         }
     }
 
-    public Integer getRenderedServicePriceByDate(Integer serviceId, LocalDate date) {
+    public BigDecimal getRenderedServicePriceByDate(Integer serviceId, LocalDate date) {
         if (serviceId != null && date != null) {
             return serviceDAO.getPriceByDate(serviceId, date);
         }
-        return 0;
+        return BigDecimal.ZERO;
     }
 
     public Integer getSubscriberTariff(Integer subscriberAccount, LocalDate date) {

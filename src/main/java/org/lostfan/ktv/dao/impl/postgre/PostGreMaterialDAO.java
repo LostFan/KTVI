@@ -60,7 +60,7 @@ public class PostGreMaterialDAO extends PostgreBaseDao implements MaterialDAO {
                         "INSERT INTO \"material\" (\"name\", \"price\", \"unit\") VALUES(?, ?, ?)");
             }
             preparedStatement.setString(1, material.getName());
-            preparedStatement.setInt(2, material.getPrice());
+            preparedStatement.setBigDecimal(2, material.getPrice());
             preparedStatement.setString(3, material.getUnit());
             preparedStatement.executeUpdate();
             if (material.getId() != null) {
@@ -82,7 +82,7 @@ public class PostGreMaterialDAO extends PostgreBaseDao implements MaterialDAO {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
                         "UPDATE \"material\" set \"name\" = ?, \"price\" = ?, \"unit\" = ? where \"id\" = ?");
                 preparedStatement.setString(1, material.getName());
-                preparedStatement.setInt(2, material.getPrice());
+                preparedStatement.setBigDecimal(2, material.getPrice());
                 preparedStatement.setString(3, material.getUnit());
                 preparedStatement.setInt(4, material.getId());
                 preparedStatement.executeUpdate();
@@ -134,7 +134,7 @@ public class PostGreMaterialDAO extends PostgreBaseDao implements MaterialDAO {
         Material material;
         material = new Material();
         material.setId(rs.getInt("id"));
-        material.setPrice(rs.getInt("price"));
+        material.setPrice(rs.getBigDecimal("price"));
         material.setName(rs.getString("name"));
         material.setUnit(rs.getString("unit"));
         return material;

@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class PaymentView extends FormView {
     private JButton cancelButton;
     private DateFormField dateFormField;
     private SubscriberFormField subscriberFormField;
-    private IntegerFormField priceFormField;
+    private BigDecimalFormField priceFormField;
     private StringFormField bankFileNameFormField;
 
     protected ViewActionListener addActionListener;
@@ -72,7 +73,7 @@ public class PaymentView extends FormView {
         setTitle(getEntityString("payments"));
         dateFormField = new DateFormField("payment.payDate");
         subscriberFormField = new SubscriberFormField("subscriber");
-        priceFormField = new IntegerFormField("payment.price");
+        priceFormField = new BigDecimalFormField("payment.price");
         bankFileNameFormField = new StringFormField("payment.bankFileName");
         addFormField(dateFormField);
         addFormField(subscriberFormField);
@@ -86,9 +87,9 @@ public class PaymentView extends FormView {
             bankFileNameFormField.setValue(entity.getBankFileName());
             subscriberFormField.setValue(entity.getSubscriberAccount());
             List<Payment> payments = model.getList(entity.getSubscriberAccount(),entity.getDate(),entity.getBankFileName());
-            Integer allPrice = 0;
+            BigDecimal allPrice = BigDecimal.ZERO;
             for (Payment payment : payments) {
-                allPrice += payment.getPrice();
+                allPrice = allPrice.add(payment.getPrice());
             }
             priceFormField.setValue(allPrice);
             this.entityInnerTableView.getEntityList().addAll(payments);

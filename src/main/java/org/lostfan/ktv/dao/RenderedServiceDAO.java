@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.List;
@@ -24,11 +25,13 @@ public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
 
     List<RenderedService> getAllForMonth(int serviceId, int subscriberAccount, LocalDate date);
 
-    Map<Integer, Integer> getAllRenderedServicesPriceInMonthForSubscriber(LocalDate date);
+    Map<Integer, BigDecimal> getAllRenderedServicesPriceInMonthForSubscriber(LocalDate date);
 
-    Map<Integer, Integer> getAllRenderedServicesPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date);
+    Map<Integer, BigDecimal> getAllRenderedServicesPriceInMonthForSubscriberByServiceId(int serviceId, LocalDate date);
 
-    Map<Integer, Integer> getAllRenderedServicesPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date);
+    Map<Integer, BigDecimal> getAllRenderedServicesPriceBeforeDate(LocalDate date);
+
+    Map<Integer, BigDecimal> getAllRenderedServicesPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date);
 
     RenderedService getFirstRenderedServiceLessDate(int serviceId, int subscriberAccount, LocalDate date);
 

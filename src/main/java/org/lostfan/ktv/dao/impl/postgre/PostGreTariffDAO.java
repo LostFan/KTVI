@@ -6,6 +6,7 @@ import org.lostfan.ktv.domain.Tariff;
 import org.lostfan.ktv.domain.TariffPrice;
 import org.lostfan.ktv.utils.ConnectionManager;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -191,7 +192,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
                     "INSERT INTO \"tariff_price\" (\"tariff_id\", \"date\", \"price\") VALUES(?, ?, ?)");
             preparedStatement.setInt(1, tariffPrice.getTariffId());
             preparedStatement.setDate(2, Date.valueOf(tariffPrice.getDate()));
-            preparedStatement.setInt(3, tariffPrice.getPrice());
+            preparedStatement.setBigDecimal(3, tariffPrice.getPrice());
             preparedStatement.executeUpdate();
 
         } catch (SQLException ex) {
@@ -214,8 +215,8 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
         }
     }
 
-    public Integer getPriceByDate(int tariffId, LocalDate date) {
-        Integer price = null;
+    public BigDecimal getPriceByDate(int tariffId, LocalDate date) {
+        BigDecimal price = null;
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement(
                     "SELECT * FROM \"tariff_price\" where \"tariff_id\" = ? AND \"date\" <= ? ORDER BY \"date\" DESC LIMIT 1");
@@ -223,7 +224,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
             preparedStatement.setDate(2, Date.valueOf(date));
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                price = rs.getInt("price");
+                price = rs.getBigDecimal("price");
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -262,7 +263,7 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
 
     private TariffPrice constructPriceEntity(ResultSet rs) throws SQLException {
         TariffPrice tariffPrice = new TariffPrice();
-        tariffPrice.setPrice(rs.getInt("price"));
+        tariffPrice.setPrice(rs.getBigDecimal("price"));
         tariffPrice.setTariffId(rs.getInt("tariff_id"));
         tariffPrice.setDate(rs.getDate("date").toLocalDate());
         return tariffPrice;

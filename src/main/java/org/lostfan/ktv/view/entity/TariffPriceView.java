@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.swing.*;
@@ -65,7 +66,7 @@ public class TariffPriceView extends FormView {
     private ViewActionListener deleteActionListener;
 
     private JTable archiveTable;
-    private IntegerFormField priceField;
+    private BigDecimalFormField priceField;
     private DateFormField dateField;
     private String newPriceTitle;
 
@@ -85,7 +86,7 @@ public class TariffPriceView extends FormView {
         this.archiveTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         this.archiveTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 
-        this.priceField = new IntegerFormField("tariffPrice.price");
+        this.priceField = new BigDecimalFormField("tariffPrice.price");
         this.dateField = new DateFormField("tariffPrice.date");
 
         if (tariff.getNewPrice() != null) {
@@ -93,7 +94,7 @@ public class TariffPriceView extends FormView {
             this.dateField.setValue(tariff.getNewPrice().getDate());
             newPriceTitle = getGuiString("tariffPrice.changeNew") + ":";
         } else {
-            this.priceField.setValue(0);
+            this.priceField.setValue(BigDecimal.ZERO);
             newPriceTitle = getGuiString("tariffPrice.createNew") + ":";
         }
         String nameSaveButton = "buttons.save";
@@ -138,7 +139,7 @@ public class TariffPriceView extends FormView {
         if (tariff.getCurrentPrice() == null) {
             box.add(new JLabel("-"));
         } else {
-            String priceStr = String.format("%d (%s)",tariff.getCurrentPrice().getPrice(),
+            String priceStr = String.format("%.2f (%s)",tariff.getCurrentPrice().getPrice(),
                     DateFormatter.format(tariff.getCurrentPrice().getDate()));
             box.add(new JLabel(priceStr));
         }
@@ -169,7 +170,7 @@ public class TariffPriceView extends FormView {
     public TariffPrice buildNewTariffPrice() {
         TariffPrice tariffPrice = new TariffPrice();
         tariffPrice.setTariffId(this.tariff.getId());
-        tariffPrice.setPrice(this.priceField.getValue() == null ? 0 : this.priceField.getValue());
+        tariffPrice.setPrice(this.priceField.getValue() == null ? BigDecimal.ZERO : this.priceField.getValue());
         tariffPrice.setDate(this.dateField.getValue());
         return tariffPrice;
     }

@@ -8,6 +8,7 @@ import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.searcher.SubscriberSearchCriteria;
 import org.lostfan.ktv.utils.ConnectionManager;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -196,7 +197,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
         }
     }
 
-    public int getBalanceByDate(int subscriberId, LocalDate date) {
+    public Double getBalanceByDate(int subscriberId, LocalDate date) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -897,8 +898,8 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
     }
 
     @Override
-    public HashMap<Integer, Integer> getServicesBalanceBySubscriberIdAndDate(Integer subscriberId, LocalDate date) {
-        HashMap<Integer, Integer> hashMap = new HashMap<>();
+    public HashMap<Integer, BigDecimal> getServicesBalanceBySubscriberIdAndDate(Integer subscriberId, LocalDate date) {
+        HashMap<Integer, BigDecimal> hashMap = new HashMap<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT " +
                     "(CASE WHEN \"payment\".\"service_id\" is NULL THEN \"rendered_service\".\"service_id\" ELSE \"payment\".\"service_id\" END) AS \"service_id\"," +
@@ -917,7 +918,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
             preparedStatement.setInt(4, subscriberId);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                hashMap.put(rs.getInt("service_id"), rs.getInt("balance"));
+                hashMap.put(rs.getInt("service_id"), rs.getBigDecimal("balance"));
             }
 
         } catch (SQLException ex) {
@@ -929,8 +930,8 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
     }
 
     @Override
-    public HashMap<Integer, Integer> getServicesBalance(Integer subscriberAccount) {
-        HashMap<Integer, Integer> hashMap = new HashMap<>();
+    public HashMap<Integer, BigDecimal> getServicesBalance(Integer subscriberAccount) {
+        HashMap<Integer, BigDecimal> hashMap = new HashMap<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT " +
                     "(CASE WHEN \"payment\".\"service_id\" is NULL THEN \"rendered_service\".\"service_id\" ELSE \"payment\".\"service_id\" END) AS \"service_id\"," +
@@ -947,7 +948,7 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
             preparedStatement.setInt(2, subscriberAccount);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                hashMap.put(rs.getInt("service_id"), rs.getInt("balance"));
+                hashMap.put(rs.getInt("service_id"), rs.getBigDecimal("balance"));
             }
 
         } catch (SQLException ex) {

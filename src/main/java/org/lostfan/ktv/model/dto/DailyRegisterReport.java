@@ -2,6 +2,7 @@ package org.lostfan.ktv.model.dto;
 
 import org.lostfan.ktv.domain.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -9,9 +10,9 @@ public class DailyRegisterReport {
 
     private List<PaymentExt> payments;
 
-    private Map<Service, Integer> serviceAmounts;
+    private Map<Service, Double> serviceAmounts;
 
-    private int overallSum;
+    private BigDecimal overallSum;
 
     public List<PaymentExt> getPayments() {
         return payments;
@@ -21,19 +22,19 @@ public class DailyRegisterReport {
         this.payments = payments;
     }
 
-    public Map<Service, Integer> getServiceAmounts() {
+    public Map<Service, Double> getServiceAmounts() {
         return serviceAmounts;
     }
 
-    public void setServiceAmounts(Map<Service, Integer> serviceAmounts) {
+    public void setServiceAmounts(Map<Service, Double> serviceAmounts) {
         this.serviceAmounts = serviceAmounts;
     }
 
-    public int getOverallSum() {
+    public BigDecimal getOverallSum() {
         return overallSum;
     }
 
-    public void setOverallSum(int overallSum) {
+    public void setOverallSum(BigDecimal overallSum) {
         this.overallSum = overallSum;
     }
 }

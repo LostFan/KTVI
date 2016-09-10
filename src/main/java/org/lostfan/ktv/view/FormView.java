@@ -7,6 +7,7 @@ import org.lostfan.ktv.view.components.TextField;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -219,6 +220,51 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
         }
     }
 
+    public static class BigDecimalFormField extends FormField<BigDecimal> {
+
+        private TextField textField;
+
+        public BigDecimalFormField(String fieldKey) {
+            super(fieldKey);
+            // TODO: Implement FormattedTextField or another way to filter double values only
+            this.textField = new MoneyTextField();
+
+            this.textField.addTextChangeListener(v -> fireValueChanged(getValue()));
+        }
+
+        @Override
+        protected void setError(String errorCode) {
+            super.setError(errorCode);
+            this.textField.setBackground(new Color(250, 234, 234));
+        }
+
+        @Override
+        protected void clearError() {
+            super.clearError();
+            this.textField.setBackground(UIManager.getColor("TextField.background"));
+        }
+
+        @Override
+        public JComponent getInputComponent() {
+            return this.textField;
+        }
+
+        @Override
+        public BigDecimal getValue() {
+            String text = textField.getText();
+            try {
+                return new BigDecimal(text);
+            } catch (NumberFormatException | NullPointerException e) {
+                return null;
+            }
+        }
+
+        @Override
+        public void setValue(BigDecimal value) {
+            this.textField.setText(value.toString());
+        }
+    }
+
     public static class DoubleFormField extends FormField<Double> {
 
         private TextField textField;
@@ -226,7 +272,7 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
         public DoubleFormField(String fieldKey) {
             super(fieldKey);
             // TODO: Implement FormattedTextField or another way to filter double values only
-            this.textField = new TextField();
+            this.textField = new MoneyTextField();
 
             this.textField.addTextChangeListener(v -> fireValueChanged(getValue()));
         }
@@ -252,7 +298,7 @@ public class FormView extends FrameView implements Iterable<FormView.FormField> 
         public Double getValue() {
             String text = textField.getText();
             try {
-                return Double.parseDouble(text);
+                return new Double(text);
             } catch (NumberFormatException | NullPointerException e) {
                 return null;
             }

@@ -4,6 +4,7 @@ import org.lostfan.ktv.domain.Street;
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.utils.ResourceBundles;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class TurnoverSheetTableDTO {
@@ -12,17 +13,17 @@ public class TurnoverSheetTableDTO {
 
     private LocalDate date;
 
-    private Integer broughtForwardBalanceCredit;
+    private BigDecimal broughtForwardBalanceCredit;
 
-    private Integer broughtForwardBalanceDebit;
+    private BigDecimal broughtForwardBalanceDebit;
 
-    private Integer carriedForwardBalanceCredit;
+    private BigDecimal carriedForwardBalanceCredit;
 
-    private Integer carriedForwardBalanceDebit;
+    private BigDecimal carriedForwardBalanceDebit;
 
-    private Integer turnoverBalanceCredit;
+    private BigDecimal turnoverBalanceCredit;
 
-    private Integer turnoverBalanceDebit;
+    private BigDecimal turnoverBalanceDebit;
 
     private Integer serviceId;
 
@@ -31,12 +32,12 @@ public class TurnoverSheetTableDTO {
     private Street subscriberStreet;
 
     public TurnoverSheetTableDTO() {
-        this.broughtForwardBalanceCredit = 0;
-        this.broughtForwardBalanceDebit = 0;
-        this.carriedForwardBalanceCredit = 0;
-        this.carriedForwardBalanceDebit = 0;
-        this.turnoverBalanceCredit = 0;
-        this.turnoverBalanceDebit = 0;
+        this.broughtForwardBalanceCredit = BigDecimal.ZERO;
+        this.broughtForwardBalanceDebit = BigDecimal.ZERO;
+        this.carriedForwardBalanceCredit = BigDecimal.ZERO;
+        this.carriedForwardBalanceDebit = BigDecimal.ZERO;
+        this.turnoverBalanceCredit = BigDecimal.ZERO;
+        this.turnoverBalanceDebit = BigDecimal.ZERO;
     }
 
     public Integer getSubscriberAccount() {
@@ -55,51 +56,51 @@ public class TurnoverSheetTableDTO {
         this.date = date;
     }
 
-    public Integer getBroughtForwardBalanceCredit() {
+    public BigDecimal getBroughtForwardBalanceCredit() {
         return broughtForwardBalanceCredit;
     }
 
-    public void setBroughtForwardBalanceCredit(Integer broughtForwardBalanceCredit) {
+    public void setBroughtForwardBalanceCredit(BigDecimal broughtForwardBalanceCredit) {
         this.broughtForwardBalanceCredit = broughtForwardBalanceCredit;
     }
 
-    public Integer getBroughtForwardBalanceDebit() {
+    public BigDecimal getBroughtForwardBalanceDebit() {
         return broughtForwardBalanceDebit;
     }
 
-    public void setBroughtForwardBalanceDebit(Integer broughtForwardBalanceDebit) {
+    public void setBroughtForwardBalanceDebit(BigDecimal broughtForwardBalanceDebit) {
         this.broughtForwardBalanceDebit = broughtForwardBalanceDebit;
     }
 
-    public Integer getCarriedForwardBalanceCredit() {
+    public BigDecimal getCarriedForwardBalanceCredit() {
         return carriedForwardBalanceCredit;
     }
 
-    public void setCarriedForwardBalanceCredit(Integer carriedForwardBalanceCredit) {
+    public void setCarriedForwardBalanceCredit(BigDecimal carriedForwardBalanceCredit) {
         this.carriedForwardBalanceCredit = carriedForwardBalanceCredit;
     }
 
-    public Integer getCarriedForwardBalanceDebit() {
+    public BigDecimal getCarriedForwardBalanceDebit() {
         return carriedForwardBalanceDebit;
     }
 
-    public void setCarriedForwardBalanceDebit(Integer carriedForwardBalanceDebit) {
+    public void setCarriedForwardBalanceDebit(BigDecimal carriedForwardBalanceDebit) {
         this.carriedForwardBalanceDebit = carriedForwardBalanceDebit;
     }
 
-    public Integer getTurnoverBalanceCredit() {
+    public BigDecimal getTurnoverBalanceCredit() {
         return turnoverBalanceCredit;
     }
 
-    public void setTurnoverBalanceCredit(Integer turnoverBalanceCredit) {
+    public void setTurnoverBalanceCredit(BigDecimal turnoverBalanceCredit) {
         this.turnoverBalanceCredit = turnoverBalanceCredit;
     }
 
-    public Integer getTurnoverBalanceDebit() {
+    public BigDecimal getTurnoverBalanceDebit() {
         return turnoverBalanceDebit;
     }
 
-    public void setTurnoverBalanceDebit(Integer turnoverBalanceDebit) {
+    public void setTurnoverBalanceDebit(BigDecimal turnoverBalanceDebit) {
         this.turnoverBalanceDebit = turnoverBalanceDebit;
     }
 

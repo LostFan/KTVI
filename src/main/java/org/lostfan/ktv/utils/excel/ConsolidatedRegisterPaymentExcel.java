@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -78,30 +79,30 @@ public class ConsolidatedRegisterPaymentExcel implements ExcelGenerator{
                 sheet.addCell(new Number(NUMBER_OF_DAY_COLUMN, i, finalIndex + 1));
                 sheet.addCell(new Number(SUBSCRIPTION_FEE_COLUMN, i, payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.SUBSCRIPTION_FEE.getId())
                         .filter(e -> e.getDate().getDayOfMonth() == finalIndex + 1)
-                        .mapToInt(e -> e.getPrice()).sum()));
+                        .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue()));
                 sheet.addCell(new Number(CONNECTION_COLUMN, i, payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.CONNECTION.getId())
                         .filter(e -> e.getDate().getDayOfMonth() == finalIndex + 1)
-                        .mapToInt(e -> e.getPrice()).sum()));
+                        .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue()));
                 sheet.addCell(new Number(ADDITIONAL_COLUMN, i, payments.stream().filter(e -> e.getServicePaymentId() != FixedServices.SUBSCRIPTION_FEE.getId())
                         .filter(e -> e.getServicePaymentId() != FixedServices.CONNECTION.getId())
                         .filter(e -> e.getDate().getDayOfMonth() == finalIndex + 1)
-                        .mapToInt(e -> e.getPrice()).sum()));
+                        .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue()));
                 sheet.addCell(new Number(TOTAL_COLUMN, i, payments.stream()
                         .filter(e -> e.getDate().getDayOfMonth() == finalIndex + 1)
-                        .mapToInt(e -> e.getPrice()).sum()));
+                        .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue()));
                 i++;
             }
 
             sheet.addCell(new Label(NUMBER_OF_DAY_COLUMN, i, getGuiString("inTotal")));
             sheet.addCell(new Number(SUBSCRIPTION_FEE_COLUMN, i, payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.SUBSCRIPTION_FEE.getId())
-                    .mapToInt(e -> e.getPrice()).sum()));
+                    .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue()));
             sheet.addCell(new Number(CONNECTION_COLUMN, i, payments.stream().filter(e -> e.getServicePaymentId() == FixedServices.CONNECTION.getId())
-                    .mapToInt(e -> e.getPrice()).sum()));
+                    .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue()));
             sheet.addCell(new Number(ADDITIONAL_COLUMN, i, payments.stream().filter(e -> e.getServicePaymentId() != FixedServices.SUBSCRIPTION_FEE.getId())
                     .filter(e -> e.getServicePaymentId() != FixedServices.CONNECTION.getId())
-                    .mapToInt(e -> e.getPrice()).sum()));
+                    .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue()));
             sheet.addCell(new Number(TOTAL_COLUMN, i, payments.stream()
-                    .mapToInt(e -> e.getPrice()).sum()));
+                    .map(e -> e.getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue()));
             i++;
 
             workbook.write();

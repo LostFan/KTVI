@@ -1,6 +1,7 @@
 package org.lostfan.ktv.view.entity;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public class SubscriberEntityView extends EntityView {
                         ResourceBundles.getGuiBundle().getString("debit");
                 case 3: return renderedServiceAndPayments.get(rowIndex).getService();
                 case 4: return renderedServiceAndPayments.get(rowIndex).isCredit() ?
-                        renderedServiceAndPayments.get(rowIndex).getPrice() * -1 :
+                        renderedServiceAndPayments.get(rowIndex).getPrice().negate() :
                         renderedServiceAndPayments.get(rowIndex).getPrice();
             }
             return null;
@@ -111,7 +112,7 @@ public class SubscriberEntityView extends EntityView {
 
         private Service service;
 
-        private Integer price;
+        private BigDecimal price;
 
         public LocalDate getDate() {
             return date;
@@ -137,11 +138,11 @@ public class SubscriberEntityView extends EntityView {
             this.service = service;
         }
 
-        public Integer getPrice() {
+        public BigDecimal getPrice() {
             return price;
         }
 
-        public void setPrice(Integer price) {
+        public void setPrice(BigDecimal price) {
             this.price = price;
         }
 
@@ -162,20 +163,20 @@ public class SubscriberEntityView extends EntityView {
         List<RenderedServiceAndPayment> renderedServiceAndPayments = new ArrayList<>();
         List<RenderedServiceExt> renderedServices = model.getRenderedServicesExtBySubscriberId(entity.getId());
 
-        Integer balance = 0;
+        BigDecimal balance = BigDecimal.ZERO;
 
         for (RenderedServiceExt renderedService : renderedServices) {
             renderedServiceAndPayments.add(new RenderedServiceAndPayment(renderedService));
-            balance+=renderedService.getPrice();
+            balance= balance.add(renderedService.getPrice());
         }
         List<PaymentExt> payments = model.getPaymentsExtBySubscriberId(entity.getId());
         for (PaymentExt payment : payments) {
             renderedServiceAndPayments.add(new RenderedServiceAndPayment(payment));
-            balance-=payment.getPrice();
+            balance=balance.add(payment.getPrice().negate());
         }
         renderedServiceAndPayments.sort((o1, o2) -> o2.getDate().compareTo(o1.getDate()));
 
-        IntegerFormField balanceFormField = new IntegerFormField("subscriber.balance");
+        BigDecimalFormField balanceFormField = new BigDecimalFormField("subscriber.balance");
         balanceFormField.setValue(balance);
         addFormField(balanceFormField);
 

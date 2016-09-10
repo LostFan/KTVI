@@ -1,5 +1,6 @@
 package org.lostfan.ktv.dao;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,5 +21,5 @@ public interface TariffDAO extends EntityDAO<Tariff> {
 
     void deleteTariffPrice(TariffPrice tariffPrice);
 
-    Integer getPriceByDate(int tariffId, LocalDate date);
+    BigDecimal getPriceByDate(int tariffId, LocalDate date);
 }

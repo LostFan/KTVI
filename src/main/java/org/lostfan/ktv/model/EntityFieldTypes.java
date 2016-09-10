@@ -13,6 +13,7 @@ public enum EntityFieldTypes {
     Boolean(java.lang.Boolean.class, false, null),
     Date(LocalDate.class, false, null),
     Double(java.lang.Double.class, false, null),
+    BigDecimal(java.math.BigDecimal.class, false, null),
     Subscriber(org.lostfan.ktv.domain.Subscriber.class, true, DAOFactory.getDefaultDAOFactory().getSubscriberDAO()),
     Service(org.lostfan.ktv.domain.Service.class, true, DAOFactory.getDefaultDAOFactory().getServiceDAO()),
     Street(org.lostfan.ktv.domain.Street.class, true, DAOFactory.getDefaultDAOFactory().getStreetDAO()),

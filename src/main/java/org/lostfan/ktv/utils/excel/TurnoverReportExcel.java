@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -145,23 +146,23 @@ public class TurnoverReportExcel implements ExcelGenerator {
                 if (isAdditional) {
                     sheet.addCell(new Number(SERVICE_COLUMN, i, turnoverSheetTableDTO.getServiceId()));
                 }
-                sheet.addCell(new Number(BROUGHT_FORWARD_BALANCE_CREDIT, i, turnoverSheetTableDTO.getBroughtForwardBalanceCredit()));
-                sheet.addCell(new Number(BROUGHT_FORWARD_BALANCE_DEBIT, i, turnoverSheetTableDTO.getBroughtForwardBalanceDebit()));
-                sheet.addCell(new Number(TURNOVER_BALANCE_CREDIT, i, turnoverSheetTableDTO.getTurnoverBalanceCredit()));
-                sheet.addCell(new Number(TURNOVER_BALANCE_DEBIT, i, turnoverSheetTableDTO.getTurnoverBalanceDebit()));
-                sheet.addCell(new Number(CARRIED_FORWARD_BALANCE_CREDIT, i, turnoverSheetTableDTO.getCarriedForwardBalanceCredit()));
-                sheet.addCell(new Number(CARRIED_FORWARD_BALANCE_DEBIT, i, turnoverSheetTableDTO.getCarriedForwardBalanceDebit()));
+                sheet.addCell(new Number(BROUGHT_FORWARD_BALANCE_CREDIT, i, turnoverSheetTableDTO.getBroughtForwardBalanceCredit().doubleValue()));
+                sheet.addCell(new Number(BROUGHT_FORWARD_BALANCE_DEBIT, i, turnoverSheetTableDTO.getBroughtForwardBalanceDebit().doubleValue()));
+                sheet.addCell(new Number(TURNOVER_BALANCE_CREDIT, i, turnoverSheetTableDTO.getTurnoverBalanceCredit().doubleValue()));
+                sheet.addCell(new Number(TURNOVER_BALANCE_DEBIT, i, turnoverSheetTableDTO.getTurnoverBalanceDebit().doubleValue()));
+                sheet.addCell(new Number(CARRIED_FORWARD_BALANCE_CREDIT, i, turnoverSheetTableDTO.getCarriedForwardBalanceCredit().doubleValue()));
+                sheet.addCell(new Number(CARRIED_FORWARD_BALANCE_DEBIT, i, turnoverSheetTableDTO.getCarriedForwardBalanceDebit().doubleValue()));
                 i++;
             }
 
             if (isAdditional) {
                 for (Service additionalService : additionalServices) {
-                    Long broughtForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).mapToLong(value -> value.getBroughtForwardBalanceCredit()).sum();
-                    Long broughtForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).mapToLong(value -> value.getBroughtForwardBalanceDebit()).sum();
-                    Long carriedForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).mapToLong(value -> value.getCarriedForwardBalanceCredit()).sum();
-                    Long carriedForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).mapToLong(value -> value.getCarriedForwardBalanceDebit()).sum();
-                    Long turnoverBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).mapToLong(value -> value.getTurnoverBalanceCredit()).sum();
-                    Long turnoverBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).mapToLong(value -> value.getTurnoverBalanceDebit()).sum();
+                    Double broughtForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).map(value -> value.getBroughtForwardBalanceCredit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+                    Double broughtForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).map(value -> value.getBroughtForwardBalanceDebit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+                    Double carriedForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).map(value -> value.getCarriedForwardBalanceCredit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+                    Double carriedForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).map(value -> value.getCarriedForwardBalanceDebit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+                    Double turnoverBalanceCreditSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).map(value -> value.getTurnoverBalanceCredit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+                    Double turnoverBalanceDebitSum = turnoverSheetTableDTOs.stream().filter(e -> e.getServiceId().equals(additionalService.getId())).map(value -> value.getTurnoverBalanceDebit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
 
                     sheet.addCell(new Label(SUBSCRIBER_ADDRESS_COLUMN, i, additionalService.getName()));
                     sheet.addCell(new Number(SERVICE_COLUMN, i, additionalService.getId()));
@@ -174,12 +175,12 @@ public class TurnoverReportExcel implements ExcelGenerator {
                     i++;
                 }
             }
-            Long broughtForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().mapToLong(TurnoverSheetTableDTO::getBroughtForwardBalanceCredit).sum();
-            Long broughtForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().mapToLong(TurnoverSheetTableDTO::getBroughtForwardBalanceDebit).sum();
-            Long carriedForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().mapToLong(TurnoverSheetTableDTO::getCarriedForwardBalanceCredit).sum();
-            Long carriedForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().mapToLong(TurnoverSheetTableDTO::getCarriedForwardBalanceDebit).sum();
-            Long turnoverBalanceCreditSum = turnoverSheetTableDTOs.stream().mapToLong(TurnoverSheetTableDTO::getTurnoverBalanceCredit).sum();
-            Long turnoverBalanceDebitSum = turnoverSheetTableDTOs.stream().mapToLong(TurnoverSheetTableDTO::getTurnoverBalanceDebit).sum();
+            Double broughtForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().map(e -> e.getBroughtForwardBalanceCredit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+            Double broughtForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().map(e -> e.getBroughtForwardBalanceDebit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+            Double carriedForwardBalanceCreditSum = turnoverSheetTableDTOs.stream().map(e -> e.getCarriedForwardBalanceCredit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+            Double carriedForwardBalanceDebitSum = turnoverSheetTableDTOs.stream().map(e -> e.getCarriedForwardBalanceDebit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+            Double turnoverBalanceCreditSum = turnoverSheetTableDTOs.stream().map(e -> e.getTurnoverBalanceCredit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+            Double turnoverBalanceDebitSum = turnoverSheetTableDTOs.stream().map(e -> e.getTurnoverBalanceDebit()).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
 
             sheet.addCell(new Number(BROUGHT_FORWARD_BALANCE_CREDIT, i, broughtForwardBalanceCreditSum));
             sheet.addCell(new Number(BROUGHT_FORWARD_BALANCE_DEBIT, i, broughtForwardBalanceDebitSum));
