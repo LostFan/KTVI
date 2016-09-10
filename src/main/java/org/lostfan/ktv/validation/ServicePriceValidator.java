@@ -14,7 +14,7 @@ public class ServicePriceValidator implements Validator<ServicePrice> {
         // entity.serviceId is expected always to be set
 
         if (entity.getDate() != null) {
-            if (entity.getPrice().compareTo(BigDecimal.ZERO) < 0) {
+            if (BigDecimal.ZERO.compareTo(entity.getPrice()) > 0) {
                 result.addError("errors.negative", "servicePrice.price");
             }
 

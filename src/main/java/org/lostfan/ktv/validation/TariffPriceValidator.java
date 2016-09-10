@@ -13,7 +13,7 @@ public class TariffPriceValidator implements Validator<TariffPrice> {
         // entity.tariffId is expected always to be set
 
         if (entity.getDate() != null) {
-            if (BigDecimal.ZERO.compareTo(entity.getPrice()) < 0) {
+            if (BigDecimal.ZERO.compareTo(entity.getPrice()) > 0) {
                 result.addError("errors.negative", "tariffPrice.price");
             }
 
