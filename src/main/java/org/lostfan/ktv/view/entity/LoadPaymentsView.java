@@ -167,6 +167,7 @@ public class LoadPaymentsView extends FormView {
                     }
                     if (LoadPaymentsView.this.loadPaymentFileActionListener != null) {
                         LoadPaymentsView.this.loadPaymentFileActionListener.actionPerformed(payments);
+                        this.entityInnerTableView.getTable().revalidate();
                     }
                     LoadPaymentsView.this.addButton.setEnabled(true);
                     model.removeObserver(this.modelObserver);
