@@ -2,18 +2,11 @@ package org.lostfan.ktv.model.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Map;
+import java.util.function.Function;
 
-import org.lostfan.ktv.dao.DAOFactory;
-import org.lostfan.ktv.dao.PaymentDAO;
-import org.lostfan.ktv.dao.RenderedServiceDAO;
-import org.lostfan.ktv.dao.ServiceDAO;
-import org.lostfan.ktv.dao.SubscriberDAO;
-import org.lostfan.ktv.domain.Payment;
-import org.lostfan.ktv.domain.RenderedService;
-import org.lostfan.ktv.domain.Subscriber;
-import org.lostfan.ktv.domain.SubscriberSession;
-import org.lostfan.ktv.domain.SubscriberTariff;
+import org.lostfan.ktv.dao.*;
+import org.lostfan.ktv.domain.*;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.dto.PaymentExt;
@@ -36,6 +29,9 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     private RenderedServiceDAO renderedServiceDAO = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO();
     private PaymentDAO paymentDAO = DAOFactory.getDefaultDAOFactory().getPaymentDAO();
     private ServiceDAO serviceDAO = DAOFactory.getDefaultDAOFactory().getServiceDAO();
+    private TariffDAO tariffDao = DAOFactory.getDefaultDAOFactory().getTariffDAO();
+    private List<Tariff> tariffs = tariffDao.getAll();
+    private Map<Integer, Integer> subscribersWithCurrentTariffs = getDao().getSubscribersWithCurrentTariffs();
 
     private PaymentTransformer paymentTransformer = new PaymentTransformer();
     private RenderedServiceTransformer renderedServiceTransformer = new RenderedServiceTransformer();
@@ -43,7 +39,6 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     private EntitySearcherModel<Subscriber> searchModel = this.createSearchModel();
 
     public SubscriberEntityModel() {
-
         this.fields = new ArrayList<>();
         this.fields.add(new EntityField("subscriber.account", EntityFieldTypes.Integer, Subscriber::getAccount, Subscriber::setAccount));
         this.fields.add(new EntityField("subscriber.name", EntityFieldTypes.String, Subscriber::getName, Subscriber::setName));
@@ -58,6 +53,18 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.fields.add(new EntityField("subscriber.passportDate", EntityFieldTypes.Date, Subscriber::getPassportDate, Subscriber::setPassportDate));
         this.fields.add(new EntityField("subscriber.contractDate", EntityFieldTypes.Date, Subscriber::getContractDate, Subscriber::setContractDate));
         this.fields.add(new EntityField("subscriber.information", EntityFieldTypes.MultilineString, Subscriber::getInformation, Subscriber::setInformation));
+        this.fields.add(new EntityField("tariff", EntityFieldTypes.String, new Function<Subscriber, String>() {
+            @Override
+            public String apply(Subscriber subscriber) {
+                Integer tariffId = subscribersWithCurrentTariffs.get(subscriber.getId());
+                if (tariffId == null) {
+                    return null;
+                }
+
+                return tariffs.stream().filter(e -> tariffId.equals(e.getId())).findFirst().get().getName();
+            }
+        }, (e1, e2) -> {
+        }, false));
     }
 
     @Override
@@ -80,6 +87,11 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         getDao().update(entity);
         updateEntitiesList();
         return result;
+    }
+
+    public void updateCollections() {
+        tariffs = tariffDao.getAll();
+        subscribersWithCurrentTariffs = getDao().getSubscribersWithCurrentTariffs();
     }
 
     @Override

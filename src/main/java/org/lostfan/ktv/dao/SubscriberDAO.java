@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
@@ -85,4 +86,6 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
     List<Subscriber> search(SubscriberSearchCriteria criteria);
 
     Integer getLastSubscriberAccount();
+
+    Map<Integer, Integer> getSubscribersWithCurrentTariffs();
 }

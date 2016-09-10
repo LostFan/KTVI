@@ -164,6 +164,10 @@ public class MainModel extends BaseObservable {
             return;
         }
 
+        if(getSubscriberEntityModel().getEntityNameKey().equals(code)) {
+            getSubscriberEntityModel().updateCollections();
+        }
+
         EntityModel model = getEntityModel(code);
 
         if (model != null) {
