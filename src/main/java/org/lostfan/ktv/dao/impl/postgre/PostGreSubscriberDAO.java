@@ -1112,6 +1112,24 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
         return map;
     }
 
+    public List<Integer> getConnectedSubscribers() {
+        List<Integer> list = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_session\"  WHERE \"connection_date\"<=? AND \"disconnection_date\" IS NULL");
+            preparedStatement.setDate(1, Date.valueOf(LocalDate.now()));
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getInt("subscriber_account"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new DAOException();
+        }
+
+        return list;
+    }
+
     private Subscriber constructEntity(ResultSet rs) throws SQLException{
         Subscriber subscriber = new Subscriber();
         subscriber.setAccount(rs.getInt("account"));

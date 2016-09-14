@@ -16,6 +16,7 @@ import org.lostfan.ktv.model.searcher.SubscriberSearchCriteria;
 import org.lostfan.ktv.model.searcher.SubscriberSearcherModel;
 import org.lostfan.ktv.model.transform.PaymentTransformer;
 import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
+import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.validation.SubscriberValidator;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.validation.Validator;
@@ -32,6 +33,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     private TariffDAO tariffDao = DAOFactory.getDefaultDAOFactory().getTariffDAO();
     private List<Tariff> tariffs = tariffDao.getAll();
     private Map<Integer, Integer> subscribersWithCurrentTariffs = getDao().getSubscribersWithCurrentTariffs();
+    private List<Integer> connectedSubscribers = getDao().getConnectedSubscribers();
 
     private PaymentTransformer paymentTransformer = new PaymentTransformer();
     private RenderedServiceTransformer renderedServiceTransformer = new RenderedServiceTransformer();
@@ -48,11 +50,11 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.fields.add(new EntityField("subscriber.building", EntityFieldTypes.String, Subscriber::getBuilding, Subscriber::setBuilding));
         this.fields.add(new EntityField("subscriber.flat", EntityFieldTypes.String, Subscriber::getFlat, Subscriber::setFlat));
         this.fields.add(new EntityField("subscriber.phone", EntityFieldTypes.String, Subscriber::getPhone, Subscriber::setPhone));
-        this.fields.add(new EntityField("subscriber.passportNumber", EntityFieldTypes.String, Subscriber::getPassportNumber, Subscriber::setPassportNumber));
-        this.fields.add(new EntityField("subscriber.passportAuthority", EntityFieldTypes.String, Subscriber::getPassportAuthority, Subscriber::setPassportAuthority));
-        this.fields.add(new EntityField("subscriber.passportDate", EntityFieldTypes.Date, Subscriber::getPassportDate, Subscriber::setPassportDate));
+        this.fields.add(new EntityField("subscriber.passportNumber", EntityFieldTypes.String, Subscriber::getPassportNumber, Subscriber::setPassportNumber, true ,false));
+        this.fields.add(new EntityField("subscriber.passportAuthority", EntityFieldTypes.String, Subscriber::getPassportAuthority, Subscriber::setPassportAuthority, true ,false));
+        this.fields.add(new EntityField("subscriber.passportDate", EntityFieldTypes.Date, Subscriber::getPassportDate, Subscriber::setPassportDate, true ,false));
         this.fields.add(new EntityField("subscriber.contractDate", EntityFieldTypes.Date, Subscriber::getContractDate, Subscriber::setContractDate));
-        this.fields.add(new EntityField("subscriber.information", EntityFieldTypes.MultilineString, Subscriber::getInformation, Subscriber::setInformation));
+        this.fields.add(new EntityField("subscriber.information", EntityFieldTypes.MultilineString, Subscriber::getInformation, Subscriber::setInformation, true ,false));
         this.fields.add(new EntityField("tariff", EntityFieldTypes.String, new Function<Subscriber, String>() {
             @Override
             public String apply(Subscriber subscriber) {
@@ -60,8 +62,10 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
                 if (tariffId == null) {
                     return null;
                 }
-
-                return tariffs.stream().filter(e -> tariffId.equals(e.getId())).findFirst().get().getName();
+                if(!connectedSubscribers.contains(subscriber.getAccount())) {
+                    return ResourceBundles.getGuiBundle().getString("disconnected");
+                }
+                return tariffs.stream().filter(e -> tariffId.equals(e.getId())).findFirst().get().getChannels();
             }
         }, (e1, e2) -> {
         }, false));
@@ -92,6 +96,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     public void updateCollections() {
         tariffs = tariffDao.getAll();
         subscribersWithCurrentTariffs = getDao().getSubscribersWithCurrentTariffs();
+        connectedSubscribers = getDao().getConnectedSubscribers();
     }
 
     @Override

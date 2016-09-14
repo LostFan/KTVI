@@ -335,6 +335,26 @@ public class PostGrePaymentDAO extends PostgreBaseDao implements PaymentDAO {
         return hashMap;
     }
 
+    @Override
+    public List<Payment> getPaymentsByPeriodDate(LocalDate beginDate, LocalDate endDate) {
+        List<Payment> payments = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"payment\" where \"date\" >= ? and \"date\" <= ?");
+            preparedStatement.setDate(1, Date.valueOf(beginDate));
+            preparedStatement.setDate(2, Date.valueOf(endDate));
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                payments.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new DAOException();
+        }
+
+        return payments;
+    }
+
     public Map<Integer, List<Payment>> getServiceAndSubscriberPaymentMap() {
         Map<Integer, List<Payment>> hashMap = new HashMap<>();
         try {

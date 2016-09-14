@@ -88,4 +88,6 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
     Integer getLastSubscriberAccount();
 
     Map<Integer, Integer> getSubscribersWithCurrentTariffs();
+
+    List<Integer> getConnectedSubscribers();
 }
