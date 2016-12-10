@@ -18,9 +18,9 @@ public class ServicePriceValidator implements Validator<ServicePrice> {
                 result.addError("errors.negative", "servicePrice.price");
             }
 
-            if (!LocalDate.now().isBefore(entity.getDate())) {
-                result.addError("errors.pastDate", "servicePrice.date");
-            }
+//            if (!LocalDate.now().isBefore(entity.getDate())) {
+//                result.addError("errors.pastDate", "servicePrice.date");
+//            }
         } else {
             result.addError("errors.pastDate", "servicePrice.date");
         }

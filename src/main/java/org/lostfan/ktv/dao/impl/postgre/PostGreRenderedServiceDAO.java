@@ -3,6 +3,7 @@ package org.lostfan.ktv.dao.impl.postgre;
 import org.lostfan.ktv.dao.DAOException;
 import org.lostfan.ktv.dao.RenderedServiceDAO;
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.math.BigDecimal;
@@ -402,6 +403,27 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
         }
 
         return renderedServices;
+    }
+
+    @Override
+    public List<RenderedService> getSubscriptionFeesByPeriodDate(LocalDate beginDate, LocalDate endDate) {
+        List<RenderedService> payments = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"rendered_service\" where \"date\" >= ? and \"date\" <= ? AND service_id = ? AND \"date\" != '2016-07-02'");
+            preparedStatement.setDate(1, Date.valueOf(beginDate));
+            preparedStatement.setDate(2, Date.valueOf(endDate));
+            preparedStatement.setInt(3, FixedServices.SUBSCRIPTION_FEE.getId());
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                payments.add(constructEntity(rs));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new DAOException();
+        }
+
+        return payments;
     }
 
     @Override

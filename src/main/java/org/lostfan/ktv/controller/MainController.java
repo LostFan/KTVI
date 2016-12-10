@@ -1,16 +1,9 @@
 package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.domain.RenderedService;
-import org.lostfan.ktv.model.ConsolidatedRegisterPaymentModel;
-import org.lostfan.ktv.model.DailyRegisterModel;
-import org.lostfan.ktv.model.FileMenu;
-import org.lostfan.ktv.model.FixedServices;
-import org.lostfan.ktv.model.PeriodModel;
-import org.lostfan.ktv.model.Reports;
-import org.lostfan.ktv.model.TurnoverReportModel;
+import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.dto.*;
 import org.lostfan.ktv.model.entity.EntityModel;
-import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.model.entity.BaseModel;
 import org.lostfan.ktv.validation.ValidationResult;
@@ -19,9 +12,7 @@ import org.lostfan.ktv.view.components.EntityViewFactory;
 import org.lostfan.ktv.view.entity.EntityView;
 import org.lostfan.ktv.view.entity.PeriodView;
 import org.lostfan.ktv.view.entity.TariffTableView;
-import org.lostfan.ktv.view.report.ConsolidatedRegisterPaymentView;
-import org.lostfan.ktv.view.report.DailyRegisterView;
-import org.lostfan.ktv.view.report.TurnoverReportView;
+import org.lostfan.ktv.view.report.*;
 import org.lostfan.ktv.view.table.EntityTableView;
 import org.lostfan.ktv.view.table.PaymentTableView;
 import org.lostfan.ktv.view.table.RenderedServiceTableView;
@@ -106,6 +97,23 @@ public class MainController {
                     break;
                 case REPORT_TO_BANK:
                     new ReportToBankController();
+                    break;
+                case DEBTOR_REPORT:
+                    DebtorReportModel debtorReportModel = new DebtorReportModel();
+                    DebtorReportView debtorReportView = new DebtorReportView(debtorReportModel);
+                    break;
+                case WRITE_OFF_REPORT:
+                    WriteOffReportModel writeOffReportModel = new WriteOffReportModel();
+                    WriteOffReportView writeOffReportView = new WriteOffReportView(writeOffReportModel);
+                    break;
+                case CLAIM_REPORT:
+                    ClaimReportModel claimReportModel = new ClaimReportModel();
+                    ClaimReportView claimReportView = new ClaimReportView(claimReportModel);
+                    break;
+                case CHANNELS_REPORT:
+                    ChannelsReportModel channelsReportModel = new ChannelsReportModel();
+                    ChannelsReportView channelsReportView = new ChannelsReportView(channelsReportModel);
+                    break;
             };
         });
         this.view.setMenuFileActionListener(args -> {

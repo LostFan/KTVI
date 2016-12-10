@@ -259,6 +259,9 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
                 if(rs.getDate("disconnection_date") != null) {
                     subscriberSession.setDisconnectionDate(rs.getDate("disconnection_date").toLocalDate());
                 }
+                if (rs.getObject("disconnection_reason_id") != null) {
+                    subscriberSession.setDisconnectionReasonId(rs.getInt("disconnection_reason_id"));
+                }
                 subscriberSessions.add(subscriberSession);
             }
 
@@ -1092,13 +1095,13 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
         return lastAccount;
     }
 
-    public Map<Integer, Integer> getSubscribersWithCurrentTariffs() {
+    public Map<Integer, Integer> getSubscribersWithCurrentTariffsByDate(LocalDate date) {
         Map<Integer, Integer> map = new HashMap<>();
         try {
             PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM \"subscriber_tariff\" where \"connection_date\" <= ?" +
                     " AND (\"disconnection_date\" IS NULL OR \"disconnection_date\" > ?) ORDER BY \"connection_date\"");
-            preparedStatement.setDate(1, Date.valueOf(LocalDate.now()));
-            preparedStatement.setDate(2, Date.valueOf(LocalDate.now()));
+            preparedStatement.setDate(1, Date.valueOf(date));
+            preparedStatement.setDate(2, Date.valueOf(date));
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 map.put(rs.getInt("subscriber_account"), rs.getInt("tariff_id"));

@@ -5,7 +5,11 @@ public enum Reports {
     TURNOVER_SHEET("turnoverSheet"),
     DAILY_REGISTER("dailyRegister"),
     CONSOLIDATED_REGISTER_ON_PAYMENT("consolidatedRegisterOnPayment"),
-    REPORT_TO_BANK("reportToBank");
+    REPORT_TO_BANK("reportToBank"),
+    DEBTOR_REPORT("debtorReport"),
+    WRITE_OFF_REPORT("writeOfReport"),
+    CLAIM_REPORT("claimReport"),
+    CHANNELS_REPORT("channelsReport");
 
     private final String code;
 

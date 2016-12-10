@@ -18,6 +18,7 @@ import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.model.dto.RenderedServiceExt;
+import org.lostfan.ktv.model.dto.SubscriberSessionDTO;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
 import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.view.FormView;
@@ -295,9 +296,9 @@ public class SubscriberInformationView extends FormView {
 
     private class SessionsTableModel extends AbstractTableModel {
 
-        private List<SubscriberSession> subscriberSessions;
+        private List<SubscriberSessionDTO> subscriberSessions;
 
-        public SessionsTableModel(List<SubscriberSession> subscriberSessions) {
+        public SessionsTableModel(List<SubscriberSessionDTO> subscriberSessions) {
             this.subscriberSessions = subscriberSessions.stream()
                     .sorted((o1, o2) -> o1.getConnectionDate().compareTo(o2.getConnectionDate()))
                     .collect(Collectors.toList());
@@ -350,7 +351,7 @@ public class SubscriberInformationView extends FormView {
                             dateTimeFormatter.format(subscriberSessions.get(rowIndex).getDisconnectionDate()) :
                             null;
                 case 2:
-                    return subscriberSessions.get(rowIndex).getDisconnectionReasonId();
+                    return subscriberSessions.get(rowIndex).getDisconnectionReason();
             }
             return null;
 
@@ -553,7 +554,7 @@ public class SubscriberInformationView extends FormView {
 
         this.subscriberSessionsTable = new JTable(
                 new SessionsTableModel(
-                        model.getSubscriberSessions(entity.getId())));
+                        model.getSubscriberSessionDTOs(entity.getId())));
         renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.LEFT);
         this.subscriberSessionsTable.getColumnModel().getColumn(0).setCellRenderer(renderer);

@@ -25,6 +25,12 @@ public class PeriodValidator implements Validator<Document> {
             result.addError("errors.periodAlreadyClosed", (Object) date.format(formatter));
             return result;
         }
+        if (LocalDate.of(2030,1,1).isBefore(entity.getDate())) {
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("d.MM.yyyy");
+            result.addError("errors.periodAfterEndDate", (Object) LocalDate.of(2030,1,1).format(formatter));
+            return result;
+        }
 
         return result;
     }
@@ -35,6 +41,12 @@ public class PeriodValidator implements Validator<Document> {
             DateTimeFormatter formatter =
                     DateTimeFormatter.ofPattern("d.MM.yyyy");
             result.addError("errors.periodAlreadyClosed", (Object) periodDate.format(formatter));
+            return result;
+        }
+        if (LocalDate.of(2030,1,1).isBefore(date)) {
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("d.MM.yyyy");
+            result.addError("errors.periodAfterEndDate", (Object) LocalDate.of(2030,1,1).format(formatter));
             return result;
         }
 

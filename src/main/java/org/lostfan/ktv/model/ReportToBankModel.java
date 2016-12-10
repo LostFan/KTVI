@@ -98,10 +98,7 @@ public class ReportToBankModel extends BaseObservable implements BaseModel {
         Integer size = 0;
         for (BigDecimal aDouble : result.values()) {
                 sum = sum.add(aDouble.setScale(2, BigDecimal.ROUND_HALF_UP));
-            if(aDouble
-                    .setScale(2, BigDecimal.ROUND_HALF_UP).compareTo(BigDecimal.ZERO) != 0) {
                 size++;
-            }
         }
 
         StringBuilder firstRow = new StringBuilder();
@@ -133,9 +130,6 @@ public class ReportToBankModel extends BaseObservable implements BaseModel {
         for (Map.Entry<Integer, BigDecimal> entry : result.entrySet()) {
             BigDecimal value = entry.getValue()
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
-            if(value.compareTo(BigDecimal.ZERO) == 0) {
-                continue;
-            }
             Subscriber subscriber = subscriberDAO.get(entry.getKey());
             Street street = streetDAO.get(subscriber.getStreetId());
             String fullAddress = getFullSubscriberAddress(subscriber, street);

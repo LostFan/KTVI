@@ -11,8 +11,8 @@ import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.dto.PaymentExt;
 import org.lostfan.ktv.model.dto.RenderedServiceExt;
+import org.lostfan.ktv.model.dto.SubscriberSessionDTO;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
-import org.lostfan.ktv.model.searcher.SubscriberSearchCriteria;
 import org.lostfan.ktv.model.searcher.SubscriberSearcherModel;
 import org.lostfan.ktv.model.transform.PaymentTransformer;
 import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
@@ -31,6 +31,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
     private PaymentDAO paymentDAO = DAOFactory.getDefaultDAOFactory().getPaymentDAO();
     private ServiceDAO serviceDAO = DAOFactory.getDefaultDAOFactory().getServiceDAO();
     private TariffDAO tariffDao = DAOFactory.getDefaultDAOFactory().getTariffDAO();
+    private DisconnectionReasonDAO disconnectionReasonDAO = DAOFactory.getDefaultDAOFactory().getDisconnectionReasonDAO();
     private List<Tariff> tariffs = tariffDao.getAll();
     private Map<Integer, Integer> subscribersWithCurrentTariffs = getDao().getSubscribersWithCurrentTariffs();
     private List<Integer> connectedSubscribers = getDao().getConnectedSubscribers();
@@ -54,7 +55,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
         this.fields.add(new EntityField("subscriber.passportAuthority", EntityFieldTypes.String, Subscriber::getPassportAuthority, Subscriber::setPassportAuthority, true ,false));
         this.fields.add(new EntityField("subscriber.passportDate", EntityFieldTypes.Date, Subscriber::getPassportDate, Subscriber::setPassportDate, true ,false));
         this.fields.add(new EntityField("subscriber.contractDate", EntityFieldTypes.Date, Subscriber::getContractDate, Subscriber::setContractDate));
-        this.fields.add(new EntityField("subscriber.information", EntityFieldTypes.MultilineString, Subscriber::getInformation, Subscriber::setInformation, true ,false));
+        this.fields.add(new EntityField("subscriber.information", EntityFieldTypes.MultilineString, Subscriber::getInformation, Subscriber::setInformation, true, false));
         this.fields.add(new EntityField("tariff", EntityFieldTypes.String, new Function<Subscriber, String>() {
             @Override
             public String apply(Subscriber subscriber) {
@@ -62,7 +63,7 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
                 if (tariffId == null) {
                     return null;
                 }
-                if(!connectedSubscribers.contains(subscriber.getAccount())) {
+                if (!connectedSubscribers.contains(subscriber.getAccount())) {
                     return ResourceBundles.getGuiBundle().getString("disconnected");
                 }
                 return tariffs.stream().filter(e -> tariffId.equals(e.getId())).findFirst().get().getChannels();
@@ -179,6 +180,18 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
 
     public List<SubscriberSession> getSubscriberSessions(Integer subscriberId) {
         return getDao().getSubscriberSessions(subscriberId);
+    }
+
+    public List<SubscriberSessionDTO> getSubscriberSessionDTOs(Integer subscriberId) {
+        List<SubscriberSessionDTO> subscriberSessionDTOs = new ArrayList<>();
+        for (SubscriberSession subscriberSession : getDao().getSubscriberSessions(subscriberId)) {
+            SubscriberSessionDTO subscriberSessionDTO = new SubscriberSessionDTO(subscriberSession);
+            if(subscriberSession.getDisconnectionReasonId() != null) {
+                subscriberSessionDTO.setDisconnectionReason(disconnectionReasonDAO.get(subscriberSession.getDisconnectionReasonId()).getName());
+            }
+            subscriberSessionDTOs.add(subscriberSessionDTO);
+        }
+        return subscriberSessionDTOs;
     }
 
     public Integer getNewSubscriberAccount() {
