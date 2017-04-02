@@ -10,6 +10,7 @@ import org.lostfan.ktv.domain.*;
 import org.lostfan.ktv.model.EntityField;
 import org.lostfan.ktv.model.EntityFieldTypes;
 import org.lostfan.ktv.model.dto.PaymentExt;
+import org.lostfan.ktv.model.dto.RenderedServiceAndPayment;
 import org.lostfan.ktv.model.dto.RenderedServiceExt;
 import org.lostfan.ktv.model.dto.SubscriberSessionDTO;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
@@ -17,6 +18,7 @@ import org.lostfan.ktv.model.searcher.SubscriberSearcherModel;
 import org.lostfan.ktv.model.transform.PaymentTransformer;
 import org.lostfan.ktv.model.transform.RenderedServiceTransformer;
 import org.lostfan.ktv.utils.ResourceBundles;
+import org.lostfan.ktv.utils.excel.SubscriberDebitCreditExcel;
 import org.lostfan.ktv.validation.SubscriberValidator;
 import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.validation.Validator;
@@ -159,6 +161,22 @@ public class SubscriberEntityModel extends BaseEntityModel<Subscriber> {
             paymentsExt.add(paymentExt);
         }
         return paymentsExt;
+    }
+
+    public List<RenderedServiceAndPayment> getRenderedServicesAndPaymentsBySubscriberId(Integer id) {
+        List<RenderedServiceAndPayment> renderedServiceAndPayments = new ArrayList<>();
+        List<RenderedServiceExt> renderedServices = getRenderedServicesExtBySubscriberId(id);
+        List<PaymentExt> payments = getPaymentsExtBySubscriberId(id);
+        renderedServices.stream().forEach(renderedService ->  renderedServiceAndPayments.add(new RenderedServiceAndPayment(renderedService)));
+        payments.stream().forEach(payment ->  renderedServiceAndPayments.add(new RenderedServiceAndPayment(payment)));
+        return renderedServiceAndPayments;
+    }
+
+    public String generateRenderedServicesAndPaymentsExcelReport(Integer id) {
+        SubscriberDebitCreditExcel subscriberDebitCreditExcel = new SubscriberDebitCreditExcel(id);
+        subscriberDebitCreditExcel.setPayments(getPaymentsExtBySubscriberId(id));
+        subscriberDebitCreditExcel.setRenderedServicesAndPayments(getRenderedServicesAndPaymentsBySubscriberId(id));
+        return subscriberDebitCreditExcel.generate();
     }
 
     @Override

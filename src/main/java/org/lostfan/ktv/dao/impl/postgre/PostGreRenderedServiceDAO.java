@@ -427,6 +427,22 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
     }
 
     @Override
+    public void deleteSubscriptionFeesByPeriodDate(LocalDate beginDate, LocalDate endDate) {
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "DELETE FROM  \"rendered_service\" where \"date\" >= ? and \"date\" <= ? AND service_id = ?");
+            preparedStatement.setDate(1, Date.valueOf(beginDate));
+            preparedStatement.setDate(2, Date.valueOf(endDate));
+            preparedStatement.setInt(3, FixedServices.SUBSCRIPTION_FEE.getId());
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new DAOException();
+        }
+    }
+
+    @Override
     public List<RenderedService> getAllContainsInName(String str) {
         List<RenderedService> renderedServices = new ArrayList<>();
         try {

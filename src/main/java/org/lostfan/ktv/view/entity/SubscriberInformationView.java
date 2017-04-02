@@ -11,12 +11,11 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import org.lostfan.ktv.domain.Service;
 import org.lostfan.ktv.domain.Subscriber;
-import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.FixedServices;
 import org.lostfan.ktv.model.dto.PaymentExt;
+import org.lostfan.ktv.model.dto.RenderedServiceAndPayment;
 import org.lostfan.ktv.model.dto.RenderedServiceExt;
 import org.lostfan.ktv.model.dto.SubscriberSessionDTO;
 import org.lostfan.ktv.model.entity.SubscriberEntityModel;
@@ -24,63 +23,6 @@ import org.lostfan.ktv.utils.ResourceBundles;
 import org.lostfan.ktv.view.FormView;
 
 public class SubscriberInformationView extends FormView {
-
-    private class RenderedServiceAndPayment {
-
-        public RenderedServiceAndPayment(RenderedServiceExt renderedService) {
-            this.date = renderedService.getDate();
-            this.service = renderedService.getService();
-            this.price = renderedService.getPrice().setScale(4, BigDecimal.ROUND_HALF_UP);
-        }
-
-        public RenderedServiceAndPayment(PaymentExt payment) {
-            this.date = payment.getDate();
-            this.isCredit = true;
-            this.service = payment.getService();
-            this.price = payment.getPrice().setScale(4, BigDecimal.ROUND_HALF_UP);
-        }
-
-        private LocalDate date;
-
-        private boolean isCredit;
-
-        private Service service;
-
-        private BigDecimal price;
-
-        public LocalDate getDate() {
-            return date;
-        }
-
-        public void setDate(LocalDate date) {
-            this.date = date;
-        }
-
-        public boolean isCredit() {
-            return isCredit;
-        }
-
-        public void setCredit(boolean credit) {
-            isCredit = credit;
-        }
-
-        public Service getService() {
-            return service;
-        }
-
-        public void setService(Service service) {
-            this.service = service;
-        }
-
-        public BigDecimal getPrice() {
-            return price;
-        }
-
-        public void setPrice(BigDecimal price) {
-            this.price = price;
-        }
-
-    }
 
     private class SubscriptionFeeRenderedServicesTableModel extends AbstractTableModel {
 
@@ -455,24 +397,20 @@ public class SubscriberInformationView extends FormView {
     private JTable otherServicesTable;
     private JTable subscriberTariffsTable;
     private JTable subscriberSessionsTable;
+    private JButton excelButton;
 
     public SubscriberInformationView(SubscriberEntityModel model, Subscriber entity) {
 
         setTitle(getGuiString("window.subscriberInformation"));
         buildLayout();
 
-        List<RenderedServiceAndPayment> renderedServiceAndPayments = new ArrayList<>();
-        List<RenderedServiceExt> renderedServices = model.getRenderedServicesExtBySubscriberId(entity.getId());
+        List<RenderedServiceAndPayment> renderedServiceAndPayments = model.getRenderedServicesAndPaymentsBySubscriberId(entity.getId());
+        List<PaymentExt> payments = model.getPaymentsExtBySubscriberId(entity.getId());
 
         BigDecimal balance = BigDecimal.ZERO;
-        for (RenderedServiceExt renderedService : renderedServices) {
-            renderedServiceAndPayments.add(new RenderedServiceAndPayment(renderedService));
-            balance = balance.add(renderedService.getPrice());
-        }
-        List<PaymentExt> payments = model.getPaymentsExtBySubscriberId(entity.getId());
-        for (PaymentExt payment : payments) {
-            renderedServiceAndPayments.add(new RenderedServiceAndPayment(payment));
-            balance = balance.add(payment.getPrice().negate());
+
+        for (RenderedServiceAndPayment renderedServiceAndPayment : renderedServiceAndPayments) {
+            balance = balance.add(renderedServiceAndPayment.isCredit() ? renderedServiceAndPayment.getPrice().negate() : renderedServiceAndPayment.getPrice());
         }
         renderedServiceAndPayments.sort((o1, o2) -> o2.getDate().compareTo(o1.getDate()));
 
@@ -492,6 +430,7 @@ public class SubscriberInformationView extends FormView {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
         JPanel subscriptionFeeChargeableAndPaidTablesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel subscriptionFeeChargeableAndPaidTablesPanelWithButton = new JPanel(new BorderLayout());
         JPanel subscriptionFeeRenderedServicesPanel = new JPanel(new BorderLayout());
         JPanel subscriptionFeePaymentsPanel = new JPanel(new BorderLayout());
         this.subscriptionFeeRenderedServicesTable = new JTable(
@@ -499,6 +438,7 @@ public class SubscriberInformationView extends FormView {
                         renderedServiceAndPayments.stream()
                                 .filter(o -> o.getService().getId() == FixedServices.SUBSCRIPTION_FEE.getId())
                                 .collect(Collectors.toList())));
+
         renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.LEFT);
         this.subscriptionFeeRenderedServicesTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
@@ -518,8 +458,20 @@ public class SubscriberInformationView extends FormView {
         subscriptionFeePaymentsPanel.add(tableScrollPane, BorderLayout.CENTER);
         subscriptionFeeChargeableAndPaidTablesPanel.add(subscriptionFeePaymentsPanel);
 
+        this.excelButton = new JButton(getGuiString("buttons.generateExcelReport"));
+        this.excelButton.addActionListener(e -> {
+            String message = model.generateRenderedServicesAndPaymentsExcelReport(entity.getId());
+            if (message != null) {
+                exceptionWindow(message);
+            }
+
+        });
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(excelButton);
+        subscriptionFeeChargeableAndPaidTablesPanelWithButton.add(subscriptionFeeChargeableAndPaidTablesPanel, BorderLayout.CENTER);
+        subscriptionFeeChargeableAndPaidTablesPanelWithButton.add(buttonPanel, BorderLayout.SOUTH);
         tabbedPane.add(getGuiString("tabbedPane.chargeableAndPaidTables") + " : " + getEntityString("subscriptionFee"),
-                subscriptionFeeChargeableAndPaidTablesPanel);
+                subscriptionFeeChargeableAndPaidTablesPanelWithButton);
 
         JPanel otherServicesChargeableAndPaidTablesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
@@ -578,5 +530,16 @@ public class SubscriberInformationView extends FormView {
         getContentPanel().setLayout(new BorderLayout(10, 10));
         getContentPanel().setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         getContentPanel().add(getFieldPanel(), BorderLayout.PAGE_START);
+    }
+
+    private void exceptionWindow(String message) {
+        int optionType = JOptionPane.OK_OPTION;
+        int messageType = JOptionPane.WARNING_MESSAGE;
+        Object[] selValues = { getGuiString("buttons.ok")};
+        String attention = getGuiString("message.attention");
+        JOptionPane.showOptionDialog(null,
+                getGuiString(message), attention,
+                optionType, messageType, null, selValues,
+                selValues[0]);
     }
 }

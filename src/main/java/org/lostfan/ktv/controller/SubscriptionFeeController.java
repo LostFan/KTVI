@@ -19,6 +19,7 @@ public class SubscriptionFeeController extends EntityController{
         super(model, view);
         this.model = model;
         this.view = view;
+        view.setDeleteForMonthActionListener(this::deleteForMonthActionPerformed);
         view.setRecalculateWithActionListener(this::addRecalculateOneActionPerformed);
         view.setRecalculateAllWithActionListener(this::addRecalculateAllActionPerformed);
         view.newDateActionListener(this::newDateActionPerformed);
@@ -78,6 +79,14 @@ public class SubscriptionFeeController extends EntityController{
                 return;
             }
         });
+    }
+
+    protected void deleteForMonthActionPerformed(Object args) {
+        LocalDate date = (LocalDate) args;
+        ValidationResult result = model.deleteForMonth(date);
+        if (result.hasErrors()) {
+            view.errorWindow(result.getErrors());
+        }
     }
 
     private void newDateActionPerformed(Object args) {

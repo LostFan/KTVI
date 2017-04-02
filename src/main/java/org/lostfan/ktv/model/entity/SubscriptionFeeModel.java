@@ -6,6 +6,7 @@ import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.searcher.EntitySearcherModel;
 import org.lostfan.ktv.model.searcher.RenderedServiceSearcherModel;
 import org.lostfan.ktv.validation.SubscriptionFeeValidator;
+import org.lostfan.ktv.validation.ValidationResult;
 import org.lostfan.ktv.validation.Validator;
 
 import java.time.LocalDate;
@@ -217,5 +218,16 @@ public class SubscriptionFeeModel extends BaseDocumentModel<RenderedService> {
         getDao().commit();
         updateEntitiesList();
 
+    }
+
+    public ValidationResult deleteForMonth(LocalDate date) {
+        ValidationResult result = ValidationResult.createEmpty();
+        result = periodValidator.validate(date, result);
+        if(result.hasErrors()) {
+            return result;
+        }
+        ((RenderedServiceDAO) getDao()).deleteSubscriptionFeesByPeriodDate(date.withDayOfMonth(1), date.withDayOfMonth(date.lengthOfMonth()));
+        updateEntitiesList();
+        return result;
     }
 }

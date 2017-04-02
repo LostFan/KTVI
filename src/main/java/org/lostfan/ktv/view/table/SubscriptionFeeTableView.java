@@ -11,6 +11,7 @@ public class SubscriptionFeeTableView extends EntityTableView {
 
     private SubscriptionFeeModel model;
 
+    private ViewActionListener deleteForMonthActionListener;
     private ViewActionListener recalculateWithActionListener;
     private ViewActionListener recalculateAllWithActionListener;
     private ViewActionListener newDateActionListener;
@@ -19,7 +20,15 @@ public class SubscriptionFeeTableView extends EntityTableView {
         super(model);
         this.model = model;
 
-        JButton button = new JButton(getGuiString("buttons.recalculateWith"));
+        JButton button = new JButton(getGuiString("buttons.deleteForMonth"));
+        button.addActionListener(e -> {
+            if (confirmDeletion() && this.deleteForMonthActionListener != null) {
+                this.deleteForMonthActionListener.actionPerformed(model.getDate());
+            }
+        });
+        addButton(button, false);
+
+        button = new JButton(getGuiString("buttons.recalculateWith"));
         button.addActionListener(e -> {
             if (this.recalculateWithActionListener != null) {
                 this.recalculateWithActionListener.actionPerformed(null);
@@ -142,5 +151,9 @@ public class SubscriptionFeeTableView extends EntityTableView {
 
     public void newDateActionListener(ViewActionListener newDateActionListener) {
         this.newDateActionListener = newDateActionListener;
+    }
+
+    public void setDeleteForMonthActionListener(ViewActionListener deleteForMonthActionListener) {
+        this.deleteForMonthActionListener = deleteForMonthActionListener;
     }
 }

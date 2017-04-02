@@ -38,4 +38,6 @@ public interface RenderedServiceDAO extends EntityDAO<RenderedService> {
     Map<Integer, List<RenderedService>> getServiceAndSubscriberRenderedServiceMap();
 
     List<RenderedService> getSubscriptionFeesByPeriodDate(LocalDate beginDate, LocalDate endDate);
+
+    void deleteSubscriptionFeesByPeriodDate(LocalDate beginDate, LocalDate endDate);
 }
