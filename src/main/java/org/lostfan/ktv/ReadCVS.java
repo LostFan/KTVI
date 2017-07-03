@@ -1,47 +1,45 @@
 package org.lostfan.ktv;
-//
-//
-//import java.io.BufferedReader;
-//import java.io.FileInputStream;
-//import java.io.FileNotFoundException;
-//import java.io.IOException;
-//import java.io.InputStreamReader;
-//import java.sql.PreparedStatement;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-//import java.time.LocalDate;
-//import java.time.format.DateTimeFormatter;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.HashSet;
-//import java.util.List;
-//import java.util.Map;
-//
-//import org.lostfan.ktv.dao.DAOFactory;
-//import org.lostfan.ktv.dao.impl.postgre.PostGreDaoFactory;
-//import org.lostfan.ktv.domain.Payment;
-//import org.lostfan.ktv.domain.RenderedService;
-//import org.lostfan.ktv.domain.Service;
-//import org.lostfan.ktv.domain.Street;
-//import org.lostfan.ktv.domain.Subscriber;
-//import org.lostfan.ktv.domain.SubscriberSession;
-//import org.lostfan.ktv.domain.SubscriberTariff;
-//import org.lostfan.ktv.domain.Tariff;
-//import org.lostfan.ktv.domain.TariffPrice;
-//import org.lostfan.ktv.model.FixedServices;
-//import org.lostfan.ktv.utils.ConnectionManager;
-//import org.lostfan.ktv.utils.PostgreConnectionManager;
-//import org.lostfan.ktv.utils.ResourceBundles;
+
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import org.lostfan.ktv.dao.DAOFactory;
+import org.lostfan.ktv.dao.impl.postgre.PostGreDaoFactory;
+import org.lostfan.ktv.domain.Payment;
+import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.domain.Service;
+import org.lostfan.ktv.domain.Street;
+import org.lostfan.ktv.domain.Subscriber;
+import org.lostfan.ktv.domain.SubscriberSession;
+import org.lostfan.ktv.domain.SubscriberTariff;
+import org.lostfan.ktv.domain.Tariff;
+import org.lostfan.ktv.domain.TariffPrice;
+import org.lostfan.ktv.model.FixedServices;
+import org.lostfan.ktv.utils.ConnectionManager;
+import org.lostfan.ktv.utils.PostgreConnectionManager;
+import org.lostfan.ktv.utils.ResourceBundles;
 //
 public class ReadCVS {
     public static void main(String[] args) {
-//        ReadCVS obj = new ReadCVS();
-//        ConnectionManager.setManager(new PostgreConnectionManager());
-//        DAOFactory.setDefaultDAOFactory(new PostGreDaoFactory());
+        ReadCVS obj = new ReadCVS();
+        ConnectionManager.setManager(new PostgreConnectionManager());
+        DAOFactory.setDefaultDAOFactory(new PostGreDaoFactory());
 //
 //
-//        obj.run();
-//        ConnectionManager.getManager().close();
+        obj.run();
+        ConnectionManager.getManager().close();
 ////        try {
 ////            Thread.sleep(15000);
 ////        } catch (InterruptedException e) {
@@ -49,7 +47,7 @@ public class ReadCVS {
 ////        }
 //
     }
-//
+    //
 //    // steps
 //    //create services
 //    //load subscribers
@@ -61,10 +59,10 @@ public class ReadCVS {
 //    //create sessions  and subs tariffs
 //
 //
-//    public void run() {
-////        getPayments();
-////        getSubscribersIdWithoutConnection();
-//
+    public void run() {
+//        getPayments();
+//        getSubscribersIdWithoutConnection();
+
 //        loadTariffs();
 //        createServices();
 //        loadStreets();
@@ -73,34 +71,35 @@ public class ReadCVS {
 //        loadConnections();
 //        loadAdditionalServices();
 //        loadPayments();
+        isEqaual();
 //        updateTariffsInSubscriberTariffs();
+
+
+
+//        createFirstSessionAndSubscriberTariff();
+
+
+//        for (Payment payment :  DAOFactory.getDefaultDAOFactory().getPaymentDAO().getByDate(LocalDate.of(2003,03,30))) {
+//            DAOFactory.getDefaultDAOFactory().getPaymentDAO().delete(payment.getId());
 //
-//
-//
-////        createFirstSessionAndSubscriberTariff();
-//
-//
-////        for (Payment payment :  DAOFactory.getDefaultDAOFactory().getPaymentDAO().getByDate(LocalDate.of(2003,03,30))) {
-////            DAOFactory.getDefaultDAOFactory().getPaymentDAO().delete(payment.getId());
-////
-////        }
-//
-//
-////        compareSubFees();
-////        compareCon();
-//
-//
-//
-//
-//
-//
-////        loadTariffPrices();
-////        loadServices();
-////        loadServicePrices();
-////        loadDisconnectionReasons();
-////        loadSubscribers();
-//    }
-//
+//        }
+
+
+//        compareSubFees();
+//        compareCon();
+
+
+
+
+
+
+//        loadTariffPrices();
+//        loadServices();
+//        loadServicePrices();
+//        loadDisconnectionReasons();
+//        loadSubscribers();
+    }
+    //
 //    private void compareSubFees() {
 //        Map<Integer, Integer> mapFile = getABFile();
 //        Map<Integer, Integer> mapBase = getBase("ABON.txt");
@@ -185,7 +184,7 @@ public class ReadCVS {
 //    }
 //
 //    public Map<Integer, Integer> getABFile() {
-//        String csvFile = "BASES/OB_AB_11.TXT";
+//        String csvFile = "BASES_KTVI/OB_AB_11.TXT";
 //        BufferedReader br = null;
 //        String line = "";
 //        String cvsSplitBy = "\t";
@@ -228,7 +227,7 @@ public class ReadCVS {
 //    }
 //
 //    public Map<Integer, Integer> getUSFile() {
-//        String csvFile = "BASES/OB_US_11.TXT";
+//        String csvFile = "BASES_KTVI/OB_US_11.TXT";
 //        BufferedReader br = null;
 //        String line = "";
 //        String cvsSplitBy = "\t";
@@ -271,7 +270,7 @@ public class ReadCVS {
 //    }
 //
 //    public Map<Integer, Integer> getBase(String fileName) {
-//        String csvFile = "BASES/" + fileName;
+//        String csvFile = "BASES_KTVI/" + fileName;
 //        BufferedReader br = null;
 //        String line = "";
 //        String cvsSplitBy = ";";
@@ -392,517 +391,768 @@ public class ReadCVS {
 //
 //
 //    }
-//    public void createServices() {
-//        Service service = new Service();
-//        service.setName(getString("subscriptionFee"));
-////        service.setId(FixedServices.SUBSCRIPTION_FEE.getId());
-//        service.setAdditionalService(false);
-//        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
-//        service = new Service();
-//        service.setName(getString("connection"));
-////        service.setId(FixedServices.CONNECTION.getId());
-//        service.setAdditionalService(false);
-//        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
+    public void createServices() {
+        Service service = new Service();
+        service.setName(getString("subscriptionFee"));
+//        service.setId(FixedServices.SUBSCRIPTION_FEE.getId());
+        service.setAdditionalService(false);
+        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
+        service = new Service();
+        service.setName(getString("connection"));
+//        service.setId(FixedServices.CONNECTION.getId());
+        service.setAdditionalService(false);
+        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
+
+        service = new Service();
+        service.setName(getString("reconnection"));
+        //service.setId(3);
+        service.setAdditionalService(true);
+        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
+        service = new Service();
+        service.setName(getString("disconnection"));
+        //service.setId(4);
+        service.setAdditionalService(true);
+        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
+        service = new Service();
+        service.setName(getString("changeOfTariff"));
+        //service.setId(5);
+        service.setAdditionalService(true);
+        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
+        service = new Service();
+        service.setName(getString("settingUp"));
+        service.setAdditionalService(true);
+        //service.setId(6);
+        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
+        service = new Service();
+        service.setName(getString("materialsService"));
+        service.setAdditionalService(true);
+        //service.setId(7);
+        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
+        service = new Service();
+        service.setName(getString("workOnTheReplacementOfMaterials"));
+        service.setAdditionalService(true);
+        //service.setId(8);
+        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
+    }
+        public void loadStreets() {
+        String csvFile = "BASES_KTVI/SP_OB.csv";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+
+
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                Street street = new Street();
+                String[] row = line.split(cvsSplitBy);
+                if(parseInt(row[0]) != 5) {
+                    continue;
+                }
+                street.setId(parseInt(row[1]));
+                street.setName(row[2]);
+                DAOFactory.getDefaultDAOFactory().getStreetDAO().save(street);
+                size++;
+            }
+            System.out.println(size + " streets have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No subscribers loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void loadTariffs() {
+        String csvFile = "BASES_KTVI/SP_DOP.csv";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+        Tariff tariffZero = new Tariff();
+        tariffZero.setId(0);
+        tariffZero.setName("!!!");
+        DAOFactory.getDefaultDAOFactory().getTariffDAO().save(tariffZero);
+        TariffPrice tariffPriceZero = new TariffPrice();
+        tariffPriceZero.setTariffId(0);
+        tariffPriceZero.setDate(LocalDate.of(2017,1,1));
+        tariffPriceZero.setPrice(BigDecimal.ZERO);
+        DAOFactory.getDefaultDAOFactory().getTariffDAO().saveTariffPrice(tariffPriceZero);
+
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+
+                String[] row = line.split(cvsSplitBy);
+                Tariff tariff = new Tariff();
+                tariff.setId(parseInt(row[0]));
+                tariff.setName(row[1]);
+                DAOFactory.getDefaultDAOFactory().getTariffDAO().save(tariff);
+                TariffPrice tariffPrice = new TariffPrice();
+                tariffPrice.setTariffId(parseInt(row[0]));
+                tariffPrice.setDate(LocalDate.of(2017, 1, 1));
+                tariffPrice.setPrice(parseBigDecimal(row[2]));
+                DAOFactory.getDefaultDAOFactory().getTariffDAO().saveTariffPrice(tariffPrice);
+                size++;
+            }
+            System.out.println(size + " tariffs have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No tariffs loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    //
 //
-//        service = new Service();
-//        service.setName(getString("reconnection"));
-//        //service.setId(3);
-//        service.setAdditionalService(true);
-//        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
-//        service = new Service();
-//        service.setName(getString("disconnection"));
-//        //service.setId(4);
-//        service.setAdditionalService(true);
-//        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
-//        service = new Service();
-//        service.setName(getString("changeOfTariff"));
-//        //service.setId(5);
-//        service.setAdditionalService(true);
-//        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
-//        service = new Service();
-//        service.setName(getString("settingUpTV"));
-//        service.setAdditionalService(true);
-//        //service.setId(6);
-//        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
-//        service = new Service();
-//        service.setName(getString("materialsService"));
-//        service.setAdditionalService(true);
-//        //service.setId(7);
-//        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
-//        service = new Service();
-//        service.setName(getString("workOnTheReplacementOfMaterials"));
-//        service.setAdditionalService(true);
-//        //service.setId(8);
-//        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
-//        service = new Service();
-//        service.setName(getString("connectingExtTV"));
-//        service.setAdditionalService(true);
-//        //service.setId(9);
-//        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
-//        service = new Service();
-//        service.setName(getString("workOnConnections"));
-//        //service.setId(10);
-//        service.setAdditionalService(true);
-//        DAOFactory.getDefaultDAOFactory().getServiceDAO().save(service);
-//    }
-//    public void loadStreets() {
-//        String csvFile = "BASES/SP_OB.csv";
-//        BufferedReader br = null;
-//        String line = "";
-//        String cvsSplitBy = ",";
+//
+    public void loadSubscribers() {
+        String csvFile = "BASES_KTVI/ABONENT.CSV";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+
+
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                Subscriber subscriber = new Subscriber();
+                String[] row = line.split(cvsSplitBy);
+
+                subscriber.setId(parseInt(row[1]));
+                subscriber.setName(row[2] + " " + row[3] + " "  + row[4]);
+                subscriber.setStreetId(parseInt(row[5]));
+                subscriber.setBalance(0);
+                subscriber.setHouse(parseInt(row[6]));
+                subscriber.setIndex(row[7]);
+                subscriber.setBuilding(row[8]);
+                subscriber.setFlat(row[9]);
+                subscriber.setPhone(row[10]);
+                try {
+                    subscriber.setContractDate(parseDate(row[11]));
+                } catch (Exception e) {
+                    System.out.println("Exception:");
+                    System.out.println(row[1]);
+                    System.out.println(row[11]);
+                }
+                DAOFactory.getDefaultDAOFactory().getSubscriberDAO().save(subscriber);
+                size++;
+            }
+            System.out.println(size + " subscribers have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No subscribers loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 //
 //
-//        try {
-//            FileInputStream fis =  new FileInputStream(csvFile);
-//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-//            int size = -1;
-//            while ((line = br.readLine()) != null) {
-//                if (size == -1) {
-//                    size++;
-//                    continue;
+//
+    public void loadSubscriptionFees() {
+        String csvFile = "BASES_KTVI/history.CSV";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+
+//        Set<Integer> set = new HashSet<>();
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                String[] row = line.split(cvsSplitBy);
+                if(row.length < 6 || row[0].equals("0") || row[2].equals("0") || row[5].equals("0")
+                        || row[1].equals("703972") || row[1].equals("708404"))
+                    continue;
+
+                RenderedService renderedService = new RenderedService();
+                renderedService.setServiceId(FixedServices.SUBSCRIPTION_FEE.getId());
+                renderedService.setDate(LocalDate.of(parseInt(row[2]), parseInt(row[3]), 1));
+                renderedService.setSubscriberAccount(parseInt(row[1]));
+
+
+                renderedService.setPrice(parseBigDecimal(row[5]));
+//                if(!set.contains(parseInt(row[1]))) {
+//                    renderedService.setPrice(parseInt(row[5]) + parseInt(row[4]));
 //                }
-//                Street street = new Street();
-//                String[] row = line.split(cvsSplitBy);
-//                if(parseInt(row[0]) != 5) {
-//                    continue;
+//                set.add(parseInt(row[1]));
+                try {
+                    DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(renderedService);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                size++;
+            }
+            System.out.println(size + " subscriptionFees have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No subscriptionFees loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+//
+    public void loadConnections() {
+        String csvFile = "BASES_KTVI/ABONENT.CSV";
+        String csvFileDisc = "BASES_KTVI/USERS_LIST_Otklytchenye.CSV";
+        String csvFileDel = "BASES_KTVI/USERS_LIST_Udalenye.CSV";
+        String csvFileAll = "BASES_KTVI/USERS_LIST_Vse.CSV";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+        String cvsSplitBy2 = ";";
+
+        Set<String> disc = new HashSet<>();
+        Set<String> all = new HashSet<>();
+        try {
+            FileInputStream fis =  new FileInputStream(csvFileDisc);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                String[] row = line.split(cvsSplitBy2);
+                disc.add(row[1]);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (IOException e) {
+            System.out.println("No connections loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            FileInputStream fis =  new FileInputStream(csvFileDel);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                String[] row = line.split(cvsSplitBy2);
+                disc.add(row[1]);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (IOException e) {
+            System.out.println("No connections loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            FileInputStream fis =  new FileInputStream(csvFileAll);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                String[] row = line.split(cvsSplitBy2);
+                all.add(row[1]);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (IOException e) {
+            System.out.println("No connections loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            int disconnectionSize = 0;
+            List<Integer> integers = new ArrayList<>();
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                String[] row = line.split(cvsSplitBy);
+
+                RenderedService renderedService = new RenderedService();
+                renderedService.setServiceId(FixedServices.CONNECTION.getId());
+                if(row[13].equals("")) {
+                    renderedService.setDate(parseDate(row[11]));
+                } else {
+                    renderedService.setDate(parseDate(row[13]));
+                }
+                renderedService.setSubscriberAccount(parseInt(row[1]));
+                renderedService.setPrice(BigDecimal.ZERO);
+//                renderedService.setPrice(parseBigDecimal(row[12]));
+
+//                if(!integers.contains(renderedService.getSubscriberAccount())) {
+                    DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(renderedService);
 //                }
-//                street.setId(parseInt(row[1]));
-//                street.setName(row[2]);
-//                DAOFactory.getDefaultDAOFactory().getStreetDAO().save(street);
-//                size++;
-//            }
-//            System.out.println(size + " streets have been loaded");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            System.out.println("No subscribers loaded.");
-//            e.printStackTrace();
-//        } finally {
-//            if (br != null) {
-//                try {
-//                    br.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
-//
-//    public void loadTariffs() {
-//        String csvFile = "BASES/SP_OB.csv";
-//        BufferedReader br = null;
-//        String line = "";
-//        String cvsSplitBy = ",";
-//        Tariff tariffZero = new Tariff();
-//        tariffZero.setId(0);
-//        tariffZero.setName("!!!");
-//        tariffZero.setChannels("0");
-//        DAOFactory.getDefaultDAOFactory().getTariffDAO().save(tariffZero);
-//        TariffPrice tariffPriceZero = new TariffPrice();
-//        tariffPriceZero.setTariffId(0);
-//        tariffPriceZero.setDate(LocalDate.of(2016,1,1));
-//        tariffPriceZero.setPrice(0D);
-//        DAOFactory.getDefaultDAOFactory().getTariffDAO().saveTariffPrice(tariffPriceZero);
-//
-//        try {
-//            FileInputStream fis =  new FileInputStream(csvFile);
-//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-//            int size = -1;
-//            while ((line = br.readLine()) != null) {
-//                if (size == -1) {
-//                    size++;
-//                    continue;
-//                }
-//
-//                String[] row = line.split(cvsSplitBy);
-//                if(parseInt(row[0]) != 1) {
-//                    continue;
-//                }
-//                Tariff tariff = new Tariff();
-//                tariff.setId(parseInt(row[1]));
-//                tariff.setName(row[2]);
-//                tariff.setChannels(row[1]);
-//                DAOFactory.getDefaultDAOFactory().getTariffDAO().save(tariff);
-//                TariffPrice tariffPrice = new TariffPrice();
-//                tariffPrice.setTariffId(parseInt(row[1]));
-//                tariffPrice.setDate(LocalDate.of(2016, 1, 1));
-//                tariffPrice.setPrice(parseDouble(row[3]));
-//                DAOFactory.getDefaultDAOFactory().getTariffDAO().saveTariffPrice(tariffPrice);
-//                size++;
-//            }
-//            System.out.println(size + " tariffs have been loaded");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            System.out.println("No tariffs loaded.");
-//            e.printStackTrace();
-//        } finally {
-//            if (br != null) {
-//                try {
-//                    br.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
-//
-//
-//
-//    public void loadSubscribers() {
-//        String csvFile = "BASES/ABONENT.CSV";
-//        BufferedReader br = null;
-//        String line = "";
-//        String cvsSplitBy = ",";
-//
-//
-//        try {
-//            FileInputStream fis =  new FileInputStream(csvFile);
-//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-//            int size = -1;
-//            while ((line = br.readLine()) != null) {
-//                if (size == -1) {
-//                    size++;
-//                    continue;
-//                }
-//                Subscriber subscriber = new Subscriber();
-//                String[] row = line.split(cvsSplitBy);
-//
-//                subscriber.setId(parseInt(row[1]));
-//                subscriber.setName(row[2] + " " + row[3] + " "  + row[4]);
-//                subscriber.setStreetId(parseInt(row[5]));
-//                subscriber.setBalance(0);
-//                subscriber.setHouse(parseInt(row[6]));
-//                subscriber.setIndex(row[7]);
-//                subscriber.setBuilding(row[8]);
-//                subscriber.setFlat(row[9]);
-//                subscriber.setPhone(row[10]);
-//                try {
-//                    String[] contractDate = row[11].split("-");
-//                    subscriber.setContractDate(LocalDate.of(Integer.parseInt(contractDate[2]) + 2000, Integer.parseInt(contractDate[1]), Integer.parseInt(contractDate[0])));
-//                } catch (Exception e) {
-//                    System.out.println("Exception:");
-//                    System.out.println(row[1]);
-//                    System.out.println(row[11]);
-//                }
-//                DAOFactory.getDefaultDAOFactory().getSubscriberDAO().save(subscriber);
-//                size++;
-//            }
-//            System.out.println(size + " subscribers have been loaded");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            System.out.println("No subscribers loaded.");
-//            e.printStackTrace();
-//        } finally {
-//            if (br != null) {
-//                try {
-//                    br.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
-//
-//
-//
-//    public void loadSubscriptionFees() {
-//        String csvFile = "BASES/history.CSV";
-//        BufferedReader br = null;
-//        String line = "";
-//        String cvsSplitBy = ",";
-//
-////        Set<Integer> set = new HashSet<>();
-//        try {
-//            FileInputStream fis =  new FileInputStream(csvFile);
-//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-//            int size = -1;
-//            while ((line = br.readLine()) != null) {
-//                if (size == -1) {
-//                    size++;
-//                    continue;
-//                }
-//                String[] row = line.split(cvsSplitBy);
-//                if(row[0].equals("0") || row[2].equals("0") || row[5].equals("0"))
-//                    continue;
-//
-//                RenderedService renderedService = new RenderedService();
-//                renderedService.setServiceId(FixedServices.SUBSCRIPTION_FEE.getId());
-//                renderedService.setDate(LocalDate.of(parseInt(row[2]), parseInt(row[3]), 1));
-//                renderedService.setSubscriberAccount(parseInt(row[1]));
-//
-//
-//                renderedService.setPrice(parseDouble(row[5]));
-//                if(parseInt(row[2]) == 2004 && parseInt(row[3]) ==  3 && !row[4].equals("") && !row[4].equals(" ")) {
-//                    renderedService.setPrice(parseDouble(row[5]) + parseDouble(row[4]));
-//                }
-////                if(!set.contains(parseInt(row[1]))) {
-////                    renderedService.setPrice(parseInt(row[5]) + parseInt(row[4]));
-////                }
-////                set.add(parseInt(row[1]));
-//                DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(renderedService);
-//                size++;
-//            }
-//            System.out.println(size + " subscriptionFees have been loaded");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            System.out.println("No subscriptionFees loaded.");
-//            e.printStackTrace();
-//        } finally {
-//            if (br != null) {
-//                try {
-//                    br.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
-//
-//    public void loadConnections() {
-//        String csvFile = "BASES/ABONENT.CSV";
-//        BufferedReader br = null;
-//        String line = "";
-//        String cvsSplitBy = ",";
-//
-//
-//        try {
-//            FileInputStream fis =  new FileInputStream(csvFile);
-//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-//            int size = -1;
-//            int disconnectionSize = 0;
-//            List<Integer> integers = new ArrayList<>();
-//            while ((line = br.readLine()) != null) {
-//                if (size == -1) {
-//                    size++;
-//                    continue;
-//                }
-//                String[] row = line.split(cvsSplitBy);
-//
-//                RenderedService renderedService = new RenderedService();
-//                renderedService.setServiceId(FixedServices.CONNECTION.getId());
-//                if(row[13].equals("")) {
-//                    renderedService.setDate(parseDateHyphen(row[11]));
-//                } else {
-//                    renderedService.setDate(parseDateHyphen(row[13]));
-//                }
-//                renderedService.setSubscriberAccount(parseInt(row[1]));
-//                renderedService.setPrice(parseDouble(row[12]));
-//
-////                if(!integers.contains(renderedService.getSubscriberAccount())) {
-//                    DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(renderedService);
-////                }
-////                integers.add(renderedService.getSubscriberAccount());
-//
-//                SubscriberSession subscriberSession = new SubscriberSession();
-//                subscriberSession.setSubscriberAccount(renderedService.getSubscriberAccount());
-//                subscriberSession.setConnectionDate(renderedService.getDate());
+//                integers.add(renderedService.getSubscriberAccount());
+
+                SubscriberSession subscriberSession = new SubscriberSession();
+                subscriberSession.setSubscriberAccount(renderedService.getSubscriberAccount());
+                subscriberSession.setConnectionDate(renderedService.getDate());
+                if(!all.contains(row[1]) || disc.contains(row[1])) {
+                    subscriberSession.setDisconnectionDate(parseDate(row[17]).plusDays(1));
+                }
+                DAOFactory.getDefaultDAOFactory().getSubscriberDAO().saveSubscriberSession(subscriberSession);
+
+                SubscriberTariff subscriberTariff = new SubscriberTariff();
+                subscriberTariff.setSubscriberAccount(renderedService.getSubscriberAccount());
+                subscriberTariff.setConnectTariff(renderedService.getDate());
+                if (DAOFactory.getDefaultDAOFactory().getTariffDAO().get(parseInt(row[18])) != null) {
+                    subscriberTariff.setTariffId(parseInt(row[18]));
+                } else {
+                    subscriberTariff.setTariffId(0);
+                }
 //                if(parseInt(row[18]) == 0) {
 //                    if(row.length == 20) {
-//                        subscriberSession.setDisconnectionDate(parseDateHyphen(row[19]));
+//                        subscriberTariff.setDisconnectTariff(parseDateHyphen(row[19]));
 //                    } else {
-//                        subscriberSession.setDisconnectionDate(parseDateHyphen(row[17]).plusDays(1));
+//                        subscriberTariff.setDisconnectTariff(parseDateHyphen(row[17]).plusDays(1));
 //                    }
 //                }
-//                DAOFactory.getDefaultDAOFactory().getSubscriberDAO().saveSubscriberSession(subscriberSession);
+
+                DAOFactory.getDefaultDAOFactory().getSubscriberDAO().saveSubscriberTariff(subscriberTariff);
+
+                if(!all.contains(row[1]) || disc.contains(row[1])) {
+                    RenderedService disconnection = new RenderedService();
+                    disconnection.setServiceId(FixedServices.DISCONNECTION.getId());
+                    disconnection.setDate(parseDate(row[17]));
+                    disconnection.setSubscriberAccount(parseInt(row[1]));
+                    disconnection.setPrice(BigDecimal.ZERO);
+                    DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(disconnection);
+                    disconnectionSize++;
+                }
+                size++;
+            }
+            System.out.println(size + " connections have been loaded");
+            System.out.println(disconnectionSize + " disconnections have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No connections loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 //
-//                SubscriberTariff subscriberTariff = new SubscriberTariff();
-//                subscriberTariff.setSubscriberAccount(renderedService.getSubscriberAccount());
-//                subscriberTariff.setConnectTariff(renderedService.getDate());
-//                subscriberTariff.setTariffId(parseInt(row[18]));
-////                if(parseInt(row[18]) == 0) {
-////                    if(row.length == 20) {
-////                        subscriberTariff.setDisconnectTariff(parseDateHyphen(row[19]));
-////                    } else {
-////                        subscriberTariff.setDisconnectTariff(parseDateHyphen(row[17]).plusDays(1));
-////                    }
-////                }
-//
-//                DAOFactory.getDefaultDAOFactory().getSubscriberDAO().saveSubscriberTariff(subscriberTariff);
-//
-//                if(parseInt(row[18]) == 0) {
-//                    RenderedService disconnection = new RenderedService();
-//                    disconnection.setServiceId(FixedServices.DISCONNECTION.getId());
-//                    if(row.length == 20) {
-//                        disconnection.setDate(parseDateHyphen(row[19]));
-//                    } else {
-//                        disconnection.setDate(parseDateHyphen(row[17]));
-//                    }
-//                    disconnection.setSubscriberAccount(parseInt(row[1]));
-//                    disconnection.setPrice(0D);
-//                    DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(disconnection);
-//                    disconnectionSize++;
-//                }
-//                size++;
-//            }
-//            System.out.println(size + " connections have been loaded");
-//            System.out.println(disconnectionSize + " disconnections have been loaded");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            System.out.println("No connections loaded.");
-//            e.printStackTrace();
-//        } finally {
-//            if (br != null) {
-//                try {
-//                    br.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
-//
-//    public void loadAdditionalServices() {
-//        String csvFile = "BASES/his_d.CSV";
-//        BufferedReader br = null;
-//        String line = "";
-//        String cvsSplitBy = ",";
-//
-//
-//        try {
-//            FileInputStream fis =  new FileInputStream(csvFile);
-//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-//            int size = -1;
-//            while ((line = br.readLine()) != null) {
-//                if (size == -1) {
-//                    size++;
-//                    continue;
-//                }
-//                String[] row = line.split(cvsSplitBy);
-//                if(row.length < 5 || row[4].equals(""))
-//                    continue;
+    public void loadAdditionalServices() {
+        String csvFile = "BASES_KTVI/his_d.CSV";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+        Map<String, List<String[]>> renderedServices = new HashMap<>();
+        Map<String, List<String[]>> payments = new HashMap<>();
+
+
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                String[] row = line.split(cvsSplitBy);
+                if ("1".equals(row[2])) {
+                    List<String[]> list = renderedServices.get(row[0]);
+                    if (list == null) {
+                        list = new ArrayList<>();
+                    }
+                    list.add(row);
+                    renderedServices.put(row[0],list);
+                } else {
+                    List<String[]> list = payments.get(row[0]);
+                    if (list == null) {
+                        list = new ArrayList<>();
+                    }
+                    list.add(row);
+                    payments.put(row[0],list);
+                }
 //                RenderedService renderedService = new RenderedService();
 //
 //                switch (row[1]) {
-//                    case "001" :  renderedService.setServiceId(3); break;
-//                    case "002" :  renderedService.setServiceId(9); break;
-//                    case "003" :  renderedService.setServiceId(6); break;
-//                    case "004" :  renderedService.setServiceId(5); break;
-//                    case "005" :  renderedService.setServiceId(7); break;
-//                    case "006" :  renderedService.setServiceId(8); break;
-//                    case "007" :  renderedService.setServiceId(10); break;
+//                    case "0" :  renderedService.setServiceId(2); break;
+//                    case "1" :  renderedService.setServiceId(6); break;
+//                    case "2" :  renderedService.setServiceId(6); break;
+//                    case "4" :  renderedService.setServiceId(6); break;
+//                    case "7" :  renderedService.setServiceId(8); break;
+//                    case "9" :  renderedService.setServiceId(7); break;
 //                }
 //                renderedService.setId(parseInt(row[2]) + 1000000);
-//                renderedService.setDate(parseDateHyphen(row[4]));
+//                renderedService.setDate(parseDate(row[4]));
 //                renderedService.setSubscriberAccount(parseInt(row[0]));
-//                renderedService.setPrice(parseDouble(row[5]));
+//                renderedService.setPrice(parseBigDecimal(row[5]));
 //
 //                DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(renderedService);
 //                size++;
-//            }
-//            System.out.println(size + " additional services have been loaded");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            System.out.println("No additional services loaded.");
-//            e.printStackTrace();
-//        } finally {
-//            if (br != null) {
-//                try {
-//                    br.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
-//
-//    public void loadPayments() {
-//        String csvFile = "BASES/kvit.CSV";
-//        BufferedReader br = null;
-//        String line = "";
-//        String cvsSplitBy = ",";
-//
-//
-//        try {
-//            FileInputStream fis =  new FileInputStream(csvFile);
-//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-//            int size = -1;
-//            while ((line = br.readLine()) != null) {
-//                if (size == -1) {
-//                    size++;
-//                    continue;
-//                }
-//                String[] row = line.split(cvsSplitBy);
-//                Payment payment = new Payment();
-//                if(row[4] == "" || row[4] == "0" || row[4] == " " ) {
-//                    continue;
-//                }
-//                payment.setSubscriberAccount(parseInt(row[0]));
-//                payment.setPrice(parseDouble(row[4]));
-//                payment.setDate(parseDateHyphen(row[1]));
-//                if(parseInt(row[5]) == 0) {
-//                    payment.setServicePaymentId(2);
-//                    RenderedService renderedService = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getFirstRenderedServiceLessDate(2, parseInt(row[0]), LocalDate.now());
-//                    if (renderedService != null) {
-//                        payment.setRenderedServicePaymentId(renderedService.getId());
-//                    }
-//                }
-//                if(parseInt(row[5]) == 2) {
-//                    switch (row[6]) {
-//                        case "001" :  payment.setServicePaymentId(3); break;
-//                        case "002" :  payment.setServicePaymentId(9); break;
-//                        case "003" :  payment.setServicePaymentId(6); break;
-//                        case "004" :  payment.setServicePaymentId(5); break;
-//                        case "005" :  payment.setServicePaymentId(7); break;
-//                        case "006" :  payment.setServicePaymentId(8); break;
-//                        case "007" :  payment.setServicePaymentId(10); break;
-//                    }
-//                    if(DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().get(parseInt(row[7]) + 1000000) != null) {
-//                        payment.setRenderedServicePaymentId(parseInt(row[7]) + 1000000);
-//                    }
-//                }
-//
-//                if(parseInt(row[5]) == 1) {
-//                    payment.setServicePaymentId(1);
-//                }
-//                DAOFactory.getDefaultDAOFactory().getPaymentDAO().save(payment);
+            }
+            System.out.println(size + " additional services have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No additional services loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        for (List<String[]> strings : renderedServices.values()) {
+            for (String[] row : strings) {
+                if(row[0].equals("717470") || row[0].equals("704654")) {
+                    System.out.println();
+                }
+                Integer subscriberId = parseInt(row[0]);
+                if (subscriberId == null || DAOFactory.getDefaultDAOFactory().getSubscriberDAO().get(subscriberId) == null) {
+                    System.out.println("Wrong id " + row[0]);
+                    continue;
+                }
+
+                RenderedService renderedService = new RenderedService();
+
+                switch (row[1]) {
+                    case "0":
+                        renderedService.setServiceId(2);
+                        break;
+                    case "1":
+                        renderedService.setServiceId(6);
+                        break;
+                    case "2":
+                        renderedService.setServiceId(6);
+                        break;
+                    case "4":
+                        renderedService.setServiceId(6);
+                        break;
+                    case "7":
+                        renderedService.setServiceId(8);
+                        break;
+                    case "9":
+                        renderedService.setServiceId(7);
+                        break;
+                }
+                renderedService.setDate(parseDate(row[4]));
+                renderedService.setSubscriberAccount(parseInt(row[0]));
+                renderedService.setPrice(parseBigDecimal(row[5]));
+
+                if(renderedService.getServiceId() == 2) {
+                    List<RenderedService> rServices = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getBySubscriber(parseInt(row[0]));
+                    rServices = rServices.stream()
+                            .filter(e -> renderedService.getDate().equals(e.getDate())
+                                    && renderedService.getServiceId().equals(e.getServiceId()))
+                            .collect(Collectors.toList());
+                    if(rServices.size() == 1) {
+                        RenderedService service = rServices.get(0);
+                        if(service.getId().equals("108315")) {
+                            System.out.println();
+                        }
+                        service.setPrice(parseBigDecimal(row[5]));
+                        DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().update(service);
+                    }
+                } else {
+                    renderedService.setServiceId(3);
+                    DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(renderedService);
+                }
+
+
+                List<String[]> paymentList = payments.get(row[0]);
+                if (paymentList == null) {
+                    continue;
+                }
+                paymentList = paymentList.stream().filter(e -> e[3].equals(row[3])).collect(Collectors.toList());
+
+                List<RenderedService> rServices = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getBySubscriber(parseInt(row[0]));
+                rServices = rServices.stream()
+                        .filter(e -> renderedService.getDate().equals(e.getDate())
+                                && renderedService.getServiceId().equals(e.getServiceId()))
+                        .collect(Collectors.toList());
+
+                if (rServices.size() == 1 && paymentList.size() == 1) {
+                    Payment payment = new Payment();
+                    payment.setSubscriberAccount(parseInt(row[0]));
+                    payment.setPrice(parseBigDecimal(paymentList.get(0)[5]));
+                    payment.setDate(parseDate(paymentList.get(0)[4]));
+                    payment.setServicePaymentId(rServices.get(0).getServiceId());
+                    payment.setRenderedServicePaymentId(rServices.get(0).getId());
+                    DAOFactory.getDefaultDAOFactory().getPaymentDAO().save(payment);
+                }
+                if (rServices.size() > 1) {
+                    System.out.println("!!!!! " + row[0]);
+                    rServices = rServices.stream()
+                            .filter(e -> renderedService.getPrice().equals(e.getPrice()))
+                            .collect(Collectors.toList());
+                    if(rServices.size() != 1) {
+                        System.out.println("??????");
+                    } else {
+                        Payment payment = new Payment();
+                        payment.setSubscriberAccount(parseInt(row[0]));
+                        payment.setPrice(parseBigDecimal(paymentList.get(0)[5]));
+                        payment.setDate(parseDate(paymentList.get(0)[4]));
+                        payment.setServicePaymentId(rServices.get(0).getServiceId());
+                        payment.setRenderedServicePaymentId(rServices.get(0).getId());
+                        DAOFactory.getDefaultDAOFactory().getPaymentDAO().save(payment);
+                    }
+
+                }
+            }
 //                size++;
-//            }
-//            System.out.println(size + " payments have been loaded");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            System.out.println("No payments loaded.");
-//            e.printStackTrace();
-//        } finally {
-//            if (br != null) {
-//                try {
-//                    br.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        for (Subscriber subscriber :  DAOFactory.getDefaultDAOFactory().getSubscriberDAO().getAll()) {
-//            if(subscriber.getId() > 5632) {
-//                continue;
-//            }
-//            if(!DAOFactory.getDefaultDAOFactory().getPaymentDAO()
-//                    .getBySubscriber(subscriber.getId()).stream()
-//                    .filter(payment1 -> payment1.getServicePaymentId() == 2)
-//                    .findFirst().isPresent()) {
+        }
+    }
 //
-//                Payment payment = new Payment();
-//                payment.setSubscriberAccount(subscriber.getId());
-//                payment.setPrice(41050D);
-//                RenderedService renderedService = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO()
-//                        .getBySubscriber(subscriber.getId())
-//                        .stream().filter(renderedServiceIn -> renderedServiceIn.getServiceId() == 2)
-//                        .findFirst().get();
-//                payment.setDate(renderedService.getDate());
-//                payment.setServicePaymentId(renderedService.getServiceId());
-//                payment.setRenderedServicePaymentId(renderedService.getId());
-//                DAOFactory.getDefaultDAOFactory().getPaymentDAO().save(payment);
-//            }
-//        }
-//    }
+    public void loadPayments() {
+        String csvFile = "BASES_KTVI/kvit.CSV";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+
+
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                String[] row = line.split(cvsSplitBy);
+                Payment payment = new Payment();
+                if(row[4] == "" || row[4] == "0" || row[4] == " " ) {
+                    continue;
+                }
+                if (DAOFactory.getDefaultDAOFactory().getSubscriberDAO().get(parseInt(row[0])) == null) {
+                    continue;
+                }
+                if("714059".equals(row[0]) && "21.11.2016".equals(row[1])) {
+                    System.out.println("?????????????");
+                }
+                payment.setSubscriberAccount(parseInt(row[0]));
+                payment.setPrice(parseBigDecimal(row[4]));
+                payment.setDate(parseDate(row[1]));
+                payment.setServicePaymentId(1);
+                DAOFactory.getDefaultDAOFactory().getPaymentDAO().save(payment);
+                size++;
+            }
+            System.out.println(size + " payments have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No payments loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private class CompareObject {
+        String account;
+        BigDecimal credit;
+        BigDecimal debit;
+
+        public CompareObject(String account, BigDecimal credit, BigDecimal debit) {
+            this.account = account;
+            this.credit = credit;
+            this.debit = debit;
+        }
+    }
+
+    public void isEqaual() {
+        String csvFile1 = "1.TXT";
+        String csvFile2 = "3.TXT";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = " ";
+        Map<String, CompareObject> myMap = new HashMap<>();
+        Map<String, CompareObject> hisMap = new HashMap<>();
+
+
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile2);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+
+                String[] row = line.split(cvsSplitBy);
+                if (row.length < 3) {
+                    continue;
+                }
+                size++;
+                CompareObject compareObject = new CompareObject(row[0], parseBigDecimal(row[1]),parseBigDecimal(row[2]));
+                myMap.put(row[0], compareObject);
+            }
+            System.out.println(size + " payments have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No payments loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile1);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+
+                String[] row = line.split(cvsSplitBy);
+                if (row.length < 3) {
+                    continue;
+                }
+                size++;
+                CompareObject compareObject = new CompareObject(row[0], parseBigDecimal(row[1]),parseBigDecimal(row[2]));
+                hisMap.put(row[0], compareObject);
+            }
+            System.out.println(size + " payments have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No payments loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        Integer size = 0;
+
+        for (String s : hisMap.keySet()) {
+            CompareObject myObject = myMap.get(s);
+            CompareObject hisObject = hisMap.get(s);
+            if (myObject.credit.compareTo(hisObject.credit) != 0) {
+                size++;
+                System.out.println("Account = " + s + " credit my = " + myObject.credit + "  credit his = " + hisObject.credit);
+                RenderedService renderedService = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getAllForMonth(1, parseInt(s), parseDate("01.07.2016")).get(0);
+                renderedService.setPrice(renderedService.getPrice().add(hisObject.credit).subtract(myObject.credit));
+//                DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().update(renderedService);
+            }
+            if (myObject.debit.compareTo(hisObject.debit) != 0) {
+                size++;
+                System.out.println("Account = " + s + " debit my = " + myObject.debit + "  debit his = " + hisObject.debit);
+                RenderedService renderedService = DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().getAllForMonth(1, parseInt(s), parseDate("01.07.2016")).get(0);
+                System.out.println(renderedService.getPrice());
+                renderedService.setPrice(renderedService.getPrice().add(myObject.debit).subtract(hisObject.debit));
+                System.out.println(renderedService.getPrice());
+//                DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().update(renderedService);
+            }
+        }
+        System.out.println(size);
+    }
 //
 //    public void updateTariffsInSubscriberTariffs() {
-//        String csvFile = "BASES/history.CSV";
+//        String csvFile = "BASES_KTVI/history.CSV";
 //        BufferedReader br = null;
 //        String line = "";
 //        String cvsSplitBy = ",";
@@ -989,53 +1239,69 @@ public class ReadCVS {
 //    }
 //
 //
-//    private LocalDate parseDate(String element) {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-//        LocalDate date = LocalDate.parse(element, formatter);
-//        return date;
-//    }
+    private LocalDate parseDate(String element) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate date = LocalDate.parse(element, formatter);
+        return date;
+    }
 //
-//    private LocalDate parseDateHyphen(String element) {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
-//        LocalDate date = LocalDate.parse(element, formatter);
-//        return date;
-//    }
+    private LocalDate parseDateHyphen(String element) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+        LocalDate date = LocalDate.parse(element, formatter);
+        return date;
+    }
 //
-//    private Integer parseInt(String str) {
-//        // char code 160 is a space char
-//        str = str.replaceAll("\u00A0", "");
-//        if (str.length() == 0) {
-//            return null;
-//        }
-//
-//        Integer number;
-//        try {
-//            number = Integer.parseInt(str);
-//        } catch (NumberFormatException ex) {
-//            number = null;
-//        }
-//        return number;
-//    }
-//
-//    private Double parseDouble(String str) {
-//        // char code 160 is a space char
-//        str = str.replaceAll("\u00A0", "");
-//        if (str.length() == 0) {
-//            return null;
-//        }
-//
-//        Double number;
-//        try {
-//            number = Double.parseDouble(str);
-//        } catch (NumberFormatException ex) {
-//            number = null;
-//        }
-//        return number;
-//    }
-//
-//    private String getString(String str) {
-//        return ResourceBundles.getEntityBundle().getString(str);
-//    }
-//
+    private Integer parseInt(String str) {
+        // char code 160 is a space char
+        str = str.replaceAll("\u00A0", "");
+        if (str.length() == 0) {
+            return null;
+        }
+
+        Integer number;
+        try {
+            number = Integer.parseInt(str);
+        } catch (NumberFormatException ex) {
+            number = null;
+        }
+        return number;
+    }
+
+    private Double parseDouble(String str) {
+        // char code 160 is a space char
+        str = str.replaceAll("\u00A0", "");
+        if (str.length() == 0) {
+            return null;
+        }
+
+        Double number;
+        try {
+            number = Double.parseDouble(str);
+        } catch (NumberFormatException ex) {
+            number = null;
+        }
+        return number;
+    }
+
+    private BigDecimal parseBigDecimal(String str) {
+        // char code 160 is a space char
+        str = str.replaceAll("\u00A0", "");
+        if (str.length() == 0) {
+            return null;
+        }
+
+        BigDecimal number;
+        try {
+            number = new BigDecimal(str);
+        } catch (NumberFormatException ex) {
+            number = null;
+        }
+        return number;
+    }
+
+    private String getString(String str) {
+        return ResourceBundles.getEntityBundle().getString(str);
+    }
+
 }
 //

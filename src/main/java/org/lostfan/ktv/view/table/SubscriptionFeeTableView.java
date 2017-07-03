@@ -12,8 +12,7 @@ public class SubscriptionFeeTableView extends EntityTableView {
     private SubscriptionFeeModel model;
 
     private ViewActionListener deleteForMonthActionListener;
-    private ViewActionListener recalculateWithActionListener;
-    private ViewActionListener recalculateAllWithActionListener;
+    private ViewActionListener loadctionListener;
     private ViewActionListener newDateActionListener;
 
     public SubscriptionFeeTableView(SubscriptionFeeModel model) {
@@ -28,21 +27,10 @@ public class SubscriptionFeeTableView extends EntityTableView {
         });
         addButton(button, false);
 
-        button = new JButton(getGuiString("buttons.recalculateWith"));
+        button = new JButton(getGuiString("buttons.load"));
         button.addActionListener(e -> {
-            if (this.recalculateWithActionListener != null) {
-                this.recalculateWithActionListener.actionPerformed(null);
-            }
-        });
-        addButton(button, false);
-
-        button = new JButton(getGuiString("buttons.recalculateAllWith"));
-        button.addActionListener(e -> {
-            int selectedId = getSelectedEntityId();
-            if (selectedId != -1 && this.recalculateAllWithActionListener != null) {
-                this.recalculateAllWithActionListener.actionPerformed(selectedId);
-            } else {
-                this.recalculateAllWithActionListener.actionPerformed(null);
+            if (this.loadctionListener != null) {
+                this.loadctionListener.actionPerformed(null);
             }
         });
         addButton(button, false);
@@ -141,12 +129,8 @@ public class SubscriptionFeeTableView extends EntityTableView {
         super.revalidate();
     }
 
-    public void setRecalculateWithActionListener(ViewActionListener recalculateWithActionListener) {
-        this.recalculateWithActionListener = recalculateWithActionListener;
-    }
-
-    public void setRecalculateAllWithActionListener(ViewActionListener recalculateAllWithActionListener) {
-        this.recalculateAllWithActionListener = recalculateAllWithActionListener;
+    public void setLoadctionListener(ViewActionListener loadctionListener) {
+        this.loadctionListener = loadctionListener;
     }
 
     public void newDateActionListener(ViewActionListener newDateActionListener) {

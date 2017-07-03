@@ -74,16 +74,14 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
             PreparedStatement preparedStatement;
             if(tariff.getId() != null) {
                 preparedStatement = getConnection().prepareStatement(
-                        "INSERT INTO \"tariff\" (\"name\", \"channels\", \"digital\", \"id\") VALUES(?, ?, ?, ?)");
-                preparedStatement.setInt(4, tariff.getId());
+                        "INSERT INTO \"tariff\" (\"name\", \"id\") VALUES(?, ?)");
+                preparedStatement.setInt(2, tariff.getId());
             } else {
                 preparedStatement = getConnection().prepareStatement(
-                        "INSERT INTO \"tariff\" (\"name\", \"channels\", \"digital\") VALUES(?, ?, ?)");
+                        "INSERT INTO \"tariff\" (\"name\") VALUES(?)");
             }
 
             preparedStatement.setString(1, tariff.getName());
-            preparedStatement.setString(2, tariff.getChannels());
-            preparedStatement.setBoolean(3, tariff.isDigital());
             preparedStatement.executeUpdate();
             if(tariff.getId() != null) {
                 return;
@@ -102,11 +100,9 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
         if(get(tariff.getId()) != null) {
             try {
                 PreparedStatement preparedStatement = getConnection().prepareStatement(
-                        "UPDATE \"tariff\" set \"name\" = ?, \"channels\" = ?, \"digital\" = ? where \"id\" = ?");
+                        "UPDATE \"tariff\" set \"name\" = ? where \"id\" = ?");
                 preparedStatement.setString(1, tariff.getName());
-                preparedStatement.setString(2, tariff.getChannels());
-                preparedStatement.setBoolean(3, tariff.isDigital());
-                preparedStatement.setInt(4, tariff.getId());
+                preparedStatement.setInt(2, tariff.getId());
                 preparedStatement.executeUpdate();
 
             } catch (SQLException ex) {
@@ -256,8 +252,6 @@ public class PostGreTariffDAO extends PostgreBaseDao implements TariffDAO {
         Tariff tariff = new Tariff();
         tariff.setId(rs.getInt("id"));
         tariff.setName(rs.getString("name"));
-        tariff.setDigital(rs.getBoolean("digital"));
-        tariff.setChannels(rs.getString("channels"));
         return tariff;
     }
 

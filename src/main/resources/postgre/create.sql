@@ -46,9 +46,7 @@ CREATE SEQUENCE serial_tariff START 1;
 
 CREATE TABLE "tariff" (
   "id" INTEGER PRIMARY KEY DEFAULT nextval('serial_tariff'),
-  "name" VARCHAR(100) NOT NULL,
-  "digital" BOOLEAN NOT NULL,
-  "channels" VARCHAR(4) DEFAULT '' NOT NULL
+  "name" VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE "tariff_price" (
@@ -69,7 +67,7 @@ CREATE TABLE "disconnection_reason" (
 CREATE TABLE "subscriber" (
   "account" INTEGER PRIMARY KEY,
   "name" VARCHAR(64) NOT NULL,
-  "balance" INTEGER DEFAULT 0 NOT NULL,
+  "balance" NUMERIC DEFAULT 0 NOT NULL,
   "connected" BOOLEAN DEFAULT FALSE,
   "street_id" INTEGER,
   "house" INTEGER,
@@ -112,7 +110,7 @@ CREATE TABLE "rendered_service" (
   "subscriber_account" INTEGER NOT NULL,
   "service_id" INTEGER NOT NULL,
   "date" DATE NOT NULL,
-  "price" INTEGER DEFAULT 0,
+  "price" NUMERIC DEFAULT 0,
   FOREIGN KEY ("subscriber_account") REFERENCES "subscriber"("account"),
   FOREIGN KEY ("service_id") REFERENCES "service"("id")
 );
@@ -133,7 +131,7 @@ CREATE TABLE "payment" (
   "rendered_service_id" INTEGER,
   "payment_type_id"  INTEGER,
   "date" DATE,
-  "price" INTEGER DEFAULT 0,
+  "price" NUMERIC DEFAULT 0,
   "bank_file_name" VARCHAR(64),
   FOREIGN KEY ("subscriber_account") REFERENCES "subscriber"("account"),
   FOREIGN KEY ("service_id") REFERENCES "service"("id"),

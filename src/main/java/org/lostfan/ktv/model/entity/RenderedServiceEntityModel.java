@@ -19,12 +19,15 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
 
     private LocalDate date;
     private List<EntityField> fields;
+    private FullEntityField loadFullEntityField;
 
     private EntityField tariffField;
     private EntityField serviceEntityField;
     private EntityField disconnectionReasonField;
 
     private List<FullEntityField> fullFields;
+    private List<RenderedService> renderedServices;
+    private Integer progress;
 
     private Validator<RenderedService> validator = new RenderedServiceValidator();
     private Validator<SubscriberTariff> validatorSubscriberTariff = new SubscriberTariffValidator();
@@ -49,11 +52,15 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
         date = LocalDate.now().withDayOfMonth(1);
 
         this.fields = new ArrayList<>();
+        this.renderedServices = new ArrayList<>();
         this.fields.add(new EntityField("renderedService.id", EntityFieldTypes.Integer, RenderedService::getId, RenderedService::setId, false));
         this.fields.add(new EntityField("renderedService", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId, false));
         this.fields.add(new EntityField("renderedService.date", EntityFieldTypes.Date, RenderedService::getDate, RenderedService::setDate));
         this.fields.add(new EntityField("subscriber", EntityFieldTypes.Subscriber, RenderedService::getSubscriberAccount, RenderedService::setSubscriberAccount));
-        this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.Double, RenderedService::getPrice, RenderedService::setPrice));
+        this.fields.add(new EntityField("renderedService.price", EntityFieldTypes.BigDecimal, RenderedService::getPrice, RenderedService::setPrice));
+
+        loadFullEntityField = new FullEntityField("renderedService", EntityFieldTypes.RenderedService, null, null, RenderedService::new);
+        loadFullEntityField.setEntityFields(getFields().stream().filter(e -> !e.getTitleKey().equals("renderedService.id")).collect(Collectors.toList()));
 
         this.serviceEntityField = new EntityField("service", EntityFieldTypes.Service, RenderedService::getServiceId, RenderedService::setServiceId, false);
         this.tariffField = new EntityField("tariff", EntityFieldTypes.Tariff, TariffField::getTariffId, TariffField::setTariffId);
@@ -691,6 +698,37 @@ public class RenderedServiceEntityModel extends BaseDocumentModel<RenderedServic
 
     public LocalDate getDate() {
         return this.date;
+    }
+
+    public List<RenderedService> getRenderedServices() {
+        return this.renderedServices;
+    }
+
+    public Integer getProgress() {
+        return progress;
+    }
+
+    public FullEntityField getLoadFullEntityField() {
+        return loadFullEntityField;
+    }
+
+    public void createRenderedServices(List<RenderedService> loadedRenderedServices) {
+        Integer count = 0;
+        long begin = System.currentTimeMillis();
+        for (RenderedService loadedRenderedService : loadedRenderedServices) {
+            if (BigDecimal.ZERO.compareTo(loadedRenderedService.getPrice()) == 0 || subscriberDAO.get(loadedRenderedService.getSubscriberAccount()) == null) {
+                continue;
+            }
+            progress = 100 * count++ / loadedRenderedServices.size();
+            notifyObservers(null);
+            this.renderedServices.add(loadedRenderedService);
+
+        }
+        progress = 100;
+        notifyObservers(null);
+        long end = System.currentTimeMillis();
+        System.out.println(end - begin);
+
     }
 
     @Override

@@ -1,9 +1,13 @@
 package org.lostfan.ktv.controller;
 
 import org.lostfan.ktv.domain.RenderedService;
+import org.lostfan.ktv.model.MainModel;
 import org.lostfan.ktv.model.SubscriptionFeeRecalculationModel;
+import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.model.entity.SubscriptionFeeModel;
 import org.lostfan.ktv.validation.ValidationResult;
+import org.lostfan.ktv.view.FormView;
+import org.lostfan.ktv.view.entity.LoadRenderedServicesView;
 import org.lostfan.ktv.view.table.SubscriptionFeeTableView;
 import org.lostfan.ktv.view.entity.SubscriptionFeeView;
 
@@ -20,64 +24,21 @@ public class SubscriptionFeeController extends EntityController{
         this.model = model;
         this.view = view;
         view.setDeleteForMonthActionListener(this::deleteForMonthActionPerformed);
-        view.setRecalculateWithActionListener(this::addRecalculateOneActionPerformed);
-        view.setRecalculateAllWithActionListener(this::addRecalculateAllActionPerformed);
+        view.setLoadctionListener(this::loadActionPerformed);
         view.newDateActionListener(this::newDateActionPerformed);
     }
 
-    protected void addRecalculateAllActionPerformed(Object args) {
-        SubscriptionFeeRecalculationModel subscriptionFeeRecalculationModel = new SubscriptionFeeRecalculationModel();
-        SubscriptionFeeView entityView = new SubscriptionFeeView(model, subscriptionFeeRecalculationModel, false);
-        entityView.setAddActionListener(args_ -> {
-            List<RenderedService> renderedServices = (List<RenderedService>) args_;
-            model.generateAllSubscriptionFees(renderedServices);
-            entityView.hide();
-        });
-        entityView.setRecalculateActionListener(args_ -> {
-            LocalDate date = (LocalDate) args_;
-            ValidationResult result = ValidationResult.createEmpty();
-            if (date == null) {
-                result.addError("errors.empty", "renderedService.date");
-            }
-            if (result.hasErrors()) {
-                entityView.showErrors(result.getErrors());
-                return;
-            }
-            result = subscriptionFeeRecalculationModel.createSubscriptionFees(date);
-            if (result.hasErrors()) {
-                entityView.showErrors(result.getErrors());
-                return;
-            }
+    private void loadActionPerformed(Object args) {
+        RenderedServiceEntityModel renderedServiceEntityModel = MainModel.getRenderedServiceEntityModel();
+        LoadRenderedServicesView loadRenderedServicesViewView = new LoadRenderedServicesView(renderedServiceEntityModel);
+        loadRenderedServicesViewView.setAddActionListener(args_ -> {
+            List<RenderedService> payments = (List<RenderedService>) args_;
+            savePayments(renderedServiceEntityModel, payments, loadRenderedServicesViewView);
         });
 
-    }
-
-    protected void addRecalculateOneActionPerformed(Object args) {
-        SubscriptionFeeRecalculationModel subscriptionFeeRecalculationModel = new SubscriptionFeeRecalculationModel();
-        SubscriptionFeeView entityView = new SubscriptionFeeView(this.model, subscriptionFeeRecalculationModel, true);
-        entityView.setAddActionListener(args_ -> {
+        loadRenderedServicesViewView.setLoadRenderedServiceFileActionListener(args_ -> {
             List<RenderedService> renderedServices = (List<RenderedService>) args_;
-            model.generateSeveralSubscriptionFees(renderedServices);
-            entityView.hide();
-        });
-        entityView.setRecalculateActionListener(args_ -> {
-            SubscriptionFeeView.DateAndSubscriberId dateAndSubscriberId = (SubscriptionFeeView.DateAndSubscriberId) args_;
-            ValidationResult result = ValidationResult.createEmpty();
-            if (dateAndSubscriberId.getDate() == null) {
-                result.addError("errors.empty", "renderedService.date");
-            }
-            if (dateAndSubscriberId.getSubscriberId() == null) {
-                result.addError("errors.empty", "subscriber");
-            }
-            if (result.hasErrors()) {
-                entityView.showErrors(result.getErrors());
-                return;
-            }
-            result = subscriptionFeeRecalculationModel.createSubscriptionFeeBySubscriber(dateAndSubscriberId.getSubscriberId(), dateAndSubscriberId.getDate());
-            if (result.hasErrors()) {
-                entityView.showErrors(result.getErrors());
-                return;
-            }
+            renderedServiceEntityModel.createRenderedServices(renderedServices);
         });
     }
 
@@ -101,5 +62,21 @@ public class SubscriptionFeeController extends EntityController{
         if (result.hasErrors()) {
             view.errorWindow(result.getErrors());
         }
+    }
+
+    private void savePayments(RenderedServiceEntityModel model, List<RenderedService> payments, FormView view) {
+        ValidationResult result = ValidationResult.createEmpty();
+        for (RenderedService renderedService : payments) {
+            result = model.getValidator().validate(renderedService, result);
+            result = model.getPeriodValidator().validate(renderedService, result);
+            if (result.hasErrors()) {
+                view.showErrors(result.getErrors());
+                return;
+            }
+        }
+        for (RenderedService renderedService : payments) {
+            model.save(renderedService);
+        }
+        view.hide();
     }
 }

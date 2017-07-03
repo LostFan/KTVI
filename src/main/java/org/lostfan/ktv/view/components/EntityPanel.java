@@ -64,6 +64,7 @@ public class EntityPanel extends JPanel {
             }
 
         };
+        this.setBackground(Color.BLUE);
         this.setLayout(new BorderLayout());
         this.add(this.comboBox, BorderLayout.CENTER);
 
