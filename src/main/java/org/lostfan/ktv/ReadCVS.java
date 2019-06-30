@@ -40,6 +40,7 @@ public class ReadCVS {
 //
         obj.run();
         ConnectionManager.getManager().close();
+
 ////        try {
 ////            Thread.sleep(15000);
 ////        } catch (InterruptedException e) {
@@ -62,7 +63,10 @@ public class ReadCVS {
     public void run() {
 //        getPayments();
 //        getSubscribersIdWithoutConnection();
-
+//        getABFile();
+        createDisconnect();
+//        showWrongSubscriptionFees();
+//
 //        loadTariffs();
 //        createServices();
 //        loadStreets();
@@ -71,7 +75,7 @@ public class ReadCVS {
 //        loadConnections();
 //        loadAdditionalServices();
 //        loadPayments();
-        isEqaual();
+//        isEqaual();
 //        updateTariffsInSubscriberTariffs();
 
 
@@ -99,6 +103,9 @@ public class ReadCVS {
 //        loadDisconnectionReasons();
 //        loadSubscribers();
     }
+
+
+
     //
 //    private void compareSubFees() {
 //        Map<Integer, Integer> mapFile = getABFile();
@@ -183,48 +190,57 @@ public class ReadCVS {
 //
 //    }
 //
-//    public Map<Integer, Integer> getABFile() {
-//        String csvFile = "BASES_KTVI/OB_AB_11.TXT";
-//        BufferedReader br = null;
-//        String line = "";
-//        String cvsSplitBy = "\t";
-//
-//        Map<Integer, Integer> map = new HashMap<>();
-//        try {
-//            FileInputStream fis =  new FileInputStream(csvFile);
-//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-//            int size = -1;
-//            int sum1 = 0;
-//            int sum2 = 0;
-//            while ((line = br.readLine()) != null) {
-//                String[] row = line.split(cvsSplitBy);
-//                if(row[0].length() >0 && row[0].substring(0,1).equals("0")) {
-////                    System.out.println(parseInt(line.substring(0, 7).trim()));
-////                    System.out.println(parseInt(line.substring(68, 75).trim()));
-////                    System.out.println(parseInt(line.substring(75, 82).trim()));
-//                    sum1+=parseInt(line.substring(75, 82).trim());
-//                    sum2+=parseInt(line.substring(68, 75).trim());
-//                    map.put(parseInt(line.substring(0, 7).trim()),parseInt(line.substring(75, 82).trim()) - parseInt(line.substring(68, 75).trim()));
-//                }
-//            }
-//            System.out.println(sum2 + "   " + sum1 + "   " + (sum2 - sum1));
-////            System.out.println(size + " streets have been loaded");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            System.out.println("No subscribers loaded.");
-//            e.printStackTrace();
-//        } finally {
-//            if (br != null) {
-//                try {
-//                    br.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        return map;
-//    }
+    public Map<Integer, BigDecimal> getABFile() {
+        String csvFile = "BASES_KTVI/OB_AB_06.TXT";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = "\t";
+
+        Map<Integer, BigDecimal> map = new HashMap<>();
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            BigDecimal sum1 = BigDecimal.ZERO;
+            BigDecimal sum2 = BigDecimal.ZERO;
+            int count = 0 ;
+            while ((line = br.readLine()) != null) {
+                String[] row = line.split(cvsSplitBy);
+                if(row[0].length() >0 && row[0].substring(0,1).equals("7")) {
+//                    System.out.println(parseInt(line.substring(0, 7).trim()));
+//                    System.out.println(parseInt(line.substring(68, 75).trim()));
+//                    System.out.println(parseInt(line.substring(75, 82).trim()));
+//                    sum1 = sum1.add(parseBigDecimal(line.substring(83, 89).trim()));
+//                    sum2 = sum2.add(parseBigDecimal(line.substring(90, 96).trim()));
+//                    map.put(parseInt(line.substring(0, 7).trim()),parseBigDecimal(line.substring(83, 89).trim()).add(parseBigDecimal(line.substring(90, 96).trim()).negate()));
+//                    System.out.println(line.substring(0, 7).trim() + "\t" + parseBigDecimal(line.substring(83, 89).trim()) + " \t" + parseBigDecimal(line.substring(90, 96).trim()));
+                   count++;
+                    sum1 = sum1.add(parseBigDecimal(line.substring(96, 103).trim()));
+                    sum2 = sum2.add(parseBigDecimal(line.substring(103, 110).trim()));
+                    map.put(parseInt(line.substring(0, 7).trim()),parseBigDecimal(line.substring(96, 103).trim()).add(parseBigDecimal(line.substring(103, 110).trim()).negate()));
+                    System.out.println(line.substring(0, 7).trim() + "\t" + parseBigDecimal(line.substring(96, 103).trim()) + " \t" + parseBigDecimal(line.substring(103, 110).trim()));
+
+                }
+            }
+            System.out.println("\t" + sum1 + "\t" + sum2 + " \t");
+            System.out.println("\t" + count);
+//            System.out.println(size + " streets have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No subscribers loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return map;
+    }
 //
 //    public Map<Integer, Integer> getUSFile() {
 //        String csvFile = "BASES_KTVI/OB_US_11.TXT";
@@ -645,6 +661,92 @@ public class ReadCVS {
             }
         }
     }
+
+
+    public void showWrongSubscriptionFees() {
+        String csvFile = "BASES_KTVI/history.CSV";
+        String usersFile = "BASES_KTVI/users.CSV";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+
+        Set<String> usersId = new HashSet<>();
+        try {
+
+            FileInputStream fise =  new FileInputStream(usersFile);
+            br = new BufferedReader(new InputStreamReader(fise, "Cp1251"));
+
+            while ((line = br.readLine()) != null) {
+                usersId.add(line);
+
+            }
+
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+
+
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                if (size == -1) {
+                    size++;
+                    continue;
+                }
+                String[] row = line.split(cvsSplitBy);
+                if(row.length < 6 || row[0].equals("0") || row[2].equals("0") || row[5].equals("0")
+                        || row[1].equals("703972") || row[1].equals("708404"))
+                    continue;
+                if(usersId.contains(row[1])) {
+                    continue;
+                }
+                try {
+                    BigDecimal ostVx = parseBigDecimal(row[4]) == null ? BigDecimal.ZERO : parseBigDecimal(row[4]);
+                    if (!(parseBigDecimal(row[8]).equals(
+                            ostVx.add(parseBigDecimal(row[5])).subtract(parseBigDecimal(row[6])))
+                            ||
+                        parseBigDecimal(row[8]).equals(
+                                ostVx.add(parseBigDecimal(row[5])).subtract(parseBigDecimal(row[7]))))
+                            && !(BigDecimal.ZERO.compareTo(parseBigDecimal(row[5])) == 0 && BigDecimal.ZERO.compareTo(parseBigDecimal(row[6])) == 0)) {
+//                        System.out.println("\t " + parseBigDecimal(row[1]) +
+//                                "\t " + LocalDate.of(parseInt(row[2]), parseInt(row[3]), 1) +
+//                                "\t " + ostVx +
+//                                "\t " + parseBigDecimal(row[5]) +
+//                                "\t " + parseBigDecimal(row[6]) +
+//                                "\t " + parseBigDecimal(row[7]) +
+//                                "\t " + parseBigDecimal(row[8]));
+                        System.out.println("\t " + parseBigDecimal(row[1]) +
+                                "\t " + LocalDate.of(parseInt(row[2]), parseInt(row[3]), 1) +
+                                "\t " + ostVx.add(parseBigDecimal(row[5])).subtract(parseBigDecimal(row[6])).subtract(parseBigDecimal(row[8])) +
+                                "\t " + ostVx.add(parseBigDecimal(row[5])).subtract(parseBigDecimal(row[7])).subtract(parseBigDecimal(row[8])));
+                        size++;
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+//                    System.out.println("Array");
+//                    System.out.println(line);
+                }
+//                RenderedService renderedService = new RenderedService();
+//                renderedService.setServiceId(FixedServices.SUBSCRIPTION_FEE.getId());
+//                renderedService.setDate(LocalDate.of(parseInt(row[2]), parseInt(row[3]), 1));
+//                renderedService.setSubscriberAccount(parseInt(row[1]));
+
+
+
+            }
+            System.out.println(size + " subscriptionFees have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No subscriptionFees loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 //
     public void loadConnections() {
         String csvFile = "BASES_KTVI/ABONENT.CSV";
@@ -658,87 +760,87 @@ public class ReadCVS {
 
         Set<String> disc = new HashSet<>();
         Set<String> all = new HashSet<>();
-        try {
-            FileInputStream fis =  new FileInputStream(csvFileDisc);
-            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-            int size = -1;
-            while ((line = br.readLine()) != null) {
-                if (size == -1) {
-                    size++;
-                    continue;
-                }
-                String[] row = line.split(cvsSplitBy2);
-                disc.add(row[1]);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        } catch (IOException e) {
-            System.out.println("No connections loaded.");
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        try {
-            FileInputStream fis =  new FileInputStream(csvFileDel);
-            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-            int size = -1;
-            while ((line = br.readLine()) != null) {
-                if (size == -1) {
-                    size++;
-                    continue;
-                }
-                String[] row = line.split(cvsSplitBy2);
-                disc.add(row[1]);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        } catch (IOException e) {
-            System.out.println("No connections loaded.");
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        try {
-            FileInputStream fis =  new FileInputStream(csvFileAll);
-            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
-            int size = -1;
-            while ((line = br.readLine()) != null) {
-                if (size == -1) {
-                    size++;
-                    continue;
-                }
-                String[] row = line.split(cvsSplitBy2);
-                all.add(row[1]);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        } catch (IOException e) {
-            System.out.println("No connections loaded.");
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        try {
+//            FileInputStream fis =  new FileInputStream(csvFileDisc);
+//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+//            int size = -1;
+//            while ((line = br.readLine()) != null) {
+//                if (size == -1) {
+//                    size++;
+//                    continue;
+//                }
+//                String[] row = line.split(cvsSplitBy2);
+//                disc.add(row[1]);
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//            return;
+//        } catch (IOException e) {
+//            System.out.println("No connections loaded.");
+//            e.printStackTrace();
+//        } finally {
+//            if (br != null) {
+//                try {
+//                    br.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        try {
+//            FileInputStream fis =  new FileInputStream(csvFileDel);
+//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+//            int size = -1;
+//            while ((line = br.readLine()) != null) {
+//                if (size == -1) {
+//                    size++;
+//                    continue;
+//                }
+//                String[] row = line.split(cvsSplitBy2);
+//                disc.add(row[1]);
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//            return;
+//        } catch (IOException e) {
+//            System.out.println("No connections loaded.");
+//            e.printStackTrace();
+//        } finally {
+//            if (br != null) {
+//                try {
+//                    br.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        try {
+//            FileInputStream fis =  new FileInputStream(csvFileAll);
+//            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+//            int size = -1;
+//            while ((line = br.readLine()) != null) {
+//                if (size == -1) {
+//                    size++;
+//                    continue;
+//                }
+//                String[] row = line.split(cvsSplitBy2);
+//                all.add(row[1]);
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//            return;
+//        } catch (IOException e) {
+//            System.out.println("No connections loaded.");
+//            e.printStackTrace();
+//        } finally {
+//            if (br != null) {
+//                try {
+//                    br.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
 
         try {
@@ -774,7 +876,7 @@ public class ReadCVS {
                 subscriberSession.setSubscriberAccount(renderedService.getSubscriberAccount());
                 subscriberSession.setConnectionDate(renderedService.getDate());
                 if(!all.contains(row[1]) || disc.contains(row[1])) {
-                    subscriberSession.setDisconnectionDate(parseDate(row[17]).plusDays(1));
+//                    subscriberSession.setDisconnectionDate(parseDate(row[17]).plusDays(1));
                 }
                 DAOFactory.getDefaultDAOFactory().getSubscriberDAO().saveSubscriberSession(subscriberSession);
 
@@ -796,15 +898,15 @@ public class ReadCVS {
 
                 DAOFactory.getDefaultDAOFactory().getSubscriberDAO().saveSubscriberTariff(subscriberTariff);
 
-                if(!all.contains(row[1]) || disc.contains(row[1])) {
-                    RenderedService disconnection = new RenderedService();
-                    disconnection.setServiceId(FixedServices.DISCONNECTION.getId());
-                    disconnection.setDate(parseDate(row[17]));
-                    disconnection.setSubscriberAccount(parseInt(row[1]));
-                    disconnection.setPrice(BigDecimal.ZERO);
-                    DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(disconnection);
-                    disconnectionSize++;
-                }
+//                if(!all.contains(row[1]) || disc.contains(row[1])) {
+//                    RenderedService disconnection = new RenderedService();
+//                    disconnection.setServiceId(FixedServices.DISCONNECTION.getId());
+//                    disconnection.setDate(parseDate(row[17]));
+//                    disconnection.setSubscriberAccount(parseInt(row[1]));
+//                    disconnection.setPrice(BigDecimal.ZERO);
+//                    DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(disconnection);
+//                    disconnectionSize++;
+//                }
                 size++;
             }
             System.out.println(size + " connections have been loaded");
@@ -980,13 +1082,17 @@ public class ReadCVS {
                     if(rServices.size() != 1) {
                         System.out.println("??????");
                     } else {
-                        Payment payment = new Payment();
-                        payment.setSubscriberAccount(parseInt(row[0]));
-                        payment.setPrice(parseBigDecimal(paymentList.get(0)[5]));
-                        payment.setDate(parseDate(paymentList.get(0)[4]));
-                        payment.setServicePaymentId(rServices.get(0).getServiceId());
-                        payment.setRenderedServicePaymentId(rServices.get(0).getId());
-                        DAOFactory.getDefaultDAOFactory().getPaymentDAO().save(payment);
+                        try {
+                            Payment payment = new Payment();
+                            payment.setSubscriberAccount(parseInt(row[0]));
+                            payment.setPrice(parseBigDecimal(paymentList.get(0)[5]));
+                            payment.setDate(parseDate(paymentList.get(0)[4]));
+                            payment.setServicePaymentId(rServices.get(0).getServiceId());
+                            payment.setRenderedServicePaymentId(rServices.get(0).getId());
+                            DAOFactory.getDefaultDAOFactory().getPaymentDAO().save(payment);
+                        } catch (Exception e) {
+                            System.out.println(">>>>>>>> " + row);
+                        }
                     }
 
                 }
@@ -1150,6 +1256,117 @@ public class ReadCVS {
         }
         System.out.println(size);
     }
+
+    private void createDisconnect() {
+
+        String csvFile = "Udalennye.txt";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = " ";
+
+//        Set<Integer> set = new HashSet<>();
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                String[] row = line.split(cvsSplitBy);
+                Integer subscriberAccount = parseInt(row[0]);
+                if(subscriberAccount == null) {
+                    continue;
+                }
+
+                RenderedService renderedService = new RenderedService();
+                renderedService.setServiceId(FixedServices.DISCONNECTION.getId());
+                renderedService.setDate(LocalDate.of(2019, 1, 1));
+                renderedService.setSubscriberAccount(subscriberAccount);
+
+
+                renderedService.setPrice(parseBigDecimal(row[1]));
+
+                SubscriberSession subscriberSession =
+                        DAOFactory.getDefaultDAOFactory()
+                                .getSubscriberDAO().getNotClosedSubscriberSession(subscriberAccount,LocalDate.of(2019, 1, 1));
+                if (subscriberSession != null) {
+                    subscriberSession.setDisconnectionDate(LocalDate.of(2019, 1, 1));
+                }
+                try {
+                    DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(renderedService);
+                    if (subscriberSession != null) {
+                        DAOFactory.getDefaultDAOFactory().getSubscriberDAO().updateSubscriberSession(subscriberSession);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                size++;
+            }
+            System.out.println(size + " subscriptionFees have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No subscriptionFees loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void takSebe() {
+
+        String csvFile = "BASES_KTVI/tak_sebe.CSV";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+
+//        Set<Integer> set = new HashSet<>();
+        try {
+            FileInputStream fis =  new FileInputStream(csvFile);
+            br = new BufferedReader(new InputStreamReader(fis, "Cp1251"));
+            int size = -1;
+            while ((line = br.readLine()) != null) {
+                String[] row = line.split(cvsSplitBy);
+
+                RenderedService renderedService = new RenderedService();
+                renderedService.setServiceId(FixedServices.SUBSCRIPTION_FEE.getId());
+                renderedService.setDate(LocalDate.of(2018, 1, 2));
+                renderedService.setSubscriberAccount(parseInt(row[0]));
+
+
+                renderedService.setPrice(parseBigDecimal(row[1]));
+//                if(!set.contains(parseInt(row[1]))) {
+//                    renderedService.setPrice(parseInt(row[5]) + parseInt(row[4]));
+//                }
+//                set.add(parseInt(row[1]));
+                try {
+                    DAOFactory.getDefaultDAOFactory().getRenderedServiceDAO().save(renderedService);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                size++;
+            }
+            System.out.println(size + " subscriptionFees have been loaded");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("No subscriptionFees loaded.");
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 //
 //    public void updateTariffsInSubscriberTariffs() {
 //        String csvFile = "BASES_KTVI/history.CSV";
