@@ -23,12 +23,7 @@ public class Application {
         }
 
         // Close connections and save all the changes
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                ConnectionManager.getManager().close();
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> ConnectionManager.getManager().close()));
 
         MainModel model = new MainModel();
         MainView view = new MainView(model);
