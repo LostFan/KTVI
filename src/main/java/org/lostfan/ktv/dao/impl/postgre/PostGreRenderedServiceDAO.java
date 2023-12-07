@@ -231,12 +231,16 @@ public class PostGreRenderedServiceDAO extends PostgreBaseDao implements Rendere
     public Map<Integer, BigDecimal> getAllRenderedServicesPriceForSubscriberByServiceIdBeforeDate(int serviceId, LocalDate date) {
         Map<Integer, BigDecimal> subscribersPricesInMonth = new HashMap<>();
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT \"subscriber_account\",sum(\"price\") as \"price\" FROM \"rendered_service\" where \"service_id\" = ? AND \"date\" < ? group by \"subscriber_account\"");
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT s.account, rs.price from (SELECT subscriber_account,sum(rs.price) as price FROM rendered_service rs where (rs.service_id = ? AND rs.date < ?)\n" +
+                    "group by subscriber_account) as rs\n" +
+                    "right join subscriber s on rs.subscriber_account = s.account");
             preparedStatement.setInt(1, serviceId);
             preparedStatement.setDate(2, Date.valueOf(date.withDayOfMonth(1)));
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                subscribersPricesInMonth.put(rs.getInt("subscriber_account"), rs.getBigDecimal("price"));
+                int account = rs.getInt("account");
+                BigDecimal price = rs.getBigDecimal("price");
+                subscribersPricesInMonth.put(account, price != null ? price : BigDecimal.ZERO);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
