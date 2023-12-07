@@ -6,7 +6,6 @@ import org.lostfan.ktv.domain.Subscriber;
 import org.lostfan.ktv.domain.SubscriberSession;
 import org.lostfan.ktv.domain.SubscriberTariff;
 import org.lostfan.ktv.model.searcher.SubscriberSearchCriteria;
-import org.lostfan.ktv.utils.ConnectionManager;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -1164,5 +1163,65 @@ public class PostGreSubscriberDAO extends PostgreBaseDao implements SubscriberDA
         }
         subscriber.setInformation(rs.getString("information"));
         return subscriber;
+    }
+
+    @Override
+    public SubscriberSession getClosedSubscriberSession(Integer subscriberAccount, LocalDate date) {
+        SubscriberSession subscriberSession = null;
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("SELECT * FROM  \"subscriber_session\"  WHERE \"subscriber_account\"=? AND \"connection_date\"<=? AND \"disconnection_date\" <=?  ORDER BY \"connection_date\" desc LIMIT 1");
+            preparedStatement.setInt(1, subscriberAccount);
+            preparedStatement.setDate(2, Date.valueOf(date));
+            preparedStatement.setDate(3, Date.valueOf(date));
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                subscriberSession = new SubscriberSession();
+                subscriberSession.setSubscriberAccount(rs.getInt("subscriber_account"));
+                subscriberSession.setConnectionDate(rs.getDate("connection_date").toLocalDate());
+                if(rs.getDate("disconnection_date") != null) {
+                    subscriberSession.setDisconnectionDate(rs.getDate("disconnection_date").toLocalDate());
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new DAOException();
+        }
+
+        return subscriberSession;
+    }
+
+    @Override
+    public List<Integer> getInactiveSubscribersForPeriod(LocalDate startDate, LocalDate endDate) {
+        List<Integer> list = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(
+                    "SELECT s.account\n" +
+                            "FROM subscriber s\n" +
+                            "WHERE s.account not in (\n" +
+                            "    SELECT rs.subscriber_account \n" +
+                            "    FROM rendered_service rs\n" +
+                            "    WHERE rs.date BETWEEN ? AND ?\n" +
+                            "UNION\n" +
+                            "    SELECT p.subscriber_account \n" +
+                            "    FROM payment p\n" +
+                            "    WHERE p.date BETWEEN ? AND ?\n" +
+                            ")\n");
+            preparedStatement.setDate(1,  Date.valueOf(startDate));
+            preparedStatement.setDate(2,  Date.valueOf(endDate));
+            preparedStatement.setDate(3,  Date.valueOf(startDate));
+            preparedStatement.setDate(4,  Date.valueOf(endDate));
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getInt("account"));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new DAOException();
+        }
+
+        return list;
     }
 }

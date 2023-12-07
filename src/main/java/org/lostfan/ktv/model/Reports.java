@@ -9,7 +9,9 @@ public enum Reports {
     DEBTOR_REPORT("debtorReport"),
     WRITE_OFF_REPORT("writeOfReport"),
     CLAIM_REPORT("claimReport"),
-    CHANNELS_REPORT("channelsReport");
+    CHANNELS_REPORT("channelsReport"),
+    PREPAYMENT_REPORT("prepaymentReport"),
+    CREDIT_REPORT("creditReport");
 
     private final String code;
 

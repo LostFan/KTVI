@@ -4,6 +4,7 @@ import org.lostfan.ktv.domain.RenderedService;
 import org.lostfan.ktv.model.*;
 import org.lostfan.ktv.model.dto.*;
 import org.lostfan.ktv.model.entity.EntityModel;
+import org.lostfan.ktv.model.PrepaymentReportModel;
 import org.lostfan.ktv.model.entity.RenderedServiceEntityModel;
 import org.lostfan.ktv.model.entity.BaseModel;
 import org.lostfan.ktv.validation.ValidationResult;
@@ -113,6 +114,14 @@ public class MainController {
                 case CHANNELS_REPORT:
                     ChannelsReportModel channelsReportModel = new ChannelsReportModel();
                     ChannelsReportView channelsReportView = new ChannelsReportView(channelsReportModel);
+                    break;
+                case PREPAYMENT_REPORT:
+                    PrepaymentReportModel prepaymentReportModel = new PrepaymentReportModel();
+                    new PrepeymentReportView(prepaymentReportModel);
+                    break;
+                case CREDIT_REPORT:
+                    CreditReportModel creditReportModel = new CreditReportModel();
+                    new CreditReportView(creditReportModel);
                     break;
             };
         });

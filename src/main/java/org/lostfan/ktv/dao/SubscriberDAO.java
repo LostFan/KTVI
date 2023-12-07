@@ -94,4 +94,8 @@ public interface SubscriberDAO extends EntityDAO<Subscriber> {
     Map<Integer, Integer> getSubscribersWithCurrentTariffsByDate(LocalDate date);
 
     List<Integer> getConnectedSubscribers();
+
+    SubscriberSession getClosedSubscriberSession(Integer subscriberAccount, LocalDate date);
+
+    List<Integer> getInactiveSubscribersForPeriod(LocalDate startDate, LocalDate endDate);
 }
